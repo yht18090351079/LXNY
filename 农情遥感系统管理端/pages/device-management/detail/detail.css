@@ -1,0 +1,528 @@
+/* 设备详情页面样式 */
+
+/* 设备概览卡片 */
+.device-overview {
+  margin-bottom: 32px;
+}
+
+.device-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #E8E8E8;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.device-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  background: linear-gradient(135deg, #1890FF, #40A9FF);
+  flex-shrink: 0;
+}
+
+.device-avatar.sensor {
+  background: linear-gradient(135deg, #1890FF, #40A9FF);
+}
+
+.device-avatar.camera {
+  background: linear-gradient(135deg, #722ED1, #9254DE);
+}
+
+.device-avatar.weather {
+  background: linear-gradient(135deg, #13C2C2, #36CFC9);
+}
+
+.device-avatar.gateway {
+  background: linear-gradient(135deg, #52C41A, #73D13D);
+}
+
+.device-info {
+  flex: 1;
+}
+
+.device-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.device-id {
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 12px;
+}
+
+.device-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.device-status.online {
+  background: #F6FFED;
+  color: #52C41A;
+  border: 1px solid #B7EB8F;
+}
+
+.device-status.offline {
+  background: #FFF2F0;
+  color: #F5222D;
+  border: 1px solid #FFCCC7;
+}
+
+.device-status.maintenance {
+  background: #FFF7E6;
+  color: #FAAD14;
+  border: 1px solid #FFE58F;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.online {
+  background: #52C41A;
+}
+
+.status-dot.offline {
+  background: #F5222D;
+}
+
+.status-dot.maintenance {
+  background: #FAAD14;
+}
+
+.device-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.status-btn {
+  padding: 10px 20px;
+  border: 1px solid #1890FF;
+  background: #E6F7FF;
+  color: #1890FF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-btn:hover {
+  background: #1890FF;
+  color: white;
+}
+
+/* 详细信息布局 */
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.detail-left,
+.detail-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 信息卡片 */
+.info-card,
+.status-card,
+.chart-card,
+.control-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #F0F0F0;
+  background: #FAFAFA;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  margin: 0;
+}
+
+.card-action {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #F5F5F5;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666666;
+  transition: all 0.3s ease;
+}
+
+.card-action:hover {
+  background: #E6F7FF;
+  color: #1890FF;
+}
+
+.last-update {
+  font-size: 12px;
+  color: #999999;
+}
+
+.control-status {
+  font-size: 12px;
+  color: #666666;
+}
+
+.card-body {
+  padding: 24px;
+}
+
+/* 信息网格 */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-item label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #666666;
+}
+
+.info-item span {
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* 维护记录 */
+.maintenance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.maintenance-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #FAFAFA;
+  border-radius: 8px;
+  border-left: 4px solid #1890FF;
+}
+
+.maintenance-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E6F7FF;
+  color: #1890FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.maintenance-content {
+  flex: 1;
+}
+
+.maintenance-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4px;
+}
+
+.maintenance-desc {
+  font-size: 13px;
+  color: #666666;
+  margin-bottom: 6px;
+}
+
+.maintenance-time {
+  font-size: 12px;
+  color: #999999;
+}
+
+/* 实时状态 */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #FAFAFA;
+  border-radius: 8px;
+}
+
+.status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: white;
+  background: #1890FF;
+  flex-shrink: 0;
+}
+
+.status-icon.online {
+  background: #52C41A;
+}
+
+.status-icon.warning {
+  background: #FAAD14;
+}
+
+.status-icon.danger {
+  background: #F5222D;
+}
+
+.status-info {
+  flex: 1;
+}
+
+.status-label {
+  font-size: 12px;
+  color: #666666;
+  margin-bottom: 4px;
+}
+
+.status-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 图表卡片 */
+.chart-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.chart-control-btn {
+  padding: 6px 12px;
+  border: 1px solid #D9D9D9;
+  background: white;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chart-control-btn:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+}
+
+.chart-control-btn.active {
+  background: #1890FF;
+  border-color: #1890FF;
+  color: white;
+}
+
+.chart-container {
+  height: 300px;
+  width: 100%;
+}
+
+/* 远程控制 */
+.control-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  border: 1px solid #E8E8E8;
+  background: #FAFAFA;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #333333;
+}
+
+.control-btn:hover {
+  border-color: #1890FF;
+  background: #E6F7FF;
+  color: #1890FF;
+}
+
+.control-btn i {
+  font-size: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .status-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .control-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .device-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .device-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+  }
+  
+  .device-name {
+    font-size: 20px;
+  }
+  
+  .device-actions {
+    justify-content: center;
+  }
+  
+  .card-body {
+    padding: 16px;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .control-btn {
+    padding: 16px 12px;
+  }
+  
+  .control-btn i {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .page-actions {
+    align-self: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .device-card {
+    padding: 16px;
+  }
+  
+  .device-name {
+    font-size: 18px;
+  }
+  
+  .card-header {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .chart-controls {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  
+  .chart-control-btn {
+    flex: 1;
+  }
+  
+  .status-item {
+    padding: 12px;
+  }
+  
+  .status-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .maintenance-item {
+    padding: 12px;
+  }
+  
+  .maintenance-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}

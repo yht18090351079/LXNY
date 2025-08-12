@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设备详情 - 农情遥感系统管理端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/common.css">
+  <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <i class="fas fa-leaf logo-icon"></i>
+          <span class="system-title">农情遥感系统</span>
+        </div>
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item"><a href="../../dashboard/dashboard.html">首页</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item"><a href="#">设备管理</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item"><a href="../monitor/monitor.html">设备管理</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item active">设备详情</span>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="action-btn" title="通知">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn" title="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+        <div class="user-dropdown">
+          <button class="user-info">
+            <div class="user-avatar">管</div>
+            <span class="user-name">管理员</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              个人资料
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              账户设置
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../../index.html" class="dropdown-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              退出登录
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体布局 -->
+    <div class="admin-layout">
+      <!-- 左侧菜单 - 使用组件 -->
+      <aside class="admin-sidebar">
+        <!-- 侧边栏内容将由组件动态加载 -->
+      </aside>
+
+      <!-- 侧边栏切换按钮 -->
+      <button class="sidebar-toggle">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <!-- 主内容区 -->
+      <main class="admin-main">
+        <div class="main-content">
+          <!-- 页面标题 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h1 id="deviceTitle">设备详情</h1>
+              <p class="page-description">查看和管理设备的详细信息、运行状态和历史数据</p>
+            </div>
+            <div class="page-actions">
+              <a href="../monitor/monitor.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                返回管理
+              </a>
+              <button class="btn btn-outline" id="editDeviceBtn">
+                <i class="fas fa-edit"></i>
+                编辑设备
+              </button>
+              <button class="btn btn-primary" id="remoteControlBtn">
+                <i class="fas fa-power-off"></i>
+                远程控制
+              </button>
+            </div>
+          </div>
+
+          <!-- 设备概览 -->
+          <div class="device-overview">
+            <div class="device-card">
+              <div class="device-avatar" id="deviceAvatar">
+                <i class="fas fa-microchip"></i>
+              </div>
+              <div class="device-info">
+                <div class="device-name" id="deviceName">加载中...</div>
+                <div class="device-id" id="deviceId">--</div>
+                <div class="device-status" id="deviceStatus">
+                  <span class="status-dot"></span>
+                  <span class="status-text">--</span>
+                </div>
+              </div>
+              <div class="device-actions">
+                <button class="status-btn" id="statusToggleBtn">
+                  <i class="fas fa-power-off"></i>
+                  启用/禁用
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 详细信息 -->
+          <div class="detail-content">
+            <!-- 左侧信息面板 -->
+            <div class="detail-left">
+              <!-- 基本信息 -->
+              <div class="info-card">
+                <div class="card-header">
+                  <h3>基本信息</h3>
+                  <button class="card-action" title="编辑">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <label>设备名称</label>
+                      <span id="infoDeviceName">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>设备ID</label>
+                      <span id="infoDeviceId">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>设备类型</label>
+                      <span id="infoDeviceType">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>设备型号</label>
+                      <span id="infoDeviceModel">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>安装位置</label>
+                      <span id="infoLocation">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>安装日期</label>
+                      <span id="infoInstallDate">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>负责人</label>
+                      <span id="infoManager">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>联系电话</label>
+                      <span id="infoPhone">--</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 技术参数 -->
+              <div class="info-card">
+                <div class="card-header">
+                  <h3>技术参数</h3>
+                </div>
+                <div class="card-body">
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <label>工作电压</label>
+                      <span id="infoVoltage">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>功耗</label>
+                      <span id="infoPower">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>通信方式</label>
+                      <span id="infoCommunication">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>数据频率</label>
+                      <span id="infoFrequency">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>工作温度</label>
+                      <span id="infoTemperature">--</span>
+                    </div>
+                    <div class="info-item">
+                      <label>防护等级</label>
+                      <span id="infoProtection">--</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 维护记录 -->
+              <div class="info-card">
+                <div class="card-header">
+                  <h3>维护记录</h3>
+                  <button class="card-action" title="添加记录">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="maintenance-list" id="maintenanceList">
+                    <!-- 动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧监控面板 -->
+            <div class="detail-right">
+              <!-- 实时状态 -->
+              <div class="status-card">
+                <div class="card-header">
+                  <h3>实时状态</h3>
+                  <span class="last-update">最后更新：<span id="lastUpdate">--</span></span>
+                </div>
+                <div class="card-body">
+                  <div class="status-grid">
+                    <div class="status-item">
+                      <div class="status-icon online">
+                        <i class="fas fa-wifi"></i>
+                      </div>
+                      <div class="status-info">
+                        <div class="status-label">连接状态</div>
+                        <div class="status-value" id="connectionStatus">在线</div>
+                      </div>
+                    </div>
+                    <div class="status-item">
+                      <div class="status-icon">
+                        <i class="fas fa-signal"></i>
+                      </div>
+                      <div class="status-info">
+                        <div class="status-label">信号强度</div>
+                        <div class="status-value" id="signalStrength">85%</div>
+                      </div>
+                    </div>
+                    <div class="status-item">
+                      <div class="status-icon">
+                        <i class="fas fa-battery-three-quarters"></i>
+                      </div>
+                      <div class="status-info">
+                        <div class="status-label">电池电量</div>
+                        <div class="status-value" id="batteryLevel">78%</div>
+                      </div>
+                    </div>
+                    <div class="status-item">
+                      <div class="status-icon">
+                        <i class="fas fa-thermometer-half"></i>
+                      </div>
+                      <div class="status-info">
+                        <div class="status-label">设备温度</div>
+                        <div class="status-value" id="deviceTemperature">25°C</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据图表 -->
+              <div class="chart-card">
+                <div class="card-header">
+                  <h3>数据趋势</h3>
+                  <div class="chart-controls">
+                    <button class="chart-control-btn active" data-period="24h">24小时</button>
+                    <button class="chart-control-btn" data-period="7d">7天</button>
+                    <button class="chart-control-btn" data-period="30d">30天</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div id="dataChart" class="chart-container"></div>
+                </div>
+              </div>
+
+              <!-- 远程控制 -->
+              <div class="control-card">
+                <div class="card-header">
+                  <h3>远程控制</h3>
+                  <span class="control-status">控制权限：<span id="controlPermission">已授权</span></span>
+                </div>
+                <div class="card-body">
+                  <div class="control-grid">
+                    <button class="control-btn" onclick="executeCommand('reboot')">
+                      <i class="fas fa-redo"></i>
+                      <span>重启设备</span>
+                    </button>
+                    <button class="control-btn" onclick="executeCommand('reset')">
+                      <i class="fas fa-sync"></i>
+                      <span>重置配置</span>
+                    </button>
+                    <button class="control-btn" onclick="executeCommand('calibrate')">
+                      <i class="fas fa-balance-scale"></i>
+                      <span>校准传感器</span>
+                    </button>
+                    <button class="control-btn" onclick="executeCommand('update')">
+                      <i class="fas fa-download"></i>
+                      <span>固件升级</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="admin-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>© 2024 农情遥感系统管理端</span>
+        </div>
+        <div class="footer-right">
+          <span>最后更新：</span>
+          <span id="lastUpdateTime">2024-01-15 14:30:25</span>
+          <span class="divider">|</span>
+          <span>版本 v2.1.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../../assets/js/common.js"></script>
+  <script src="../../../components/sidebar.js"></script>
+  <script src="detail.js"></script>
+</body>
+</html>

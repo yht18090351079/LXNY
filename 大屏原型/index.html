@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统大屏 - 作物分布功能</title>
+    
+    <!-- 引入Cesium CSS -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cesium-map.css">
+</head>
+<body>
+    <!-- 顶部系统横幅 -->
+    <div class="system-header">
+        <!-- 左侧系统状态 -->
+        <div class="header-left">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">系统运行正常</span>
+            </div>
+        </div>
+
+        <!-- 中心标题 -->
+        <div class="system-title">
+            临夏县卫星遥感平台
+            <div class="system-subtitle">Linxia County Satellite Remote Sensing Platform</div>
+        </div>
+
+        <!-- 右侧时间显示和用户信息 -->
+        <div class="header-right">
+            <div class="current-time">
+                <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+            
+            <!-- 用户信息区域 -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    张
+                    <div class="user-status"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">张三</div>
+                    <div class="user-role">系统管理员</div>
+                </div>
+                
+                <!-- 用户下拉菜单 -->
+                <div class="user-dropdown">
+                    <div class="dropdown-item" onclick="showUserProfile()">
+                        <span>👤</span>
+                        <span>个人信息</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showSystemSettings()">
+                        <span>⚙️</span>
+                        <span>系统设置</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showOperationLog()">
+                        <span>📊</span>
+                        <span>操作日志</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showHelp()">
+                        <span>❓</span>
+                        <span>帮助中心</span>
+                    </div>
+                    <div class="dropdown-item" onclick="logout()">
+                        <span>🚪</span>
+                        <span>退出登录</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能切换模块 -->
+    <div class="function-switch-bar">
+        <!-- 主功能按钮组 (5个) -->
+        <div class="main-switch-buttons">
+            <div class="main-switch-btn active" data-function="crop-distribution">
+                <span class="btn-icon">🌾</span>
+                <span class="btn-text">作物分布</span>
+            </div>
+            <div class="main-switch-btn" data-function="growth-analysis">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation">
+                <span class="btn-icon">📈</span>
+                <span class="btn-text">产量预估</span>
+            </div>
+            <div class="main-switch-btn" data-function="weather-monitoring">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-text">气象监测</span>
+            </div>
+            <div class="main-switch-btn" data-function="disaster-monitoring">
+                <span class="btn-icon">⚠️</span>
+                <span class="btn-text">灾害定损</span>
+            </div>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 叠加功能按钮 (2个) -->
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+
+    <!-- 主地图容器 -->
+    <div id="map-container">
+        <!-- 科技感背景元素 -->
+        <div class="tech-grid"></div>
+        
+        <!-- Cesium地图容器 -->
+        <div id="cesium-container"></div>
+        
+        <!-- 地图覆盖层 -->
+        <div class="map-overlay"></div>
+
+        <!-- 左侧数据分析面板 -->
+        <div class="glass-panel left-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    📈 种植结构分析
+                </div>
+                <button class="collapse-btn">◀</button>
+            </div>
+
+            <!-- 4. 种植结构对比柱状图 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📊 种植结构对比 (近三年)
+                    <div class="chart-switch-buttons">
+                        <button class="switch-btn active" data-type="bar">柱状图</button>
+                        <button class="switch-btn" data-type="line">折线图</button>
+                        <button class="switch-btn" data-type="table">表格</button>
+                    </div>
+                </div>
+                <div id="planting-comparison-chart" style="height: 210px;"></div>
+                <div id="planting-comparison-table" class="comparison-table" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>作物类型</th>
+                                <th>2022年 (亩)</th>
+                                <th>2023年 (亩)</th>
+                                <th>2024年 (亩)</th>
+                                <th>变化率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="crop-icon">🌽</span> 玉米</td>
+                                <td>1200</td>
+                                <td>1280</td>
+                                <td>1344</td>
+                                <td class="positive">+12%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="crop-icon">🌾</span> 小麦</td>
+                                <td>980</td>
+                                <td>1020</td>
+                                <td>1058</td>
+                                <td class="positive">+8%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="crop-icon">🌶️</span> 辣椒</td>
+                                <td>650</td>
+                                <td>640</td>
+                                <td>631</td>
+                                <td class="negative">-3%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="crop-icon">🥬</span> 其他</td>
+                                <td>285</td>
+                                <td>270</td>
+                                <td>275</td>
+                                <td class="neutral">+2%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="comparison-summary horizontal">
+                    <div class="comparison-item">
+                        <span class="crop-icon">🌽</span>
+                        <span class="crop-change positive">玉米 +12%</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="crop-icon">🌾</span>
+                        <span class="crop-change positive">小麦 +8%</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span class="crop-icon">🌶️</span>
+                        <span class="crop-change negative">辣椒 -3%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 作物类型分布桑基图 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    🔄 作物轮作流转分析
+                </div>
+                <div id="crop-sankey-chart" style="height: 160px;"></div>
+            </div>
+
+            <!-- 6. 数据更新状态面板 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📊 数据质量状态
+                </div>
+                <div class="data-status">
+                    <div class="status-item">
+                        <div class="status-indicator online"></div>
+                        <div class="status-info">
+                            <div class="status-title">遥感数据更新</div>
+                            <div class="status-time">2024-01-12 10:30</div>
+                        </div>
+                        <div class="status-badge success">正常</div>
+                    </div>
+
+                    <div class="status-logs">
+                        <div class="log-header">📋 更新日志</div>
+                        <div class="log-item">
+                            <span class="log-time">14:30</span>
+                            <span class="log-msg">作物分布图层已更新</span>
+                        </div>
+                        <div class="log-item">
+                            <span class="log-time">10:30</span>
+                            <span class="log-msg">遥感影像数据同步完成</span>
+                        </div>
+                        <div class="log-item">
+                            <span class="log-time">09:15</span>
+                            <span class="log-msg">开始处理新批次数据</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧作物分布数据看板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    🌾 作物分布监测看板
+                </div>
+                <button class="collapse-btn">▶</button>
+            </div>
+
+            <!-- 1. 作物面积环形图 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📊 作物面积占比
+                </div>
+                <div id="crop-area-pie" style="height: 160px;"></div>
+                <div class="crop-area-details">
+                    <div class="area-item">
+                        <span class="crop-icon">🌾</span>
+                        <div class="crop-info">
+                            <span class="crop-name">小麦</span>
+                            <span class="crop-area">1,256 亩</span>
+                            <span class="crop-percent">42.3%</span>
+                        </div>
+                    </div>
+                    <div class="area-item">
+                        <span class="crop-icon">🌽</span>
+                        <div class="crop-info">
+                            <span class="crop-name">玉米</span>
+                            <span class="crop-area">986 亩</span>
+                            <span class="crop-percent">33.2%</span>
+                        </div>
+                    </div>
+                    <div class="area-item">
+                        <span class="crop-icon">🌶️</span>
+                        <div class="crop-info">
+                            <span class="crop-name">辣椒</span>
+                            <span class="crop-area">453 亩</span>
+                            <span class="crop-percent">15.3%</span>
+                        </div>
+                    </div>
+                    <div class="area-item">
+                        <span class="crop-icon">🥬</span>
+                        <div class="crop-info">
+                            <span class="crop-name">其他</span>
+                            <span class="crop-area">275 亩</span>
+                            <span class="crop-percent">9.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 大棚专项统计卡 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    🏠 大棚专项统计
+                </div>
+                <div class="greenhouse-stats">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-value">186</div>
+                            <div class="stat-label">大棚总面积 (亩)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">6.3%</div>
+                            <div class="stat-label">占总监测面积</div>
+                        </div>
+                    </div>
+                    <div class="greenhouse-crops">
+                        <div class="greenhouse-crop-item">
+                            <span class="crop-dot" style="background: #FF5722;"></span>
+                            <span>辣椒</span>
+                            <span class="crop-greenhouse-percent">35%</span>
+                        </div>
+                        <div class="greenhouse-crop-item">
+                            <span class="crop-dot" style="background: #4CAF50;"></span>
+                            <span>黄瓜</span>
+                            <span class="crop-greenhouse-percent">28%</span>
+                        </div>
+                        <div class="greenhouse-crop-item">
+                            <span class="crop-dot" style="background: #2196F3;"></span>
+                            <span>西红柿</span>
+                            <span class="crop-greenhouse-percent">37%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 区域面积汇总看板 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📋 区域面积汇总
+                </div>
+                <div class="area-summary">
+                    <div class="summary-item large">
+                        <div class="summary-value">2,970</div>
+                        <div class="summary-label">总监测面积 (亩)</div>
+                        <div class="summary-subtitle">覆盖12个行政村</div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="summary-item">
+                            <div class="summary-value">8</div>
+                            <div class="summary-label">作物种类数</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value">324</div>
+                            <div class="summary-label">地块总数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-time">
+                🔄 数据更新: 2024-01-15 14:30 | 遥感数据: 2024-01-12
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

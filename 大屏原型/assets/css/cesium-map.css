@@ -1,0 +1,196 @@
+/* Cesium地图模块样式 */
+
+/* ===== Cesium容器样式 ===== */
+#cesium-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+}
+
+/* 隐藏Cesium默认的UI控件 */
+.cesium-viewer-toolbar,
+.cesium-viewer-fullscreenContainer,
+.cesium-viewer-bottom-container,
+.cesium-viewer-animationContainer,
+.cesium-viewer-timelineContainer,
+.cesium-viewer-vrButton,
+.cesium-widget-credits,
+.cesium-viewer-geocoderContainer {
+    display: none !important;
+}
+
+/* 保持Cesium场景的完整显示 */
+.cesium-viewer {
+    width: 100%;
+    height: 100%;
+}
+
+.cesium-widget {
+    width: 100%;
+    height: 100%;
+}
+
+.cesium-widget canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== 地图控制按钮样式 ===== */
+.map-controls {
+    position: absolute;
+    top: 140px; /* 为功能切换栏留出空间 */
+    right: calc(var(--right-panel-width) + var(--panel-margin) + var(--panel-gap)); /* 面板宽度 + 面板边距 + 控制按钮间距 */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: right 0.3s ease; /* 添加位置过渡动画 */
+}
+
+/* 地图控制按钮位置由JavaScript动态调整 */
+
+.map-control-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.map-control-btn:hover {
+    background: rgba(0, 212, 255, 0.6);
+    border-color: rgba(0, 212, 255, 0.8);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.map-control-btn.active {
+    background: rgba(0, 212, 255, 0.8);
+    border-color: rgba(0, 212, 255, 1);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.map-control-btn:active {
+    transform: scale(0.95);
+}
+
+/* ===== 地图图层指示器 ===== */
+.map-layer-indicator {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1002;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 12px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.map-layer-indicator.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.layer-name {
+    font-weight: 500;
+    color: #00d4ff;
+}
+
+/* ===== 地图加载指示器 ===== */
+.map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1003;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px 30px;
+    color: white;
+    text-align: center;
+    display: none;
+}
+
+.map-loading.show {
+    display: block;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 212, 255, 0.3);
+    border-top: 3px solid #00d4ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #00d4ff;
+}
+
+/* ===== Cesium场景增强 ===== */
+.cesium-viewer .cesium-widget-credits {
+    display: none !important;
+}
+
+/* 确保地图容器在科技感背景之上 */
+#cesium-container {
+    z-index: 5;
+}
+
+/* 调整地图覆盖层层级 */
+.map-overlay {
+    z-index: 6;
+}
+
+/* ===== 响应式适配 ===== */
+@media (max-width: 1600px) {
+    .map-controls {
+        right: 340px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .map-controls {
+        right: 300px;
+        top: 120px;
+    }
+    
+    .map-control-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}

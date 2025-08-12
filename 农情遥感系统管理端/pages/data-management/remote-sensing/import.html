@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>遥感数据导入 - 农情遥感系统管理端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/common.css">
+  <link rel="stylesheet" href="import.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <i class="fas fa-leaf logo-icon"></i>
+          <span class="system-title">农情遥感系统管理端</span>
+        </div>
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item">
+            <i class="fas fa-home"></i>
+            首页
+          </span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item">数据管理</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item">
+            <a href="list.html">遥感数据</a>
+          </span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-item active">数据导入</span>
+        </nav>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="action-btn" title="通知">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn" title="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+          <div class="user-dropdown">
+            <div class="user-info">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <span class="user-name">管理员</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
+            </div>
+            <div class="dropdown-menu">
+              <a href="#" class="dropdown-item">
+                <i class="fas fa-user-circle"></i>
+                个人信息
+              </a>
+              <a href="#" class="dropdown-item">
+                <i class="fas fa-cog"></i>
+                系统设置
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item logout">
+                <i class="fas fa-sign-out-alt"></i>
+                退出登录
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体布局 -->
+    <div class="admin-layout">
+      <!-- 左侧菜单 - 使用组件 -->
+      <aside class="admin-sidebar">
+        <!-- 侧边栏内容将由组件动态加载 -->
+      </aside>
+
+      <!-- 侧边栏切换按钮 -->
+      <button class="sidebar-toggle">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <!-- 主内容区 -->
+      <main class="admin-main">
+        <div class="main-content">
+          <!-- 页面标题 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h1>遥感数据导入</h1>
+              <p class="page-subtitle">导入遥感卫星数据到系统中，支持多种格式和批量导入</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-secondary" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                返回列表
+              </button>
+              <button class="btn btn-outline" onclick="viewImportHistory()">
+                <i class="fas fa-history"></i>
+                导入历史
+              </button>
+            </div>
+          </div>
+
+          <!-- 导入步骤指示器 -->
+          <div class="step-indicator">
+            <div class="step active" data-step="1">
+              <div class="step-number">1</div>
+              <div class="step-title">选择导入方式</div>
+            </div>
+            <div class="step" data-step="2">
+              <div class="step-number">2</div>
+              <div class="step-title">配置数据信息</div>
+            </div>
+            <div class="step" data-step="3">
+              <div class="step-number">3</div>
+              <div class="step-title">上传数据文件</div>
+            </div>
+            <div class="step" data-step="4">
+              <div class="step-number">4</div>
+              <div class="step-title">确认导入</div>
+            </div>
+          </div>
+
+          <!-- 导入内容区域 -->
+          <div class="import-container">
+            <!-- 步骤1: 选择导入方式 -->
+            <div class="import-step active" id="step1">
+              <div class="step-content">
+                <h3>选择导入方式</h3>
+                <p class="step-description">请选择您要使用的数据导入方式</p>
+                
+                <div class="import-methods">
+                  <div class="method-card" data-method="upload">
+                    <div class="method-icon">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h4>本地文件上传</h4>
+                    <p>从本地计算机上传遥感数据文件</p>
+                    <div class="method-features">
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        支持多种格式 (TIFF, HDF, NetCDF等)
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        支持批量上传
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        自动格式检测
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="method-card" data-method="url">
+                    <div class="method-icon">
+                      <i class="fas fa-link"></i>
+                    </div>
+                    <h4>网络地址导入</h4>
+                    <p>通过URL地址导入在线数据</p>
+                    <div class="method-features">
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        支持HTTP/HTTPS/FTP协议
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        自动下载和导入
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        支持大文件传输
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="method-card" data-method="api">
+                    <div class="method-icon">
+                      <i class="fas fa-plug"></i>
+                    </div>
+                    <h4>API接口导入</h4>
+                    <p>通过卫星数据提供商API导入</p>
+                    <div class="method-features">
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        连接主流卫星平台
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        实时数据获取
+                      </div>
+                      <div class="feature">
+                        <i class="fas fa-check"></i>
+                        自动化导入流程
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 步骤2: 配置数据信息 -->
+            <div class="import-step" id="step2">
+              <div class="step-content">
+                <h3>配置数据信息</h3>
+                <p class="step-description">请填写数据的基本信息和元数据</p>
+                
+                <form class="data-config-form" id="dataConfigForm">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="dataName">数据名称 <span class="required">*</span></label>
+                      <input type="text" id="dataName" class="form-input" placeholder="请输入数据名称" required>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="dataType">数据类型 <span class="required">*</span></label>
+                      <select id="dataType" class="form-select" required>
+                        <option value="">请选择数据类型</option>
+                        <option value="optical">光学影像</option>
+                        <option value="radar">雷达数据</option>
+                        <option value="hyperspectral">高光谱</option>
+                        <option value="thermal">热红外</option>
+                        <option value="lidar">激光雷达</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="satellite">卫星来源 <span class="required">*</span></label>
+                      <select id="satellite" class="form-select" required>
+                        <option value="">请选择卫星来源</option>
+                        <option value="landsat">Landsat系列</option>
+                        <option value="sentinel">Sentinel系列</option>
+                        <option value="modis">MODIS</option>
+                        <option value="gf">高分系列</option>
+                        <option value="worldview">WorldView</option>
+                        <option value="quickbird">QuickBird</option>
+                        <option value="other">其他</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="resolution">空间分辨率</label>
+                      <input type="text" id="resolution" class="form-input" placeholder="例：30m, 10m">
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="collectDate">采集时间 <span class="required">*</span></label>
+                      <input type="datetime-local" id="collectDate" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="cloudCover">云覆盖率</label>
+                      <input type="number" id="cloudCover" class="form-input" min="0" max="100" placeholder="0-100%">
+                    </div>
+                  </div>
+                  
+                  <div class="form-section">
+                    <h4>空间范围</h4>
+                    <div class="spatial-bounds">
+                      <div class="bounds-input">
+                        <label for="northBound">北边界（纬度）</label>
+                        <input type="number" id="northBound" class="form-input" step="0.000001" placeholder="例：40.123456">
+                      </div>
+                      <div class="bounds-row">
+                        <div class="bounds-input">
+                          <label for="westBound">西边界（经度）</label>
+                          <input type="number" id="westBound" class="form-input" step="0.000001" placeholder="例：116.123456">
+                        </div>
+                        <div class="bounds-center">
+                          <div class="map-placeholder">
+                            <i class="fas fa-map"></i>
+                            <span>地图预览</span>
+                          </div>
+                        </div>
+                        <div class="bounds-input">
+                          <label for="eastBound">东边界（经度）</label>
+                          <input type="number" id="eastBound" class="form-input" step="0.000001" placeholder="例：116.789012">
+                        </div>
+                      </div>
+                      <div class="bounds-input">
+                        <label for="southBound">南边界（纬度）</label>
+                        <input type="number" id="southBound" class="form-input" step="0.000001" placeholder="例：39.789012">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="form-section">
+                    <h4>数据描述</h4>
+                    <div class="form-group full-width">
+                      <label for="description">描述信息</label>
+                      <textarea id="description" class="form-textarea" rows="4" placeholder="请输入数据描述信息..."></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                      <label for="tags">标签</label>
+                      <input type="text" id="tags" class="form-input" placeholder="用逗号分隔多个标签，例：农业,监测,北京">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- 步骤3: 上传数据文件 -->
+            <div class="import-step" id="step3">
+              <div class="step-content">
+                <h3>上传数据文件</h3>
+                <p class="step-description">请上传遥感数据文件</p>
+                
+                <!-- 本地文件上传 -->
+                <div class="upload-method" id="uploadMethod">
+                  <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                      <h4>拖拽文件到此处或点击选择文件</h4>
+                      <p>支持格式：TIFF, HDF, NetCDF, JPEG, PNG等</p>
+                      <p>单个文件最大5GB，支持批量上传</p>
+                    </div>
+                    <input type="file" id="fileInput" multiple accept=".tiff,.tif,.hdf,.nc,.jpg,.jpeg,.png">
+                    <button class="btn btn-primary" onclick="selectFiles()">选择文件</button>
+                  </div>
+                  
+                  <div class="file-list" id="fileList">
+                    <!-- 文件列表将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+                
+                <!-- URL导入 -->
+                <div class="upload-method" id="urlMethod" style="display:none;">
+                  <div class="url-input-section">
+                    <div class="form-group">
+                      <label for="dataUrl">数据URL地址</label>
+                      <input type="url" id="dataUrl" class="form-input" placeholder="请输入数据文件的URL地址">
+                    </div>
+                    <div class="form-group">
+                      <label for="authType">认证方式</label>
+                      <select id="authType" class="form-select">
+                        <option value="none">无需认证</option>
+                        <option value="basic">基础认证</option>
+                        <option value="token">Token认证</option>
+                      </select>
+                    </div>
+                    <div class="auth-details" id="authDetails" style="display:none;">
+                      <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" class="form-input">
+                      </div>
+                      <div class="form-group">
+                        <label for="password">密码/Token</label>
+                        <input type="password" id="password" class="form-input">
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="validateUrl()">验证并获取文件信息</button>
+                  </div>
+                </div>
+                
+                <!-- API导入 -->
+                <div class="upload-method" id="apiMethod" style="display:none;">
+                  <div class="api-config-section">
+                    <div class="form-group">
+                      <label for="apiProvider">API提供商</label>
+                      <select id="apiProvider" class="form-select">
+                        <option value="">请选择API提供商</option>
+                        <option value="earthdata">NASA Earthdata</option>
+                        <option value="copernicus">Copernicus Open Access Hub</option>
+                        <option value="gee">Google Earth Engine</option>
+                        <option value="planet">Planet Labs</option>
+                        <option value="custom">自定义API</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="apiKey">API密钥</label>
+                      <input type="password" id="apiKey" class="form-input" placeholder="请输入API密钥">
+                    </div>
+                    <div class="form-group">
+                      <label for="searchParams">搜索参数</label>
+                      <textarea id="searchParams" class="form-textarea" rows="4" placeholder='例：{"bbox": [116.0, 39.0, 117.0, 40.0], "datetime": "2024-12-01/2024-12-15"}'></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="searchApiData()">搜索数据</button>
+                  </div>
+                  
+                  <div class="api-results" id="apiResults" style="display:none;">
+                    <!-- API搜索结果将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 步骤4: 确认导入 -->
+            <div class="import-step" id="step4">
+              <div class="step-content">
+                <h3>确认导入</h3>
+                <p class="step-description">请确认导入配置信息</p>
+                
+                <div class="confirmation-summary">
+                  <div class="summary-section">
+                    <h4>数据信息</h4>
+                    <div class="summary-grid" id="dataSummary">
+                      <!-- 数据摘要将通过JavaScript动态生成 -->
+                    </div>
+                  </div>
+                  
+                  <div class="summary-section">
+                    <h4>文件信息</h4>
+                    <div class="file-summary" id="fileSummary">
+                      <!-- 文件摘要将通过JavaScript动态生成 -->
+                    </div>
+                  </div>
+                  
+                  <div class="summary-section">
+                    <h4>导入设置</h4>
+                    <div class="import-settings">
+                      <div class="setting-item">
+                        <input type="checkbox" id="autoProcess" checked>
+                        <label for="autoProcess">导入后自动进行数据处理</label>
+                      </div>
+                      <div class="setting-item">
+                        <input type="checkbox" id="createThumbnail" checked>
+                        <label for="createThumbnail">自动生成预览缩略图</label>
+                      </div>
+                      <div class="setting-item">
+                        <input type="checkbox" id="validateData">
+                        <label for="validateData">导入前进行数据完整性检查</label>
+                      </div>
+                      <div class="setting-item">
+                        <input type="checkbox" id="notifyComplete" checked>
+                        <label for="notifyComplete">导入完成后发送通知</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 导入进度 -->
+          <div class="import-progress" id="importProgress" style="display:none;">
+            <div class="progress-header">
+              <h4>导入进度</h4>
+              <div class="progress-status" id="progressStatus">准备中...</div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+              </div>
+              <div class="progress-text" id="progressText">0%</div>
+            </div>
+            <div class="progress-details" id="progressDetails">
+              <!-- 进度详情将通过JavaScript动态生成 -->
+            </div>
+          </div>
+
+          <!-- 步骤导航 -->
+          <div class="step-navigation">
+            <button class="btn btn-outline" id="prevBtn" onclick="prevStep()" disabled>
+              <i class="fas fa-chevron-left"></i>
+              上一步
+            </button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+              下一步
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="admin-footer">
+          <div class="footer-content">
+            <div class="footer-left">
+              <span>© 2024 农情遥感系统管理端</span>
+            </div>
+            <div class="footer-right">
+              <span>最后更新时间：<span id="lastUpdateTime">2024-12-15 16:30:25</span></span>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- 导入历史模态框 -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3>导入历史</h3>
+        <button class="modal-close" onclick="closeHistoryModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="history-table">
+          <table>
+            <thead>
+              <tr>
+                <th>导入时间</th>
+                <th>数据名称</th>
+                <th>文件数量</th>
+                <th>总大小</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- 历史记录将通过JavaScript动态生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../../assets/js/common.js"></script>
+  <script src="../../../components/sidebar.js"></script>
+  <script src="import.js"></script>
+</body>
+</html>

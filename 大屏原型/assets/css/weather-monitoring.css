@@ -1,0 +1,1017 @@
+/* 农情遥感系统大屏 - 气象监测功能样式文件 */
+
+/* ===== 气象图层选择样式（MSN天气风格）===== */
+.weather-layer-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.weather-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 45px;
+}
+
+.weather-tab:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+}
+
+.weather-tab.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%);
+    border-color: #00d4ff;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.weather-tab.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00d4ff 0%, #0099cc 100%);
+    animation: tabActiveGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes tabActiveGlow {
+    0% {
+        opacity: 0.6;
+        box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+    }
+}
+
+.tab-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+    animation: tabIconFloat 3s ease-in-out infinite alternate;
+}
+
+.weather-tab.active .tab-icon {
+    animation: tabIconFloatActive 2s ease-in-out infinite alternate;
+}
+
+@keyframes tabIconFloat {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        transform: translateY(-2px) scale(1.05);
+    }
+}
+
+@keyframes tabIconFloatActive {
+    0% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.3));
+    }
+    100% {
+        transform: translateY(-2px) scale(1.1);
+        filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.6));
+    }
+}
+
+.tab-name {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.weather-tab.active .tab-name {
+    color: #00d4ff;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+
+
+/* 透明度控制 */
+.layer-opacity-control {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.layer-opacity-control label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.layer-opacity-control .opacity-slider {
+    width: 100%;
+}
+
+.layer-opacity-control #opacity-value {
+    font-size: 11px;
+    color: #00d4ff;
+    font-weight: bold;
+    text-align: center;
+    align-self: center;
+}
+
+.opacity-slider {
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.opacity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #00d4ff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 212, 255, 0.5);
+}
+
+.opacity-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #00d4ff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 4px rgba(0, 212, 255, 0.5);
+}
+
+/* ===== 时间控制样式 ===== */
+.time-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.time-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.time-selector label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.time-selector select {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    font-size: 10px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-selector select:hover,
+.time-selector select:focus {
+    border-color: rgba(0, 212, 255, 0.6);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.time-range-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.time-range-slider label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+#time-slider {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#time-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+#time-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.time-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.animation-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.control-btn {
+    flex: 1;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 4px;
+    color: #00d4ff;
+    padding: 4px 6px;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.control-btn:hover {
+    background: rgba(0, 212, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.6);
+    transform: translateY(-1px);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== 气象预警样式 ===== */
+.weather-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid;
+    transition: all 0.3s ease;
+}
+
+.alert-item.warning {
+    background: rgba(255, 152, 0, 0.1);
+    border-color: rgba(255, 152, 0, 0.3);
+    color: #FF9800;
+}
+
+.alert-item.info {
+    background: rgba(33, 150, 243, 0.1);
+    border-color: rgba(33, 150, 243, 0.3);
+    color: #2196F3;
+}
+
+.alert-item.error {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #F44336;
+}
+
+.alert-item:hover {
+    transform: translateX(5px);
+}
+
+.alert-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+.alert-title {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.alert-time {
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+/* ===== 当前天气状况样式 ===== */
+.current-weather {
+    margin-top: 10px;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    margin-bottom: 12px;
+}
+
+.weather-icon {
+    font-size: 48px;
+    margin-right: 15px;
+    animation: weatherIconFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes weatherIconFloat {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        transform: translateY(-5px) scale(1.05);
+    }
+}
+
+.weather-info {
+    text-align: center;
+}
+
+.weather-desc {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.weather-temp {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    font-size: 11px;
+}
+
+.detail-item:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+.detail-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.detail-value {
+    font-size: 11px;
+    font-weight: bold;
+    color: #00d4ff;
+}
+
+/* ===== 7天天气预报样式 ===== */
+.weather-forecast {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.forecast-item {
+    display: grid;
+    grid-template-columns: 60px 40px 60px 1fr;
+    align-items: center;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    gap: 8px;
+}
+
+.forecast-item:hover {
+    background: rgba(0, 212, 255, 0.08);
+    border-color: rgba(0, 212, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.forecast-date {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.forecast-weather {
+    font-size: 18px;
+    text-align: center;
+}
+
+.forecast-temp {
+    font-size: 11px;
+    font-weight: bold;
+    color: #00d4ff;
+    text-align: center;
+}
+
+.forecast-desc {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+}
+
+/* ===== 农业气象指数样式 ===== */
+.agri-weather-index {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.index-item {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.index-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.index-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 4px;
+}
+
+.index-value {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.index-value.good {
+    color: #4CAF50;
+}
+
+.index-value.warning {
+    color: #FF9800;
+}
+
+.index-value.error {
+    color: #F44336;
+}
+
+.index-value.info {
+    color: #2196F3;
+}
+
+.index-progress {
+    margin-top: 4px;
+}
+
+.index-progress .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.index-progress .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+    background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+}
+
+.index-progress .progress-fill.warning {
+    background: linear-gradient(90deg, #FF9800 0%, #FFB74D 100%);
+}
+
+.index-progress .progress-fill.error {
+    background: linear-gradient(90deg, #F44336 0%, #EF5350 100%);
+}
+
+.index-progress .progress-fill.info {
+    background: linear-gradient(90deg, #2196F3 0%, #42A5F5 100%);
+}
+
+/* ===== 气象图层选择器样式 ===== */
+.weather-layer-selector {
+    position: fixed;
+    background: linear-gradient(135deg, rgba(0, 20, 40, 0.95) 0%, rgba(0, 40, 80, 0.9) 100%);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+    z-index: 2000;
+    color: white;
+    display: none;
+    min-width: 180px;
+}
+
+.weather-selector-content {
+    padding: 8px;
+}
+
+.weather-option {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.weather-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.weather-option input[type="checkbox"] {
+    margin-right: 8px;
+    width: 14px;
+    height: 14px;
+    accent-color: #00d4ff;
+}
+
+.weather-option label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    flex: 1;
+    font-size: 12px;
+}
+
+.weather-option .weather-layer-icon {
+    font-size: 14px;
+}
+
+.weather-option .weather-layer-name {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 1600px) {
+    .weather-details {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+    
+    .forecast-item {
+        grid-template-columns: 50px 30px 50px 1fr;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .weather-main {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .weather-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+        font-size: 40px;
+    }
+    
+    .weather-temp {
+        font-size: 28px;
+    }
+}
+
+/* ===== 动画效果 ===== */
+@keyframes weatherDataUpdate {
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+}
+
+.weather-updating {
+    animation: weatherDataUpdate 2s ease-in-out infinite;
+}
+
+/* ===== 气象数据加载状态 ===== */
+.weather-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+
+.weather-loading::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-top: 2px solid #00d4ff;
+    border-radius: 50%;
+    animation: weatherLoadingSpin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes weatherLoadingSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== 气象数据错误状态 ===== */
+.weather-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    border-radius: 8px;
+    color: #F44336;
+    font-size: 12px;
+    text-align: center;
+}
+
+.weather-error::before {
+    content: '⚠️';
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* ===== 气象数据弹窗样式 ===== */
+.weather-tooltip {
+    position: absolute;
+    z-index: 10000;
+    background: rgba(15, 20, 25, 0.95);
+    border: 1px solid rgba(64, 224, 255, 0.3);
+    border-radius: 8px;
+    padding: 0;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.tooltip-header {
+    background: linear-gradient(135deg, #40E0FF 0%, #0080FF 100%);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 7px 7px 0 0;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tooltip-title {
+    font-size: 12px;
+}
+
+.tooltip-coords {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-left: 8px;
+}
+
+.tooltip-content {
+    padding: 10px 12px;
+}
+
+.data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+
+.data-item:last-child {
+    margin-bottom: 0;
+}
+
+.data-label {
+    color: #A0AEC0;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.data-value {
+    color: #40E0FF;
+    font-weight: 500;
+    text-align: right;
+}
+
+/* 弹窗动画 */
+.weather-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.weather-tooltip.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* ===== 历史数据时间控制样式 ===== */
+/* 表头内的时间模式选择器 */
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.stat-header .time-mode-selector {
+    margin: 0;
+    padding: 0;
+    margin-left: auto;
+}
+
+.stat-header .mode-tabs {
+    gap: 2px;
+    padding: 2px;
+    border-radius: 6px;
+}
+
+.stat-header .mode-tab {
+    padding: 3px 8px;
+    font-size: 9px;
+    border-radius: 3px;
+}
+
+.time-mode-selector {
+    margin: 10px 0 15px 0;
+    padding: 0 10px;
+}
+
+.time-mode-selector label {
+    display: block;
+    margin-bottom: 5px;
+    color: #A0AEC0;
+    font-size: 11px;
+}
+
+.mode-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.mode-tab {
+    flex: 1;
+    padding: 5px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #A0AEC0;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-tab:hover {
+    background: rgba(64, 224, 255, 0.1);
+    color: #40E0FF;
+}
+
+.mode-tab.active {
+    background: linear-gradient(135deg, #40E0FF 0%, #0080FF 100%);
+    color: white;
+    font-weight: 500;
+}
+
+.date-time-picker {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 6px;
+}
+
+.date-time-picker input {
+    flex: 1;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    color: #fff;
+    font-size: 10px;
+}
+
+.date-time-picker input:focus {
+    outline: none;
+    border-color: #40E0FF;
+    box-shadow: 0 0 4px rgba(64, 224, 255, 0.3);
+}
+
+.quick-history {
+    display: flex;
+    gap: 4px;
+}
+
+.quick-btn {
+    flex: 1;
+    padding: 3px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    color: #A0AEC0;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quick-btn:hover {
+    background: rgba(64, 224, 255, 0.2);
+    border-color: #40E0FF;
+    color: #40E0FF;
+}
+
+.quick-btn.active {
+    background: #40E0FF;
+    border-color: #40E0FF;
+    color: white;
+}
+
+.current-time-display {
+    margin: 8px 0;
+    padding: 6px 8px;
+    background: rgba(64, 224, 255, 0.1);
+    border-radius: 4px;
+    border-left: 2px solid #40E0FF;
+}
+
+.current-time-display label {
+    color: #A0AEC0;
+    font-size: 10px;
+    display: inline;
+    margin-right: 5px;
+}
+
+.current-time-display span {
+    color: #40E0FF;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.time-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #A0AEC0;
+    margin-top: 4px;
+}
+
+#time-center-label {
+    color: #40E0FF;
+    font-weight: 500;
+}
+
+#speed-btn {
+    background: rgba(255, 165, 0, 0.2);
+    border-color: rgba(255, 165, 0, 0.3);
+    color: #FFA500;
+}
+
+#speed-btn:hover {
+    background: rgba(255, 165, 0, 0.3);
+    border-color: #FFA500;
+}
+
+/* ===== 7天预报温度趋势图样式 ===== */
+.temperature-trend-container {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.temperature-trend-container::before {
+    content: "温度趋势";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    background: rgba(15, 20, 25, 0.95);
+    color: #40E0FF;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+#forecast-temperature-chart {
+    width: 100%;
+    height: 120px;
+    border-radius: 6px;
+}
+
+/* ===== 7天天气双线折线图样式 ===== */
+.seven-day-weather-container {
+    margin: 15px 0 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.seven-day-weather-container::before {
+    content: "7日天气趋势";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    background: rgba(15, 20, 25, 0.95);
+    color: #40E0FF;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+#seven-day-weather-chart {
+    width: 100%;
+    height: 200px;
+    border-radius: 6px;
+}

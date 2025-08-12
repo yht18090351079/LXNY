@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设备管理 - 农情遥感系统管理端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/common.css">
+  <link rel="stylesheet" href="monitor.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <i class="fas fa-leaf logo-icon"></i>
+          <span class="system-title">农情遥感系统</span>
+        </div>
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item"><a href="../../dashboard/dashboard.html">首页</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item"><a href="#">设备管理</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item active">设备管理</span>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="action-btn" title="通知">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn" title="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+        <div class="user-dropdown">
+          <button class="user-info">
+            <div class="user-avatar">管</div>
+            <span class="user-name">管理员</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              个人资料
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              账户设置
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../../index.html" class="dropdown-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              退出登录
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体布局 -->
+    <div class="admin-layout">
+      <!-- 左侧菜单 - 使用组件 -->
+      <aside class="admin-sidebar">
+        <!-- 侧边栏内容将由组件动态加载 -->
+      </aside>
+
+      <!-- 侧边栏切换按钮 -->
+      <button class="sidebar-toggle">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <!-- 主内容区 -->
+      <main class="admin-main">
+        <div class="main-content">
+          <!-- 页面标题 -->
+          <div class="page-header">
+                      <div class="page-title">
+            <h1>设备管理</h1>
+            <p class="page-description">实时监控物联网设备运行状态和管理设备信息</p>
+          </div>
+            <div class="page-actions">
+              <button class="btn btn-secondary" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                刷新数据
+              </button>
+              <button class="btn btn-primary" id="alertSettingsBtn">
+                <i class="fas fa-bell"></i>
+                告警设置
+              </button>
+            </div>
+          </div>
+
+          <!-- 总览统计 -->
+          <div class="monitor-overview">
+            <div class="overview-card">
+              <div class="card-icon online">
+                <i class="fas fa-wifi"></i>
+              </div>
+              <div class="card-content">
+                <div class="card-value" id="onlineDevices">28</div>
+                <div class="card-label">在线设备</div>
+                <div class="card-trend up">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <div class="card-icon offline">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="card-content">
+                <div class="card-value" id="offlineDevices">3</div>
+                <div class="card-label">离线设备</div>
+                <div class="card-trend down">
+                  <i class="fas fa-arrow-down"></i>
+                  <span>-1</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <div class="card-icon warning">
+                <i class="fas fa-bell"></i>
+              </div>
+              <div class="card-content">
+                <div class="card-value" id="alertCount">5</div>
+                <div class="card-label">告警数量</div>
+                <div class="card-trend up">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <div class="card-icon normal">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="card-content">
+                <div class="card-value" id="dataTransmission">95.2%</div>
+                <div class="card-label">数据传输率</div>
+                <div class="card-trend up">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+0.5%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 监控面板 -->
+          <div class="monitor-panels">
+            <!-- 左侧面板 -->
+            <div class="panel-left">
+              <!-- 设备状态分布 -->
+              <div class="monitor-card">
+                <div class="card-header">
+                  <h3>设备状态分布</h3>
+                  <div class="card-actions">
+                    <button class="card-action-btn" title="设置">
+                      <i class="fas fa-cog"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div id="deviceStatusChart" class="chart-container"></div>
+                </div>
+              </div>
+
+              <!-- 实时告警 -->
+              <div class="monitor-card">
+                <div class="card-header">
+                  <h3>实时告警</h3>
+                  <div class="card-actions">
+                    <span class="alert-count">5条新告警</span>
+                    <button class="card-action-btn" title="查看全部">
+                      <i class="fas fa-external-link-alt"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="alert-list" id="alertList">
+                    <!-- 动态生成告警信息 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="panel-right">
+              <!-- 设备地图 -->
+              <div class="monitor-card">
+                <div class="card-header">
+                  <h3>设备分布地图</h3>
+                  <div class="card-actions">
+                    <div class="map-controls">
+                      <button class="map-control-btn active" data-layer="all">全部</button>
+                      <button class="map-control-btn" data-layer="online">在线</button>
+                      <button class="map-control-btn" data-layer="offline">离线</button>
+                      <button class="map-control-btn" data-layer="alert">告警</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div id="deviceMap" class="map-container"></div>
+                  <div class="map-legend">
+                    <div class="legend-item">
+                      <span class="legend-dot online"></span>
+                      <span>在线设备</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot offline"></span>
+                      <span>离线设备</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot alert"></span>
+                      <span>告警设备</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 设备监控表格 -->
+          <div class="monitor-table-container">
+            <div class="table-header">
+              <div class="table-title">
+                <h3>设备监控列表</h3>
+                <span class="device-count">共31台设备</span>
+              </div>
+              <div class="table-actions">
+                <div class="filter-group">
+                  <select class="filter-select" id="statusFilter">
+                    <option value="">全部状态</option>
+                    <option value="online">在线</option>
+                    <option value="offline">离线</option>
+                    <option value="alert">告警</option>
+                  </select>
+                  <select class="filter-select" id="typeFilter">
+                    <option value="">全部类型</option>
+                    <option value="sensor">传感器</option>
+                    <option value="camera">摄像头</option>
+                    <option value="weather">气象站</option>
+                    <option value="gateway">网关</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" id="addDeviceBtn">
+                  <i class="fas fa-plus"></i>
+                  添加设备
+                </button>
+              </div>
+            </div>
+            
+            <div class="table-container">
+              <table class="monitor-table">
+                <thead>
+                  <tr>
+                    <th>设备名称</th>
+                    <th>设备类型</th>
+                    <th>状态</th>
+                    <th>位置</th>
+                    <th>最后通信</th>
+                    <th>信号强度</th>
+                    <th>电池电量</th>
+                    <th>数据上传</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="deviceTableBody">
+                  <!-- 动态生成设备数据 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="admin-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>© 2024 农情遥感系统管理端</span>
+        </div>
+        <div class="footer-right">
+          <span>最后更新：</span>
+          <span id="lastUpdateTime">2024-01-15 14:30:25</span>
+          <span class="divider">|</span>
+          <span>版本 v2.1.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 告警设置模态框 -->
+  <div class="modal" id="alertSettingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>告警设置</h3>
+        <button class="modal-close" onclick="closeAlertSettingsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-form">
+          <div class="form-group">
+            <label class="form-label">离线告警阈值</label>
+            <div class="input-group">
+              <input type="number" class="form-input" value="5" min="1" max="60">
+              <span class="input-suffix">分钟</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">电池低电量告警</label>
+            <div class="input-group">
+              <input type="number" class="form-input" value="20" min="5" max="50">
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">信号强度告警</label>
+            <div class="input-group">
+              <input type="number" class="form-input" value="30" min="10" max="80">
+              <span class="input-suffix">%</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">告警通知方式</label>
+            <div class="checkbox-group">
+              <label class="checkbox-item">
+                <input type="checkbox" checked>
+                <span class="checkbox-text">系统通知</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" checked>
+                <span class="checkbox-text">邮件通知</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox">
+                <span class="checkbox-text">短信通知</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAlertSettingsModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveAlertSettings()">保存设置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../../assets/js/common.js"></script>
+  <script src="../../../components/sidebar.js"></script>
+  <script src="monitor.js"></script>
+</body>
+</html>

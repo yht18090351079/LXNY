@@ -1,0 +1,34 @@
+# 忽略产品设计文档
+农情遥感系统产品设计文档.md
+农情遥感系统大屏统一地图设计文档.md
+农情遥感系统管理端产品设计文档.md
+农情遥感系统原型设计指南.md
+农情遥感系统Web应用端产品设计文档.md
+
+# 忽略其他文件
+结构
+1.svg
+
+# 忽略Word文档
+*.docx
+*.xlsx
+
+# 忽略临时文件
+.DS_Store
+Thumbs.db
+
+# 忽略IDE和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 忽略日志文件
+*.log
+
+# 忽略缓存文件
+node_modules/
+.cache/
+dist/
+build/

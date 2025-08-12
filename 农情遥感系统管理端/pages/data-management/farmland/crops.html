@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作物管理 - 农情遥感系统管理端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/common.css">
+  <link rel="stylesheet" href="crops.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <i class="fas fa-leaf logo-icon"></i>
+          <span class="system-title">农情遥感系统</span>
+        </div>
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item"><a href="../../dashboard/dashboard.html">首页</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item"><a href="../data-overview/data-overview.html">数据管理</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item"><a href="list.html">农田数据</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item active">作物管理</span>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="action-btn" title="通知">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">1</span>
+          </button>
+          <button class="action-btn" title="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+        <div class="user-dropdown">
+          <button class="user-info">
+            <div class="user-avatar">管</div>
+            <span class="user-name">管理员</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              个人资料
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              账户设置
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../../assets/login/login.html" class="dropdown-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              退出登录
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体布局 -->
+    <div class="admin-layout">
+      <!-- 左侧菜单 - 使用组件 -->
+      <aside class="admin-sidebar">
+        <!-- 侧边栏内容将由组件动态加载 -->
+      </aside>
+
+      <!-- 侧边栏切换按钮 -->
+      <button class="sidebar-toggle">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <!-- 主内容区 -->
+      <main class="admin-main">
+        <div class="main-content">
+          <!-- 页面头部 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h1>作物管理</h1>
+              <p class="page-description">管理农田作物的种植、生长监测和收成记录</p>
+            </div>
+            <div class="page-actions">
+              <a href="list.html" class="btn btn-secondary">
+                <i class="fas fa-map"></i>
+                农田管理
+              </a>
+              <button class="btn btn-primary" id="addCropBtn">
+                <i class="fas fa-plus"></i>
+                添加作物
+              </button>
+            </div>
+          </div>
+
+          <!-- 作物统计概览 -->
+          <div class="stats-overview">
+            <div class="stat-card wheat">
+              <div class="stat-icon">
+                <i class="fas fa-wheat-awn"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number" id="wheatCount">45</div>
+                <div class="stat-label">小麦</div>
+                <div class="stat-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 72%;"></div>
+                  </div>
+                  <span class="progress-text">72% 成熟</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card corn">
+              <div class="stat-icon">
+                <i class="fas fa-corn"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number" id="cornCount">38</div>
+                <div class="stat-label">玉米</div>
+                <div class="stat-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45%;"></div>
+                  </div>
+                  <span class="progress-text">45% 成熟</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card rice">
+              <div class="stat-icon">
+                <i class="fas fa-seedling"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number" id="riceCount">28</div>
+                <div class="stat-label">水稻</div>
+                <div class="stat-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 30%;"></div>
+                  </div>
+                  <span class="progress-text">30% 成熟</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stat-card vegetables">
+              <div class="stat-icon">
+                <i class="fas fa-carrot"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-number" id="vegetableCount">32</div>
+                <div class="stat-label">蔬菜</div>
+                <div class="stat-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;"></div>
+                  </div>
+                  <span class="progress-text">85% 成熟</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 内容区域 -->
+          <div class="content-grid">
+            <!-- 作物列表 -->
+            <div class="crops-section">
+              <div class="section-header">
+                <h2>作物列表</h2>
+                <div class="section-actions">
+                  <div class="filter-group">
+                    <select class="filter-select" id="cropTypeFilter">
+                      <option value="">全部作物</option>
+                      <option value="wheat">小麦</option>
+                      <option value="corn">玉米</option>
+                      <option value="rice">水稻</option>
+                      <option value="vegetables">蔬菜</option>
+                      <option value="fruits">果树</option>
+                    </select>
+                    <select class="filter-select" id="stageFilter">
+                      <option value="">全部阶段</option>
+                      <option value="seeding">播种期</option>
+                      <option value="growing">生长期</option>
+                      <option value="flowering">开花期</option>
+                      <option value="fruiting">结果期</option>
+                      <option value="harvesting">收获期</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="crops-list" id="cropsList">
+                <!-- 动态生成 -->
+              </div>
+            </div>
+
+            <!-- 生长监测 -->
+            <div class="monitoring-section">
+              <div class="section-header">
+                <h2>生长监测</h2>
+                <div class="section-actions">
+                  <button class="btn btn-secondary btn-sm" id="refreshMonitorBtn">
+                    <i class="fas fa-sync-alt"></i>
+                    刷新
+                  </button>
+                </div>
+              </div>
+              <div class="monitoring-chart">
+                <canvas id="growthChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- 详细管理区域 -->
+          <div class="management-grid">
+            <!-- 管理记录 -->
+            <div class="records-section">
+              <div class="section-header">
+                <h2>管理记录</h2>
+                <div class="section-actions">
+                  <button class="btn btn-primary btn-sm" id="addRecordBtn">
+                    <i class="fas fa-plus"></i>
+                    添加记录
+                  </button>
+                </div>
+              </div>
+              
+              <div class="records-tabs">
+                <button class="tab-btn active" data-tab="fertilizer">施肥记录</button>
+                <button class="tab-btn" data-tab="irrigation">灌溉记录</button>
+                <button class="tab-btn" data-tab="pesticide">农药记录</button>
+                <button class="tab-btn" data-tab="harvest">收获记录</button>
+              </div>
+              
+              <div class="records-content">
+                <div class="tab-content active" id="fertilizerTab">
+                  <div class="records-list" id="fertilizerRecords">
+                    <!-- 动态生成 -->
+                  </div>
+                </div>
+                <div class="tab-content" id="irrigationTab">
+                  <div class="records-list" id="irrigationRecords">
+                    <!-- 动态生成 -->
+                  </div>
+                </div>
+                <div class="tab-content" id="pesticideTab">
+                  <div class="records-list" id="pesticideRecords">
+                    <!-- 动态生成 -->
+                  </div>
+                </div>
+                <div class="tab-content" id="harvestTab">
+                  <div class="records-list" id="harvestRecords">
+                    <!-- 动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 健康状态 -->
+            <div class="health-section">
+              <div class="section-header">
+                <h2>健康状态</h2>
+                <div class="section-actions">
+                  <span class="health-summary" id="healthSummary">良好: 85%</span>
+                </div>
+              </div>
+              
+              <div class="health-alerts" id="healthAlerts">
+                <!-- 动态生成 -->
+              </div>
+              
+              <div class="health-chart">
+                <canvas id="healthChart"></canvas>
+              </div>
+            </div>
+
+            <!-- 预测分析 -->
+            <div class="forecast-section">
+              <div class="section-header">
+                <h2>收成预测</h2>
+                <div class="section-actions">
+                  <select class="filter-select" id="forecastPeriod">
+                    <option value="30">30天</option>
+                    <option value="60" selected>60天</option>
+                    <option value="90">90天</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="forecast-content">
+                <div class="forecast-item">
+                  <div class="forecast-crop">小麦</div>
+                  <div class="forecast-yield">
+                    <span class="yield-value">2.8</span>
+                    <span class="yield-unit">吨/亩</span>
+                  </div>
+                  <div class="forecast-confidence">
+                    <div class="confidence-bar">
+                      <div class="confidence-fill" style="width: 78%;"></div>
+                    </div>
+                    <span class="confidence-text">78% 可信度</span>
+                  </div>
+                </div>
+                
+                <div class="forecast-item">
+                  <div class="forecast-crop">玉米</div>
+                  <div class="forecast-yield">
+                    <span class="yield-value">3.2</span>
+                    <span class="yield-unit">吨/亩</span>
+                  </div>
+                  <div class="forecast-confidence">
+                    <div class="confidence-bar">
+                      <div class="confidence-fill" style="width: 65%;"></div>
+                    </div>
+                    <span class="confidence-text">65% 可信度</span>
+                  </div>
+                </div>
+                
+                <div class="forecast-item">
+                  <div class="forecast-crop">水稻</div>
+                  <div class="forecast-yield">
+                    <span class="yield-value">4.1</span>
+                    <span class="yield-unit">吨/亩</span>
+                  </div>
+                  <div class="forecast-confidence">
+                    <div class="confidence-bar">
+                      <div class="confidence-fill" style="width: 72%;"></div>
+                    </div>
+                    <span class="confidence-text">72% 可信度</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="admin-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>© 2024 农情遥感系统管理端</span>
+        </div>
+        <div class="footer-right">
+          <span>最后更新：</span>
+          <span id="lastUpdateTime">2024-01-15 14:30:25</span>
+          <span class="divider">|</span>
+          <span>版本 v2.1.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 添加作物模态框 -->
+  <div class="modal" id="addCropModal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3>添加作物种植</h3>
+        <button class="modal-close" onclick="closeAddCropModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cropForm" class="form-container">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">选择地块 *</label>
+              <select name="farmlandId" class="form-input" required>
+                <option value="">请选择地块</option>
+                <option value="FL001">临夏示范农田1号</option>
+                <option value="FL002">东乡玉米基地</option>
+                <option value="FL003">永靖蔬菜园区</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">作物类型 *</label>
+              <select name="cropType" class="form-input" required>
+                <option value="">请选择作物类型</option>
+                <option value="wheat">小麦</option>
+                <option value="corn">玉米</option>
+                <option value="rice">水稻</option>
+                <option value="vegetables">蔬菜</option>
+                <option value="fruits">果树</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">品种名称 *</label>
+              <input type="text" name="variety" class="form-input" placeholder="请输入具体品种" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">种植面积(亩) *</label>
+              <input type="number" name="plantArea" class="form-input" placeholder="请输入种植面积" step="0.1" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">播种日期 *</label>
+              <input type="date" name="plantingDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">预计收获日期</label>
+              <input type="date" name="harvestDate" class="form-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">种植密度(株/亩)</label>
+              <input type="number" name="density" class="form-input" placeholder="请输入种植密度">
+            </div>
+            <div class="form-group">
+              <label class="form-label">种植方式</label>
+              <select name="plantingMethod" class="form-input">
+                <option value="">请选择种植方式</option>
+                <option value="broadcast">撒播</option>
+                <option value="drill">条播</option>
+                <option value="transplant">移栽</option>
+                <option value="direct">直播</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label class="form-label">备注信息</label>
+              <textarea name="notes" class="form-textarea" rows="3" placeholder="请输入备注信息"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddCropModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitCropForm()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加管理记录模态框 -->
+  <div class="modal" id="addRecordModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>添加管理记录</h3>
+        <button class="modal-close" onclick="closeAddRecordModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="recordForm" class="form-container">
+          <div class="form-group">
+            <label class="form-label">记录类型 *</label>
+            <select name="recordType" class="form-input" required onchange="updateRecordForm()">
+              <option value="">请选择记录类型</option>
+              <option value="fertilizer">施肥记录</option>
+              <option value="irrigation">灌溉记录</option>
+              <option value="pesticide">农药记录</option>
+              <option value="harvest">收获记录</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">操作日期 *</label>
+            <input type="date" name="operationDate" class="form-input" required>
+          </div>
+          <div id="dynamicFields">
+            <!-- 动态字段 -->
+          </div>
+          <div class="form-group">
+            <label class="form-label">备注</label>
+            <textarea name="notes" class="form-textarea" rows="3" placeholder="请输入操作备注"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddRecordModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitRecordForm()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../../assets/js/common.js"></script>
+  <script src="../../../components/sidebar.js"></script>
+  <script src="crops.js"></script>
+</body>
+</html>

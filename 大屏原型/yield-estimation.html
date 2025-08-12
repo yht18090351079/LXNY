@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统大屏 - 产量预估功能</title>
+    
+    <!-- 引入Cesium CSS -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/comment-system/comment-system.css">
+    
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cesium-map.css">
+    <link rel="stylesheet" href="assets/css/yield-estimation.css">
+</head>
+<body>
+    <!-- 顶部系统横幅 -->
+    <div class="system-header">
+        <!-- 左侧系统状态 -->
+        <div class="header-left">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">系统运行正常</span>
+            </div>
+        </div>
+
+        <!-- 中心标题 -->
+        <div class="system-title">
+            临夏县卫星遥感平台
+            <div class="system-subtitle">Linxia County Satellite Remote Sensing Platform</div>
+        </div>
+
+        <!-- 右侧时间显示和用户信息 -->
+        <div class="header-right">
+            <div class="current-time">
+                <div class="time-display" id="current-time">2025-08-11 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+            
+            <!-- 用户信息区域 -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    张
+                    <div class="user-status"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">张三</div>
+                    <div class="user-role">系统管理员</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能切换模块 -->
+    <div class="function-switch-bar">
+        <!-- 主功能按钮组 (5个) -->
+        <div class="main-switch-buttons">
+            <div class="main-switch-btn" data-function="crop-distribution">
+                <span class="btn-icon">🌾</span>
+                <span class="btn-text">作物分布</span>
+            </div>
+            <div class="main-switch-btn" data-function="growth-analysis">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn active" data-function="yield-estimation">
+                <span class="btn-icon">📈</span>
+                <span class="btn-text">产量预估</span>
+            </div>
+            <div class="main-switch-btn" data-function="weather-monitoring">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-text">气象监测</span>
+            </div>
+            <div class="main-switch-btn" data-function="disaster-monitoring">
+                <span class="btn-icon">⚠️</span>
+                <span class="btn-text">灾害定损</span>
+            </div>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 叠加功能按钮 (2个) -->
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+    <!-- 主地图容器 -->
+    <div id="map-container">
+        <!-- 科技感背景元素 -->
+        <div class="tech-grid"></div>
+        
+        <!-- Cesium地图容器 -->
+        <div id="cesium-container"></div>
+        
+        <!-- 地图覆盖层 -->
+        <div class="map-overlay"></div>
+
+        <!-- 左侧产量数据看板 -->
+        <div class="glass-panel left-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    📊 产量数据看板
+                </div>
+                <button class="collapse-btn">◀</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 1. 预估产量环形图 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">🎯</span>
+                        作物产量预估详情
+                    </div>
+                    <div class="yield-ring-container">
+                        <div class="yield-details">
+                            <div class="detail-item crop-selector-item active" data-crop="wheat" title="点击查看小麦产量详情">
+                                <span class="crop-icon">🌾</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">小麦</span>
+                                    <span class="crop-yield">485kg/亩</span>
+                                    <span class="confidence-range">±8.2%</span>
+                                </div>
+                            </div>
+                            <div class="detail-item crop-selector-item" data-crop="corn" title="点击查看玉米产量详情">
+                                <span class="crop-icon">🌽</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">玉米</span>
+                                    <span class="crop-yield">628kg/亩</span>
+                                    <span class="confidence-range">±6.5%</span>
+                                </div>
+                            </div>
+                            <div class="detail-item crop-selector-item" data-crop="rapeseed" title="点击查看油菜产量详情">
+                                <span class="crop-icon">🌻</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">油菜</span>
+                                    <span class="crop-yield">199kg/亩</span>
+                                    <span class="confidence-range">±11.8%</span>
+                                </div>
+                            </div>
+                            <div class="detail-item crop-selector-item" data-crop="vegetable" title="点击查看蔬菜产量详情">
+                                <span class="crop-icon">🥬</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">蔬菜</span>
+                                    <span class="crop-yield">1820kg/亩</span>
+                                    <span class="confidence-range">±10.5%</span>
+                                </div>
+                            </div>
+                            <div class="detail-item crop-selector-item" data-crop="potato" title="点击查看马铃薯产量详情">
+                                <span class="crop-icon">🥔</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">马铃薯</span>
+                                    <span class="crop-yield">1650kg/亩</span>
+                                    <span class="confidence-range">±9.8%</span>
+                                </div>
+                            </div>
+                            <div class="detail-item crop-selector-item" data-crop="other" title="点击查看其他作物产量详情">
+                                <span class="crop-icon">🌱</span>
+                                <div class="crop-info">
+                                    <span class="crop-name">其他</span>
+                                    <span class="crop-yield">950kg/亩</span>
+                                    <span class="confidence-range">±15.3%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 估产模型参数看板 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">🔬</span>
+                        估产模型参数看板
+                    </div>
+                    <div class="model-parameters">
+                        <div class="parameter-cards">
+                            <div class="param-card">
+                                <div class="param-label">积温达标率</div>
+                                <div class="param-value excellent">92.5%</div>
+                                <div class="param-trend up">↑2.3%</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-label">降水偏差值</div>
+                                <div class="param-value good">-15.2mm</div>
+                                <div class="param-trend down">↓8.1mm</div>
+                            </div>
+                            <div class="param-card">
+                                <div class="param-label">长势评分</div>
+                                <div class="param-value excellent">87.8分</div>
+                                <div class="param-trend up">↑5.2分</div>
+                            </div>
+                        </div>
+                        <div class="correction-factor">
+                            <span class="factor-label">产量修正系数:</span>
+                            <span class="factor-value">1.08</span>
+                            <span class="factor-desc">(动态计算)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 灾害损失修正模块 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">⚠️</span>
+                        灾害损失修正模块
+                    </div>
+                    <div class="disaster-correction">
+                        <div class="correction-inputs">
+                            <div class="input-group">
+                                <label class="input-label">干旱损失率</label>
+                                <div class="input-control">
+                                    <input type="range" id="drought-loss" min="0" max="20" value="5" step="0.5">
+                                    <span class="input-value">5.0%</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">高温损失率</label>
+                                <div class="input-control">
+                                    <input type="range" id="heat-loss" min="0" max="15" value="3" step="0.5">
+                                    <span class="input-value">3.0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="correction-result">
+                            <div class="result-item">
+                                <span class="result-label">修正前产量</span>
+                                <span class="result-value original">1,485吨</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">修正后产量</span>
+                                <span class="result-value corrected">1,366吨</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">总损失率</span>
+                                <span class="result-value loss">8.0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧产量分析看板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    📈 产量分析看板
+                </div>
+                <button class="collapse-btn">▶</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 4. 区域估产达成度仪表盘 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">🎯</span>
+                        区域估产达成度仪表盘
+                    </div>
+                    <div class="achievement-gauge-container">
+                        <div class="achievement-progress">
+                            <div class="progress-header">
+                                <span class="progress-label">达成进度</span>
+                                <span class="progress-value">82.3%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 82.3%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gauge-details">
+                            <div class="gauge-item">
+                                <span class="gauge-label">预估总产量</span>
+                                <span class="gauge-value">1,366吨</span>
+                            </div>
+                            <div class="gauge-item">
+                                <span class="gauge-label">年度目标</span>
+                                <span class="gauge-value">1,660吨</span>
+                            </div>
+                            <div class="gauge-item highlight">
+                                <span class="gauge-label">完成率</span>
+                                <span class="gauge-value achievement">82.3%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. 五年产量对比柱状图 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">📊</span>
+                        五年产量对比
+                        <div class="chart-switch-buttons">
+                            <button class="switch-btn active" data-type="bar">柱状图</button>
+                            <button class="switch-btn" data-type="line">折线图</button>
+                            <button class="switch-btn" data-type="table">表格</button>
+                        </div>
+                    </div>
+                    <div class="five-year-comparison-container">
+                        <div id="five-year-comparison" class="chart-container"></div>
+                        <div id="five-year-table" class="table-container" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- 6. 经济价值分析卡 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">💰</span>
+                        经济价值分析卡
+                    </div>
+                    <div class="economic-analysis">
+                        <div class="economic-cards">
+                            <div class="econ-card">
+                                <div class="econ-label">预估总产值</div>
+                                <div class="econ-value">428.5万元</div>
+                                <div class="econ-change positive">↑12.8%</div>
+                            </div>
+                            <div class="econ-card">
+                                <div class="econ-label">亩均收益</div>
+                                <div class="econ-value">1,445元/亩</div>
+                                <div class="econ-change positive">↑8.5%</div>
+                            </div>
+                            <div class="econ-card">
+                                <div class="econ-label">成本收益率</div>
+                                <div class="econ-value">2.38</div>
+                                <div class="econ-change negative">↓3.2%</div>
+                            </div>
+                        </div>
+                        <div class="profit-breakdown">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">小麦收益</span>
+                                <span class="breakdown-value">156.2万元</span>
+                                <span class="breakdown-percent">36.4%</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">玉米收益</span>
+                                <span class="breakdown-value">182.8万元</span>
+                                <span class="breakdown-percent">42.7%</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">油菜收益</span>
+                                <span class="breakdown-value">89.5万元</span>
+                                <span class="breakdown-percent">20.9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/yield-estimation.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

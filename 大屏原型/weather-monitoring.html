@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统大屏 - 气象监测功能</title>
+    
+    <!-- 引入Cesium CSS -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cesium-map.css">
+    <link rel="stylesheet" href="assets/css/weather-monitoring.css">
+</head>
+<body>
+    <!-- 顶部系统横幅 -->
+    <div class="system-header">
+        <!-- 左侧系统状态 -->
+        <div class="header-left">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">系统运行正常</span>
+            </div>
+        </div>
+
+        <!-- 中心标题 -->
+        <div class="system-title">
+            临夏县卫星遥感平台
+            <div class="system-subtitle">Linxia County Satellite Remote Sensing Platform</div>
+        </div>
+
+        <!-- 右侧时间显示和用户信息 -->
+        <div class="header-right">
+            <div class="current-time">
+                <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+            
+            <!-- 用户信息区域 -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    张
+                    <div class="user-status"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">张三</div>
+                    <div class="user-role">系统管理员</div>
+                </div>
+                
+                <!-- 用户下拉菜单 -->
+                <div class="user-dropdown">
+                    <div class="dropdown-item" onclick="showUserProfile()">
+                        <span>👤</span>
+                        <span>个人信息</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showSystemSettings()">
+                        <span>⚙️</span>
+                        <span>系统设置</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showOperationLog()">
+                        <span>📊</span>
+                        <span>操作日志</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showHelp()">
+                        <span>❓</span>
+                        <span>帮助中心</span>
+                    </div>
+                    <div class="dropdown-item" onclick="logout()">
+                        <span>🚪</span>
+                        <span>退出登录</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能切换模块 -->
+    <div class="function-switch-bar">
+        <!-- 主功能按钮组 (5个) -->
+        <div class="main-switch-buttons">
+            <div class="main-switch-btn" data-function="crop-distribution">
+                <span class="btn-icon">🌾</span>
+                <span class="btn-text">作物分布</span>
+            </div>
+            <div class="main-switch-btn" data-function="growth-analysis">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation">
+                <span class="btn-icon">📈</span>
+                <span class="btn-text">产量预估</span>
+            </div>
+            <div class="main-switch-btn active" data-function="weather-monitoring">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-text">气象监测</span>
+            </div>
+            <div class="main-switch-btn" data-function="disaster-monitoring">
+                <span class="btn-icon">⚠️</span>
+                <span class="btn-text">灾害定损</span>
+            </div>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 叠加功能按钮 (2个) -->
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+    <!-- 主地图容器 -->
+    <div id="map-container">
+        <!-- 科技感背景元素 -->
+        <div class="tech-grid"></div>
+        
+        <!-- Cesium地图容器 -->
+        <div id="cesium-container"></div>
+        
+        <!-- 气象数据弹窗 -->
+        <div id="weather-tooltip" class="weather-tooltip" style="display: none;">
+            <div class="tooltip-header">
+                <span class="tooltip-title" id="tooltip-layer-type">请选择图层</span>
+                <span class="tooltip-coords" id="tooltip-coords"></span>
+            </div>
+            <div class="tooltip-content">
+                <div class="data-item">
+                    <span class="data-label">数值:</span>
+                    <span class="data-value" id="tooltip-data-value">--</span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">更新时间:</span>
+                    <span class="data-value" id="tooltip-time">--</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 地图覆盖层 -->
+        <div class="map-overlay"></div>
+
+        <!-- 左侧气象数据控制面板 -->
+        <div class="glass-panel left-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    🌤️ 气象数据
+                </div>
+                <button class="collapse-btn">◀</button>
+            </div>
+
+            <!-- 气象图层控制卡片 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    🗺️ 气象图层选择
+                    <!-- 透明度控制 - 同一行 -->
+                    <div class="layer-opacity-control" style="float: right; margin-top: -2px; border: none; background: none; padding: 0;">
+                        <label style="font-size: 11px; margin-right: 5px; border: none;">透明度：</label>
+                        <input type="range" id="layer-opacity-slider" class="opacity-slider" min="0" max="100" value="90" style="width: 60px; height: 15px; border: none; outline: none;">
+                        <span id="opacity-value" style="font-size: 11px; margin-left: 3px; border: none;">90%</span>
+                    </div>
+                </div>
+                
+                <div class="weather-layer-tabs">
+                    <div class="weather-tab" data-layer="precipitation">
+                        <div class="tab-icon">🌧️</div>
+                        <div class="tab-name">降雨数据</div>
+                    </div>
+                    
+                    <div class="weather-tab" data-layer="soil-temperature">
+                        <div class="tab-icon">🌡️</div>
+                        <div class="tab-name">地温数据</div>
+                    </div>
+                    
+                    <div class="weather-tab" data-layer="temperature">
+                        <div class="tab-icon">🌡️</div>
+                        <div class="tab-name">气温数据</div>
+                    </div>
+                    
+                    <div class="weather-tab" data-layer="accumulated-temperature">
+                        <div class="tab-icon">🔥</div>
+                        <div class="tab-name">积温</div>
+                    </div>
+                    
+                    <div class="weather-tab" data-layer="accumulated-precipitation">
+                        <div class="tab-icon">🌊</div>
+                        <div class="tab-name">积雨</div>
+                    </div>
+                    
+                    <div class="weather-tab" data-layer="humidity">
+                        <div class="tab-icon">💧</div>
+                        <div class="tab-name">空气相对湿度</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 时间控制卡片 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    ⏰ 时间控制
+                    <!-- 时间模式选择 -->
+                    <div class="time-mode-selector">
+                        <div class="mode-tabs">
+                            <button class="mode-tab" data-mode="historical">历史数据</button>
+                            <button class="mode-tab active" data-mode="forecast">预报数据</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="time-controls">
+                    
+                    <!-- 历史数据选择器 -->
+                    <div class="time-selector" id="historical-selector" style="min-height: 60px;">
+                        <div class="date-time-picker" style="margin-bottom: 6px;">
+                            <input type="date" id="historical-date" max="" value="" style="height: 28px; font-size: 11px;">
+                            <input type="time" id="historical-time" value="12:00" style="height: 28px; font-size: 11px;">
+                        </div>
+                        <div class="quick-history" style="gap: 4px;">
+                            <button class="quick-btn" data-days="1" style="height: 24px; font-size: 10px; padding: 2px 6px;">昨天</button>
+                            <button class="quick-btn" data-days="7" style="height: 24px; font-size: 10px; padding: 2px 6px;">7天前</button>
+                            <button class="quick-btn" data-days="30" style="height: 24px; font-size: 10px; padding: 2px 6px;">30天前</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 预报数据选择器 -->
+                    <div class="time-selector" id="forecast-selector" style="display: none; min-height: 60px;">
+                        <label style="margin-bottom: 4px; font-size: 12px;">预报时间：</label>
+                        <select id="forecast-time" style="margin-top: 4px; height: 28px; font-size: 11px;">
+                            <option value="current">当前</option>
+                            <option value="1h">1小时后</option>
+                            <option value="3h">3小时后</option>
+                            <option value="6h">6小时后</option>
+                            <option value="12h">12小时后</option>
+                            <option value="24h">24小时后</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 时间轴滑块 -->
+                    <div class="time-range-slider">
+                        <label id="time-range-label">历史时间轴：</label>
+                        <input type="range" id="time-slider" min="-168" max="168" value="0" step="1">
+                        <div class="time-labels">
+                            <span id="time-start-label">7天前</span>
+                            <span id="time-center-label">现在</span>
+                            <span id="time-end-label">7天后</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 当前选择的时间显示 -->
+                    <div class="current-time-display">
+                        <label>当前查看时间：</label>
+                        <span id="current-time-text">实时数据</span>
+                    </div>
+                    
+                    <!-- 动画控制 -->
+                    <div class="animation-controls">
+                        <button class="control-btn" id="play-btn">▶️ 播放</button>
+                        <button class="control-btn" id="pause-btn">⏸️ 暂停</button>
+                        <button class="control-btn" id="reset-btn">🔄 重置</button>
+                        <button class="control-btn" id="speed-btn">⏩ 速度: 1x</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 气象预警卡片 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    ⚠️ 气象预警
+                </div>
+                <div class="weather-alerts" style="height: 150px; overflow: hidden; position: relative;">
+                    <div class="alerts-marquee">
+                        <div class="alert-item warning">
+                            <div class="alert-icon">🌧️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">暴雨黄色预警</div>
+                                <div class="alert-time">发布时间：14:20</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item info">
+                            <div class="alert-icon">🌡️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">低温蓝色预警</div>
+                                <div class="alert-time">发布时间：08:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item warning">
+                            <div class="alert-icon">⚡</div>
+                            <div class="alert-content">
+                                <div class="alert-title">雷电黄色预警</div>
+                                <div class="alert-time">发布时间：16:30</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item danger">
+                            <div class="alert-icon">🌪️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">大风橙色预警</div>
+                                <div class="alert-time">发布时间：12:15</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item warning">
+                            <div class="alert-icon">🌨️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">暴雪蓝色预警</div>
+                                <div class="alert-time">发布时间：09:45</div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item info">
+                            <div class="alert-icon">🌫️</div>
+                            <div class="alert-content">
+                                <div class="alert-title">大雾黄色预警</div>
+                                <div class="alert-time">发布时间：06:30</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 添加自动滚动CSS动画 -->
+                <style>
+                .alert-item {
+                    min-height: 45px;
+                    display: flex;
+                    align-items: center;
+                    padding: 6px 8px;
+                    margin-bottom: 3px;
+                    border-radius: 4px;
+                    background: rgba(255, 255, 255, 0.03);
+                    flex-shrink: 0;
+                }
+                
+                .alerts-marquee {
+                    animation: marqueeScroll 20s linear infinite;
+                }
+                
+                @keyframes marqueeScroll {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-50%); }
+                }
+                
+                .weather-alerts:hover .alerts-marquee {
+                    animation-play-state: paused;
+                }
+                
+                .alert-item.danger .alert-title {
+                    color: #F5222D;
+                }
+                
+                .alert-icon {
+                    font-size: 16px;
+                    margin-right: 8px;
+                    flex-shrink: 0;
+                }
+                
+                .alert-content {
+                    flex: 1;
+                }
+                
+                .alert-title {
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin-bottom: 2px;
+                }
+                
+                .alert-time {
+                    font-size: 10px;
+                    opacity: 0.7;
+                }
+                </style>
+            </div>
+
+            <!-- 农业气象指数 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    🌾 农业气象指数
+                </div>
+                <div class="agri-weather-index" style="display: flex !important; flex-direction: row !important; gap: 8px;">
+                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
+                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">作物适宜度</div>
+                        <div class="index-value good" style="font-size: 11px; margin-bottom: 4px;">适宜</div>
+                        <div class="index-progress">
+                            <div class="progress-bar" style="height: 6px;">
+                                <div class="progress-fill good" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
+                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">病虫害风险</div>
+                        <div class="index-value warning" style="font-size: 11px; margin-bottom: 4px;">中等</div>
+                        <div class="index-progress">
+                            <div class="progress-bar" style="height: 6px;">
+                                <div class="progress-fill warning" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
+                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">灌溉建议</div>
+                        <div class="index-value info" style="font-size: 11px; margin-bottom: 4px;">不需要</div>
+                        <div class="index-progress">
+                            <div class="progress-bar" style="height: 6px;">
+                                <div class="progress-fill info" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧气象监测数据看板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    🌤️ 气象监测
+                </div>
+                <button class="collapse-btn">▶</button>
+            </div>
+
+            <!-- 当前天气状况卡片 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    🌈 当前天气状况
+                </div>
+                <div class="current-weather">
+                    <div class="weather-main">
+                        <div class="weather-icon">☁️</div>
+                        <div class="weather-info">
+                            <div class="weather-desc">多云</div>
+                            <div class="weather-temp">18.00°C</div>
+                        </div>
+                    </div>
+                    
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <span class="detail-label">体感温度</span>
+                            <span class="detail-value">20.00°C</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">相对湿度</span>
+                            <span class="detail-value">65.00%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">风速</span>
+                            <span class="detail-value">3.20 m/s</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">风向</span>
+                            <span class="detail-value">东南风</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">气压</span>
+                            <span class="detail-value">1013.00 hPa</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">能见度</span>
+                            <span class="detail-value">15.00 km</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 24小时温度趋势 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📈 24小时温度趋势
+                </div>
+                <div id="temperature-trend-chart" style="height: 180px;"></div>
+            </div>
+
+            <!-- 7天天气预报 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    📅 7天天气预报
+                </div>
+                
+                <!-- 7天天气预报ECharts图表 -->
+                <div id="seven-day-weather-chart" style="height: 200px;"></div>
+            </div>
+
+
+
+            <div class="update-time">
+                🔄 数据更新: 2024-01-15 14:30 | 气象数据: 中央气象台
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/weather-monitoring.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

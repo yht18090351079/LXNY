@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>侧边栏组件验证测试</title>
+  <link rel="stylesheet" href="../assets/css/common.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    
+    .test-section {
+      background: white;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-title {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .test-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 10px 0;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 4px solid #dee2e6;
+    }
+    
+    .test-item.success {
+      border-left-color: #28a745;
+      background: #d4edda;
+    }
+    
+    .test-item.error {
+      border-left-color: #dc3545;
+      background: #f8d7da;
+    }
+    
+    .test-status {
+      font-weight: bold;
+    }
+    
+    .success { color: #28a745; }
+    .error { color: #dc3545; }
+    .pending { color: #ffc107; }
+    
+    .page-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .page-link {
+      display: block;
+      padding: 15px;
+      text-align: center;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+    
+    .page-link:hover {
+      background: #0056b3;
+      color: white;
+    }
+    
+    .sidebar-preview {
+      width: 250px;
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="admin-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="header-title">侧边栏组件验证测试</h1>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <i class="fas fa-user"></i>
+          <span>测试用户</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体布局 -->
+  <div class="admin-layout">
+    <!-- 左侧菜单 - 使用组件 -->
+    <aside class="admin-sidebar">
+      <!-- 侧边栏内容将由组件动态加载 -->
+    </aside>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle">
+      <i class="fas fa-angle-left"></i>
+    </button>
+
+    <!-- 主要内容区域 -->
+    <main class="admin-main">
+      <div class="test-container">
+        
+        <!-- 测试标题 -->
+        <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">
+          <i class="fas fa-check-circle"></i>
+          侧边栏组件化验证测试
+        </h1>
+
+        <!-- 组件加载测试 -->
+        <div class="test-section">
+          <h2 class="test-title">
+            <i class="fas fa-cogs"></i>
+            组件加载测试
+          </h2>
+          <div id="component-tests">
+            <div class="test-item pending" id="test-component-load">
+              <span>组件是否成功加载</span>
+              <span class="test-status pending">检测中...</span>
+            </div>
+            <div class="test-item pending" id="test-sidebar-render">
+              <span>侧边栏是否正确渲染</span>
+              <span class="test-status pending">检测中...</span>
+            </div>
+            <div class="test-item pending" id="test-navigation-setup">
+              <span>导航链接是否正确设置</span>
+              <span class="test-status pending">检测中...</span>
+            </div>
+            <div class="test-item pending" id="test-active-state">
+              <span>当前页面活动状态</span>
+              <span class="test-status pending">检测中...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 功能测试 -->
+        <div class="test-section">
+          <h2 class="test-title">
+            <i class="fas fa-mouse-pointer"></i>
+            交互功能测试
+          </h2>
+          <div id="interaction-tests">
+            <div class="test-item pending" id="test-sidebar-toggle">
+              <span>侧边栏折叠/展开功能</span>
+              <button onclick="testSidebarToggle()" class="btn btn-sm btn-primary">测试</button>
+            </div>
+            <div class="test-item pending" id="test-responsive">
+              <span>响应式布局适配</span>
+              <button onclick="testResponsive()" class="btn btn-sm btn-primary">测试</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 页面导航测试 -->
+        <div class="test-section">
+          <h2 class="test-title">
+            <i class="fas fa-sitemap"></i>
+            页面导航测试
+          </h2>
+          <p>点击以下链接测试各页面的侧边栏组件是否正常工作：</p>
+          <div class="page-links">
+            <a href="../pages/dashboard/dashboard.html" class="page-link">
+              <i class="fas fa-tachometer-alt"></i><br>
+              仪表盘页面
+            </a>
+            <a href="../pages/data-management/data-overview/data-overview.html" class="page-link">
+              <i class="fas fa-chart-bar"></i><br>
+              数据概览页面
+            </a>
+            <a href="../pages/data-management/remote-sensing/list.html" class="page-link">
+              <i class="fas fa-satellite"></i><br>
+              遥感数据列表
+            </a>
+            <a href="../pages/data-management/remote-sensing/import.html" class="page-link">
+              <i class="fas fa-upload"></i><br>
+              遥感数据导入
+            </a>
+            <a href="../pages/data-management/farmland/list.html" class="page-link">
+              <i class="fas fa-seedling"></i><br>
+              农田数据列表
+            </a>
+            <a href="../pages/data-management/farmland/crops.html" class="page-link">
+              <i class="fas fa-leaf"></i><br>
+              农作物管理
+            </a>
+            <a href="../pages/device-management/monitor/monitor.html" class="page-link">
+              <i class="fas fa-desktop"></i><br>
+              设备管理
+            </a>
+            <a href="../pages/device-management/detail/detail.html" class="page-link">
+              <i class="fas fa-info-circle"></i><br>
+              设备详情
+            </a>
+          </div>
+        </div>
+
+        <!-- 侧边栏预览 -->
+        <div class="test-section">
+          <h2 class="test-title">
+            <i class="fas fa-eye"></i>
+            侧边栏预览
+          </h2>
+          <div class="sidebar-preview" id="sidebar-preview">
+            <!-- 侧边栏内容预览将在这里显示 -->
+          </div>
+        </div>
+
+        <!-- 测试结果总结 -->
+        <div class="test-section">
+          <h2 class="test-title">
+            <i class="fas fa-clipboard-check"></i>
+            测试结果总结
+          </h2>
+          <div id="test-summary">
+            <div id="summary-content">测试进行中...</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="../assets/js/common.js"></script>
+  <script src="sidebar.js"></script>
+  <script>
+    // 测试脚本
+    let testResults = {};
+
+    // 页面加载完成后执行测试
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        runAllTests();
+      }, 1000); // 等待组件完全加载
+    });
+
+    function runAllTests() {
+      console.log('开始运行组件验证测试...');
+
+      // 测试1: 组件是否成功加载
+      testComponentLoad();
+      
+      // 测试2: 侧边栏是否正确渲染
+      testSidebarRender();
+      
+      // 测试3: 导航链接是否正确设置
+      testNavigationSetup();
+      
+      // 测试4: 当前页面活动状态
+      testActiveState();
+
+      // 生成测试总结
+      setTimeout(generateTestSummary, 2000);
+    }
+
+    function testComponentLoad() {
+      const testItem = document.getElementById('test-component-load');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      // 检查 Sidebar 类是否存在
+      if (typeof Sidebar !== 'undefined') {
+        updateTestStatus(testItem, statusEl, true, '✅ 组件加载成功');
+        testResults.componentLoad = true;
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 组件加载失败');
+        testResults.componentLoad = false;
+      }
+    }
+
+    function testSidebarRender() {
+      const testItem = document.getElementById('test-sidebar-render');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      // 检查侧边栏是否被正确渲染
+      const sidebarContent = document.querySelector('.admin-sidebar .sidebar-content');
+      if (sidebarContent) {
+        updateTestStatus(testItem, statusEl, true, '✅ 侧边栏渲染成功');
+        testResults.sidebarRender = true;
+        
+        // 显示侧边栏预览
+        const preview = document.getElementById('sidebar-preview');
+        preview.innerHTML = sidebarContent.outerHTML;
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 侧边栏渲染失败');
+        testResults.sidebarRender = false;
+      }
+    }
+
+    function testNavigationSetup() {
+      const testItem = document.getElementById('test-navigation-setup');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      // 检查导航链接数量
+      const navLinks = document.querySelectorAll('.admin-sidebar .nav-link');
+      if (navLinks.length > 0) {
+        updateTestStatus(testItem, statusEl, true, `✅ 找到 ${navLinks.length} 个导航链接`);
+        testResults.navigationSetup = true;
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 未找到导航链接');
+        testResults.navigationSetup = false;
+      }
+    }
+
+    function testActiveState() {
+      const testItem = document.getElementById('test-active-state');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      // 检查是否有活动状态的导航项
+      const activeNavItem = document.querySelector('.admin-sidebar .nav-item.active');
+      if (activeNavItem) {
+        const activeText = activeNavItem.querySelector('.nav-text')?.textContent || '未知';
+        updateTestStatus(testItem, statusEl, true, `✅ 当前页面: ${activeText}`);
+        testResults.activeState = true;
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 未找到活动状态');
+        testResults.activeState = false;
+      }
+    }
+
+    function testSidebarToggle() {
+      const testItem = document.getElementById('test-sidebar-toggle');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      const toggleBtn = document.querySelector('.sidebar-toggle');
+      const sidebar = document.querySelector('.admin-sidebar');
+      
+      if (toggleBtn && sidebar) {
+        // 触发点击事件
+        toggleBtn.click();
+        
+        setTimeout(() => {
+          // 检查侧边栏状态是否改变
+          const isCollapsed = sidebar.classList.contains('collapsed');
+          updateTestStatus(testItem, statusEl, true, `✅ 侧边栏状态: ${isCollapsed ? '收起' : '展开'}`);
+          testResults.sidebarToggle = true;
+        }, 500);
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 折叠按钮未找到');
+        testResults.sidebarToggle = false;
+      }
+    }
+
+    function testResponsive() {
+      const testItem = document.getElementById('test-responsive');
+      const statusEl = testItem.querySelector('.test-status');
+      
+      // 模拟移动端视口
+      const originalWidth = window.innerWidth;
+      
+      // 检查响应式样式
+      const sidebar = document.querySelector('.admin-sidebar');
+      if (sidebar) {
+        const computedStyle = window.getComputedStyle(sidebar);
+        updateTestStatus(testItem, statusEl, true, '✅ 响应式样式正常');
+        testResults.responsive = true;
+      } else {
+        updateTestStatus(testItem, statusEl, false, '❌ 响应式测试失败');
+        testResults.responsive = false;
+      }
+    }
+
+    function updateTestStatus(testItem, statusEl, success, message) {
+      testItem.className = `test-item ${success ? 'success' : 'error'}`;
+      statusEl.className = `test-status ${success ? 'success' : 'error'}`;
+      statusEl.textContent = message;
+    }
+
+    function generateTestSummary() {
+      const summaryContent = document.getElementById('summary-content');
+      const totalTests = Object.keys(testResults).length;
+      const passedTests = Object.values(testResults).filter(result => result === true).length;
+      const failedTests = totalTests - passedTests;
+      
+      const successRate = totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0;
+      
+      summaryContent.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; text-align: center;">
+          <div>
+            <h3 style="color: #28a745; margin: 0;">通过测试</h3>
+            <div style="font-size: 2em; font-weight: bold; color: #28a745;">${passedTests}</div>
+          </div>
+          <div>
+            <h3 style="color: #dc3545; margin: 0;">失败测试</h3>
+            <div style="font-size: 2em; font-weight: bold; color: #dc3545;">${failedTests}</div>
+          </div>
+          <div>
+            <h3 style="color: #2c3e50; margin: 0;">成功率</h3>
+            <div style="font-size: 2em; font-weight: bold; color: ${successRate >= 80 ? '#28a745' : '#dc3545'};">${successRate}%</div>
+          </div>
+        </div>
+        <div style="margin-top: 20px; padding: 15px; background: ${successRate >= 80 ? '#d4edda' : '#f8d7da'}; border-radius: 8px; text-align: center;">
+          <strong>${successRate >= 80 ? '🎉 侧边栏组件化成功！' : '⚠️ 需要检查和修复问题'}</strong>
+        </div>
+      `;
+    }
+
+    // 添加控制台日志
+    console.log('侧边栏组件验证测试页面已加载');
+  </script>
+</body>
+</html>

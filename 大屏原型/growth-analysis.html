@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统大屏 - 长势分析功能</title>
+    
+    <!-- 引入Cesium CSS -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/comment-system/comment-system.css">
+    
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cesium-map.css">
+    <link rel="stylesheet" href="assets/css/growth-analysis.css">
+</head>
+<body>
+    <!-- 顶部系统横幅 -->
+    <div class="system-header">
+        <!-- 左侧系统状态 -->
+        <div class="header-left">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">系统运行正常</span>
+            </div>
+        </div>
+
+        <!-- 中心标题 -->
+        <div class="system-title">
+            临夏县卫星遥感平台
+            <div class="system-subtitle">Linxia County Satellite Remote Sensing Platform</div>
+        </div>
+
+        <!-- 右侧时间显示和用户信息 -->
+        <div class="header-right">
+            <div class="current-time">
+                <div class="time-display" id="current-time">2025-08-11 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+            
+            <!-- 用户信息区域 -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    张
+                    <div class="user-status"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">张三</div>
+                    <div class="user-role">系统管理员</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能切换模块 -->
+    <div class="function-switch-bar">
+        <!-- 主功能按钮组 (5个) -->
+        <div class="main-switch-buttons">
+            <div class="main-switch-btn" data-function="crop-distribution">
+                <span class="btn-icon">🌾</span>
+                <span class="btn-text">作物分布</span>
+            </div>
+            <div class="main-switch-btn active" data-function="growth-analysis">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation">
+                <span class="btn-icon">📈</span>
+                <span class="btn-text">产量预估</span>
+            </div>
+            <div class="main-switch-btn" data-function="weather-monitoring">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-text">气象监测</span>
+            </div>
+            <div class="main-switch-btn" data-function="disaster-monitoring">
+                <span class="btn-icon">⚠️</span>
+                <span class="btn-text">灾害定损</span>
+            </div>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 叠加功能按钮 (2个) -->
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+    <!-- 主地图容器 -->
+    <div id="map-container">
+        <!-- 科技感背景元素 -->
+        <div class="tech-grid"></div>
+        
+        <!-- Cesium地图容器 -->
+        <div id="cesium-container"></div>
+        
+        <!-- 地图覆盖层 -->
+        <div class="map-overlay"></div>
+        
+        <!-- 左上角综合评估按钮 -->
+        <div class="assessment-control-btn" title="综合评估与建议" onclick="toggleAssessmentModal()">
+            💡
+        </div>
+
+        <!-- 左侧长势分析面板 -->
+        <div class="glass-panel left-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    📊 长势分析监测
+                </div>
+                <button class="collapse-btn">◀</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 1. 长势等级比例堆叠图 -->
+                <div class="analysis-section">
+                    <div class="section-title">
+                        <span class="section-icon">📊</span>
+                        长势等级比例堆叠图
+                        <span class="excellence-rate">优良率: <span id="excellence-rate-value">78.5%</span></span>
+                    </div>
+                    <div class="stacked-chart-container">
+                        <div id="growth-stacked-chart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 2. 异常区域统计表 -->
+                <div class="analysis-section">
+                    <div class="section-title">
+                        <span class="section-icon">⚠️</span>
+                        异常区域统计表
+                    </div>
+                    <div class="anomaly-table-container">
+                        <table class="anomaly-table">
+                            <thead>
+                                <tr>
+                                    <th>作物类型</th>
+                                    <th>面积(亩)</th>
+                                    <th>占比</th>
+                                    <th>病虫害预警</th>
+                                </tr>
+                            </thead>
+                            <tbody id="anomaly-table-body">
+                                <tr>
+                                    <td>玉米</td>
+                                    <td>285</td>
+                                    <td>4.2%</td>
+                                    <td><span class="warning-tag high">玉米螟高发</span></td>
+                                </tr>
+                                <tr>
+                                    <td>小麦</td>
+                                    <td>156</td>
+                                    <td>2.3%</td>
+                                    <td><span class="warning-tag medium">条纹花叶病</span></td>
+                                </tr>
+                                <tr>
+                                    <td>辣椒</td>
+                                    <td>44</td>
+                                    <td>0.7%</td>
+                                    <td><span class="warning-tag low">蚜虫轻发</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. 物候阶段进度条 -->
+                <div class="analysis-section">
+                    <div class="section-title">
+                        <span class="section-icon">🌾</span>
+                        物候阶段进度条
+                    </div>
+                    <div class="phenology-progress-container">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="crop-name">小麦</span>
+                                <span class="progress-stage">抽穗期</span>
+                                <span class="progress-percent">85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                            <div class="phenology-tooltip">
+                                <div class="tooltip-header">
+                                    <span class="tooltip-crop-icon">🌾</span>
+                                    <span class="tooltip-crop-name">小麦 - 抽穗期</span>
+                                </div>
+                                <div class="tooltip-content">
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">温度条件</div>
+                                        <div class="metric-value excellent">优秀</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">土壤湿度</div>
+                                        <div class="metric-value good">良好</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">光照强度</div>
+                                        <div class="metric-value excellent">充足</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">养分水平</div>
+                                        <div class="metric-value good">适宜</div>
+                                    </div>
+                                </div>
+                                <div class="tooltip-stage-info">
+                                    <div class="stage-description">小麦抽穗期是产量形成的关键时期，需要充足的水分和养分供应</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="crop-name">玉米</span>
+                                <span class="progress-stage">拔节期</span>
+                                <span class="progress-percent">72%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%"></div>
+                            </div>
+                            <div class="phenology-tooltip">
+                                <div class="tooltip-header">
+                                    <span class="tooltip-crop-icon">🌽</span>
+                                    <span class="tooltip-crop-name">玉米 - 拔节期</span>
+                                </div>
+                                <div class="tooltip-content">
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">温度条件</div>
+                                        <div class="metric-value good">良好</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">土壤湿度</div>
+                                        <div class="metric-value excellent">充足</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">光照强度</div>
+                                        <div class="metric-value good">适宜</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">养分水平</div>
+                                        <div class="metric-value normal">一般</div>
+                                    </div>
+                                </div>
+                                <div class="tooltip-stage-info">
+                                    <div class="stage-description">玉米拔节期是营养生长的旺盛阶段，对水肥需求量大</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="crop-name">辣椒</span>
+                                <span class="progress-stage">开花期</span>
+                                <span class="progress-percent">60%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                            <div class="phenology-tooltip">
+                                <div class="tooltip-header">
+                                    <span class="tooltip-crop-icon">🌶️</span>
+                                    <span class="tooltip-crop-name">辣椒 - 开花期</span>
+                                </div>
+                                <div class="tooltip-content">
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">温度条件</div>
+                                        <div class="metric-value good">适宜</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">土壤湿度</div>
+                                        <div class="metric-value normal">正常</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">光照强度</div>
+                                        <div class="metric-value poor">不足</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">养分水平</div>
+                                        <div class="metric-value good">良好</div>
+                                    </div>
+                                </div>
+                                <div class="tooltip-stage-info">
+                                    <div class="stage-description">辣椒开花期对光照敏感，需要加强光照管理以提高坐果率</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="crop-name">马铃薯</span>
+                                <span class="progress-stage">块茎形成期</span>
+                                <span class="progress-percent">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                            <div class="phenology-tooltip">
+                                <div class="tooltip-header">
+                                    <span class="tooltip-crop-icon">🥔</span>
+                                    <span class="tooltip-crop-name">马铃薯 - 块茎形成期</span>
+                                </div>
+                                <div class="tooltip-content">
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">温度条件</div>
+                                        <div class="metric-value normal">正常</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">土壤湿度</div>
+                                        <div class="metric-value good">适宜</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">光照强度</div>
+                                        <div class="metric-value normal">一般</div>
+                                    </div>
+                                    <div class="tooltip-metric">
+                                        <div class="metric-label">养分水平</div>
+                                        <div class="metric-value poor">不足</div>
+                                    </div>
+                                </div>
+                                <div class="tooltip-stage-info">
+                                    <div class="stage-description">马铃薯块茎形成期需要充足的钾肥，建议及时补充养分</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧长势详情数据看板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    🌿 长势详情数据
+                </div>
+                <button class="collapse-btn">▶</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 4. 长势指数变化趋势图 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">📈</span>
+                        长势指数变化趋势图
+                        <span class="phenology-marker">关键期: 抽穗期</span>
+                    </div>
+                    <div class="trend-comparison-container">
+                        <div id="growth-trend-comparison" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 5. 多维度长势雷达图 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">🎯</span>
+                        多维度长势雷达图
+                    </div>
+                    <div class="radar-chart-container">
+                        <div id="multi-dimension-radar" class="chart-container"></div>
+                    </div>
+
+                </div>
+
+                <!-- 6. 历史优良率对比卡 -->
+                <div class="data-section">
+                    <div class="section-title">
+                        <span class="section-icon">📊</span>
+                        历史优良率对比卡
+                    </div>
+                    <div class="summary-container">
+                        <div class="summary-item">
+                            <div class="summary-header">
+                                <span class="summary-label">三年平均增长</span>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value positive">+15.5%</div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-header">
+                                <span class="summary-label">最佳表现年份</span>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-value current">2025年 (当前)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="historical-comparison-cards">
+                        <div class="comparison-card inline">
+                            <div class="card-header">
+                                <span class="year-label">2025年</span>
+                                <span class="current-badge">当前</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-value">78.5%</div>
+                                <div class="card-label">优良率</div>
+                            </div>
+                        </div>
+                        <div class="comparison-card inline">
+                            <div class="card-header">
+                                <span class="year-label">2024年</span>
+                                <span class="change-indicator up">↑4.3%</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-value">75.2%</div>
+                                <div class="card-label">同期优良率</div>
+                            </div>
+                        </div>
+                        <div class="comparison-card inline">
+                            <div class="card-header">
+                                <span class="year-label">2023年</span>
+                                <span class="change-indicator up">↑17.0%</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-value">67.0%</div>
+                                <div class="card-label">同期优良率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 综合评估弹窗 -->
+    <div id="assessment-modal" class="modal-overlay" onclick="closeAssessmentModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span class="section-icon">💡</span>
+                    <span>综合评估与建议</span>
+                </div>
+                <div class="modal-score">
+                    <span class="score-value">89</span>
+                    <span class="score-label">综合评分</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeAssessmentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="assessment-items">
+                    <div class="assessment-item excellent">
+                        <div class="item-header">
+                            <span class="item-icon">🌟</span>
+                            <span class="item-title">优秀表现</span>
+                        </div>
+                        <div class="item-content">整体长势优秀，优良率达78.5%，超过预期目标</div>
+                    </div>
+                    <div class="assessment-item warning">
+                        <div class="item-header">
+                            <span class="item-icon">⚠️</span>
+                            <span class="item-title">风险预警</span>
+                        </div>
+                        <div class="item-content">需关注玉米螟高发区域，建议及时采取防治措施</div>
+                    </div>
+                    <div class="assessment-item suggestion">
+                        <div class="item-header">
+                            <span class="item-icon">💡</span>
+                            <span class="item-title">改进建议</span>
+                        </div>
+                        <div class="item-content">建议加强辣椒光照管理，优化种植密度</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/growth-analysis.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // 综合评估弹窗控制函数
+        function toggleAssessmentModal() {
+            const modal = document.getElementById('assessment-modal');
+            modal.classList.add('active');
+        }
+        
+        function closeAssessmentModal() {
+            const modal = document.getElementById('assessment-modal');
+            modal.classList.remove('active');
+        }
+        
+        // 键盘ESC关闭弹窗
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAssessmentModal();
+            }
+        });
+    </script>
+</body>
+</html>

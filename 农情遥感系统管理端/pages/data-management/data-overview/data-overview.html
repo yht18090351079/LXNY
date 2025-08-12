@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据概览 - 农情遥感系统管理端</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../../../assets/css/common.css">
+  <link rel="stylesheet" href="data-overview.css">
+</head>
+<body>
+  <div class="admin-container">
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+          <i class="fas fa-leaf logo-icon"></i>
+          <span class="system-title">农情遥感系统</span>
+        </div>
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item"><a href="../../dashboard/dashboard.html">首页</a></span>
+          <i class="fas fa-chevron-right breadcrumb-separator"></i>
+          <span class="breadcrumb-item active">数据概览</span>
+        </nav>
+      </div>
+      <div class="header-right">
+        <div class="header-actions">
+          <button class="action-btn" title="通知">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+          <button class="action-btn" title="设置">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+        <div class="user-dropdown">
+          <button class="user-info">
+            <div class="user-avatar">管</div>
+            <span class="user-name">管理员</span>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-user"></i>
+              个人资料
+            </a>
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-cog"></i>
+              账户设置
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../../index.html" class="dropdown-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              退出登录
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体布局 -->
+    <div class="admin-layout">
+      <!-- 左侧菜单 - 使用组件 -->
+      <aside class="admin-sidebar">
+        <!-- 侧边栏内容将由组件动态加载 -->
+      </aside>
+
+      <!-- 侧边栏切换按钮 -->
+      <button class="sidebar-toggle">
+        <i class="fas fa-angle-left"></i>
+      </button>
+
+      <!-- 主内容区 -->
+      <main class="admin-main">
+        <div class="main-content">
+          <!-- 页面头部 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h1>数据概览</h1>
+              <p class="page-description">查看系统数据统计和分析概览</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-secondary" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                刷新数据
+              </button>
+              <button class="btn btn-primary" id="exportBtn">
+                <i class="fas fa-download"></i>
+                导出报表
+              </button>
+            </div>
+          </div>
+
+          <!-- 数据统计卡片 -->
+          <div class="stats-overview">
+            <div class="stats-card" data-type="total">
+              <div class="stats-icon">
+                <i class="fas fa-database"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="totalDataCount">12,846</div>
+                <div class="stats-label">总数据量</div>
+                <div class="stats-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+12.5%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-card" data-type="recent">
+              <div class="stats-icon">
+                <i class="fas fa-plus-circle"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="recentDataCount">1,234</div>
+                <div class="stats-label">本月新增</div>
+                <div class="stats-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+8.2%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-card" data-type="processing">
+              <div class="stats-icon">
+                <i class="fas fa-sync-alt"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="processingCount">156</div>
+                <div class="stats-label">处理中</div>
+                <div class="stats-change neutral">
+                  <i class="fas fa-minus"></i>
+                  <span>0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-card" data-type="storage">
+              <div class="stats-icon">
+                <i class="fas fa-hdd"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="storageUsage">2.8TB</div>
+                <div class="stats-label">存储使用</div>
+                <div class="stats-change positive">
+                  <i class="fas fa-arrow-up"></i>
+                  <span>+5.1%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 图表区域 -->
+          <div class="charts-grid">
+            <!-- 数据增长趋势 -->
+            <div class="chart-card">
+              <div class="card-header">
+                <h3>数据增长趋势</h3>
+                <div class="card-actions">
+                  <select class="form-input" id="trendPeriod">
+                    <option value="7">最近7天</option>
+                    <option value="30" selected>最近30天</option>
+                    <option value="90">最近90天</option>
+                  </select>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="dataGrowthChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- 数据类型分布 -->
+            <div class="chart-card">
+              <div class="card-header">
+                <h3>数据类型分布</h3>
+                <div class="card-actions">
+                  <button class="btn-icon" title="查看详情">
+                    <i class="fas fa-expand-alt"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="dataTypeChart"></canvas>
+                </div>
+                <div class="legend-list">
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: #1890FF;"></span>
+                    <span class="legend-label">遥感数据</span>
+                    <span class="legend-value">45.2%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: #52C41A;"></span>
+                    <span class="legend-label">农田数据</span>
+                    <span class="legend-value">28.7%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: #FAAD14;"></span>
+                    <span class="legend-label">环境数据</span>
+                    <span class="legend-value">16.8%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color" style="background-color: #F5222D;"></span>
+                    <span class="legend-label">其他数据</span>
+                    <span class="legend-value">9.3%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 详细信息区域 -->
+          <div class="detail-grid">
+            <!-- 数据质量状态 -->
+            <div class="detail-card">
+              <div class="card-header">
+                <h3>数据质量状态</h3>
+                <div class="card-actions">
+                  <a href="../data-management/remote-sensing/quality.html" class="btn-text">查看详情</a>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="quality-metrics">
+                  <div class="quality-item">
+                    <div class="quality-label">优秀</div>
+                    <div class="quality-bar">
+                      <div class="quality-fill excellent" style="width: 68%;"></div>
+                    </div>
+                    <div class="quality-value">68%</div>
+                  </div>
+                  <div class="quality-item">
+                    <div class="quality-label">良好</div>
+                    <div class="quality-bar">
+                      <div class="quality-fill good" style="width: 24%;"></div>
+                    </div>
+                    <div class="quality-value">24%</div>
+                  </div>
+                  <div class="quality-item">
+                    <div class="quality-label">一般</div>
+                    <div class="quality-bar">
+                      <div class="quality-fill average" style="width: 6%;"></div>
+                    </div>
+                    <div class="quality-value">6%</div>
+                  </div>
+                  <div class="quality-item">
+                    <div class="quality-label">较差</div>
+                    <div class="quality-bar">
+                      <div class="quality-fill poor" style="width: 2%;"></div>
+                    </div>
+                    <div class="quality-value">2%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 存储空间使用 -->
+            <div class="detail-card">
+              <div class="card-header">
+                <h3>存储空间使用</h3>
+                <div class="card-actions">
+                  <button class="btn-text" id="manageStorageBtn">管理存储</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="storage-overview">
+                  <div class="storage-chart">
+                    <div class="storage-circle">
+                      <div class="storage-percentage">67%</div>
+                      <div class="storage-label">已使用</div>
+                    </div>
+                  </div>
+                  <div class="storage-details">
+                    <div class="storage-item">
+                      <span class="storage-type">总空间</span>
+                      <span class="storage-size">4.2TB</span>
+                    </div>
+                    <div class="storage-item">
+                      <span class="storage-type">已使用</span>
+                      <span class="storage-size">2.8TB</span>
+                    </div>
+                    <div class="storage-item">
+                      <span class="storage-type">可用空间</span>
+                      <span class="storage-size">1.4TB</span>
+                    </div>
+                    <div class="storage-warning">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      存储空间不足，建议清理或扩容
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 区域分布 -->
+            <div class="detail-card">
+              <div class="card-header">
+                <h3>区域数据分布</h3>
+                <div class="card-actions">
+                  <button class="btn-icon" title="地图视图">
+                    <i class="fas fa-map"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="region-list">
+                  <div class="region-item">
+                    <div class="region-info">
+                      <span class="region-name">临夏州</span>
+                      <span class="region-desc">主要区域</span>
+                    </div>
+                    <div class="region-stats">
+                      <span class="region-count">4,582</span>
+                      <div class="region-bar">
+                        <div class="region-fill" style="width: 85%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-info">
+                      <span class="region-name">东乡县</span>
+                      <span class="region-desc">重点区域</span>
+                    </div>
+                    <div class="region-stats">
+                      <span class="region-count">2,341</span>
+                      <div class="region-bar">
+                        <div class="region-fill" style="width: 45%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-info">
+                      <span class="region-name">永靖县</span>
+                      <span class="region-desc">监测区域</span>
+                    </div>
+                    <div class="region-stats">
+                      <span class="region-count">1,892</span>
+                      <div class="region-bar">
+                        <div class="region-fill" style="width: 35%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="region-item">
+                    <div class="region-info">
+                      <span class="region-name">其他区域</span>
+                      <span class="region-desc">覆盖区域</span>
+                    </div>
+                    <div class="region-stats">
+                      <span class="region-count">4,031</span>
+                      <div class="region-bar">
+                        <div class="region-fill" style="width: 75%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 最近活动 -->
+            <div class="detail-card">
+              <div class="card-header">
+                <h3>最近活动</h3>
+                <div class="card-actions">
+                  <a href="#" class="btn-text">查看全部</a>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon success">
+                      <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">遥感数据批量导入完成</div>
+                      <div class="activity-desc">成功导入245个地块的卫星图像数据</div>
+                      <div class="activity-time">2小时前</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon warning">
+                      <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">数据质量检查发现异常</div>
+                      <div class="activity-desc">东乡县区域数据存在12个异常值</div>
+                      <div class="activity-time">4小时前</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon info">
+                      <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">系统自动备份完成</div>
+                      <div class="activity-desc">已备份至云存储，数据大小1.2TB</div>
+                      <div class="activity-time">6小时前</div>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon success">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">农田数据更新完成</div>
+                      <div class="activity-desc">更新了156个农田的作物生长数据</div>
+                      <div class="activity-time">1天前</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="admin-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>© 2024 农情遥感系统管理端</span>
+        </div>
+        <div class="footer-right">
+          <span>最后更新：</span>
+          <span id="lastUpdateTime">2024-01-15 14:30:25</span>
+          <span class="divider">|</span>
+          <span>版本 v2.1.0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 存储管理模态框 -->
+  <div class="modal" id="storageModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>存储空间管理</h3>
+        <button class="modal-close" onclick="closeStorageModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="storage-breakdown">
+          <div class="breakdown-item">
+            <div class="breakdown-info">
+              <span class="breakdown-type">遥感数据</span>
+              <span class="breakdown-size">1.6TB</span>
+            </div>
+            <div class="breakdown-bar">
+              <div class="breakdown-fill" style="width: 57%; background-color: #1890FF;"></div>
+            </div>
+            <button class="btn btn-secondary btn-sm">清理</button>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-info">
+              <span class="breakdown-type">农田数据</span>
+              <span class="breakdown-size">0.8TB</span>
+            </div>
+            <div class="breakdown-bar">
+              <div class="breakdown-fill" style="width: 29%; background-color: #52C41A;"></div>
+            </div>
+            <button class="btn btn-secondary btn-sm">清理</button>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-info">
+              <span class="breakdown-type">系统日志</span>
+              <span class="breakdown-size">0.3TB</span>
+            </div>
+            <div class="breakdown-bar">
+              <div class="breakdown-fill" style="width: 11%; background-color: #FAAD14;"></div>
+            </div>
+            <button class="btn btn-secondary btn-sm">清理</button>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-info">
+              <span class="breakdown-type">临时文件</span>
+              <span class="breakdown-size">0.1TB</span>
+            </div>
+            <div class="breakdown-bar">
+              <div class="breakdown-fill" style="width: 3%; background-color: #F5222D;"></div>
+            </div>
+            <button class="btn btn-primary btn-sm">清理</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeStorageModal()">取消</button>
+        <button class="btn btn-primary">开始清理</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../../assets/js/common.js"></script>
+  <script src="../../../components/sidebar.js"></script>
+  <script src="data-overview.js"></script>
+</body>
+</html>

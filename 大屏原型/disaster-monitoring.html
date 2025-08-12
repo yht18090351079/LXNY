@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统大屏 - 灾害定损功能</title>
+    
+    <!-- 引入Cesium CSS -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/cesium-map.css">
+    <link rel="stylesheet" href="assets/css/disaster-monitoring.css">
+</head>
+<body>
+    <!-- 顶部系统横幅 -->
+    <div class="system-header">
+        <!-- 左侧系统状态 -->
+        <div class="header-left">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span class="status-text">系统运行正常</span>
+            </div>
+        </div>
+
+        <!-- 中心标题 -->
+        <div class="system-title">
+            临夏县卫星遥感平台
+            <div class="system-subtitle">Linxia County Satellite Remote Sensing Platform</div>
+        </div>
+
+        <!-- 右侧时间显示和用户信息 -->
+        <div class="header-right">
+            <div class="current-time">
+                <div class="time-display" id="current-time">2025-08-12 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+            
+            <!-- 用户信息区域 -->
+            <div class="user-info">
+                <div class="user-avatar">
+                    张
+                    <div class="user-status"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">张三</div>
+                    <div class="user-role">系统管理员</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 功能切换模块 -->
+    <div class="function-switch-bar">
+        <!-- 主功能按钮组 (5个) -->
+        <div class="main-switch-buttons">
+            <div class="main-switch-btn" data-function="crop-distribution">
+                <span class="btn-icon">🌾</span>
+                <span class="btn-text">作物分布</span>
+            </div>
+            <div class="main-switch-btn" data-function="growth-analysis">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation">
+                <span class="btn-icon">📈</span>
+                <span class="btn-text">产量预估</span>
+            </div>
+            <div class="main-switch-btn" data-function="weather-monitoring">
+                <span class="btn-icon">🌤️</span>
+                <span class="btn-text">气象监测</span>
+            </div>
+            <div class="main-switch-btn active" data-function="disaster-monitoring">
+                <span class="btn-icon">⚠️</span>
+                <span class="btn-text">灾害定损</span>
+            </div>
+        </div>
+
+        <!-- 分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 叠加功能按钮 (2个) -->
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+    <!-- 主地图容器 -->
+    <div id="map-container">
+        <!-- 科技感背景元素 -->
+        <div class="tech-grid"></div>
+        
+        <!-- Cesium地图容器 -->
+        <div id="cesium-container"></div>
+        
+        <!-- 地图覆盖层 -->
+        <div class="map-overlay"></div>
+        
+        <!-- 图层控制按钮组 -->
+        <div class="layer-control-panel">
+            <div class="layer-control-header">
+                <span class="control-icon">🗂️</span>
+                <span class="control-title">灾害监测图层</span>
+            </div>
+            <div class="layer-control-buttons">
+                <div class="layer-btn active" data-layer="temperature" title="高温冻害监测">
+                    <span class="layer-icon">🌡️</span>
+                    <span class="layer-text">高温冻害</span>
+                    <div class="layer-indicator"></div>
+                </div>
+                <div class="layer-btn" data-layer="drought" title="干旱监测">
+                    <span class="layer-icon">💧</span>
+                    <span class="layer-text">干旱监测</span>
+                    <div class="layer-indicator"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预警信息提示框 -->
+        <div class="alert-notification" id="alert-notification">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <div class="alert-title">灾害预警</div>
+                <div class="alert-message">检测到3个区域存在高温风险，建议及时关注</div>
+            </div>
+            <div class="alert-close" onclick="closeAlert()">×</div>
+        </div>
+
+        <!-- 左侧灾害监测面板 -->
+        <div class="glass-panel left-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    ⚠️ 灾害监测分析
+                </div>
+                <button class="collapse-btn">◀</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 1. 灾害监测类型切换 -->
+                <div class="disaster-type-switch">
+                    <div class="switch-btn active" data-type="temperature">
+                        <span class="switch-icon">🌡️</span>
+                        <span class="switch-text">高温冻害</span>
+                    </div>
+                    <div class="switch-btn" data-type="drought">
+                        <span class="switch-icon">💧</span>
+                        <span class="switch-text">干旱监测</span>
+                    </div>
+                </div>
+
+                <!-- 2. 高温冻害监测面板 -->
+                <div class="disaster-panel" id="temperature-panel">
+                    <!-- 风险等级分布 -->
+                    <div class="monitoring-section">
+                        <div class="section-title">
+                            <span class="section-icon">📊</span>
+                            风险等级分布
+                        </div>
+                        <div class="risk-level-container">
+                            <div id="temperature-risk-chart" class="chart-container"></div>
+                        </div>
+                        <div class="risk-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(244, 67, 54, 0.8);"></span>
+                                <span class="legend-text">极严重 (8.5%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(255, 152, 0, 0.8);"></span>
+                                <span class="legend-text">严重 (15.2%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(255, 235, 59, 0.8);"></span>
+                                <span class="legend-text">中等 (23.8%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(255, 249, 196, 0.8);"></span>
+                                <span class="legend-text">轻微 (31.4%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 作物监测指标 -->
+                    <div class="monitoring-section">
+                        <div class="section-title">
+                            <span class="section-icon">🌾</span>
+                            作物监测指标
+                        </div>
+                        <div class="crop-indicators">
+                            <div class="indicator-item">
+                                <div class="indicator-header">
+                                    <span class="crop-icon">🌾</span>
+                                    <span class="crop-name">小麦</span>
+                                    <span class="indicator-status warning">风险</span>
+                                </div>
+                                <div class="indicator-metrics">
+                                    <div class="metric-item">
+                                        <span class="metric-label">越冬期低温</span>
+                                        <span class="metric-value normal">正常</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">返青期倒春寒</span>
+                                        <span class="metric-value warning">预警</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">灌浆期高温</span>
+                                        <span class="metric-value danger">风险</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="indicator-item">
+                                <div class="indicator-header">
+                                    <span class="crop-icon">🌽</span>
+                                    <span class="crop-name">玉米</span>
+                                    <span class="indicator-status normal">正常</span>
+                                </div>
+                                <div class="indicator-metrics">
+                                    <div class="metric-item">
+                                        <span class="metric-label">苗期低温</span>
+                                        <span class="metric-value normal">正常</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">抽雄期高温</span>
+                                        <span class="metric-value normal">正常</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">灌浆期高温</span>
+                                        <span class="metric-value warning">预警</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 温度阈值设置 -->
+                    <div class="monitoring-section">
+                        <div class="section-title">
+                            <span class="section-icon">🎯</span>
+                            温度阈值设置
+                        </div>
+                        <div class="threshold-settings">
+                            <div class="threshold-item">
+                                <span class="threshold-label">小麦灌浆期高温阈值</span>
+                                <div class="threshold-value">
+                                    <input type="number" value="32" min="25" max="40" class="threshold-input">
+                                    <span class="threshold-unit">°C</span>
+                                </div>
+                            </div>
+                            <div class="threshold-item">
+                                <span class="threshold-label">玉米抽雄期高温阈值</span>
+                                <div class="threshold-value">
+                                    <input type="number" value="35" min="25" max="40" class="threshold-input">
+                                    <span class="threshold-unit">°C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 干旱监测面板 -->
+                <div class="disaster-panel" id="drought-panel" style="display: none;">
+                    <!-- 干旱等级分布 -->
+                    <div class="monitoring-section">
+                        <div class="section-title">
+                            <span class="section-icon">📊</span>
+                            干旱等级分布
+                        </div>
+                        <div class="drought-level-container">
+                            <div id="drought-level-chart" class="chart-container"></div>
+                        </div>
+                        <div class="drought-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(103, 58, 183, 0.8);"></span>
+                                <span class="legend-text">特旱 (5.3%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(21, 101, 192, 0.8);"></span>
+                                <span class="legend-text">重旱 (12.7%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(33, 150, 243, 0.8);"></span>
+                                <span class="legend-text">中旱 (28.5%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background: rgba(227, 242, 253, 0.8);"></span>
+                                <span class="legend-text">轻旱 (34.2%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 干旱监测指标 -->
+                    <div class="monitoring-section">
+                        <div class="section-title">
+                            <span class="section-icon">💧</span>
+                            干旱监测指标
+                        </div>
+                        <div class="drought-indicators">
+                            <div class="drought-metric">
+                                <div class="metric-header">
+                                    <span class="metric-icon">🌱</span>
+                                    <span class="metric-name">土壤含水量指数</span>
+                                </div>
+                                <div class="metric-chart">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 45%; background: #2196F3;"></div>
+                                    </div>
+                                    <span class="metric-percent">45%</span>
+                                </div>
+                            </div>
+                            <div class="drought-metric">
+                                <div class="metric-header">
+                                    <span class="metric-icon">🌧️</span>
+                                    <span class="metric-name">降水距平百分率</span>
+                                </div>
+                                <div class="metric-chart">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 68%; background: #4CAF50;"></div>
+                                    </div>
+                                    <span class="metric-percent">68%</span>
+                                </div>
+                            </div>
+                            <div class="drought-metric">
+                                <div class="metric-header">
+                                    <span class="metric-icon">🌿</span>
+                                    <span class="metric-name">植被供水指数</span>
+                                </div>
+                                <div class="metric-chart">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 52%; background: #FF9800;"></div>
+                                    </div>
+                                    <span class="metric-percent">52%</span>
+                                </div>
+                            </div>
+                            <div class="drought-metric">
+                                <div class="metric-header">
+                                    <span class="metric-icon">🌡️</span>
+                                    <span class="metric-name">温度植被干旱指数</span>
+                                </div>
+                                <div class="metric-chart">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 38%; background: #F44336;"></div>
+                                    </div>
+                                    <span class="metric-percent">38%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧损失预测和统计面板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    📊 损失预测与统计
+                </div>
+                <button class="collapse-btn">▶</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- 1. 综合损失概览 -->
+                <div class="loss-overview-section">
+                    <div class="section-title">
+                        <span class="section-icon">📈</span>
+                        综合损失概览
+                    </div>
+                    <div class="overview-cards">
+                        <div class="overview-card">
+                            <div class="card-icon">🏞️</div>
+                            <div class="card-content">
+                                <div class="card-value">1,285</div>
+                                <div class="card-label">受灾面积 (公顷)</div>
+                                <div class="card-change negative">↑15.2%</div>
+                            </div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="card-icon">⚖️</div>
+                            <div class="card-content">
+                                <div class="card-value">2,156</div>
+                                <div class="card-label">产量损失 (吨)</div>
+                                <div class="card-change negative">↑8.7%</div>
+                            </div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="card-icon">💰</div>
+                            <div class="card-content">
+                                <div class="card-value">856.4</div>
+                                <div class="card-label">经济损失 (万元)</div>
+                                <div class="card-change negative">↑12.3%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 损失等级分布图 -->
+                <div class="loss-distribution-section">
+                    <div class="section-title">
+                        <span class="section-icon">📊</span>
+                        损失等级分布图
+                    </div>
+                    <div class="distribution-chart-container">
+                        <div id="loss-distribution-chart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 3. 作物损失详情表 -->
+                <div class="crop-loss-section">
+                    <div class="section-title">
+                        <span class="section-icon">🌾</span>
+                        作物损失详情表
+                    </div>
+                    <div class="loss-table-container">
+                        <table class="loss-table">
+                            <thead>
+                                <tr>
+                                    <th>作物类型</th>
+                                    <th>受灾面积</th>
+                                    <th>产量损失</th>
+                                    <th>经济损失</th>
+                                    <th>损失等级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span class="crop-icon">🌾</span>
+                                        小麦
+                                    </td>
+                                    <td>752 公顷</td>
+                                    <td>1,286 吨</td>
+                                    <td>512.3 万元</td>
+                                    <td><span class="loss-level severe">严重</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="crop-icon">🌽</span>
+                                        玉米
+                                    </td>
+                                    <td>533 公顷</td>
+                                    <td>870 吨</td>
+                                    <td>344.1 万元</td>
+                                    <td><span class="loss-level moderate">中等</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. 历史灾害对比 -->
+                <div class="historical-comparison-section">
+                    <div class="section-title">
+                        <span class="section-icon">📈</span>
+                        历史灾害对比分析
+                    </div>
+                    <div class="comparison-chart-container">
+                        <div id="historical-comparison-chart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 5. 实时预警信息 -->
+                <div class="warning-info-section">
+                    <div class="section-title">
+                        <span class="section-icon">⚠️</span>
+                        实时预警信息
+                    </div>
+                    <div class="warning-list">
+                        <div class="warning-item high">
+                            <div class="warning-level">高级预警</div>
+                            <div class="warning-content">
+                                <div class="warning-title">小麦高温预警</div>
+                                <div class="warning-desc">北部区域预计将出现35°C以上高温，持续3天</div>
+                                <div class="warning-time">2025-08-12 14:30</div>
+                            </div>
+                        </div>
+                        <div class="warning-item medium">
+                            <div class="warning-level">中级预警</div>
+                            <div class="warning-content">
+                                <div class="warning-title">玉米干旱预警</div>
+                                <div class="warning-desc">东南部地区土壤含水量低于预警阈值</div>
+                                <div class="warning-time">2025-08-12 12:15</div>
+                            </div>
+                        </div>
+                        <div class="warning-item low">
+                            <div class="warning-level">低级预警</div>
+                            <div class="warning-content">
+                                <div class="warning-title">气象条件关注</div>
+                                <div class="warning-desc">未来一周降水量偏少，需关注作物水分状况</div>
+                                <div class="warning-time">2025-08-12 10:45</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/disaster-monitoring.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // 预警提示框控制
+        function closeAlert() {
+            document.getElementById('alert-notification').style.display = 'none';
+        }
+
+        // 灾害类型切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const switchBtns = document.querySelectorAll('.disaster-type-switch .switch-btn');
+            const panels = document.querySelectorAll('.disaster-panel');
+            
+            switchBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const type = this.dataset.type;
+                    
+                    // 更新按钮状态
+                    switchBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应面板
+                    panels.forEach(panel => {
+                        panel.style.display = panel.id === type + '-panel' ? 'block' : 'none';
+                    });
+                    
+                    // 更新图层
+                    updateDisasterLayer(type);
+                });
+            });
+            
+            // 图层控制按钮
+            const layerBtns = document.querySelectorAll('.layer-btn');
+            layerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const layer = this.dataset.layer;
+                    
+                    // 更新按钮状态
+                    layerBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 同步切换灾害类型面板
+                    const switchBtn = document.querySelector(`.disaster-type-switch .switch-btn[data-type="${layer === 'temperature' ? 'temperature' : 'drought'}"]`);
+                    if (switchBtn) {
+                        switchBtn.click();
+                    }
+                });
+            });
+        });
+        
+        function updateDisasterLayer(type) {
+            // 这里实现图层切换逻辑
+            console.log('切换到灾害类型:', type);
+        }
+    </script>
+</body>
+</html>

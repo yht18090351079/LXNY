@@ -1,0 +1,171 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "title": "临夏县行政区划数据集合",
+    "description": "来自多个数据源的临夏县边界数据",
+    "target_region": {
+      "name": "临夏县",
+      "name_en": "Linxia County",
+      "adcode": "621221",
+      "province": "甘肃省",
+      "prefecture": "临夏回族自治州",
+      "center": [
+        103.2061,
+        35.5919
+      ],
+      "bbox": [
+        102.7833,
+        35.2,
+        103.45,
+        35.8333
+      ]
+    },
+    "sources": [
+      "OpenStreetMap",
+      "示例数据"
+    ],
+    "created_date": "2025-08-06T10:33:29.433Z"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "admin_level": "6",
+        "alt_name": "Linxia;临夏",
+        "boundary": "administrative",
+        "division_code": "622921",
+        "name": "临夏县",
+        "name:en": "Linxia County",
+        "name:uk": "Лінься",
+        "name:zh": "临夏县",
+        "name:zh-Hant": "臨夏縣",
+        "name:zh-Latn-pinyin": "Línxià Xiàn",
+        "type": "boundary",
+        "wikidata": "Q1339439",
+        "wikipedia": "en:Linxia County",
+        "osm_type": "relation",
+        "osm_id": 2700760,
+        "source": "OpenStreetMap Overpass API",
+        "processed_date": "2025-08-06T10:33:29.432Z",
+        "dataset_index": 1,
+        "merged_date": "2025-08-06T10:33:29.433Z"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          []
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "临夏县",
+        "name_en": "Linxia County",
+        "adcode": "621221",
+        "province": "甘肃省",
+        "prefecture": "临夏回族自治州",
+        "center": [
+          103.2061,
+          35.5919
+        ],
+        "bbox": [
+          102.7833,
+          35.2,
+          103.45,
+          35.8333
+        ],
+        "area_km2": 1212.4,
+        "perimeter_km": 253.53721760862348,
+        "coordinate_count": 19,
+        "source": "手工绘制示例",
+        "accuracy_note": "仅供演示使用，实际应用请使用官方数据",
+        "dataset_index": 2,
+        "merged_date": "2025-08-06T10:33:29.433Z"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              102.7833,
+              35.2
+            ],
+            [
+              102.85,
+              35.1833
+            ],
+            [
+              103,
+              35.2167
+            ],
+            [
+              103.15,
+              35.25
+            ],
+            [
+              103.3,
+              35.3
+            ],
+            [
+              103.4,
+              35.3833
+            ],
+            [
+              103.45,
+              35.45
+            ],
+            [
+              103.4333,
+              35.55
+            ],
+            [
+              103.3833,
+              35.6333
+            ],
+            [
+              103.3,
+              35.7
+            ],
+            [
+              103.2,
+              35.75
+            ],
+            [
+              103.1,
+              35.8
+            ],
+            [
+              102.95,
+              35.8333
+            ],
+            [
+              102.8,
+              35.8167
+            ],
+            [
+              102.7,
+              35.75
+            ],
+            [
+              102.65,
+              35.6667
+            ],
+            [
+              102.6833,
+              35.55
+            ],
+            [
+              102.7333,
+              35.4
+            ],
+            [
+              102.7833,
+              35.2
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
