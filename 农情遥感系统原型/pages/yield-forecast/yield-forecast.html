@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>产量预估 - 甘肃临夏农情遥感系统</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="../../assets/css/common.css">
+  <link rel="stylesheet" href="yield-forecast.css">
+  <script src="../../static/js/jquery.min.js"></script>
+  <script src="../../static/js/echarts.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="../../static/js/citymap.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 顶部导航栏 -->
+    <header class="app-header">
+      <div class="logo-container">
+        <img src="https://via.placeholder.com/40x40?text=Logo" alt="Logo" class="logo" width="40" height="40">
+        <h1 class="system-name">甘肃临夏农情遥感系统</h1>
+      </div>
+      
+      <nav class="main-nav">
+        <div class="main-nav-item"><a href="../overview/overview.html">遥感总览</a></div>
+        <div class="main-nav-item"><a href="../crop-distribution/crop-distribution.html">作物分布</a></div>
+        <div class="main-nav-item"><a href="../crop-growth/crop-growth.html">作物长势</a></div>
+        <div class="main-nav-item active">产量预估</div>
+        <div class="main-nav-item"><a href="../weather-map/weather-map.html">气象一张图</a></div>
+      </nav>
+      
+      <div class="user-info">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </div>
+        <div class="settings-icon">
+          <i class="fas fa-cog"></i>
+        </div>
+        <div class="user-avatar">
+          <img src="https://via.placeholder.com/32x32?text=User" alt="用户头像" width="32" height="32">
+          <span class="user-name">管理员</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+      
+      <button class="mobile-nav-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </header>
+    
+    <!-- 主体内容 -->
+    <main class="app-content">
+      <!-- 左侧菜单 -->
+      <aside class="side-menu">
+        <div class="side-menu-content">
+          <div class="menu-section">
+            <h3 class="menu-section-title">区域筛选</h3>
+            
+            <div class="area-selector">
+              <label class="form-label">区县</label>
+              <select class="form-input" id="county-selector">
+                <option value="all">全部区县</option>
+                <option value="linxia-city">临夏市</option>
+                <option value="linxia-county">临夏县</option>
+                <option value="kangle">康乐县</option>
+                <option value="yongjing">永靖县</option>
+                <option value="guanghe">广河县</option>
+                <option value="hezheng">和政县</option>
+                <option value="dongxiang">东乡族自治县</option>
+                <option value="jishishan">积石山保安族东乡族撒拉族自治县</option>
+              </select>
+            </div>
+            
+            <div class="area-selector" style="margin-top: 16px;">
+              <label class="form-label">乡镇</label>
+              <select class="form-input" id="town-selector">
+                <option value="all">全部乡镇</option>
+                <option value="disabled" disabled>请先选择区县</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <h3 class="menu-section-title">作物类型</h3>
+            <div class="crop-type-selector">
+              <div class="crop-item">
+                <input type="radio" name="crop-type" id="crop-wheat" checked>
+                <label for="crop-wheat">
+                  <span class="color-dot" style="background-color: #E8D639;"></span>
+                  小麦
+                </label>
+              </div>
+              <div class="crop-item">
+                <input type="radio" name="crop-type" id="crop-corn">
+                <label for="crop-corn">
+                  <span class="color-dot" style="background-color: #61D836;"></span>
+                  玉米
+                </label>
+              </div>
+              <div class="crop-item">
+                <input type="radio" name="crop-type" id="crop-vegetable">
+                <label for="crop-vegetable">
+                  <span class="color-dot" style="background-color: #36D8AD;"></span>
+                  蔬菜
+                </label>
+              </div>
+              <div class="crop-item">
+                <input type="radio" name="crop-type" id="crop-greenhouse">
+                <label for="crop-greenhouse">
+                  <span class="color-dot" style="background-color: #36A0D8;"></span>
+                  大棚
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <h3 class="menu-section-title">预估模型</h3>
+            <div class="model-selector">
+              <div class="model-item">
+                <input type="radio" name="model-type" id="model-ai" checked>
+                <label for="model-ai">AI预测模型</label>
+              </div>
+              <div class="model-item">
+                <input type="radio" name="model-type" id="model-statistical">
+                <label for="model-statistical">统计分析模型</label>
+              </div>
+              <div class="model-item">
+                <input type="radio" name="model-type" id="model-historical">
+                <label for="model-historical">历史对比模型</label>
+              </div>
+              <div class="model-item">
+                <input type="radio" name="model-type" id="model-comprehensive">
+                <label for="model-comprehensive">综合分析模型</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <h3 class="menu-section-title">参数设置</h3>
+            <div class="parameter-settings">
+              <div class="parameter-item">
+                <label class="form-label">预测目标年份</label>
+                <select class="form-input" id="target-year">
+                  <option value="2023" selected>2023年</option>
+                  <option value="2024">2024年</option>
+                </select>
+              </div>
+              <div class="parameter-item">
+                <label class="form-label">置信区间</label>
+                <select class="form-input" id="confidence-interval">
+                  <option value="90">90%</option>
+                  <option value="95" selected>95%</option>
+                  <option value="99">99%</option>
+                </select>
+              </div>
+              <div class="parameter-item">
+                <label class="form-label">影响因子权重</label>
+                <div class="slider-container">
+                  <div class="slider-item">
+                    <label class="slider-label">气象因子</label>
+                    <input type="range" min="1" max="10" value="7" class="weight-slider" id="weather-weight">
+                    <span class="slider-value">7</span>
+                  </div>
+                  <div class="slider-item">
+                    <label class="slider-label">生长指数</label>
+                    <input type="range" min="1" max="10" value="8" class="weight-slider" id="growth-weight">
+                    <span class="slider-value">8</span>
+                  </div>
+                  <div class="slider-item">
+                    <label class="slider-label">土壤因子</label>
+                    <input type="range" min="1" max="10" value="5" class="weight-slider" id="soil-weight">
+                    <span class="slider-value">5</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button class="btn btn-primary run-btn">运行预测</button>
+          </div>
+        </div>
+        
+        <button class="side-menu-toggle">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </aside>
+      
+      <!-- 中央主内容区 -->
+      <div class="main-content">
+        <!-- 顶部卡片概览 -->
+        <div class="forecast-overview">
+          <div class="forecast-card total">
+            <div class="forecast-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="forecast-info">
+              <div class="forecast-label">预估总产量</div>
+              <div class="forecast-value">875,621</div>
+              <div class="forecast-unit">吨</div>
+            </div>
+            <div class="forecast-trend up">
+              <i class="fas fa-arrow-up"></i>
+              <span>6.8%</span>
+            </div>
+          </div>
+          <div class="forecast-card yield">
+            <div class="forecast-icon">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <div class="forecast-info">
+              <div class="forecast-label">预估单产</div>
+              <div class="forecast-value">532</div>
+              <div class="forecast-unit">公斤/亩</div>
+            </div>
+            <div class="forecast-trend up">
+              <i class="fas fa-arrow-up"></i>
+              <span>3.5%</span>
+            </div>
+          </div>
+          <div class="forecast-card accuracy">
+            <div class="forecast-icon">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="forecast-info">
+              <div class="forecast-label">预测准确率</div>
+              <div class="forecast-value">93.7</div>
+              <div class="forecast-unit">%</div>
+            </div>
+            <div class="accuracy-badge">
+              高可信度
+            </div>
+          </div>
+          <div class="forecast-card harvest-date">
+            <div class="forecast-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="forecast-info">
+              <div class="forecast-label">预计收获期</div>
+              <div class="forecast-value">2023-07-15</div>
+              <div class="forecast-range">
+                <span>预计区间：</span>
+                <span>±5天</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 图表展示区 -->
+        <div class="chart-container-wrapper">
+          <div class="chart-row">
+            <div class="chart-container">
+              <div class="chart-header">
+                <h3 class="chart-title">产量趋势预测</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-text">
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="btn btn-text">
+                    <i class="fas fa-expand"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-body" id="yieldTrendChart"></div>
+            </div>
+            
+            <div class="chart-container">
+              <div class="chart-header">
+                <h3 class="chart-title">各区域产量分布</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-text">
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="btn btn-text">
+                    <i class="fas fa-expand"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-body" id="regionYieldChart"></div>
+            </div>
+          </div>
+          
+          <div class="chart-row">
+            <div class="chart-container">
+              <div class="chart-header">
+                <h3 class="chart-title">影响因子分析</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-text">
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="btn btn-text">
+                    <i class="fas fa-expand"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-body" id="factorAnalysisChart"></div>
+            </div>
+            
+            <div class="chart-container">
+              <div class="chart-header">
+                <h3 class="chart-title">历史产量对比</h3>
+                <div class="chart-actions">
+                  <button class="btn btn-text">
+                    <i class="fas fa-download"></i>
+                  </button>
+                  <button class="btn btn-text">
+                    <i class="fas fa-expand"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-body" id="historicalComparisonChart"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 产量分布地图 -->
+        <div class="yield-map-container">
+          <div class="map-header">
+            <h3 class="map-title">产量空间分布</h3>
+            <div class="map-tools">
+              <button class="btn btn-secondary map-btn">
+                <i class="fas fa-file-export"></i>
+                导出图片
+              </button>
+              <button class="btn btn-secondary map-btn">
+                <i class="fas fa-layer-group"></i>
+                图层控制
+              </button>
+            </div>
+          </div>
+          <div class="map-container">
+            <div id="map"></div>
+            <div id="echarts-map" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; display: none;"></div>
+          </div>
+          <div class="map-legend">
+            <div class="legend-title">产量等级 (公斤/亩)</div>
+            <div class="legend-gradient"></div>
+            <div class="legend-labels">
+              <span>＜300</span>
+              <span>400</span>
+              <span>500</span>
+              <span>600</span>
+              <span>＞700</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 底部信息区 -->
+        <div class="forecast-notes">
+          <div class="notes-header">
+            <h3 class="notes-title">预测说明</h3>
+            <button class="btn btn-text notes-toggle">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="notes-content">
+            <p>本预测基于历史产量数据、当前生长状况监测、气象数据和土壤环境等多种因素综合分析得出。预测结果仅供参考，实际产量可能因天气变化、病虫害发生等不可预见因素而有所差异。</p>
+            <p>预测模型使用了近5年的历史数据进行训练，准确率基于上一年度的预测结果与实际产量的对比评估。预测置信区间为95%，表示实际产量有95%的概率落在预测区间内。</p>
+            <h4>数据来源</h4>
+            <ul>
+              <li>遥感数据：卫星影像采集的NDVI、LAI等植被指数</li>
+              <li>气象数据：历史气象记录和未来15天气象预报</li>
+              <li>历史产量：近5年生产记录</li>
+              <li>土壤数据：土壤养分、水分等监测数据</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右侧数据面板 -->
+      <aside class="data-panel">
+        <button class="data-panel-toggle">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="data-panel-content">
+          <div class="panel-section">
+            <h3 class="section-title">影响因子分析</h3>
+            <div class="factor-list">
+              <div class="factor-item">
+                <div class="factor-header">
+                  <span class="factor-name">降水量</span>
+                  <span class="factor-score">8.5</span>
+                </div>
+                <div class="factor-bar">
+                  <div class="factor-fill" style="width: 85%;"></div>
+                </div>
+                <div class="factor-detail">
+                  <span class="detail-label">当前值:</span>
+                  <span class="detail-value">523mm (同比+12.5%)</span>
+                </div>
+              </div>
+              <div class="factor-item">
+                <div class="factor-header">
+                  <span class="factor-name">积温</span>
+                  <span class="factor-score">7.8</span>
+                </div>
+                <div class="factor-bar">
+                  <div class="factor-fill" style="width: 78%;"></div>
+                </div>
+                <div class="factor-detail">
+                  <span class="detail-label">当前值:</span>
+                  <span class="detail-value">1235°C·d (同比+5.2%)</span>
+                </div>
+              </div>
+              <div class="factor-item">
+                <div class="factor-header">
+                  <span class="factor-name">NDVI均值</span>
+                  <span class="factor-score">8.3</span>
+                </div>
+                <div class="factor-bar">
+                  <div class="factor-fill" style="width: 83%;"></div>
+                </div>
+                <div class="factor-detail">
+                  <span class="detail-label">当前值:</span>
+                  <span class="detail-value">0.83 (同比+3.7%)</span>
+                </div>
+              </div>
+              <div class="factor-item">
+                <div class="factor-header">
+                  <span class="factor-name">土壤水分</span>
+                  <span class="factor-score">6.5</span>
+                </div>
+                <div class="factor-bar">
+                  <div class="factor-fill" style="width: 65%;"></div>
+                </div>
+                <div class="factor-detail">
+                  <span class="detail-label">当前值:</span>
+                  <span class="detail-value">28.5% (同比-1.8%)</span>
+                </div>
+              </div>
+              <div class="factor-item">
+                <div class="factor-header">
+                  <span class="factor-name">日照时数</span>
+                  <span class="factor-score">7.2</span>
+                </div>
+                <div class="factor-bar">
+                  <div class="factor-fill" style="width: 72%;"></div>
+                </div>
+                <div class="factor-detail">
+                  <span class="detail-label">当前值:</span>
+                  <span class="detail-value">865h (同比+2.1%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel-section">
+            <h3 class="section-title">产量预测详情</h3>
+            <div class="prediction-details">
+              <div class="detail-item">
+                <div class="detail-label">预测时间：</div>
+                <div class="detail-value">2023-05-25 08:30</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">预测模型：</div>
+                <div class="detail-value">AI预测模型 v2.3</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">模型参数：</div>
+                <div class="detail-value">9个影响因子, 95%置信区间</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">区间上限：</div>
+                <div class="detail-value">932,450吨</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">预测值：</div>
+                <div class="detail-value highlight">875,621吨</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">区间下限：</div>
+                <div class="detail-value">821,390吨</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">预测误差：</div>
+                <div class="detail-value">±6.3%</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel-section">
+            <h3 class="section-title">历史预测对比</h3>
+            <div class="comparison-table-container">
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th>年份</th>
+                    <th>预测产量(吨)</th>
+                    <th>实际产量(吨)</th>
+                    <th>误差</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2022</td>
+                    <td>825,320</td>
+                    <td>819,450</td>
+                    <td class="error-positive">+0.7%</td>
+                  </tr>
+                  <tr>
+                    <td>2021</td>
+                    <td>792,150</td>
+                    <td>810,250</td>
+                    <td class="error-negative">-2.2%</td>
+                  </tr>
+                  <tr>
+                    <td>2020</td>
+                    <td>776,800</td>
+                    <td>782,430</td>
+                    <td class="error-negative">-0.7%</td>
+                  </tr>
+                  <tr>
+                    <td>2019</td>
+                    <td>790,120</td>
+                    <td>765,840</td>
+                    <td class="error-positive">+3.2%</td>
+                  </tr>
+                  <tr>
+                    <td>2018</td>
+                    <td>752,640</td>
+                    <td>738,520</td>
+                    <td class="error-positive">+1.9%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="panel-section">
+            <h3 class="section-title">操作</h3>
+            <div class="action-buttons">
+              <button class="btn btn-primary action-btn">
+                <i class="fas fa-file-pdf"></i>
+                导出报告
+              </button>
+              <button class="btn btn-secondary action-btn">
+                <i class="fas fa-share-alt"></i>
+                分享结果
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+    
+    <!-- 底部状态栏 -->
+    <footer class="app-footer">
+      <div class="copyright">
+        &copy; 2023 甘肃临夏农情遥感系统 版权所有
+      </div>
+      <div class="system-info">
+        <span class="version">v1.0.0</span>
+        <span class="update-time">数据更新时间: 2023-07-15 08:30</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="../../assets/js/common.js"></script>
+  <script src="yield-forecast.js"></script>
+</body>
+</html> 

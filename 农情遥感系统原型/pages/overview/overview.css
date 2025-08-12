@@ -1,0 +1,719 @@
+/* 遥感总览页面样式 */
+
+/* 左侧菜单内容样式 */
+.side-menu-content {
+  padding: 16px;
+  height: auto;
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-section {
+  margin-bottom: 24px;
+}
+
+.menu-section-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+}
+
+.area-selector {
+  width: 100%;
+}
+
+.layer-control {
+  max-height: none;
+  overflow-y: visible;
+}
+
+.layer-group {
+  margin-bottom: 16px;
+}
+
+.layer-group-title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.layer-group-title i {
+  margin-right: 8px;
+  transition: transform 0.3s;
+}
+
+.layer-group-title.collapsed i {
+  transform: rotate(-90deg);
+}
+
+.layer-items {
+  margin-left: 16px;
+  margin-top: 8px;
+}
+
+.layer-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.layer-item input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.layer-item label {
+  flex: 1;
+  font-size: 12px;
+}
+
+.opacity-slider {
+  width: 100%;
+  margin-top: 4px;
+  margin-left: 20px;
+}
+
+.opacity-slider input {
+  width: 100%;
+  height: 4px;
+}
+
+.time-control-section {
+  margin-top: auto;
+}
+
+.time-controller {
+  text-align: center;
+}
+
+.date-display {
+  font-family: "DIN Alternate", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.slider-container {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.time-slider {
+  width: 100%;
+  height: 4px;
+}
+
+.playback-controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.side-menu-toggle {
+  position: fixed;
+  right: calc(100% - 350px);
+  top: 50vh;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid var(--light-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 91;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.side-menu-toggle i {
+  transition: transform 0.3s;
+}
+
+.side-menu.collapsed .side-menu-toggle {
+  right: calc(100% - 56px);
+}
+
+.side-menu.collapsed .side-menu-toggle i {
+  transform: rotate(180deg);
+}
+
+/* 地图容器样式 */
+.map-container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background-color: #E8F4F8; /* 浅蓝色背景，模拟地图 */
+}
+
+.map-body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* 确保Leaflet地图容器占满空间 */
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* 地图控件 - 不再默认隐藏，由JS控制显示隐藏 */
+.map-controls {
+  position: absolute;
+  right: 20px;
+  top: 80px;
+  z-index: 10;
+}
+
+.zoom-control {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.zoom-control button {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-control button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.zoom-control button:first-child {
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.map-legend {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  width: auto;
+  max-width: 320px;
+  z-index: 10;
+}
+
+.legend-header {
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+  font-weight: bold;
+}
+
+.legend-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.legend-content {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.color-block {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+.icon-block {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.legend-item span {
+  font-size: 14px;
+}
+
+/* 信息气泡样式 */
+.info-popup {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.popup-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.popup-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.popup-body {
+  padding: 16px;
+}
+
+.info-table {
+  width: 100%;
+}
+
+.info-table tr {
+  height: 28px;
+}
+
+.info-label {
+  color: var(--text-secondary);
+  width: 80px;
+}
+
+.popup-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--light-gray);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* 右侧数据面板样式 */
+.data-panel-toggle {
+  position: fixed;
+  left: calc(100vw - 450px - 15px);
+  top: 50vh;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid var(--light-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 91;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-panel-toggle i {
+  transition: transform 0.3s;
+}
+
+.data-panel.collapsed .data-panel-toggle {
+  left: calc(100vw - 15px);
+}
+
+.data-panel.collapsed .data-panel-toggle i {
+  transform: rotate(180deg);
+}
+
+.data-panel-content {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.data-overview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.data-card {
+  background-color: var(--off-white);
+  border-radius: 4px;
+  padding: 12px;
+  text-align: center;
+}
+
+.data-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.data-value {
+  font-family: "DIN Alternate", sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.data-unit {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.data-trend {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.data-trend.up {
+  color: var(--success-color);
+}
+
+.data-trend.down {
+  color: var(--danger-color);
+}
+
+.data-trend i {
+  margin-right: 4px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 30%;
+  height: 3px;
+  background-color: var(--primary-color);
+}
+
+.selected-details {
+  margin-top: 24px;
+}
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 120px;
+  background-color: #F0F2F5;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-info {
+  flex: 1;
+  background-color: #F9FBFC;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.info-row .info-label {
+  width: 76px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.info-row .info-value {
+  flex: 1;
+}
+
+.data-charts {
+  margin-top: 24px;
+}
+
+.chart-container {
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.chart-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chart-body {
+  height: 200px;
+  padding: 8px;
+}
+
+/* 响应式样式 */
+@media (max-width: 1439px) {
+  .data-overview {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1023px) {
+  .map-legend {
+    left: 10px;
+    bottom: 10px;
+    max-width: 250px;
+  }
+  
+  .map-controls {
+    right: 10px;
+    top: 70px;
+  }
+}
+
+@media (max-width: 767px) {
+  .data-panel {
+    width: 100%;
+  }
+}
+
+.layer-control-section {
+  flex-shrink: 0;
+}
+
+.side-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 页卡切换样式 */
+.tab-container {
+  margin-top: 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 400px;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  outline: none;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.tab-button:hover {
+  color: var(--primary-color);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.tab-contents {
+  padding: 16px;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-content {
+  display: none;
+  height: 100%;
+}
+
+.tab-content.active {
+  display: block;
+  height: 100%;
+}
+
+/* 确保页卡内的组件不添加额外边距 */
+.tab-content .selected-details,
+.tab-content .data-charts {
+  margin-top: 0;
+  height: 100%;
+}
+
+.tab-content .section-title {
+  margin-top: 0;
+}
+
+/* 图表样式 */
+.data-charts {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chart-container {
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.chart-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chart-body {
+  height: 200px;
+  padding: 8px;
+  width: 100%;
+}
+
+/* 历史数据弹窗样式 */
+.history-data-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-data-popup .popup-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 800px;
+  max-width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-data-popup .popup-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-data-popup .popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.history-data-popup .popup-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.history-data-popup .popup-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--light-gray);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.history-data-chart {
+  margin-bottom: 20px;
+  background-color: #FAFAFA;
+  border-radius: 4px;
+  padding: 10px;
+} 
