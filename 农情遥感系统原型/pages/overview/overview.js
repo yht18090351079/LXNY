@@ -619,9 +619,11 @@ function initSimulatedMap(level, regionId) {
   const map = L.map('map', mapOptions).setView([35.6, 103.2], 10);
   window.mapInstance = map;
   
-  // 添加底图图层
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
+  // 添加高德地图作为默认底图图层
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'],
+    maxZoom: 18,
+    attribution: '© 高德地图'
   }).addTo(map);
   
   // 设置地图视图范围
@@ -766,9 +768,10 @@ function initRealMap(townId, countyId) {
   // 初始化地图
   const map = L.map('map').setView(mapCenter, zoomLevel);
   
-  // 添加OpenStreetMap底图
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  // 添加高德地图底图
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'],
+    attribution: '© 高德地图',
     maxZoom: 18,
   }).addTo(map);
   
@@ -785,12 +788,24 @@ function initRealMap(townId, countyId) {
   
   // 创建图层控制器
   const baseMaps = {
-    "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    "高德标准地图": L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      attribution: '© 高德地图',
       maxZoom: 18,
     }),
-    "卫星影像": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    "高德卫星影像": L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      attribution: '© 高德地图',
+      maxZoom: 18
+    }),
+    "腾讯标准地图": L.tileLayer('https://rt{s}.map.gtimg.com/tile?z={z}&x={x}&y={y}&type=vector&styleid=3', {
+      subdomains: ['0', '1', '2', '3'],
+      attribution: '© 腾讯地图',
+      maxZoom: 18
+    }),
+    "腾讯卫星影像": L.tileLayer('https://p{s}.map.gtimg.com/sateTiles/{z}/{x}/{y}.jpg', {
+      subdomains: ['0', '1', '2', '3'],
+      attribution: '© 腾讯地图',
       maxZoom: 18
     })
   };

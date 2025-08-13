@@ -47,17 +47,7 @@ const LINXIA_GEO_CONFIG = {
 const MAP_LAYERS_CONFIG = {
     // 标准地图图层
     STANDARD: {
-        // OpenStreetMap
-        OSM: {
-            name: 'OpenStreetMap',
-            type: 'OpenStreetMapImageryProvider',
-            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
-            maximumLevel: 18,
-            credit: 'OpenStreetMap contributors'
-        },
-        
-        // 高德地图标准图层（备用）
+        // 高德地图标准图层（主要）
         AMAP_STANDARD: {
             name: '高德标准地图',
             type: 'UrlTemplateImageryProvider',
@@ -65,30 +55,32 @@ const MAP_LAYERS_CONFIG = {
             subdomains: ['1', '2', '3', '4'],
             maximumLevel: 18,
             credit: '高德地图'
+        },
+        
+        // 腾讯地图标准图层（备用）
+        TENCENT_STANDARD: {
+            name: '腾讯标准地图',
+            type: 'UrlTemplateImageryProvider',
+            url: 'https://rt{s}.map.gtimg.com/tile?z={z}&x={x}&y={y}&type=vector&styleid=3',
+            subdomains: ['0', '1', '2', '3'],
+            maximumLevel: 18,
+            credit: '腾讯地图'
+        },
+        
+        // OpenStreetMap（国内镜像，备用）
+        OSM_CHINA: {
+            name: 'OpenStreetMap(清华镜像)',
+            type: 'UrlTemplateImageryProvider',
+            url: 'https://mirrors.tuna.tsinghua.edu.cn/osm/{z}/{x}/{y}.png',
+            subdomains: [],
+            maximumLevel: 18,
+            credit: 'OpenStreetMap contributors, 清华大学镜像'
         }
     },
     
     // 卫星影像图层
     SATELLITE: {
-        // Bing Maps卫星影像
-        BING_SATELLITE: {
-            name: 'Bing卫星影像',
-            type: 'BingMapsImageryProvider',
-            mapStyle: 'Aerial',
-            maximumLevel: 19,
-            credit: 'Microsoft Bing Maps'
-        },
-        
-        // Esri World Imagery
-        ESRI_SATELLITE: {
-            name: 'Esri世界影像',
-            type: 'ArcGisMapServerImageryProvider',
-            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',
-            maximumLevel: 18,
-            credit: 'Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
-        },
-        
-        // 高德卫星影像（备用）
+        // 高德卫星影像（主要）
         AMAP_SATELLITE: {
             name: '高德卫星影像',
             type: 'UrlTemplateImageryProvider',
@@ -96,6 +88,26 @@ const MAP_LAYERS_CONFIG = {
             subdomains: ['1', '2', '3', '4'],
             maximumLevel: 18,
             credit: '高德地图'
+        },
+        
+        // 腾讯卫星影像（备用）
+        TENCENT_SATELLITE: {
+            name: '腾讯卫星影像',
+            type: 'UrlTemplateImageryProvider',
+            url: 'https://p{s}.map.gtimg.com/sateTiles/{z}/{x}/{y}.jpg',
+            subdomains: ['0', '1', '2', '3'],
+            maximumLevel: 18,
+            credit: '腾讯地图'
+        },
+        
+        // 天地图影像（需要密钥）
+        TIANDITU_SATELLITE: {
+            name: '天地图影像',
+            type: 'UrlTemplateImageryProvider',
+            url: 'https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=你的天地图密钥',
+            subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+            maximumLevel: 18,
+            credit: '天地图'
         }
     }
 };

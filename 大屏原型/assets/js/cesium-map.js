@@ -268,42 +268,54 @@ function createTerrainProvider() {
  * 创建标准地图影像提供器
  */
 function createStandardImageryProvider() {
-    console.log('🗺️ 创建Google标准地图影像提供器...');
+    console.log('🗺️ 创建国内标准地图影像提供器...');
     
     const providers = [
-        // 方案1: Google Maps 标准地图
+        // 方案1: 高德地图标准地图
         () => {
-            console.log('🔄 尝试Google Maps标准地图');
+            console.log('🔄 尝试高德地图标准地图');
             return new Cesium.UrlTemplateImageryProvider({
-                url: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                subdomains: ['0', '1', '2', '3'],
+                url: 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+                subdomains: ['1', '2', '3', '4'],
                 maximumLevel: 18,
-                credit: new Cesium.Credit('Google Maps', false),
+                credit: new Cesium.Credit('高德地图', false),
                 tilingScheme: new Cesium.WebMercatorTilingScheme(),
                 rectangle: Cesium.Rectangle.MAX_VALUE
             });
         },
         
-        // 方案2: Google Maps 地形地图（备用）
+        // 方案2: 腾讯地图标准地图（备用）
         () => {
-            console.log('🔄 尝试Google Maps地形地图');
+            console.log('🔄 尝试腾讯地图标准地图');
             return new Cesium.UrlTemplateImageryProvider({
-                url: 'https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+                url: 'https://rt{s}.map.gtimg.com/tile?z={z}&x={x}&y={y}&type=vector&styleid=3',
                 subdomains: ['0', '1', '2', '3'],
                 maximumLevel: 18,
-                credit: new Cesium.Credit('Google Maps', false),
+                credit: new Cesium.Credit('腾讯地图', false),
                 tilingScheme: new Cesium.WebMercatorTilingScheme(),
                 rectangle: Cesium.Rectangle.MAX_VALUE
             });
         },
         
-        // 方案3: 应急方案
+        // 方案3: OpenStreetMap国内镜像
+        () => {
+            console.log('🔄 尝试OpenStreetMap清华镜像');
+            return new Cesium.UrlTemplateImageryProvider({
+                url: 'https://mirrors.tuna.tsinghua.edu.cn/osm/{z}/{x}/{y}.png',
+                maximumLevel: 18,
+                credit: new Cesium.Credit('OpenStreetMap 清华镜像', false),
+                tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                rectangle: Cesium.Rectangle.MAX_VALUE
+            });
+        },
+        
+        // 方案4: 应急方案
         () => {
             console.log('🔄 使用应急标准地图');
             return new Cesium.SingleTileImageryProvider({
-                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmE0ZDNhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkdvb2dsZSDmoIflh4blnLDlm748L3RleHQ+CiAgPHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2NjYyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuW6lOaApeaooeW8jzwvdGV4dD4KPC9zdmc+',
+                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmE0ZDNhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbveWGheagh+WHhuWcsOWbvzwvdGV4dD4KCiAgPHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2NjYyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuW6lOaApeaooeW8jzwvdGV4dD4KPC9zdmc+',
                 rectangle: Cesium.Rectangle.MAX_VALUE,
-                credit: new Cesium.Credit('Google Maps (应急)', false)
+                credit: new Cesium.Credit('国内地图 (应急)', false)
             });
         }
     ];
@@ -328,42 +340,56 @@ function createStandardImageryProvider() {
  * 创建卫星影像提供器
  */
 function createSatelliteImageryProvider() {
-    console.log('🛰️ 创建Google卫星地图影像提供器...');
+    console.log('🛰️ 创建国内卫星地图影像提供器...');
     
     const providers = [
-        // 方案1: Google Maps 卫星影像
+        // 方案1: 高德地图卫星影像
         () => {
-            console.log('🔄 尝试Google Maps卫星影像');
+            console.log('🔄 尝试高德地图卫星影像');
             return new Cesium.UrlTemplateImageryProvider({
-                url: 'https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-                subdomains: ['0', '1', '2', '3'],
+                url: 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+                subdomains: ['1', '2', '3', '4'],
                 maximumLevel: 18,
-                credit: new Cesium.Credit('Google Maps', false),
+                credit: new Cesium.Credit('高德地图', false),
                 tilingScheme: new Cesium.WebMercatorTilingScheme(),
                 rectangle: Cesium.Rectangle.MAX_VALUE
             });
         },
         
-        // 方案2: Google Maps 混合模式（卫星+标签）
+        // 方案2: 腾讯地图卫星影像
         () => {
-            console.log('🔄 尝试Google Maps混合模式');
+            console.log('🔄 尝试腾讯地图卫星影像');
             return new Cesium.UrlTemplateImageryProvider({
-                url: 'https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+                url: 'https://p{s}.map.gtimg.com/sateTiles/{z}/{x}/{y}.jpg',
                 subdomains: ['0', '1', '2', '3'],
                 maximumLevel: 18,
-                credit: new Cesium.Credit('Google Maps', false),
+                credit: new Cesium.Credit('腾讯地图', false),
                 tilingScheme: new Cesium.WebMercatorTilingScheme(),
                 rectangle: Cesium.Rectangle.MAX_VALUE
             });
         },
         
-        // 方案3: 应急方案
+        // 方案3: 高德地图路网标注（叠加在卫星图上）
+        () => {
+            console.log('🔄 尝试高德地图路网标注');
+            return new Cesium.UrlTemplateImageryProvider({
+                url: 'https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',
+                subdomains: ['1', '2', '3', '4'],
+                maximumLevel: 18,
+                credit: new Cesium.Credit('高德地图路网', false),
+                tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                rectangle: Cesium.Rectangle.MAX_VALUE,
+                alpha: 0.7  // 设置透明度以便与底层卫星图混合
+            });
+        },
+        
+        // 方案4: 应急方案
         () => {
             console.log('🔄 使用应急卫星地图');
             return new Cesium.SingleTileImageryProvider({
-                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWE0NzNhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkdvb2dsZSDljq/mmJ/lnLDlm748L3RleHQ+CiAgPHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2NjYyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuW6lOaApeaooeW8jzwvdGV4dD4KPC9zdmc+',
+                url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWE0NzNhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWbveWGheWNq+aYn+WcsOWbvzwvdGV4dD4KCiAgPHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZmlsbD0iI2NjYyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuW6lOaApeaooeW8jzwvdGV4dD4KPC9zdmc+',
                 rectangle: Cesium.Rectangle.MAX_VALUE,
-                credit: new Cesium.Credit('Google Maps (应急)', false)
+                credit: new Cesium.Credit('国内卫星地图 (应急)', false)
             });
         }
     ];

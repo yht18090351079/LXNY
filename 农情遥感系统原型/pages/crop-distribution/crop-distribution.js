@@ -540,8 +540,10 @@ function initRealMap(regionId, parentId) {
   window.mapInstance = map;
   
   // 添加底图图层
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'],
+    maxZoom: 18,
+    attribution: '© 高德地图'
   }).addTo(map);
   
   // 根据区域ID调整地图视图
@@ -791,7 +793,7 @@ function initSimulatedMap(level, regionId) {
   window.mapInstance = map;
   
   // 添加底图图层
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
     maxZoom: 19
   }).addTo(map);
   
@@ -859,8 +861,9 @@ function initRealMap(townId, countyId) {
   const map = L.map('map').setView(mapCenter, zoomLevel);
   
   // 添加OpenStreetMap底图
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'],
+    attribution: '© 高德地图',
     maxZoom: 18,
   }).addTo(map);
   
