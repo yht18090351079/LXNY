@@ -670,6 +670,11 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* ===== 右侧面板特殊布局：标题靠右，按钮靠左 ===== */
+.right-panel .panel-header {
+    flex-direction: row-reverse; /* 反转元素顺序 */
+}
+
 /* ===== 面板折叠功能 ===== */
 .glass-panel.collapsed {
     width: var(--collapsed-panel-width) !important;

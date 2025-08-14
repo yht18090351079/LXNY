@@ -357,6 +357,9 @@ function initYieldEstimationCharts() {
         // 初始化交互控件
         initDisasterCorrectionControls();
         
+        // 初始化修正结果显示
+        updateCorrectionResult();
+        
         console.log('✅ 产量预估图表初始化完成');
     } catch (error) {
         console.error('❌ 产量预估图表初始化失败:', error);
@@ -589,7 +592,9 @@ function showFiveYearChart() {
     // 预估数据（基于历史数据生成合理的预估值）
     const estimatedData = currentData.averageYield.map((value, index) => {
         if (index === actualData.length - 1) {
-            return value; // 最新年份显示预估值
+            // 最新年份使用修正后的预估值
+            const correctedYield = getCorrectedEstimatedYield();
+            return correctedYield !== null ? correctedYield : value;
         }
         // 历史年份的预估值（略有差异以显示预估准确性）
         return Math.round(value * (0.95 + Math.random() * 0.1));
@@ -727,7 +732,9 @@ function showFiveYearTable() {
     // 预估数据
     const estimatedData = currentData.averageYield.map((value, index) => {
         if (index === actualData.length - 1) {
-            return value;
+            // 最新年份使用修正后的预估值
+            const correctedYield = getCorrectedEstimatedYield();
+            return correctedYield !== null ? correctedYield : value;
         }
         return Math.round(value * (0.95 + Math.random() * 0.1));
     });
@@ -797,6 +804,22 @@ function initDisasterCorrectionControls() {
 }
 
 /**
+ * 获取当前修正后的预估产量（以kg/亩为单位）
+ */
+function getCorrectedEstimatedYield() {
+    const droughtLoss = parseFloat(document.getElementById('drought-loss')?.value || 5);
+    const heatLoss = parseFloat(document.getElementById('heat-loss')?.value || 3);
+    const totalLoss = droughtLoss + heatLoss;
+    
+    // 获取当前作物的原始预估产量（kg/亩）
+    const currentData = yieldEstimationData[currentCrop]?.historicalYield;
+    if (!currentData || !currentData.averageYield) return null;
+    
+    const originalYieldPerAcre = currentData.averageYield[currentData.averageYield.length - 1];
+    return Math.round(originalYieldPerAcre * (1 - totalLoss / 100));
+}
+
+/**
  * 更新修正结果
  */
 function updateCorrectionResult() {
@@ -819,28 +842,15 @@ function updateCorrectionResult() {
     }
     
     // 更新仪表盘中的预估产量
-    const gaugeValueEl = document.querySelector('.gauge-value:not(.achievement)');
-    if (gaugeValueEl && gaugeValueEl.textContent.includes('吨')) {
-        gaugeValueEl.textContent = Math.round(correctedYield) + '吨';
-    }
+    updateAchievementGauge();
     
-    // 重新计算完成率
-    const targetYield = 1660; // 年度目标
-    const newAchievement = (correctedYield / targetYield * 100);
-    const achievementEl = document.querySelector('.gauge-value.achievement');
-    if (achievementEl) {
-        achievementEl.textContent = newAchievement.toFixed(1) + '%';
-    }
+    // 更新五年对比图表中的预估值
+    updateFiveYearComparisonChart();
     
-    // 更新进度条
-    const progressValueEl = document.querySelector('.progress-value');
-    const progressFillEl = document.querySelector('.progress-fill');
-    if (progressValueEl) {
-        progressValueEl.textContent = newAchievement.toFixed(1) + '%';
-    }
-    if (progressFillEl) {
-        progressFillEl.style.width = newAchievement.toFixed(1) + '%';
-    }
+    // 更新经济价值分析卡
+    updateEconomicAnalysisWithCorrection();
+    
+    console.log(`🔄 灾害修正更新: 损失率${totalLoss.toFixed(1)}%, 修正后产量${Math.round(correctedYield)}吨`);
 }
 
 /**
@@ -1352,8 +1362,8 @@ function updateCropDetailsDisplay() {
     // 更新区域估产达成度仪表盘
     updateAchievementGauge();
     
-    // 更新经济价值分析
-    updateEconomicAnalysis();
+    // 更新经济价值分析（带灾害修正）
+    updateEconomicAnalysisWithCorrection();
 }
 
 /**
@@ -1369,10 +1379,19 @@ function updateAchievementGauge() {
         return;
     }
     
+    // 计算修正后的预估产量（吨）
+    const droughtLoss = parseFloat(document.getElementById('drought-loss')?.value || 5);
+    const heatLoss = parseFloat(document.getElementById('heat-loss')?.value || 3);
+    const totalLoss = droughtLoss + heatLoss;
+    const correctedEstimatedYield = Math.round(gaugeData.estimatedYield * (1 - totalLoss / 100));
+    
+    // 计算修正后的达成率
+    const correctedAchievementRate = (correctedEstimatedYield / gaugeData.targetYield * 100);
+    
     // 更新预估产量
     const estimatedYieldEl = document.querySelector('.gauge-item:nth-child(1) .gauge-value');
     if (estimatedYieldEl) {
-        estimatedYieldEl.textContent = `${gaugeData.estimatedYield}吨`;
+        estimatedYieldEl.textContent = `${correctedEstimatedYield}吨`;
     }
     
     // 更新年度目标
@@ -1381,27 +1400,109 @@ function updateAchievementGauge() {
         targetYieldEl.textContent = `${gaugeData.targetYield}吨`;
     }
     
-    // 更新完成率
-    const achievementRateEl = document.querySelector('.gauge-item.highlight .gauge-value');
-    if (achievementRateEl) {
-        achievementRateEl.textContent = `${gaugeData.achievementRate}%`;
-    }
-    
     // 更新进度条
     const progressValueEl = document.querySelector('.progress-value');
     const progressFillEl = document.querySelector('.progress-fill');
     if (progressValueEl) {
-        progressValueEl.textContent = `${gaugeData.achievementRate}%`;
+        progressValueEl.textContent = `${correctedAchievementRate.toFixed(1)}%`;
     }
     if (progressFillEl) {
-        progressFillEl.style.width = `${gaugeData.achievementRate}%`;
+        progressFillEl.style.width = `${correctedAchievementRate.toFixed(1)}%`;
     }
     
-    console.log(`🔄 更新仪表盘: ${gaugeData.achievementRate}% 达成率`);
+    console.log(`🔄 更新仪表盘: ${correctedAchievementRate.toFixed(1)}% 达成率 (修正后${correctedEstimatedYield}吨)`);
 }
 
 /**
- * 更新经济价值分析
+ * 更新经济价值分析（带灾害损失修正）
+ */
+function updateEconomicAnalysisWithCorrection() {
+    console.log('🔄 更新经济价值分析 - 带灾害修正');
+    
+    // 获取当前选中作物的经济数据
+    const economicData = yieldEstimationData[currentCrop]?.economicAnalysis;
+    if (!economicData) {
+        console.warn(`⚠️ 未找到作物 ${currentCrop} 的经济数据`);
+        return;
+    }
+    
+    // 计算灾害损失修正系数
+    const droughtLoss = parseFloat(document.getElementById('drought-loss')?.value || 5);
+    const heatLoss = parseFloat(document.getElementById('heat-loss')?.value || 3);
+    const totalLoss = droughtLoss + heatLoss;
+    const correctionFactor = (1 - totalLoss / 100);
+    
+    // 修正后的经济数据
+    const correctedTotalValue = economicData.totalValue * correctionFactor;
+    const correctedAverageIncome = economicData.averageIncome * correctionFactor;
+    // 成本收益率保持不变，因为成本和收益都会按比例调整
+    const correctedCostBenefitRatio = economicData.costBenefitRatio;
+    
+    // 更新预估总产值
+    const totalValueEl = document.querySelector('.econ-card:nth-child(1) .econ-value');
+    if (totalValueEl) {
+        totalValueEl.textContent = `${correctedTotalValue.toFixed(1)}万元`;
+    }
+    
+    // 更新亩均收益
+    const averageIncomeEl = document.querySelector('.econ-card:nth-child(2) .econ-value');
+    if (averageIncomeEl) {
+        averageIncomeEl.textContent = `${Math.round(correctedAverageIncome)}元/亩`;
+    }
+    
+    // 更新成本收益率
+    const costBenefitEl = document.querySelector('.econ-card:nth-child(3) .econ-value');
+    if (costBenefitEl) {
+        costBenefitEl.textContent = correctedCostBenefitRatio.toString();
+    }
+    
+    // 更新变化率（显示相对于原始值的变化）
+    const valueChangePercent = (correctionFactor - 1) * 100;
+    const valueChangeEl = document.querySelector('.econ-card:nth-child(1) .econ-change');
+    if (valueChangeEl) {
+        valueChangeEl.textContent = `${valueChangePercent > 0 ? '+' : ''}${valueChangePercent.toFixed(1)}%`;
+        valueChangeEl.className = `econ-change ${valueChangePercent >= 0 ? 'positive' : 'negative'}`;
+    }
+    
+    const incomeChangeEl = document.querySelector('.econ-card:nth-child(2) .econ-change');
+    if (incomeChangeEl) {
+        incomeChangeEl.textContent = `${valueChangePercent > 0 ? '+' : ''}${valueChangePercent.toFixed(1)}%`;
+        incomeChangeEl.className = `econ-change ${valueChangePercent >= 0 ? 'positive' : 'negative'}`;
+    }
+    
+    const ratioChangeEl = document.querySelector('.econ-card:nth-child(3) .econ-change');
+    if (ratioChangeEl) {
+        // 收益率变化保持原有逻辑
+        const change = economicData.ratioChange;
+        ratioChangeEl.textContent = `${change > 0 ? '+' : ''}${change}%`;
+        ratioChangeEl.className = `econ-change ${change >= 0 ? 'positive' : 'negative'}`;
+    }
+    
+    // 更新收益分解 - 根据修正后的数值调整
+    const profitContainer = document.querySelector('.profit-breakdown');
+    if (profitContainer && economicData.cropProfitBreakdown.length > 0) {
+        // 清空现有项目
+        profitContainer.innerHTML = '';
+        
+        // 为每个收益项目创建元素，应用修正系数
+        economicData.cropProfitBreakdown.forEach((breakdown) => {
+            const correctedValue = breakdown.value * correctionFactor;
+            const breakdownItem = document.createElement('div');
+            breakdownItem.className = 'breakdown-item';
+            breakdownItem.innerHTML = `
+                <span class="breakdown-label">${breakdown.name}</span>
+                <span class="breakdown-value">${correctedValue.toFixed(1)}万元</span>
+                <span class="breakdown-percent">${breakdown.percent}%</span>
+            `;
+            profitContainer.appendChild(breakdownItem);
+        });
+    }
+    
+    console.log(`🔄 更新经济分析(修正): ${correctedTotalValue.toFixed(1)}万元总产值, 损失率${totalLoss.toFixed(1)}%`);
+}
+
+/**
+ * 更新经济价值分析（原始版本，不带修正）
  */
 function updateEconomicAnalysis() {
     console.log('🔄 更新经济价值分析 - 当前作物:', currentCrop);

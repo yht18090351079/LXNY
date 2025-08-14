@@ -1,712 +1,197 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>评论系统组件 - 演示页面</title>
-    <link rel="stylesheet" href="comment-system.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>批注组件演示</title>
+    <!-- 引入字体图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- 引入自定义样式 -->
     <style>
-        /* 演示页面专用样式 */
+        /* 基础CSS变量定义 */
+        :root {
+            /* 主色调 */
+            --primary-color: #2E8B57;
+            /* 辅助色 */
+            --accent-color: #FF6347;
+            /* 其它样式变量 */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --spacing-sm: 8px;
+            --spacing-md: 12px;
+            --spacing-lg: 16px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --border-color: #EEEEEE;
+            --white: #FFFFFF;
+            --font-size-base: 14px;
+            --font-size-md: 16px;
+        }
+
+        /* 基础样式 */
         body {
+            font-family: "微软雅黑", "Microsoft YaHei", sans-serif;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            color: var(--text-primary);
         }
 
-        .demo-container {
-            padding: 40px;
+        .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 15px;
         }
 
-        .demo-header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        .demo-title {
-            font-size: 32px;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        .demo-subtitle {
-            font-size: 16px;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-
-        .demo-instructions {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
-
-        .demo-instructions h3 {
-            margin-top: 0;
-            color: white;
-            font-size: 18px;
-        }
-
-        .demo-instructions ul {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-        }
-
-        .demo-content {
+        .product-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
-        .demo-card {
+        .product-card {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .demo-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .demo-card h3 {
-            color: #333;
-            margin-top: 0;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-
-        .demo-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .feature-list li {
-            padding: 8px 0;
-            color: #555;
-            position: relative;
-            padding-left: 25px;
-        }
-
-        .feature-list li:before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .demo-actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .demo-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .demo-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        .demo-btn.secondary {
-            background: #6c757d;
-        }
-
-        .demo-btn.secondary:hover {
-            background: #545b62;
-        }
-
-        .demo-mockup {
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
             border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            color: #6c757d;
-            margin: 20px 0;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
         }
 
-        .mockup-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
         }
 
-        .mockup-text {
-            font-size: 16px;
-            margin-bottom: 10px;
+        .product-info {
+            padding: 15px;
         }
 
-        .mockup-hint {
-            font-size: 12px;
-            color: #adb5bd;
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .demo-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .demo-container {
-                padding: 20px;
-            }
-            
-            .demo-title {
-                font-size: 24px;
-            }
-            
-
+        .product-price {
+            color: #f44336;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-        /* 状态指示器 */
-        .status-indicator {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 12px;
+        .product-unit {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .product-address {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .product-desc {
             color: #333;
-            backdrop-filter: blur(10px);
-            z-index: 998;
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #28a745;
-            margin-right: 8px;
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+            font-size: 0.9em;
+            line-height: 1.5;
         }
     </style>
+    <link rel="stylesheet" href="annotation.css">
 </head>
+
 <body>
-    <!-- 状态指示器 -->
-    <div class="status-indicator">
-        <span class="status-dot"></span>
-        评论系统已加载
-    </div>
+    <!-- 主容器 -->
+    <div class="container">
+        <h1 style="margin: 20px 0; text-align: center;">批注组件演示</h1>
 
-
-
-    <div class="demo-container">
-        <!-- 演示页面标题 -->
-        <div class="demo-header">
-            <h1 class="demo-title">评论系统组件演示</h1>
-            <p class="demo-subtitle">类似 Axure / 墨刀 的评论功能，支持在页面任意位置添加评论标记</p>
-            
-            <div class="demo-instructions">
-                <h3>📝 使用说明</h3>
-                <ul>
-                    <li><strong>步骤1：</strong>点击右上角"💬 评论模式"按钮进入评论模式（按钮会变蓝色）</li>
-                    <li><strong>步骤2：</strong>在评论模式下，点击页面任意位置添加评论</li>
-                    <li><strong>查看评论：</strong>点击评论标记查看详情，点击评论列表项也可查看</li>
-                    <li><strong>控制显示：</strong>使用"👁️ 显示/隐藏评论"按钮控制评论标记的可见性</li>
-                    <li><strong>评论列表：</strong>点击"📋 评论列表"按钮查看所有评论</li>
-                    <li><strong>退出模式：</strong>再次点击"评论模式"按钮退出评论模式</li>
-                    <li><strong>快捷键：</strong>按ESC键可关闭弹窗和模态框</li>
-                </ul>
-            </div>
+        <div class="demo-instructions"
+            style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 8px;">
+            <h2>使用说明：</h2>
+            <ol style="margin-left: 20px; line-height: 1.6;">
+                <li>点击右下角的<i class="fas fa-comment-alt"></i>图标按钮进入批注模式</li>
+                <li>在页面上的任意位置点击添加批注标记</li>
+                <li>输入批注标题和内容并保存</li>
+                <li>点击批注标记查看批注内容</li>
+                <li>再次点击右下角的<i class="fas fa-comment-alt"></i>图标按钮退出批注模式</li>
+                <li>点击右下角的<i class="fas fa-trash"></i>图标清除所有批注</li>
+            </ol>
         </div>
 
-        <!-- 演示内容区域 -->
-        <div class="demo-content">
-            <div class="demo-card">
-                <h3>🎯 核心功能</h3>
-                <p>这是一个功能完整的评论系统组件，您可以在这里测试各种功能。</p>
-                <ul class="feature-list">
-                    <li>点击添加评论标记</li>
-                    <li>评论编辑和删除</li>
-                    <li>优先级设置（低/普通/高/紧急）</li>
-                    <li>状态管理（未解决/已解决）</li>
-                    <li>回复功能</li>
-                    <li>本地存储</li>
-                </ul>
-            </div>
+        <div class="demo-section" style="margin: 30px 0; position: relative;">
+            <h2>产品展示区</h2>
+            <div class="product-grid">
+                <!-- 产品卡片1 -->
+                <div class="product-card">
+                    <img src="https://img.freepik.com/free-photo/bunch-fresh-strawberries-white-background_1308-32939.jpg"
+                        alt="草莓" class="product-image" loading="lazy" width="300" height="200">
+                    <div class="product-info">
+                        <div class="product-name">丹东九九草莓</div>
+                        <div class="product-price">
+                            ¥32.80<span class="product-unit">/斤</span>
+                        </div>
+                        <div class="product-address">
+                            <i class="fas fa-map-marker-alt"></i>辽宁-丹东
+                        </div>
+                        <div class="product-desc">精选丹东九九草莓，果大色艳，香甜多汁，现摘现发。</div>
+                    </div>
+                </div>
 
-            <div class="demo-card">
-                <h3>💡 设计特点</h3>
-                <p>参考了 Axure 和墨刀的评论功能设计，提供直观的用户体验。</p>
-                <ul class="feature-list">
-                    <li>现代化的 UI 设计</li>
-                    <li>响应式布局</li>
-                    <li>流畅的动画效果</li>
-                    <li>完善的交互反馈</li>
-                    <li>ESC键关闭弹窗</li>
-                    <li>移动端适配</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 测试区域 -->
-        <div class="demo-mockup">
-            <div class="mockup-icon">🖱️</div>
-            <div class="mockup-text">在这个区域测试评论功能</div>
-            <div class="mockup-hint">进入评论模式后，点击任意位置添加评论</div>
-        </div>
-
-        <!-- 操作按钮 -->
-        <div class="demo-actions">
-            <button class="demo-btn" onclick="window.commentSystem.openPanel()">
-                📋 打开评论列表
-            </button>
-            <button class="demo-btn" onclick="saveToFile()" id="save-btn">
-                💾 保存到文件
-            </button>
-            <button class="demo-btn secondary" onclick="loadFromFile()">
-                📂 从文件加载
-            </button>
-            <button class="demo-btn secondary" onclick="exportComments()">
-                📤 导出数据
-            </button>
-            <button class="demo-btn secondary" onclick="addSampleComments()">
-                📝 添加示例评论
-            </button>
-            <button class="demo-btn secondary" onclick="fixCommentData()">
-                🔧 修复数据
-            </button>
-            <button class="demo-btn secondary" onclick="clearAllComments()">
-                🗑️ 清空所有评论
-            </button>
-            <button class="demo-btn secondary" onclick="window.commentSystem.updateAllMarkerPositions(); console.log('✅ 已强制更新所有标记位置');">
-                📍 刷新标记位置
-            </button>
-        </div>
-    </div>
-
-    <!-- 评论系统组件 -->
-    <div id="comment-system">
-        <!-- 评论工具栏 -->
-        <div class="comment-toolbar">
-            <button id="toggle-comment-mode" class="toolbar-btn">
-                <span class="btn-icon">💬</span>
-                <span class="btn-text">评论模式</span>
-            </button>
-            <button id="toggle-comments-visibility" class="toolbar-btn">
-                <span class="btn-icon">👁️</span>
-                <span class="btn-text">显示评论</span>
-            </button>
-            <button id="open-comment-list" class="toolbar-btn">
-                <span class="btn-icon">📋</span>
-                <span class="btn-text">评论列表</span>
-            </button>
-
-        </div>
-
-        <!-- 评论标记容器 -->
-        <div id="comment-markers"></div>
-
-        <!-- 评论面板 -->
-        <div id="comment-panel" class="comment-panel">
-            <div class="panel-header">
-                <h3 class="panel-title">评论列表</h3>
-                <button id="close-panel" class="close-btn">&times;</button>
-            </div>
-            <div class="panel-content">
-                <div id="comments-list" class="comments-list">
-                    <!-- 评论项将通过JavaScript动态添加 -->
+                <!-- 产品卡片2 -->
+                <div class="product-card">
+                    <img src="https://img.freepik.com/free-photo/tomatoes-white-background_144627-43714.jpg" alt="西红柿"
+                        class="product-image" loading="lazy" width="300" height="200">
+                    <div class="product-info">
+                        <div class="product-name">河北寿光西红柿</div>
+                        <div class="product-price">
+                            ¥4.50<span class="product-unit">/斤</span>
+                        </div>
+                        <div class="product-address">
+                            <i class="fas fa-map-marker-alt"></i>山东-寿光
+                        </div>
+                        <div class="product-desc">产地直发，绿色种植，新鲜采摘，口感酸甜。</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 评论编辑模态框 -->
-        <div id="comment-modal" class="comment-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="modal-title">添加评论</h4>
-                    <button id="close-modal" class="close-btn">&times;</button>
+        <div class="demo-section" style="margin: 30px 0; position: relative;">
+            <h2>表单区域</h2>
+            <div class="form-demo" style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">用户名：</label>
+                    <input type="text" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="comment-author">作者:</label>
-                        <input type="text" id="comment-author" placeholder="请输入您的姓名" value="匿名用户">
-                    </div>
-                    <div class="form-group">
-                        <label for="comment-content">评论内容:</label>
-                        <textarea id="comment-content" rows="4" placeholder="请输入评论内容..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="comment-priority">优先级:</label>
-                        <select id="comment-priority">
-                            <option value="low">低</option>
-                            <option value="normal" selected>普通</option>
-                            <option value="high">高</option>
-                            <option value="urgent">紧急</option>
-                        </select>
-                    </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">密码：</label>
+                    <input type="password"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                 </div>
-                <div class="modal-footer">
-                    <button id="save-comment" class="btn btn-primary">保存</button>
-                    <button id="cancel-comment" class="btn btn-secondary">取消</button>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">留言：</label>
+                    <textarea
+                        style="width: 100%; height: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
                 </div>
+                <button
+                    style="padding: 10px 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">提交</button>
             </div>
         </div>
 
-        <!-- 评论详情弹窗 -->
-        <div id="comment-detail-popup" class="comment-popup">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <div class="comment-info">
-                        <span class="comment-number">#1</span>
-                        <span class="comment-author">作者姓名</span>
-                        <span class="comment-time">2024-01-15 14:30</span>
-                    </div>
-                    <div class="popup-actions">
-                        <button class="action-btn edit-btn" title="编辑">✏️</button>
-                        <button class="action-btn delete-btn" title="删除">🗑️</button>
-                        <button class="close-popup-btn">&times;</button>
-                    </div>
-                </div>
-                <div class="popup-body">
-                    <div class="comment-content-display">
-                        评论内容将在这里显示
-                    </div>
-                    <div class="comment-status">
-                        <span class="priority-badge normal">普通</span>
-                    </div>
+        <div class="demo-section" style="margin: 30px 0; position: relative;">
+            <h2>图表区域</h2>
+            <div class="chart-demo"
+                style="height: 300px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <i class="fas fa-chart-bar" style="font-size: 64px; color: #aaa;"></i>
+                    <p style="margin-top: 10px; color: #666;">图表区域（可添加批注）</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 引入评论系统 -->
-    <script src="comment-system.js"></script>
-    
-    <!-- 演示页面专用脚本 -->
-    <script>
-        // 保存到文件
-        async function saveToFile() {
-            if (window.commentSystem) {
-                const success = await window.commentSystem.saveToJsonFile();
-                if (success) {
-                    alert('评论数据已保存到文件！');
-                    updateSaveButtonState();
-                }
-            }
-        }
-
-        // 从文件加载
-        function loadFromFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            window.commentSystem.importComments(data);
-                            // 清理缓存
-                            localStorage.removeItem('comment-system-cache');
-                            updateSaveButtonState();
-                            alert('评论数据加载成功！');
-                        } catch (error) {
-                            alert('加载失败：文件格式错误');
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            input.click();
-        }
-
-        // 导出评论数据
-        function exportComments() {
-            const data = window.commentSystem.exportComments();
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `comments-export-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('评论数据已导出！');
-        }
-
-        // 更新保存按钮状态
-        function updateSaveButtonState() {
-            const saveBtn = document.getElementById('save-btn');
-            if (window.commentSystem && window.commentSystem.hasUnsavedData()) {
-                saveBtn.textContent = '💾 保存到文件 *';
-                saveBtn.style.background = '#dc3545';
-                saveBtn.title = '有未保存的评论数据';
-            } else {
-                saveBtn.textContent = '💾 保存到文件';
-                saveBtn.style.background = '#007bff';
-                saveBtn.title = '保存评论数据到JSON文件';
-            }
-        }
-
-        // 清空所有评论
-        function clearAllComments() {
-            if (confirm('确定要清空所有评论吗？此操作不可撤销。')) {
-                window.commentSystem.clearAllComments();
-                // 清理所有缓存数据
-                localStorage.removeItem('comment-system-cache');
-                localStorage.removeItem('comment-system-data');
-                updateSaveButtonState();
-                alert('所有评论已清空！');
-            }
-        }
-        
-        // 修复数据功能
-        function fixCommentData() {
-            if (window.commentSystem) {
-                // 清理当前数据
-                window.commentSystem.comments = window.commentSystem.comments.map(comment => {
-                    return window.commentSystem.cleanCommentData(comment);
-                }).filter(comment => comment !== null);
-                
-                // 重新保存
-                window.commentSystem.saveToStorage();
-                
-                // 重新创建标记
-                document.getElementById('comment-markers').innerHTML = '';
-                window.commentSystem.comments.forEach(comment => {
-                    window.commentSystem.createMarker(comment);
-                });
-                
-    
-                window.commentSystem.updateCommentsList();
-                updateSaveButtonState();
-                
-                alert('数据修复完成！');
-            }
-        }
-
-        // 页面加载完成后的初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 开启调试模式
-            window.commentDebug = true;
-            
-            // 延迟初始化，确保评论系统完全加载
-            setTimeout(() => {
-                // 自动修复数据（静默）
-                if (window.commentSystem) {
-                    const originalLength = window.commentSystem.comments.length;
-                    window.commentSystem.comments = window.commentSystem.comments.map(comment => {
-                        return window.commentSystem.cleanCommentData(comment);
-                    }).filter(comment => comment !== null);
-                    
-                    if (window.commentSystem.comments.length !== originalLength) {
-                        console.log(`已清理 ${originalLength - window.commentSystem.comments.length} 条无效评论数据`);
-                        window.commentSystem.saveToStorage();
-            
-                        window.commentSystem.updateCommentsList();
-                    }
-                }
-                
-                // 更新保存按钮状态
-                updateSaveButtonState();
-                
-                // 不再自动添加示例评论，只从JSON文件加载
-                console.log('评论系统初始化完成，当前评论数：', window.commentSystem.comments.length);
-            }, 1000);
-            
-            // 定期检查保存状态
-            setInterval(() => {
-                updateSaveButtonState();
-            }, 5000);
-        });
-
-        // 添加示例评论
-        function addSampleComments() {
-            // 延迟添加，确保页面完全加载
-            setTimeout(() => {
-                // 动态创建评论，基于实际页面元素
-                const demoTitle = document.querySelector('.demo-title');
-                const firstCard = document.querySelector('.demo-card:first-child h3');
-                const mockupArea = document.querySelector('.demo-mockup');
-                
-                if (!demoTitle || !firstCard || !mockupArea) {
-                    console.warn('无法找到目标元素，跳过示例评论创建');
-                    return;
-                }
-                
-                const sampleComments = [
-                    {
-                        id: 1,
-                        targetElement: window.commentSystem.generateElementSelector(demoTitle),
-                        offsetX: 50,
-                        offsetY: 10,
-                        author: '产品经理',
-                        content: '标题设计很棒！建议字体可以再大一些，更突出主题。',
-                        priority: 'high',
-                        status: 'unresolved',
-                        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2小时前
-                        replies: [
-                            {
-                                id: 1001,
-                                author: 'UI设计师',
-                                content: '好的，我会在下个版本中调整字体大小。',
-                                timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString() // 1小时前
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        targetElement: window.commentSystem.generateElementSelector(firstCard),
-                        offsetX: 20,
-                        offsetY: 5,
-                        author: '测试工程师',
-                        content: '功能列表很清晰，建议添加更多的使用场景说明。',
-                        priority: 'urgent',
-                        status: 'unresolved',
-                        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30分钟前
-                        replies: []
-                    },
-                    {
-                        id: 3,
-                        targetElement: window.commentSystem.generateElementSelector(mockupArea),
-                        offsetX: 100,
-                        offsetY: 50,
-                        author: '前端开发',
-                        content: '测试区域的提示很友好，用户体验不错！',
-                        priority: 'normal',
-                        status: 'resolved',
-                        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4小时前
-                        replies: [
-                            {
-                                id: 1002,
-                                author: '产品经理',
-                                content: '感谢反馈！这样的设计确实更直观。',
-                                timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3小时前
-                            }
-                        ]
-                    }
-                ];
-                
-                // 添加示例评论到系统中
-                window.commentSystem.comments = sampleComments;
-                window.commentSystem.commentCounter = 3;
-
-                // 创建标记
-                sampleComments.forEach(comment => {
-                    window.commentSystem.createMarker(comment);
-                });
-
-                // 更新统计和列表
-    
-                window.commentSystem.updateCommentsList();
-                window.commentSystem.saveToStorage();
-
-                console.log('已添加示例评论数据');
-                updateSaveButtonState();
-                alert('示例评论已添加！请点击"保存到文件"按钮保存数据。');
-            }, 500);
-        }
-
-        // 添加页面提示
-        setTimeout(() => {
-            if (window.commentSystem && window.commentSystem.comments.length > 0) {
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 100px;
-                    right: 20px;
-                    background: #28a745;
-                    color: white;
-                    padding: 15px 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-                    z-index: 1002;
-                    font-size: 14px;
-                    max-width: 300px;
-                    animation: slideIn 0.3s ease;
-                `;
-                notification.innerHTML = `
-                    <strong>💡 提示</strong><br>
-                    页面上已有示例评论，您可以点击查看或添加新的评论！
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease forwards';
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
-                }, 5000);
-            }
-        }, 2000);
-
-        // 添加动画样式
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // 页面卸载时清理资源和提醒保存
-        window.addEventListener('beforeunload', function(e) {
-            if (window.commentSystem) {
-                // 检查是否有未保存的数据
-                if (window.commentSystem.hasUnsavedData()) {
-                    const message = '您有未保存的评论数据，确定要离开吗？';
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
-                }
-                
-                window.commentSystem.cleanup();
-            }
-        });
-    </script>
+    <!-- 引入批注功能JS -->
+    <script src="annotation.js"></script>
 </body>
+
 </html>

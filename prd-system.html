@@ -1,0 +1,4310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能化PRD系统 - 农情遥感系统产品需求文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            height: 100vh;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .prd-container {
+            display: grid;
+            grid-template-columns: 70% 30%;
+            grid-template-rows: 70% 30%;
+            height: 100vh;
+            gap: 1px;
+            padding: 0;
+            background: #2a2a2a;
+        }
+
+        /* 左上角 - 内嵌页面区域 */
+        .embedded-page {
+            grid-column: 1;
+            grid-row: 1;
+            background: #000000;
+            border: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .embedded-page iframe {
+            width: 1920px;
+            height: 1080px;
+            border: none;
+            border-radius: 12px;
+            transform-origin: top left;
+            position: absolute;
+            top: 10px;
+            left: 0;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+        /* 工具栏 */
+        .toolbar {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 2000;
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            background: rgba(42, 42, 42, 0.9);
+            color: #ffffff;
+            border: 1px solid #404040;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(60, 60, 60, 0.9);
+            border-color: #606060;
+            transform: translateY(-1px);
+        }
+
+        .toolbar-btn:active {
+            transform: translateY(0);
+            background: rgba(80, 80, 80, 0.9);
+        }
+
+        .toolbar-btn.active {
+            background: rgba(0, 168, 255, 0.9);
+            border-color: #00a8ff;
+        }
+
+        /* 全屏状态样式 */
+        .fullscreen-mode .prd-container {
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr;
+        }
+
+        .fullscreen-mode .embedded-page {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .fullscreen-mode .annotation-panel,
+        .fullscreen-mode .bottom-panels {
+            display: none;
+        }
+
+        .fullscreen-mode .toolbar-btn.fullscreen-btn {
+            background: rgba(220, 53, 69, 0.9);
+            border-color: #dc3545;
+        }
+
+        /* 批注模式样式 */
+        .annotation-mode .embedded-page {
+            cursor: crosshair;
+            position: relative;
+        }
+
+        .annotation-mode .embedded-page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 168, 255, 0.1);
+            pointer-events: none;
+            border: 2px dashed #00a8ff;
+            z-index: 1;
+        }
+
+        /* 批注模式下的iframe覆盖层 */
+        .annotation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            cursor: crosshair;
+        }
+
+        /* 高亮样式 */
+        .highlight-overlay {
+            position: fixed;
+            background: rgba(255, 193, 7, 0.3);
+            border: 3px solid #ffc107;
+            pointer-events: none;
+            z-index: 1000;
+            animation: highlight-pulse 1.5s infinite;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+        }
+
+        @keyframes highlight-pulse {
+            0% { 
+                background: rgba(255, 193, 7, 0.2);
+                border-color: #ffc107;
+                transform: scale(1);
+            }
+            50% { 
+                background: rgba(255, 193, 7, 0.4);
+                border-color: #ffeb3b;
+                transform: scale(1.02);
+            }
+            100% { 
+                background: rgba(255, 193, 7, 0.2);
+                border-color: #ffc107;
+                transform: scale(1);
+            }
+        }
+
+        /* 页面元素列表样式 */
+        .element-list {
+            margin-top: 12px;
+        }
+
+        .element-item {
+            background: #404040;
+            border: 1px solid #606060;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+        }
+
+        .element-item:hover {
+            background: #505050;
+            border-color: #00a8ff;
+        }
+
+        .element-item.active {
+            background: rgba(0, 168, 255, 0.2);
+            border-color: #00a8ff;
+            color: #00a8ff;
+        }
+
+        .element-item .element-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .element-item .element-desc {
+            font-size: 11px;
+            color: #cccccc;
+            opacity: 0.8;
+        }
+
+        /* 右侧 - 页面元素批注区域 */
+        .annotation-panel {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            background: #2a2a2a;
+            border: none;
+            padding: 0;
+            overflow: hidden;
+            border-left: 1px solid #404040;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .annotation-header {
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid #404040;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .annotation-content {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .annotation-item {
+            background: #333333;
+            border-left: 3px solid #00a8ff;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 0 4px 4px 0;
+            transition: all 0.2s ease;
+        }
+
+        .annotation-item:hover {
+            background: #3a3a3a;
+            border-left-color: #20b8ff;
+        }
+
+        .annotation-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .annotation-content {
+            font-size: 12px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* 底部三栏区域 */
+        .bottom-panels {
+            grid-column: 1;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1px;
+            background: #2a2a2a;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            border: none;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel:not(:first-child) {
+            border-left: 1px solid #404040;
+        }
+
+        .panel-header {
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 1px solid #404040;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .panel-content {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #cccccc;
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .panel-content h4 {
+            color: #ffffff;
+            font-size: 13px;
+            margin: 12px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .panel-content ul {
+            margin: 8px 0;
+            padding-left: 16px;
+        }
+
+        .panel-content li {
+            margin-bottom: 4px;
+            color: #cccccc;
+        }
+
+        .panel-content strong {
+            color: #ffffff;
+        }
+
+        .panel-content code {
+            background: #404040;
+            color: #00a8ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .nav-button {
+            background: #404040;
+            color: #ffffff;
+            border: 1px solid #606060;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-button:hover {
+            background: #505050;
+            border-color: #00a8ff;
+            color: #00a8ff;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #333333;
+            border-color: #404040;
+            color: #666666;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #505050;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .prd-container {
+                grid-template-columns: 65% 35%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .prd-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 50% 25% 25%;
+            }
+            
+            .annotation-panel {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .bottom-panels {
+                grid-row: 3;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel, .annotation-panel, .embedded-page {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .annotation-panel {
+            animation-delay: 0.1s;
+        }
+
+        .bottom-panels .panel:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .bottom-panels .panel:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .bottom-panels .panel:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body>
+    <!-- 工具栏 -->
+    <div class="toolbar">
+        <button class="toolbar-btn" id="annotationBtn" onclick="toggleAnnotationMode()" title="批注模式">
+            <span id="annotationIcon">📝</span>
+        </button>
+        <button class="toolbar-btn fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="全屏显示">
+            <span id="fullscreenIcon">⛶</span>
+        </button>
+    </div>
+
+    <div class="prd-container">
+        <!-- 左上角 - 内嵌页面区域 (70%) -->
+        <div class="embedded-page">
+            <iframe id="embeddedFrame" src="大屏原型/index.html" title="农情遥感系统大屏"></iframe>
+        </div>
+
+        <!-- 右侧 - 页面元素批注区域 -->
+        <div class="annotation-panel">
+            <div class="annotation-header">
+                📝 页面元素批注
+            </div>
+            <div id="annotationContent">
+                <!-- 批注内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 底部三栏区域 -->
+        <div class="bottom-panels">
+            <!-- 第一栏 - 全局说明 -->
+            <div class="panel">
+                <div class="panel-header">🌐 全局说明</div>
+                <div class="panel-content" id="globalDescription">
+                    <p>正在加载全局说明...</p>
+                </div>
+            </div>
+
+            <!-- 第二栏 - 页面说明 -->
+            <div class="panel">
+                <div class="panel-header">📄 页面说明</div>
+                <div class="panel-content" id="pageDescription">
+                    <!-- 页面说明内容将通过JavaScript动态加载 -->
+                </div>
+            </div>
+
+            <!-- 第三栏 - 页面元素清单 -->
+            <div class="panel">
+                <div class="panel-header">📋 页面元素清单</div>
+                <div class="panel-content">
+                      <div style="margin-bottom: 8px;">
+                          <button onclick="loadAnnotations()" class="nav-button" style="font-size: 11px; padding: 4px 8px; background: #2196F3; border-color: #1976D2;">
+                              🔄 重新加载批注
+                          </button>
+                          <button onclick="saveAnnotations()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #4CAF50; border-color: #45a049;">
+                              💾 导出批注
+                          </button>
+                          <button onclick="debugAnnotationSystem()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #ff9800; border-color: #f57c00;">
+                              🐛 调试
+                          </button>
+                          <button onclick="testHighlight()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #9c27b0; border-color: #7b1fa2;">
+                              ✨ 测试高亮
+                          </button>
+                          <br style="margin: 4px 0;">
+                          <button onclick="forceRefreshAnnotations()" class="nav-button" style="font-size: 11px; padding: 4px 8px; background: #e91e63; border-color: #c2185b;">
+                              🔥 强制刷新
+                          </button>
+                          <button onclick="validateAndFixAnnotations()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #ff5722; border-color: #d84315;">
+                              🔧 修复批注
+                          </button>
+                          <br style="margin: 4px 0;">
+                          <button onclick="comprehensiveDiagnosis()" class="nav-button" style="font-size: 11px; padding: 4px 8px; background: #673ab7; border-color: #512da8;">
+                              🩺 全面诊断
+                          </button>
+                          <button onclick="testAllAnnotations()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #009688; border-color: #00796b;">
+                              🧪 测试所有
+                          </button>
+                          <br style="margin: 4px 0;">
+                          <button onclick="testNewCaptureSystem()" class="nav-button" style="font-size: 11px; padding: 4px 8px; background: #795548; border-color: #5d4037;">
+                              🎯 测试精确抓取
+                          </button>
+                          <button onclick="showElementSignatures()" class="nav-button" style="font-size: 11px; padding: 4px 8px; margin-left: 6px; background: #607d8b; border-color: #455a64;">
+                              📋 查看签名
+                          </button>
+                      </div>
+                      <div class="element-list" id="elementList">
+                          <!-- 页面元素清单将通过JavaScript动态生成 -->
+                      </div>
+
+                    <h4>系统状态</h4>
+                    <div style="margin-top: 10px; padding: 8px; background: rgba(103, 126, 234, 0.1); border-radius: 6px; font-size: 11px;">
+                        <div>🟢 系统运行正常</div>
+                        <div>📡 数据连接稳定</div>
+                        <div>📝 批注数据: <span id="annotationStatus">加载中...</span></div>
+                        <div>⏰ 最后更新: <span id="lastUpdate"></span></div>
+                        <div style="margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.1); color: #ffc107;">
+                            💡 数据源: prd-docs/annotations.json
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 功能模块配置数据 - 基于功能切换栏的data-function属性
+        const functionConfigs = {
+            'crop-distribution': {
+                title: '作物分布监测',
+                mdFile: '作物分布监测.md',
+                annotations: [
+                    {
+                        title: '🗺️ 三维地图视图',
+                        content: '基于Cesium.js的三维地球，支持多种地图底图切换，可进行缩放、旋转、倾斜等操作。'
+                    },
+                    {
+                        title: '📊 右侧数据面板',
+                        content: '包含作物面积环形图、大棚统计卡片、区域面积汇总等数据可视化组件。'
+                    },
+                    {
+                        title: '📈 左侧分析面板',
+                        content: '展示种植结构对比柱状图、作物轮作桑基图、数据更新状态等分析图表。'
+                    },
+                    {
+                        title: '⚙️ 功能导航栏',
+                        content: '底部导航栏提供不同功能模块的快速切换，包括作物分布、灾害监测等。'
+                    }
+                ]
+            },
+            'growth-analysis': {
+                title: '长势分析功能',
+                mdFile: '长势分析功能.md',
+                annotations: [
+                    {
+                        title: '📊 长势等级图表',
+                        content: '以饼图或柱状图形式展示不同长势等级的面积分布。'
+                    },
+                    {
+                        title: '🗺️ 长势空间分布',
+                        content: '在地图上用不同颜色表示各区域的作物长势等级。'
+                    },
+                    {
+                        title: '📈 植被指数曲线',
+                        content: '显示NDVI等植被指数的时间序列变化曲线。'
+                    },
+                    {
+                        title: '🔍 发育期标注',
+                        content: '在时间轴上标注作物的关键发育期节点。'
+                    }
+                ]
+            },
+            'yield-estimation': {
+                title: '产量预估功能',
+                mdFile: '产量预估功能.md',
+                annotations: [
+                    {
+                        title: '📊 产量预估图表',
+                        content: '以柱状图、折线图等形式展示各作物的产量预估结果和历史对比。'
+                    },
+                    {
+                        title: '🗺️ 产量空间分布',
+                        content: '在地图上以色彩渐变方式显示不同区域的产量预估水平。'
+                    },
+                    {
+                        title: '📈 生长监测曲线',
+                        content: '显示作物生长季内NDVI等植被指数的变化曲线。'
+                    },
+                    {
+                        title: '🎯 精度验证面板',
+                        content: '展示产量预估模型的精度指标和验证结果。'
+                    }
+                ]
+            },
+            'weather-monitoring': {
+                title: '气象监测功能',
+                mdFile: '气象监测功能.md',
+                annotations: [
+                    {
+                        title: '🌡️ 气象要素显示',
+                        content: '实时显示温度、湿度、气压、风速风向等基本气象要素数据。'
+                    },
+                    {
+                        title: '🌧️ 降水分布图',
+                        content: '以等值线或色彩填充方式显示降水分布，支持历史回放功能。'
+                    },
+                    {
+                        title: '📈 气象趋势图',
+                        content: '展示气象要素的时间变化趋势，支持多要素同时显示。'
+                    },
+                    {
+                        title: '⚠️ 预警信息面板',
+                        content: '显示当前生效的气象预警信息，包括预警等级和影响区域。'
+                    }
+                ]
+            },
+            'disaster-monitoring': {
+                title: '灾害定损功能',
+                mdFile: '灾害定损功能.md',
+                annotations: [
+                    {
+                        title: '🌪️ 灾害类型识别',
+                        content: '系统可自动识别洪涝、干旱、冰雹、病虫害等多种农业灾害类型。'
+                    },
+                    {
+                        title: '📍 受灾区域标注',
+                        content: '在地图上用不同颜色标注受灾区域，支持点击查看详细灾害信息。'
+                    },
+                    {
+                        title: '📊 损失统计图表',
+                        content: '提供受灾面积统计、经济损失评估、灾害等级分布等数据图表。'
+                    },
+                    {
+                        title: '🔍 影像对比工具',
+                        content: '支持灾前灾后遥感影像对比，直观展示灾害影响程度。'
+                    }
+                ]
+            },
+            'device-monitoring': {
+                title: '设备监控功能',
+                mdFile: '设备监控功能.md',
+                annotations: [
+                    {
+                        title: '📱 设备状态监控',
+                        content: '实时监控各类农业物联网设备的运行状态和数据传输情况。'
+                    },
+                    {
+                        title: '📊 设备数据统计',
+                        content: '统计设备数据采集量、在线率、故障率等关键指标。'
+                    },
+                    {
+                        title: '⚠️ 设备异常预警',
+                        content: '设备离线、数据异常、设备故障等情况的及时预警提醒。'
+                    },
+                    {
+                        title: '🔧 设备管理工具',
+                        content: '提供设备配置、参数设置、远程控制等管理功能。'
+                    }
+                ]
+            },
+            'crop-selection': {
+                title: '作物选择功能',
+                mdFile: '作物选择功能.md',
+                annotations: [
+                    {
+                        title: '🌾 作物类型筛选',
+                        content: '支持按作物类型（小麦、玉米、辣椒等）进行地图显示筛选。'
+                    },
+                    {
+                        title: '📅 生长期筛选',
+                        content: '按作物不同生长发育期进行数据筛选和分析展示。'
+                    },
+                    {
+                        title: '🗺️ 空间范围选择',
+                        content: '支持框选、圆选、多边形选择等多种空间范围选择方式。'
+                    },
+                    {
+                        title: '📊 条件组合筛选',
+                        content: '支持多条件组合筛选，实现精准的数据查询和分析。'
+                    }
+                ]
+            }
+        };
+
+        // 页面配置数据 - 兼容原有的页面切换逻辑
+        const pageConfigs = {
+            'index.html': functionConfigs['crop-distribution'],
+            'disaster-monitoring.html': functionConfigs['disaster-monitoring'],
+            'weather-monitoring.html': functionConfigs['weather-monitoring'],
+            'yield-estimation.html': functionConfigs['yield-estimation'],
+            'growth-analysis.html': functionConfigs['growth-analysis']
+        };
+
+        // 页面列表
+        const pages = ['index.html', 'disaster-monitoring.html', 'weather-monitoring.html', 'yield-estimation.html', 'growth-analysis.html'];
+        let currentPageIndex = 0;
+        let currentFunction = 'crop-distribution'; // 当前选中的功能
+        let isFullscreen = false; // 全屏状态
+        let isAnnotationMode = false; // 批注模式状态
+        let currentAnnotations = {}; // 当前页面的批注数据
+        let selectedElementId = null; // 当前选中的元素ID
+        let pageElements = {}; // 抓取到的页面元素
+
+        // 初始化页面
+        async function initializePage() {
+            console.log('=== 页面初始化开始 ===');
+            
+            // 首先加载批注数据
+            console.log('步骤1: 加载批注数据');
+            await loadAnnotations();
+            
+            // 然后更新页面内容
+            console.log('步骤2: 更新页面内容');
+            await updatePageContent();
+
+            console.log('步骤3: 更新时间戳');
+            updateLastUpdateTime();
+            
+            console.log('步骤4: 加载全局说明');
+            await loadGlobalDescription();
+            
+            // 计算并应用iframe缩放
+            console.log('步骤5: 计算iframe缩放');
+            calculateIframeScale();
+            
+            // 设置iframe加载完成后的监听
+            console.log('步骤6: 设置iframe监听');
+            setupIframeListener();
+            
+            // 延迟更新元素清单，确保所有数据都已加载
+            setTimeout(() => {
+                console.log('步骤7: 延迟更新元素清单');
+                updateElementList();
+            }, 2000);
+            
+            // 每分钟更新时间
+            setInterval(updateLastUpdateTime, 60000);
+            
+            // 监听窗口大小变化
+            window.addEventListener('resize', calculateIframeScale);
+        }
+
+        // 设置iframe内容监听 - 改进版
+        function setupIframeListener() {
+            const iframe = document.getElementById('embeddedFrame');
+            
+            iframe.onload = function() {
+                console.log('=== iframe加载完成 ===');
+                
+                // 重新计算缩放
+                setTimeout(calculateIframeScale, 300);
+                
+                // 尝试多种方式访问iframe内容
+                let iframeAccessible = false;
+                
+                try {
+                    // 方法1: 直接访问contentDocument
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc && iframeDoc.body) {
+                        console.log('✅ iframe直接访问成功');
+                        iframeAccessible = true;
+                        setupIframeContent(iframeDoc);
+                    }
+                } catch (error) {
+                    console.log('❌ iframe直接访问失败:', error.message);
+                }
+                
+                // 方法2: postMessage通信
+                if (!iframeAccessible) {
+                    console.log('尝试postMessage通信...');
+                    setupPostMessageCommunication(iframe);
+                }
+                
+                // 方法3: 坐标映射高亮（备用方案）
+                if (!iframeAccessible) {
+                    console.log('使用坐标映射备用方案');
+                    setupCoordinateMapping();
+                }
+                
+                // 延迟重试访问
+                    setTimeout(() => {
+                    if (!iframeAccessible) {
+                        console.log('延迟重试iframe访问...');
+                        try {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            if (iframeDoc && iframeDoc.body) {
+                                console.log('✅ 延迟访问成功');
+                                setupIframeContent(iframeDoc);
+                            }
+                        } catch (e) {
+                            console.log('❌ 延迟访问仍然失败');
+                        }
+                    }
+                }, 2000);
+            };
+        }
+        
+        // 设置iframe内容（当可以访问时）
+        function setupIframeContent(iframeDoc) {
+            try {
+                console.log('设置iframe内容交互...');
+                
+                            // 监听功能切换按钮点击
+                            const functionButtons = iframeDoc.querySelectorAll('.main-switch-btn, .overlay-switch-btn');
+                console.log('找到功能按钮数量:', functionButtons.length);
+                            
+                            functionButtons.forEach(button => {
+                                button.addEventListener('click', async function() {
+                                    const functionName = this.getAttribute('data-function');
+                        console.log('功能切换:', functionName);
+                                    if (functionName && functionConfigs[functionName]) {
+                                        currentFunction = functionName;
+                                        await updatePageContentByFunction(functionName);
+                                    }
+                                });
+                            });
+
+                            // 检测当前激活的功能按钮
+                            const activeButton = iframeDoc.querySelector('.main-switch-btn.active, .overlay-switch-btn.active');
+                            if (activeButton) {
+                                const functionName = activeButton.getAttribute('data-function');
+                                if (functionName && functionConfigs[functionName]) {
+                                    currentFunction = functionName;
+                                    updatePageContentByFunction(functionName);
+                                }
+                            }
+
+                            // 抓取页面元素
+                            extractPageElements(iframeDoc);
+                            
+                            // 如果已经是批注模式，重新设置覆盖层
+                            if (isAnnotationMode) {
+                                setTimeout(() => {
+                                    setupAnnotationOverlay();
+                                }, 500);
+                            }
+                
+                console.log('✅ iframe内容设置完成');
+                
+            } catch (error) {
+                console.log('❌ iframe内容设置失败:', error);
+            }
+        }
+        
+        // 设置postMessage通信
+        function setupPostMessageCommunication(iframe) {
+            console.log('设置postMessage通信...');
+            
+            // 监听来自iframe的消息
+            window.addEventListener('message', function(event) {
+                // 安全检查
+                if (event.source !== iframe.contentWindow) return;
+                
+                const data = event.data;
+                console.log('收到iframe消息:', data);
+                
+                if (data.type === 'elementInfo') {
+                    // 接收元素信息
+                    handleElementInfo(data.elements);
+                } else if (data.type === 'functionChange') {
+                    // 功能切换
+                    currentFunction = data.function;
+                    updatePageContentByFunction(data.function);
+                }
+            });
+            
+            // 向iframe发送初始化消息
+            setTimeout(() => {
+                try {
+                    iframe.contentWindow.postMessage({
+                        type: 'init',
+                        message: '批注系统初始化'
+                    }, '*');
+                } catch (e) {
+                    console.log('postMessage发送失败:', e);
+                        }
+                    }, 1000);
+        }
+        
+        // 设置坐标映射（备用方案）
+        function setupCoordinateMapping() {
+            console.log('使用坐标映射备用方案...');
+            
+            // 创建虚拟元素映射
+            const pageKey = getCurrentPageKey();
+            if (!pageElements[pageKey]) {
+                pageElements[pageKey] = {};
+            }
+            
+            // 根据已知的页面布局创建虚拟元素
+            const commonElements = [
+                { id: 'virtual-chart-area', name: '图表区域', rect: { left: 100, top: 100, width: 400, height: 300 } },
+                { id: 'virtual-map-area', name: '地图区域', rect: { left: 500, top: 100, width: 600, height: 400 } },
+                { id: 'virtual-panel-area', name: '面板区域', rect: { left: 1100, top: 100, width: 300, height: 500 } }
+            ];
+            
+            commonElements.forEach(element => {
+                pageElements[pageKey][element.id] = {
+                    id: element.id,
+                    name: element.name,
+                    rect: element.rect,
+                    virtual: true, // 标记为虚拟元素
+                    selector: `virtual-${element.id}`
+                };
+            });
+            
+            console.log('✅ 虚拟元素映射已创建');
+        }
+
+        // 加载全局说明文档
+        async function loadGlobalDescription() {
+            const globalDescElement = document.getElementById('globalDescription');
+            
+            try {
+                // 尝试加载本地MD文件
+                const response = await fetch('prd-docs/全局说明.md');
+                if (response.ok) {
+                    const mdContent = await response.text();
+                    // 简单的Markdown转HTML处理
+                    const htmlContent = convertMarkdownToHTML(mdContent);
+                    globalDescElement.innerHTML = htmlContent;
+                } else {
+                    throw new Error('文件未找到');
+                }
+            } catch (error) {
+                console.log('未找到全局说明.md文件，使用默认内容');
+                // 如果文件不存在，显示默认内容和提示
+                globalDescElement.innerHTML = `
+                    <div style="background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 0 4px 4px 0;">
+                        <h4 style="color: #ffc107; margin-bottom: 8px;">📝 配置提示</h4>
+                        <p style="color: #ffc107; font-size: 12px; margin: 0;">
+                            请在 <code>prd-docs/</code> 目录下创建 <code>全局说明.md</code> 文件来自定义全局说明内容。
+                        </p>
+                    </div>
+                    
+                    <h4>系统概述</h4>
+                    <p>临夏县农情遥感系统是基于卫星遥感技术的智能化农业监测平台，提供作物分布、灾害监测、气象分析、产量预估和长势分析等核心功能。</p>
+                    
+                    <h4>技术架构</h4>
+                    <ul>
+                        <li><strong>前端技术</strong>: HTML5, CSS3, JavaScript ES6</li>
+                        <li><strong>地图引擎</strong>: Cesium.js 1.110</li>
+                        <li><strong>图表库</strong>: ECharts 5.4.3</li>
+                        <li><strong>设计风格</strong>: 科技感毛玻璃效果</li>
+                    </ul>
+
+                    <h4>核心特性</h4>
+                    <ul>
+                        <li>🗺️ 三维地图可视化</li>
+                        <li>📊 实时数据图表展示</li>
+                        <li>🎯 交互式操作体验</li>
+                        <li>📱 响应式自适应布局</li>
+                        <li>🔄 数据实时更新机制</li>
+                    </ul>
+
+                    <h4>目标用户</h4>
+                    <p>农业管理部门、农技专家、农业合作社、种植大户等农业从业人员。</p>
+                `;
+            }
+        }
+
+        // 简单的Markdown转HTML转换器
+        function convertMarkdownToHTML(markdown) {
+            return markdown
+                // 标题转换
+                .replace(/^### (.*$)/gim, '<h4>$1</h4>')
+                .replace(/^## (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^# (.*$)/gim, '<h2>$1</h2>')
+                // 粗体转换
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // 代码转换
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                // 列表转换
+                .replace(/^\* (.*$)/gim, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+                // 段落转换
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^(.*)$/gim, '<p>$1</p>')
+                // 清理多余的p标签
+                .replace(/<p><h([1-6])>(.*?)<\/h[1-6]><\/p>/g, '<h$1>$2</h$1>')
+                .replace(/<p><ul>/g, '<ul>')
+                .replace(/<\/ul><\/p>/g, '</ul>')
+                .replace(/<p><li>/g, '<li>')
+                .replace(/<\/li><\/p>/g, '</li>')
+                // 清理空段落
+                .replace(/<p><\/p>/g, '');
+        }
+
+        // 计算iframe缩放比例
+        function calculateIframeScale() {
+            const embeddedPage = document.querySelector('.embedded-page');
+            const iframe = document.getElementById('embeddedFrame');
+            
+            if (embeddedPage && iframe) {
+                const containerWidth = embeddedPage.clientWidth;
+                const containerHeight = embeddedPage.clientHeight;
+                
+                // 最小化边距，最大化显示区域
+                const availableWidth = containerWidth - 5; // 最小边距
+                const availableHeight = containerHeight - 5; // 移除顶部选择器后，最小空间
+                
+                // 计算缩放比例，保持1920x1080的宽高比
+                const scaleX = availableWidth / 1920;
+                const scaleY = availableHeight / 1080;
+                const scale = Math.min(scaleX, scaleY, 1.5); // 允许放大到150%
+                
+                // 应用缩放
+                iframe.style.transform = `scale(${scale})`;
+                
+                // 计算居中位置
+                const scaledWidth = 1920 * scale;
+                const scaledHeight = 1080 * scale;
+                
+                const offsetX = (containerWidth - scaledWidth) / 2;
+                const offsetY = Math.max(5, (containerHeight - scaledHeight) / 2);
+                
+                iframe.style.left = `${Math.max(0, offsetX)}px`;
+                iframe.style.top = `${offsetY}px`;
+            }
+        }
+
+        // 切换页面
+        async function switchPage() {
+            const selectedPage = pages[currentPageIndex];
+            
+            const iframe = document.getElementById('embeddedFrame');
+            iframe.src = '大屏原型/' + selectedPage;
+            
+            // 重置当前功能为默认值
+            currentFunction = 'crop-distribution';
+            
+            // 重新加载批注数据确保数据最新
+            await loadAnnotations();
+            
+            updatePageContent();
+
+        }
+
+
+
+        // 更新页面内容
+        async function updatePageContent() {
+            const currentPage = pages[currentPageIndex];
+            const config = pageConfigs[currentPage];
+            
+            // 更新页面说明 - 从MD文件加载
+            await loadPageDescription(config.mdFile);
+            
+            // 更新批注内容
+            const annotationContent = document.getElementById('annotationContent');
+            annotationContent.innerHTML = config.annotations.map(annotation => `
+                <div class="annotation-item">
+                    <div class="annotation-title">${annotation.title}</div>
+                    <div class="annotation-content">${annotation.content}</div>
+                </div>
+            `).join('');
+            
+            // 更新页面元素清单
+            updateElementList();
+        }
+
+        // 根据功能更新页面内容
+        async function updatePageContentByFunction(functionName) {
+            const config = functionConfigs[functionName];
+            if (!config) return;
+            
+            // 重新加载批注数据确保数据最新
+            await loadAnnotations();
+            
+            // 更新页面说明 - 从MD文件加载
+            await loadPageDescription(config.mdFile);
+            
+            // 更新批注内容
+            const annotationContent = document.getElementById('annotationContent');
+            annotationContent.innerHTML = config.annotations.map(annotation => `
+                <div class="annotation-item">
+                    <div class="annotation-title">${annotation.title}</div>
+                    <div class="annotation-content">${annotation.content}</div>
+                </div>
+            `).join('');
+            
+            // 更新页面元素清单
+            updateElementList();
+        }
+
+
+
+        // 加载页面说明文档
+        async function loadPageDescription(mdFile) {
+            const pageDescElement = document.getElementById('pageDescription');
+            
+            try {
+                // 尝试加载页面对应的MD文件
+                const response = await fetch(`prd-docs/${mdFile}`);
+                if (response.ok) {
+                    const mdContent = await response.text();
+                    // 简单的Markdown转HTML处理
+                    const htmlContent = convertMarkdownToHTML(mdContent);
+                    pageDescElement.innerHTML = htmlContent;
+                } else {
+                    throw new Error('文件未找到');
+                }
+            } catch (error) {
+                console.log(`未找到页面说明文件: ${mdFile}，使用默认内容`);
+                // 如果文件不存在，显示默认内容和提示
+                pageDescElement.innerHTML = `
+                    <div style="background: rgba(255, 193, 7, 0.1); border-left: 3px solid #ffc107; padding: 12px; margin-bottom: 15px; border-radius: 0 4px 4px 0;">
+                        <h4 style="color: #ffc107; margin-bottom: 8px;">📝 配置提示</h4>
+                        <p style="color: #ffc107; font-size: 12px; margin: 0;">
+                            请在 <code>prd-docs/</code> 目录下创建 <code>${mdFile}</code> 文件来自定义页面说明内容。
+                        </p>
+                    </div>
+                    
+                    <h4>页面功能</h4>
+                    <p>该页面的详细功能说明请参考外部文档。</p>
+                    
+                    <h4>使用说明</h4>
+                    <p>请创建对应的Markdown文档来详细描述该页面的功能特性和使用方法。</p>
+                `;
+            }
+        }
+
+
+
+        // 更新最后更新时间
+        function updateLastUpdateTime() {
+            const lastUpdate = document.getElementById('lastUpdate');
+            if (lastUpdate) {
+                const now = new Date();
+                const timeString = now.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                lastUpdate.textContent = timeString;
+            }
+        }
+
+        // 全屏切换功能
+        function toggleFullscreen() {
+            const body = document.body;
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const fullscreenIcon = document.getElementById('fullscreenIcon');
+            
+            isFullscreen = !isFullscreen;
+            
+            if (isFullscreen) {
+                // 进入全屏模式
+                body.classList.add('fullscreen-mode');
+                fullscreenIcon.textContent = '⛶';
+                fullscreenBtn.title = '退出全屏';
+                
+                // 请求浏览器全屏
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                // 退出全屏模式
+                body.classList.remove('fullscreen-mode');
+                fullscreenIcon.textContent = '⛶';
+                fullscreenBtn.title = '全屏显示';
+                
+                // 退出浏览器全屏
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+            
+            // 重新计算iframe缩放
+            setTimeout(calculateIframeScale, 300);
+        }
+
+        // 监听浏览器全屏状态变化
+        function handleFullscreenChange() {
+            const isInFullscreen = !!(document.fullscreenElement || 
+                                    document.webkitFullscreenElement || 
+                                    document.msFullscreenElement);
+            
+            if (!isInFullscreen && isFullscreen) {
+                // 浏览器退出全屏，同步更新状态
+                isFullscreen = false;
+                document.body.classList.remove('fullscreen-mode');
+                document.getElementById('fullscreenIcon').textContent = '⛶';
+                document.getElementById('fullscreenBtn').title = '全屏显示';
+                setTimeout(calculateIframeScale, 300);
+            }
+        }
+
+        // 监听全屏状态变化事件
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(event) {
+            // F11 或 Ctrl+Shift+F 切换全屏
+            if (event.key === 'F11' || (event.ctrlKey && event.shiftKey && event.key === 'F')) {
+                event.preventDefault();
+                toggleFullscreen();
+            }
+            // ESC 退出全屏
+            if (event.key === 'Escape' && isFullscreen) {
+                toggleFullscreen();
+            }
+        });
+
+        // 批注模式切换
+        function toggleAnnotationMode() {
+            const body = document.body;
+            const annotationBtn = document.getElementById('annotationBtn');
+            const annotationIcon = document.getElementById('annotationIcon');
+            
+            isAnnotationMode = !isAnnotationMode;
+            
+            if (isAnnotationMode) {
+                body.classList.add('annotation-mode');
+                annotationBtn.classList.add('active');
+                annotationIcon.textContent = '📝';
+                annotationBtn.title = '退出批注模式';
+                setupAnnotationOverlay();
+            } else {
+                body.classList.remove('annotation-mode');
+                annotationBtn.classList.remove('active');
+                annotationIcon.textContent = '📝';
+                annotationBtn.title = '批注模式';
+                clearHighlights();
+                removeAnnotationOverlay();
+            }
+        }
+
+        // 设置批注覆盖层
+        function setupAnnotationOverlay() {
+            const embeddedPage = document.querySelector('.embedded-page');
+            
+            // 移除已有的覆盖层
+            removeAnnotationOverlay();
+            
+            // 创建新的覆盖层
+            const overlay = document.createElement('div');
+            overlay.className = 'annotation-overlay';
+            overlay.id = 'annotation-overlay';
+            
+            // 添加点击事件监听
+            overlay.addEventListener('click', handleAnnotationClick);
+            
+            embeddedPage.appendChild(overlay);
+        }
+
+        // 移除批注覆盖层
+        function removeAnnotationOverlay() {
+            const overlay = document.getElementById('annotation-overlay');
+            if (overlay) {
+                overlay.removeEventListener('click', handleAnnotationClick);
+                overlay.remove();
+            }
+        }
+
+        // 处理批注点击事件
+        function handleAnnotationClick(event) {
+            if (!isAnnotationMode) return;
+            
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const iframe = document.getElementById('embeddedFrame');
+            const iframeRect = iframe.getBoundingClientRect();
+            
+            // 考虑iframe的缩放比例
+            const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+            
+            // 计算在iframe内的实际位置（考虑缩放）
+            const x = (event.clientX - iframeRect.left) / scale;
+            const y = (event.clientY - iframeRect.top) / scale;
+            
+            console.log('点击位置:', { x, y, scale, clientX: event.clientX, clientY: event.clientY });
+            
+            // 获取iframe文档中的元素
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const targetElement = iframeDoc.elementFromPoint(x, y);
+                
+                console.log('原始目标元素:', targetElement);
+                
+                if (targetElement) {
+                    // 找到最合适的父元素
+                    const suitableElement = findSuitableElement(targetElement);
+                    console.log('选中的合适元素:', suitableElement);
+                    createAnnotationForElement(suitableElement, x, y, iframeDoc);
+                }
+            } catch (error) {
+                console.log('无法访问iframe内容，可能是跨域限制:', error);
+                alert('无法访问iframe内容，请确保页面允许跨域访问');
+            }
+        }
+
+        // 找到合适的元素进行批注（优化为选择更精确的元素）
+        function findSuitableElement(element) {
+            let candidates = [];
+            
+            // 策略1: 检查点击的元素本身及其直接子元素
+            const directCandidates = [element];
+            
+            // 添加直接子元素（如果点击的是容器，可能想选择其中的具体元素）
+            if (element.children.length > 0 && element.children.length <= 5) {
+                Array.from(element.children).forEach(child => {
+                    directCandidates.push(child);
+                });
+            }
+            
+            // 策略2: 向上查找父元素（但限制深度，避免选择过大的容器）
+            let current = element;
+            let maxDepth = 4; // 减少查找深度，避免选择过大元素
+            
+            while (current && current !== document.body && maxDepth > 0) {
+                directCandidates.push(current);
+                current = current.parentElement;
+                maxDepth--;
+            }
+            
+            // 为所有候选元素评分
+            directCandidates.forEach(candidate => {
+                const score = calculateElementScore(candidate);
+                if (score > 0) {
+                    candidates.push({ 
+                        element: candidate, 
+                        score: score,
+                        isOriginal: candidate === element,
+                        isChild: element.contains(candidate) && candidate !== element,
+                        isParent: candidate.contains(element) && candidate !== element
+                    });
+                }
+            });
+            
+            // 特殊处理：如果原始点击元素得分很高，优先选择它
+            const originalScore = candidates.find(c => c.isOriginal)?.score || 0;
+            if (originalScore >= 15) {
+                console.log('原始元素得分很高，直接选择:', element);
+                return element;
+            }
+            
+            console.log('候选元素:', candidates.map(c => ({
+                tag: c.element.tagName,
+                class: c.element.className,
+                id: c.element.id,
+                score: c.score,
+                text: c.element.textContent?.trim().substring(0, 20),
+                relation: c.isOriginal ? 'original' : c.isChild ? 'child' : c.isParent ? 'parent' : 'other'
+            })));
+            
+            // 如果没有找到候选元素，返回原始元素
+            if (candidates.length === 0) {
+                return element;
+            }
+            
+            // 按分数排序
+            candidates.sort((a, b) => {
+                // 在分数相近的情况下，优先选择子元素或原始元素
+                if (Math.abs(a.score - b.score) <= 3) {
+                    if (a.isOriginal) return -1;
+                    if (b.isOriginal) return 1;
+                    if (a.isChild) return -1;
+                    if (b.isChild) return 1;
+                }
+                return b.score - a.score;
+            });
+            
+            const selected = candidates[0].element;
+            console.log('选中元素:', {
+                tag: selected.tagName,
+                class: selected.className,
+                id: selected.id,
+                score: candidates[0].score,
+                text: selected.textContent?.trim().substring(0, 30)
+            });
+            
+            return selected;
+        }
+
+        // 计算元素的重要性分数（优化为选择更精确的小元素）
+        function calculateElementScore(element) {
+            let score = 0;
+            
+            // 高优先级精确元素（优先选择具体的小组件）
+            const highPriorityClasses = [
+                'panel-title', 'panel-header', 'chart-title', 'widget-title',
+                'button', 'btn', 'icon', 'label', 'badge', 'tag',
+                'input', 'select', 'textarea', 'checkbox', 'radio',
+                'link', 'nav-item', 'menu-item', 'dropdown-item',
+                'card-title', 'card-header', 'stat-item', 'metric'
+            ];
+            
+            // 中优先级具体元素
+            const mediumPriorityClasses = [
+                'chart', 'graph', 'table', 'list-item', 'item',
+                'block', 'box', 'tile', 'thumbnail', 'avatar',
+                'switch-btn', 'main-switch-btn', 'overlay-switch-btn'
+            ];
+            
+            // 低优先级大容器（尽量避免选择）
+            const lowPriorityClasses = [
+                'panel', 'container', 'wrapper', 'content', 'body',
+                'main', 'section', 'row', 'col', 'grid', 'layout'
+            ];
+            
+            // 检查类名
+            if (element.className) {
+                const classes = element.className.split(' ');
+                for (const cls of classes) {
+                    if (highPriorityClasses.some(priority => cls.includes(priority))) {
+                        score += 15; // 提高小元素优先级
+                    } else if (mediumPriorityClasses.some(priority => cls.includes(priority))) {
+                        score += 8;
+                    } else if (lowPriorityClasses.some(priority => cls.includes(priority))) {
+                        score -= 3; // 降低大容器优先级
+                    }
+                }
+            }
+            
+            // ID 权重（但如果是大容器ID则降低权重）
+            if (element.id) {
+                const largeContainerIds = ['main', 'content', 'container', 'wrapper', 'app'];
+                if (largeContainerIds.some(id => element.id.includes(id))) {
+                    score += 2; // 大容器ID权重较低
+                } else {
+                    score += 10; // 具体元素ID权重较高
+                }
+            }
+            
+            // data-* 属性权重
+            if (element.hasAttribute('data-function') || 
+                element.hasAttribute('data-type') || 
+                element.hasAttribute('data-widget') ||
+                element.hasAttribute('data-chart') ||
+                element.hasAttribute('onclick')) {
+                score += 12;
+            }
+            
+            // 交互元素权重（这些通常是用户真正想要批注的元素）
+            const interactiveTags = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'A', 'LABEL'];
+            if (interactiveTags.includes(element.tagName)) {
+                score += 15;
+            }
+            
+            // 内容元素权重
+            const contentTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'STRONG', 'EM'];
+            if (contentTags.includes(element.tagName)) {
+                score += 10;
+            }
+            
+            // 图像和媒体元素
+            const mediaTags = ['IMG', 'SVG', 'CANVAS', 'VIDEO'];
+            if (mediaTags.includes(element.tagName)) {
+                score += 12;
+            }
+            
+            // 尺寸权重优化（偏向选择中等大小的元素）
+            const rect = element.getBoundingClientRect();
+            if (rect.width < 10 || rect.height < 10) {
+                score -= 10; // 太小的元素
+            } else if (rect.width < 30 || rect.height < 30) {
+                score += 5; // 小元素（图标、按钮等）
+            } else if (rect.width <= 200 && rect.height <= 100) {
+                score += 10; // 中等大小元素（最佳选择）
+            } else if (rect.width <= 400 && rect.height <= 200) {
+                score += 5; // 稍大的元素
+            } else {
+                score -= 5; // 大型容器元素
+            }
+            
+            // 避免选择根元素和大容器
+            const avoidTags = ['BODY', 'HTML', 'HEAD', 'MAIN', 'SECTION', 'ARTICLE'];
+            if (avoidTags.includes(element.tagName)) {
+                score -= 25;
+            }
+            
+            // 文本内容权重（偏向有适量文本的元素）
+            const textContent = element.textContent?.trim();
+            if (textContent) {
+                if (textContent.length <= 3) {
+                    score += 8; // 短文本（如按钮、标签）
+                } else if (textContent.length <= 20) {
+                    score += 12; // 标题、短描述
+                } else if (textContent.length <= 50) {
+                    score += 8; // 中等文本
+                } else {
+                    score += 2; // 长文本（可能是大容器）
+                }
+            }
+            
+            // 子元素数量权重（偏向选择叶子节点或简单元素）
+            const childCount = element.children.length;
+            if (childCount === 0) {
+                score += 8; // 叶子节点优先
+            } else if (childCount <= 3) {
+                score += 5; // 简单元素
+            } else if (childCount <= 10) {
+                score += 2; // 中等复杂元素
+            } else {
+                score -= 5; // 复杂容器
+            }
+            
+            // 特殊属性加分
+            if (element.hasAttribute('title') || element.hasAttribute('alt')) {
+                score += 5;
+            }
+            
+            // 可见性检查
+            const style = window.getComputedStyle(element);
+            if (style.display === 'none' || style.visibility === 'hidden') {
+                score -= 20;
+            }
+            
+            console.log(`元素 ${element.tagName}.${element.className} 得分:`, score, 
+                       `尺寸: ${rect.width}x${rect.height}`, 
+                       `子元素: ${childCount}`,
+                       `文本长度: ${textContent?.length || 0}`);
+            return score;
+        }
+
+        // 为元素创建批注 - 精确版
+        function createAnnotationForElement(element, x, y, iframeDoc) {
+            console.log('🎯 创建元素批注 - 精确版');
+            const pageKey = getCurrentPageKey();
+            
+            // 生成多重元素标识和定位信息
+            const elementSignature = generateElementSignature(element, iframeDoc);
+            const elementId = elementSignature.id;
+            
+            // 记录完整的元素信息
+            if (!pageElements[pageKey]) {
+                pageElements[pageKey] = {};
+            }
+            
+            pageElements[pageKey][elementId] = elementSignature;
+            
+            // 选中这个元素
+            selectedElementId = elementId;
+            
+            // 立即验证定位准确性
+            const canRelocate = testElementRelocation(elementId, iframeDoc);
+            console.log('🔍 定位验证结果:', canRelocate);
+            
+            // 高亮元素
+            highlightElement(elementId);
+            
+            // 更新元素清单
+            updateElementList();
+            
+            // 显示批注创建界面
+            updateAnnotationDisplay(elementId);
+            
+            console.log('✅ 元素批注创建完成:', {
+                elementId,
+                signature: elementSignature,
+                canRelocate
+            });
+        }
+        
+        // 生成元素签名（包含多重定位信息）
+        function generateElementSignature(element, iframeDoc) {
+            console.log('📝 生成元素签名:', element);
+            
+            const rect = element.getBoundingClientRect();
+            const computedStyle = window.getComputedStyle(element);
+            
+            // 基础信息
+            const basic = {
+                tagName: element.tagName.toLowerCase(),
+                id: element.id || null,
+                className: element.className || null,
+                textContent: element.textContent ? element.textContent.trim().substring(0, 50) : null
+            };
+            
+            // 层级路径信息
+            const hierarchy = generateElementPath(element);
+            
+            // 属性特征
+            const attributes = {};
+            if (element.attributes) {
+                for (let attr of element.attributes) {
+                    if (['id', 'class', 'data-', 'src', 'href', 'type', 'name', 'value'].some(prefix => 
+                        attr.name === prefix || attr.name.startsWith(prefix))) {
+                        attributes[attr.name] = attr.value;
+                    }
+                }
+            }
+            
+            // 位置信息（多重）
+            const positioning = {
+                // 绝对坐标
+                absoluteRect: {
+                    top: rect.top,
+                    left: rect.left,
+                    width: rect.width,
+                    height: rect.height,
+                    right: rect.right,
+                    bottom: rect.bottom
+                },
+                // 相对父元素位置
+                relativePosition: getRelativePosition(element),
+                // 在同级元素中的索引
+                siblingIndex: getSiblingIndex(element),
+                // 在同类型元素中的索引
+                typeIndex: getTypeIndex(element)
+            };
+            
+            // 样式特征（用于识别）
+            const styleFeatures = {
+                display: computedStyle.display,
+                position: computedStyle.position,
+                backgroundColor: computedStyle.backgroundColor,
+                color: computedStyle.color,
+                fontSize: computedStyle.fontSize,
+                zIndex: computedStyle.zIndex
+            };
+            
+            // 生成多个选择器
+            const selectors = {
+                primary: generatePrimarySelector(element),
+                xpath: generateXPath(element),
+                cssPath: generateCSSPath(element),
+                unique: generateUniqueSelector(element, iframeDoc),
+                backup: generateBackupSelectors(element)
+            };
+            
+            // 内容特征
+            const contentFeatures = {
+                hasText: !!element.textContent?.trim(),
+                hasChildren: element.children.length > 0,
+                childCount: element.children.length,
+                isLeaf: element.children.length === 0,
+                innerHTML: element.innerHTML ? element.innerHTML.substring(0, 200) : null
+            };
+            
+            // 生成稳定ID
+            const stableId = generateStableElementId(basic, hierarchy, positioning);
+            
+            return {
+                id: stableId,
+                timestamp: Date.now(),
+                basic,
+                hierarchy,
+                attributes,
+                positioning,
+                styleFeatures,
+                contentFeatures,
+                selectors,
+                // 保存原始元素引用（仅在当前会话有效）
+                _element: element,
+                // 验证函数
+                validate: function(testElement) {
+                    return validateElementMatch(this, testElement);
+                }
+            };
+        }
+        
+        // 生成元素层级路径
+        function generateElementPath(element) {
+            const path = [];
+            let current = element;
+            let depth = 0;
+            const maxDepth = 10;
+            
+            while (current && current !== document.body && depth < maxDepth) {
+                const step = {
+                    tagName: current.tagName.toLowerCase(),
+                    id: current.id || null,
+                    className: current.className || null,
+                    index: Array.from(current.parentElement?.children || []).indexOf(current)
+                };
+                path.unshift(step);
+                current = current.parentElement;
+                depth++;
+            }
+            
+            return {
+                path,
+                depth,
+                fullPath: path.map(step => 
+                    `${step.tagName}${step.id ? '#' + step.id : ''}${step.className ? '.' + step.className.split(' ')[0] : ''}[${step.index}]`
+                ).join(' > ')
+            };
+        }
+        
+        // 获取相对位置
+        function getRelativePosition(element) {
+            const parent = element.parentElement;
+            if (!parent) return null;
+            
+            const parentRect = parent.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            
+            return {
+                offsetTop: elementRect.top - parentRect.top,
+                offsetLeft: elementRect.left - parentRect.left,
+                offsetWidth: elementRect.width,
+                offsetHeight: elementRect.height,
+                parentTagName: parent.tagName.toLowerCase(),
+                parentClassName: parent.className || null
+            };
+        }
+        
+        // 获取同级索引
+        function getSiblingIndex(element) {
+            const siblings = Array.from(element.parentElement?.children || []);
+            return {
+                total: siblings.length,
+                index: siblings.indexOf(element),
+                isFirst: siblings.indexOf(element) === 0,
+                isLast: siblings.indexOf(element) === siblings.length - 1
+            };
+        }
+        
+        // 获取同类型索引
+        function getTypeIndex(element) {
+            const sameTypeElements = Array.from(
+                element.parentElement?.querySelectorAll(element.tagName) || []
+            );
+            return {
+                total: sameTypeElements.length,
+                index: sameTypeElements.indexOf(element),
+                isUnique: sameTypeElements.length === 1
+            };
+        }
+
+        // 生成主要选择器
+        function generatePrimarySelector(element) {
+            if (element.id) {
+                return `#${element.id}`;
+            }
+            
+            let selector = element.tagName.toLowerCase();
+            
+            if (element.className) {
+                const classes = element.className.split(' ').filter(cls => cls.trim());
+                if (classes.length > 0) {
+                    selector += '.' + classes.slice(0, 3).join('.');
+                }
+            }
+            
+            return selector;
+        }
+        
+        // 生成XPath
+        function generateXPath(element) {
+            if (element.id) {
+                return `//*[@id="${element.id}"]`;
+            }
+            
+            const parts = [];
+            let current = element;
+            
+            while (current && current.nodeType === Node.ELEMENT_NODE) {
+                let part = current.tagName.toLowerCase();
+                
+                if (current.id) {
+                    part += `[@id="${current.id}"]`;
+                    parts.unshift('//' + part);
+                    break;
+                } else {
+                    const siblings = Array.from(current.parentNode?.children || [])
+                        .filter(sibling => sibling.tagName === current.tagName);
+                    
+                    if (siblings.length > 1) {
+                        const index = siblings.indexOf(current) + 1;
+                        part += `[${index}]`;
+                    }
+                    
+                    parts.unshift(part);
+                }
+                
+                current = current.parentNode;
+                if (parts.length > 5) break; // 限制深度
+            }
+            
+            return '//' + parts.join('/');
+        }
+        
+        // 生成CSS路径
+        function generateCSSPath(element) {
+            const parts = [];
+            let current = element;
+            
+            while (current && current.nodeType === Node.ELEMENT_NODE && current !== document.body) {
+                let selector = current.tagName.toLowerCase();
+                
+                if (current.id) {
+                    selector += '#' + current.id;
+                    parts.unshift(selector);
+                    break;
+                } else if (current.className) {
+                    const classes = current.className.split(' ').filter(cls => cls.trim());
+                    if (classes.length > 0) {
+                        selector += '.' + classes[0];
+                    }
+                }
+                
+                // 添加nth-child选择器以确保唯一性
+                const siblings = Array.from(current.parentNode?.children || []);
+                const index = siblings.indexOf(current) + 1;
+                selector += `:nth-child(${index})`;
+                
+                parts.unshift(selector);
+                current = current.parentNode;
+                
+                if (parts.length > 4) break; // 限制深度
+            }
+            
+            return parts.join(' > ');
+        }
+        
+        // 生成唯一选择器
+        function generateUniqueSelector(element, doc) {
+            // 尝试多种唯一标识策略
+            const strategies = [];
+            
+            // 策略1: ID选择器
+            if (element.id) {
+                strategies.push(`#${element.id}`);
+            }
+            
+            // 策略2: data属性
+            for (let attr of element.attributes || []) {
+                if (attr.name.startsWith('data-') && attr.value) {
+                    strategies.push(`[${attr.name}="${attr.value}"]`);
+                }
+            }
+            
+            // 策略3: 唯一类名组合
+            if (element.className) {
+                const classes = element.className.split(' ').filter(cls => cls.trim());
+                for (let i = 1; i <= Math.min(classes.length, 3); i++) {
+                    const classSelector = '.' + classes.slice(0, i).join('.');
+                    if (doc.querySelectorAll(classSelector).length === 1) {
+                        strategies.push(classSelector);
+                        break;
+                    }
+                }
+            }
+            
+            // 策略4: 文本内容选择器
+            const textContent = element.textContent?.trim();
+            if (textContent && textContent.length < 30) {
+                const escaped = textContent.replace(/"/g, '\\"');
+                strategies.push(`${element.tagName.toLowerCase()}:contains("${escaped}")`);
+            }
+            
+            // 策略5: 属性组合
+            const uniqueAttrs = ['name', 'type', 'href', 'src', 'value'];
+            for (let attrName of uniqueAttrs) {
+                const attrValue = element.getAttribute(attrName);
+                if (attrValue) {
+                    const attrSelector = `[${attrName}="${attrValue}"]`;
+                    if (doc.querySelectorAll(attrSelector).length === 1) {
+                        strategies.push(attrSelector);
+                        break;
+                    }
+                }
+            }
+            
+            return strategies;
+        }
+        
+        // 生成备用选择器
+        function generateBackupSelectors(element) {
+            const backups = [];
+            
+            // 备用1: 标签+位置
+            const siblings = Array.from(element.parentNode?.children || []);
+            const index = siblings.indexOf(element);
+            backups.push(`${element.tagName.toLowerCase()}:nth-child(${index + 1})`);
+            
+            // 备用2: 标签+类名+位置
+            if (element.className) {
+                const firstClass = element.className.split(' ')[0];
+                backups.push(`${element.tagName.toLowerCase()}.${firstClass}:nth-child(${index + 1})`);
+            }
+            
+            // 备用3: 相对父元素的选择器
+            const parent = element.parentElement;
+            if (parent && parent.id) {
+                backups.push(`#${parent.id} > ${element.tagName.toLowerCase()}:nth-child(${index + 1})`);
+            }
+            
+            return backups;
+        }
+        
+        // 生成稳定元素ID
+        function generateStableElementId(basic, hierarchy, positioning) {
+            // 使用多个特征生成稳定ID
+            const features = [
+                basic.tagName,
+                basic.id || 'noid',
+                basic.className?.split(' ')[0] || 'noclass',
+                hierarchy.depth,
+                positioning.siblingIndex.index,
+                positioning.typeIndex.index
+            ];
+            
+            // 添加内容特征
+            if (basic.textContent && basic.textContent.length < 20) {
+                features.push(basic.textContent.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, ''));
+            }
+            
+            const idString = features.join('-');
+            return `precise-${idString}`.replace(/[^a-zA-Z0-9\u4e00-\u9fa5-]/g, '-').replace(/-+/g, '-');
+        }
+        
+        // 验证元素匹配
+        function validateElementMatch(signature, testElement) {
+            if (!testElement) return { score: 0, reason: '元素不存在' };
+            
+            let score = 0;
+            const reasons = [];
+            
+            // 基础信息匹配 (40分)
+            if (signature.basic.tagName === testElement.tagName.toLowerCase()) {
+                score += 15;
+                reasons.push('标签匹配');
+            }
+            
+            if (signature.basic.id && signature.basic.id === testElement.id) {
+                score += 25;
+                reasons.push('ID完全匹配');
+            }
+            
+            if (signature.basic.className && testElement.className.includes(signature.basic.className.split(' ')[0])) {
+                score += 10;
+                reasons.push('类名匹配');
+            }
+            
+            // 位置信息匹配 (30分)
+            const siblings = Array.from(testElement.parentElement?.children || []);
+            const currentIndex = siblings.indexOf(testElement);
+            if (currentIndex === signature.positioning.siblingIndex.index) {
+                score += 15;
+                reasons.push('位置索引匹配');
+            }
+            
+            const rect = testElement.getBoundingClientRect();
+            const sizeDiff = Math.abs(rect.width - signature.positioning.absoluteRect.width) + 
+                           Math.abs(rect.height - signature.positioning.absoluteRect.height);
+            if (sizeDiff < 20) {
+                score += 15;
+                reasons.push('尺寸相似');
+            }
+            
+            // 内容匹配 (20分)
+            if (signature.contentFeatures.hasText && testElement.textContent?.trim()) {
+                const textSimilarity = calculateTextSimilarity(
+                    signature.basic.textContent, 
+                    testElement.textContent.trim().substring(0, 50)
+                );
+                score += Math.round(textSimilarity * 20);
+                if (textSimilarity > 0.8) reasons.push('文本内容匹配');
+            }
+            
+            // 属性匹配 (10分)
+            let attrMatches = 0;
+            for (let [attrName, attrValue] of Object.entries(signature.attributes)) {
+                if (testElement.getAttribute(attrName) === attrValue) {
+                    attrMatches++;
+                }
+            }
+            if (attrMatches > 0) {
+                score += Math.min(attrMatches * 5, 10);
+                reasons.push(`${attrMatches}个属性匹配`);
+            }
+            
+            return {
+                score,
+                reasons,
+                isMatch: score >= 70, // 70分以上认为匹配
+                confidence: score / 100
+            };
+        }
+        
+        // 计算文本相似度
+        function calculateTextSimilarity(text1, text2) {
+            if (!text1 || !text2) return 0;
+            
+            text1 = text1.toLowerCase().trim();
+            text2 = text2.toLowerCase().trim();
+            
+            if (text1 === text2) return 1;
+            
+            const longer = text1.length > text2.length ? text1 : text2;
+            const shorter = text1.length > text2.length ? text2 : text1;
+            
+            if (longer.length === 0) return 1;
+            
+            const editDistance = calculateEditDistance(longer, shorter);
+            return (longer.length - editDistance) / longer.length;
+        }
+        
+        // 计算编辑距离
+        function calculateEditDistance(str1, str2) {
+            const matrix = [];
+            
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            
+            return matrix[str2.length][str1.length];
+        }
+        
+        // 测试元素重定位
+        function testElementRelocation(elementId, iframeDoc) {
+            const pageKey = getCurrentPageKey();
+            const signature = pageElements[pageKey]?.[elementId];
+            
+            if (!signature) return false;
+            
+            try {
+                const foundElement = relocateElementBySignature(signature, iframeDoc);
+                return !!foundElement;
+            } catch (error) {
+                console.log('重定位测试失败:', error);
+                return false;
+            }
+        }
+        
+        // 根据签名重定位元素
+        function relocateElementBySignature(signature, iframeDoc) {
+            console.log('🔍 根据签名重定位元素:', signature.id);
+            
+            // 策略1: 使用primary选择器
+            if (signature.selectors.primary) {
+                try {
+                    const element = iframeDoc.querySelector(signature.selectors.primary);
+                    if (element) {
+                        const validation = signature.validate(element);
+                        console.log('Primary选择器验证:', validation);
+                        if (validation.isMatch) {
+                            return element;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Primary选择器失败:', e);
+                }
+            }
+            
+            // 策略2: 使用unique选择器
+            for (let uniqueSelector of signature.selectors.unique || []) {
+                try {
+                    const element = iframeDoc.querySelector(uniqueSelector);
+                    if (element) {
+                        const validation = signature.validate(element);
+                        console.log('Unique选择器验证:', validation);
+                        if (validation.isMatch) {
+                            return element;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Unique选择器失败:', uniqueSelector, e);
+                }
+            }
+            
+            // 策略3: 使用CSS路径
+            if (signature.selectors.cssPath) {
+                try {
+                    const element = iframeDoc.querySelector(signature.selectors.cssPath);
+                    if (element) {
+                        const validation = signature.validate(element);
+                        console.log('CSS路径验证:', validation);
+                        if (validation.isMatch) {
+                            return element;
+                        }
+                    }
+                } catch (e) {
+                    console.log('CSS路径失败:', e);
+                }
+            }
+            
+            // 策略4: 使用层级路径重建
+            const pathElement = findElementByPath(signature.hierarchy, iframeDoc);
+            if (pathElement) {
+                const validation = signature.validate(pathElement);
+                console.log('路径重建验证:', validation);
+                if (validation.isMatch) {
+                    return pathElement;
+                }
+            }
+            
+            // 策略5: 相似度匹配
+            const candidates = findSimilarElements(signature, iframeDoc);
+            if (candidates.length > 0) {
+                console.log('找到相似元素候选:', candidates.length);
+                return candidates[0].element;
+            }
+            
+            console.log('❌ 所有重定位策略都失败了');
+            return null;
+        }
+        
+        // 根据路径查找元素
+        function findElementByPath(hierarchy, iframeDoc) {
+            try {
+                let current = iframeDoc.body;
+                
+                for (let step of hierarchy.path) {
+                    const children = Array.from(current.children);
+                    const candidate = children[step.index];
+                    
+                    if (!candidate || candidate.tagName.toLowerCase() !== step.tagName) {
+                        return null;
+                    }
+                    
+                    current = candidate;
+                }
+                
+                return current;
+            } catch (error) {
+                console.log('路径查找失败:', error);
+                return null;
+            }
+        }
+        
+        // 查找相似元素
+        function findSimilarElements(signature, iframeDoc) {
+            const candidates = [];
+            const allElements = iframeDoc.querySelectorAll(signature.basic.tagName);
+            
+            for (let element of allElements) {
+                const validation = signature.validate(element);
+                if (validation.score > 50) { // 50分以上的相似元素
+                    candidates.push({
+                        element,
+                        score: validation.score,
+                        reasons: validation.reasons
+                    });
+                }
+            }
+            
+            // 按分数排序
+            candidates.sort((a, b) => b.score - a.score);
+            
+            console.log('相似元素:', candidates.map(c => ({
+                score: c.score,
+                reasons: c.reasons
+            })));
+            
+            return candidates;
+        }
+        
+        // 生成稳定的元素ID - 增强版
+        function generateElementId(element) {
+            // 策略1: 使用原生ID
+            if (element.id) {
+                return `id-${element.id}`;
+            }
+            
+            // 策略2: 使用data属性
+            if (element.dataset && element.dataset.function) {
+                return `data-function-${element.dataset.function}`;
+            }
+            
+            // 策略3: 基于稳定特征生成ID
+            const tagName = element.tagName.toLowerCase();
+            const className = element.className ? element.className.split(' ')[0] : '';
+            const parentClass = element.parentElement ? element.parentElement.className.split(' ')[0] : '';
+            
+            // 使用位置特征
+            const siblings = element.parentElement ? Array.from(element.parentElement.children) : [];
+            const index = siblings.indexOf(element);
+            const sameTagSiblings = siblings.filter(s => s.tagName === element.tagName);
+            const tagIndex = sameTagSiblings.indexOf(element);
+            
+            // 特殊元素处理
+            let specialFeature = '';
+            
+            // Canvas元素特殊处理
+            if (tagName === 'canvas') {
+                specialFeature = `canvas-${element.width || 'default'}x${element.height || 'default'}`;
+                // 检查canvas上下文
+                try {
+                    const ctx = element.getContext('2d');
+                    if (ctx) {
+                        specialFeature += '-2d';
+                    }
+                } catch (e) {
+                    // WebGL或其他上下文
+                    specialFeature += '-webgl';
+                }
+            }
+            
+            // SVG元素特殊处理
+            else if (tagName === 'svg') {
+                const viewBox = element.getAttribute('viewBox');
+                specialFeature = `svg-${viewBox || element.getAttribute('width') || 'auto'}`;
+            }
+            
+            // 图片元素特殊处理
+            else if (tagName === 'img') {
+                const src = element.src ? element.src.split('/').pop().split('.')[0] : '';
+                specialFeature = `img-${src || 'noname'}`;
+            }
+            
+            // 表单元素特殊处理
+            else if (['input', 'select', 'textarea', 'button'].includes(tagName)) {
+                const type = element.type || tagName;
+                const name = element.name || '';
+                specialFeature = `${type}-${name}`;
+            }
+            
+            // 文本内容（对于有内容的元素）
+            else {
+                const textContent = element.textContent ? element.textContent.trim().substring(0, 15) : '';
+                if (textContent) {
+                    specialFeature = textContent.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
+                }
+            }
+            
+            // 生成稳定的ID
+            const features = [
+                tagName,
+                className || 'noclass',
+                parentClass || 'noparent', 
+                `idx${index}`,
+                `tag${tagIndex}`,
+                specialFeature || 'nofeature'
+            ].filter(f => f && f !== '').join('-');
+            
+            const stableId = features.replace(/[^a-zA-Z0-9\u4e00-\u9fa5-]/g, '-').replace(/-+/g, '-');
+            
+            console.log('生成元素ID:', {
+                element: element,
+                tagName,
+                className,
+                index,
+                tagIndex,
+                specialFeature,
+                finalId: `stable-${stableId}`
+            });
+            
+            return `stable-${stableId}`;
+        }
+
+        // 获取元素名称
+        function getElementName(element) {
+            // 优先级：panel-title > 文本内容 > class > id > 标签名
+            const titleElement = element.querySelector('.panel-title, .title, h1, h2, h3, h4, h5, h6');
+            if (titleElement && titleElement.textContent.trim()) {
+                return titleElement.textContent.trim();
+            }
+            
+            const textContent = element.textContent ? element.textContent.trim().substring(0, 30) : '';
+            if (textContent && textContent.length > 3) {
+                return textContent;
+            }
+            
+            if (element.id) {
+                return `#${element.id}`;
+            }
+            
+            if (element.className) {
+                return `.${element.className.split(' ')[0]}`;
+            }
+            
+            return element.tagName.toLowerCase();
+        }
+
+        // 获取元素描述
+        function getElementDescription(element) {
+            const tagName = element.tagName.toLowerCase();
+            const className = element.className ? ` (${element.className.split(' ').slice(0, 2).join(' ')})` : '';
+            const id = element.id ? ` #${element.id}` : '';
+            
+            return `${tagName}元素${id}${className}`;
+        }
+
+        // 加载批注数据（强制无缓存）
+        async function loadAnnotations() {
+            const statusElement = document.getElementById('annotationStatus');
+            
+            try {
+                // 显示加载状态
+                if (statusElement) {
+                    statusElement.textContent = '正在加载...';
+                    statusElement.style.color = '#2196F3';
+                }
+                
+                // 添加随机时间戳强制绕过缓存
+                const timestamp = new Date().getTime() + Math.random();
+                const response = await fetch(`prd-docs/annotations.json?t=${timestamp}`, {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                
+                if (response.ok) {
+                    const annotations = await response.json();
+                    currentAnnotations = annotations;
+                    
+                    // 统计批注数量
+                    let totalAnnotations = 0;
+                    Object.values(currentAnnotations).forEach(pageAnnotations => {
+                        totalAnnotations += Object.keys(pageAnnotations).length;
+                    });
+                    
+                    console.log('=== 批注数据加载成功 ===');
+                    console.log('页面数量:', Object.keys(currentAnnotations).length);
+                    console.log('总批注数量:', totalAnnotations);
+                    console.log('详细批注数据:', currentAnnotations);
+                    console.log('当前页面键:', getCurrentPageKey());
+                    console.log('所有页面键:', Object.keys(currentAnnotations));
+                    
+                    // 更新状态显示
+                    if (statusElement) {
+                        statusElement.textContent = `已加载 (${totalAnnotations}条批注)`;
+                        statusElement.style.color = '#4CAF50';
+                    }
+                } else {
+                    console.log('批注文件不存在，创建新的批注数据');
+                    currentAnnotations = {};
+                    
+                    if (statusElement) {
+                        statusElement.textContent = '文件不存在';
+                        statusElement.style.color = '#ff9800';
+                    }
+                }
+            } catch (error) {
+                console.log('批注文件读取失败，创建新的批注数据:', error);
+                currentAnnotations = {};
+                
+                if (statusElement) {
+                    statusElement.textContent = '加载失败';
+                    statusElement.style.color = '#f44336';
+                }
+            }
+            
+            // 更新最后更新时间
+            updateLastUpdateTime();
+        }
+        
+        // 调试批注系统
+        function debugAnnotationSystem() {
+            const pageKey = getCurrentPageKey();
+            const pageAnnotations = currentAnnotations[pageKey] || {};
+            const elements = pageElements[pageKey] || {};
+            
+            console.log('=== 批注系统调试信息 ===');
+            console.log('当前页面:', pages[currentPageIndex]);
+            console.log('当前功能:', currentFunction);
+            console.log('页面键:', pageKey);
+            console.log('选中元素ID:', selectedElementId);
+            console.log('批注模式:', isAnnotationMode);
+            console.log('所有批注数据:', currentAnnotations);
+            console.log('当前页面批注:', pageAnnotations);
+            console.log('当前页面元素:', elements);
+            
+            // 显示调试信息到批注面板
+            const annotationContent = document.getElementById('annotationContent');
+            if (annotationContent) {
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">🐛 系统调试信息</div>
+                        <div style="font-size: 11px; margin-top: 8px; line-height: 1.4;">
+                            <div><strong>当前页面:</strong> ${pages[currentPageIndex]}</div>
+                            <div><strong>当前功能:</strong> ${currentFunction}</div>
+                            <div><strong>页面键:</strong> ${pageKey}</div>
+                            <div><strong>选中元素:</strong> ${selectedElementId || '无'}</div>
+                            <div><strong>批注模式:</strong> ${isAnnotationMode ? '已开启' : '已关闭'}</div>
+                            <hr style="margin: 8px 0; border-color: #404040;">
+                            <div><strong>当前页面批注数:</strong> ${Object.keys(pageAnnotations).length}</div>
+                            <div><strong>当前页面元素数:</strong> ${Object.keys(elements).length}</div>
+                            <div><strong>全部批注数:</strong> ${Object.values(currentAnnotations).reduce((total, page) => total + Object.keys(page).length, 0)}</div>
+                            <hr style="margin: 8px 0; border-color: #404040;">
+                            <div style="color: #00a8ff;"><strong>当前页面批注列表:</strong></div>
+                            ${Object.entries(pageAnnotations).map(([id, annotation]) => `
+                                <div style="margin: 2px 0; padding: 4px; background: #333; border-radius: 2px;">
+                                    <div style="font-weight: bold;">📝 ${annotation.name}</div>
+                                    <div style="font-size: 10px; color: #ccc;">ID: ${id}</div>
+                                    <div style="font-size: 10px; color: #ccc;">内容: ${annotation.content.substring(0, 30)}...</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <button onclick="console.clear(); console.log('控制台已清空')" class="nav-button" style="margin: 2px; font-size: 10px;">清空控制台</button>
+                            <button onclick="updateElementList()" class="nav-button" style="margin: 2px; font-size: 10px;">刷新列表</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            alert('调试信息已输出到控制台和批注面板，请查看！');
+        }
+        
+        // 测试高亮功能
+        function testHighlight() {
+            console.log('=== 测试高亮功能 ===');
+            
+            // 创建一个测试高亮框
+            clearHighlights();
+            
+            const iframe = document.getElementById('embeddedFrame');
+            const iframeRect = iframe.getBoundingClientRect();
+            
+            // 在iframe中心创建测试高亮
+            const testHighlight = document.createElement('div');
+            testHighlight.className = 'highlight-overlay';
+            testHighlight.id = 'test-highlight';
+            
+            testHighlight.style.position = 'fixed';
+            testHighlight.style.left = (iframeRect.left + 100) + 'px';
+            testHighlight.style.top = (iframeRect.top + 100) + 'px';
+            testHighlight.style.width = '200px';
+            testHighlight.style.height = '100px';
+            testHighlight.style.zIndex = '1000';
+            testHighlight.style.border = '5px solid #ff0000';
+            testHighlight.style.background = 'rgba(255, 0, 0, 0.5)';
+            testHighlight.style.pointerEvents = 'none';
+            
+            document.body.appendChild(testHighlight);
+            
+            console.log('测试高亮已创建:', testHighlight);
+            console.log('iframe位置:', iframeRect);
+            
+            // 如果有批注数据，尝试高亮第一个
+            const pageKey = getCurrentPageKey();
+            const pageAnnotations = currentAnnotations[pageKey] || {};
+            const annotationIds = Object.keys(pageAnnotations);
+            
+            if (annotationIds.length > 0) {
+                const firstAnnotationId = annotationIds[0];
+                console.log('尝试高亮第一个批注:', firstAnnotationId);
+                
+                setTimeout(() => {
+                    highlightElement(firstAnnotationId);
+                }, 2000);
+            }
+            
+            // 5秒后移除测试高亮
+            setTimeout(() => {
+                if (testHighlight.parentNode) {
+                    testHighlight.remove();
+                }
+            }, 5000);
+            
+            alert('测试高亮已创建！红色框应该出现在iframe上方。如果有批注，2秒后会尝试高亮第一个批注。');
+        }
+        
+        // 强制刷新批注数据和显示
+        async function forceRefreshAnnotations() {
+            console.log('=== 强制刷新批注系统 ===');
+            
+            // 清空当前数据
+            currentAnnotations = {};
+            pageElements = {};
+            selectedElementId = null;
+            
+            // 重新加载批注数据
+            await loadAnnotations();
+            
+            // 强制更新元素清单
+            updateElementList();
+            
+            // 清空批注面板
+            const annotationContent = document.getElementById('annotationContent');
+            if (annotationContent) {
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">🔄 系统已刷新</div>
+                        <div style="margin-top: 8px; color: #4CAF50;">
+                            批注数据已重新加载完成！
+                        </div>
+                    </div>
+                `;
+            }
+            
+            console.log('强制刷新完成');
+            alert('批注系统已强制刷新！请查看页面元素清单。');
+        }
+
+        // 验证和修复批注数据
+        async function validateAndFixAnnotations() {
+            console.log('=== 开始验证和修复批注数据 ===');
+            
+            const statusElement = document.getElementById('annotationStatus');
+            if (statusElement) {
+                statusElement.textContent = '正在修复...';
+                statusElement.style.color = '#ff9800';
+            }
+            
+            try {
+                const iframe = document.getElementById('embeddedFrame');
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                let fixedCount = 0;
+                let removedCount = 0;
+                const newAnnotations = {};
+                
+                // 遍历所有批注
+                for (const [pageKey, pageAnnotations] of Object.entries(currentAnnotations)) {
+                    newAnnotations[pageKey] = {};
+                    
+                    for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                        console.log(`检查批注: ${pageKey}/${elementId}`);
+                        
+                        // 尝试在当前页面中找到对应元素
+                        let targetElement = null;
+                        
+                        // 多策略查找元素
+                        targetElement = await findElementByMultipleStrategies(iframeDoc, elementId, annotation);
+                        
+                        if (targetElement) {
+                            // 元素找到了，生成新的稳定ID
+                            const newElementId = generateElementId(targetElement);
+                            const newSelector = generateElementSelector(targetElement);
+                            
+                            // 更新批注数据
+                            newAnnotations[pageKey][newElementId] = {
+                                ...annotation,
+                                elementId: newElementId,
+                                selector: newSelector,
+                                lastValidated: new Date().toLocaleString('zh-CN'),
+                                originalElementId: elementId !== newElementId ? elementId : undefined
+                            };
+                            
+                            if (elementId !== newElementId) {
+                                console.log(`修复批注: ${elementId} -> ${newElementId}`);
+                                fixedCount++;
+                            }
+                        } else {
+                            // 元素找不到，询问是否删除
+                            const shouldKeep = confirm(`找不到批注对应的元素:\n\n标题: ${annotation.name}\n内容: ${annotation.content}\n\n是否保留此批注？\n(点击"确定"保留，"取消"删除)`);
+                            
+                            if (shouldKeep) {
+                                // 保留但标记为无效
+                                newAnnotations[pageKey][elementId] = {
+                                    ...annotation,
+                                    status: 'invalid',
+                                    lastValidated: new Date().toLocaleString('zh-CN'),
+                                    note: '元素未找到，请手动修复'
+                                };
+                            } else {
+                                console.log(`删除无效批注: ${elementId}`);
+                                removedCount++;
+                            }
+                        }
+                    }
+                }
+                
+                // 更新批注数据
+                currentAnnotations = newAnnotations;
+                
+                // 保存修复后的数据
+                await saveAnnotations();
+                await loadAnnotations();
+                updateElementList();
+                
+                // 显示修复结果
+                const annotationContent = document.getElementById('annotationContent');
+                if (annotationContent) {
+                    annotationContent.innerHTML = `
+                        <div class="annotation-item">
+                            <div class="annotation-title">🔧 批注修复完成</div>
+                            <div style="margin-top: 8px; line-height: 1.5;">
+                                <div style="color: #4CAF50;">✅ 修复数量: ${fixedCount}</div>
+                                <div style="color: #f44336;">❌ 删除数量: ${removedCount}</div>
+                                <div style="color: #2196F3;">📊 总计处理: ${fixedCount + removedCount}</div>
+                                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040; font-size: 11px; color: #999;">
+                                    修复后的批注使用更稳定的元素标识，能够更准确地定位页面元素。
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (statusElement) {
+                    statusElement.textContent = `修复完成 (修复${fixedCount}个)`;
+                    statusElement.style.color = '#4CAF50';
+                }
+                
+                console.log('批注修复完成:', { fixedCount, removedCount });
+                alert(`批注修复完成！\n修复: ${fixedCount} 个\n删除: ${removedCount} 个`);
+                
+            } catch (error) {
+                console.error('批注修复失败:', error);
+                
+                if (statusElement) {
+                    statusElement.textContent = '修复失败';
+                    statusElement.style.color = '#f44336';
+                }
+                
+                alert('批注修复失败: ' + error.message);
+            }
+        }
+
+        // 多策略查找元素 - 增强版
+        async function findElementByMultipleStrategies(iframeDoc, elementId, annotation) {
+            console.log('多策略查找元素:', elementId, annotation.name);
+            
+            // 策略1: 直接选择器查找
+            if (annotation.selector) {
+                try {
+                    const element = iframeDoc.querySelector(annotation.selector);
+                    if (element) {
+                        console.log('策略1成功: 选择器查找');
+                        return element;
+                    }
+                } catch (e) {
+                    console.log('选择器无效:', annotation.selector);
+                }
+            }
+            
+            // 策略2: ID查找
+            if (elementId.startsWith('id-')) {
+                const actualId = elementId.substring(3);
+                const element = iframeDoc.getElementById(actualId);
+                if (element) {
+                    console.log('策略2成功: ID查找');
+                    return element;
+                }
+            }
+            
+            // 策略3: 特殊元素类型查找
+            if (elementId.includes('canvas') || annotation.name.toLowerCase().includes('canvas')) {
+                console.log('策略3: Canvas元素专门查找');
+                const canvasElements = iframeDoc.querySelectorAll('canvas');
+                console.log('找到canvas元素数量:', canvasElements.length);
+                
+                for (const canvas of canvasElements) {
+                    // 检查尺寸匹配
+                    const sizeMatch = elementId.includes(`${canvas.width}x${canvas.height}`);
+                    // 检查位置匹配
+                    const rect = canvas.getBoundingClientRect();
+                    console.log('Canvas元素信息:', {
+                        width: canvas.width,
+                        height: canvas.height,
+                        rect: rect,
+                        parent: canvas.parentElement?.className
+                    });
+                    
+                    // 如果是页面中唯一的canvas或尺寸匹配，优先选择
+                    if (canvasElements.length === 1 || sizeMatch) {
+                        console.log('策略3成功: Canvas元素匹配');
+                        return canvas;
+                    }
+                }
+                
+                // 如果有多个canvas，选择第一个
+                if (canvasElements.length > 0) {
+                    console.log('策略3成功: 选择第一个Canvas');
+                    return canvasElements[0];
+                }
+            }
+            
+            // 策略4: 稳定ID特征解析查找
+            if (elementId.startsWith('stable-')) {
+                console.log('策略4: 稳定ID特征解析');
+                const features = elementId.substring(7).split('-');
+                const [tagName, className, parentClass, ...rest] = features;
+                
+                console.log('解析的特征:', { tagName, className, parentClass, rest });
+                
+                let candidates = [];
+                
+                // 按标签查找
+                if (tagName) {
+                    candidates = Array.from(iframeDoc.getElementsByTagName(tagName));
+                    console.log(`按标签${tagName}找到:`, candidates.length);
+                }
+                
+                // 按类名筛选
+                if (className && className !== 'noclass' && candidates.length > 0) {
+                    candidates = candidates.filter(el => el.className.includes(className));
+                    console.log(`按类名${className}筛选后:`, candidates.length);
+                }
+                
+                // 按父元素类名筛选
+                if (parentClass && parentClass !== 'noparent' && candidates.length > 0) {
+                    candidates = candidates.filter(el => 
+                        el.parentElement && el.parentElement.className.includes(parentClass)
+                    );
+                    console.log(`按父类名${parentClass}筛选后:`, candidates.length);
+                }
+                
+                // 按位置索引筛选
+                const indexMatch = rest.find(f => f.startsWith('idx'));
+                if (indexMatch && candidates.length > 1) {
+                    const index = parseInt(indexMatch.substring(3));
+                    if (!isNaN(index) && index < candidates.length) {
+                        const parent = candidates[0].parentElement;
+                        if (parent) {
+                            const siblings = Array.from(parent.children);
+                            if (siblings[index] && candidates.includes(siblings[index])) {
+                                candidates = [siblings[index]];
+                                console.log(`按索引${index}精确定位`);
+                            }
+                        }
+                    }
+                }
+                
+                if (candidates.length > 0) {
+                    console.log('策略4成功: 稳定特征匹配');
+                    return candidates[0];
+                }
+            }
+            
+            // 策略5: 根据文本内容查找
+            if (annotation.name) {
+                const cleanName = annotation.name.replace(/[📝🌾🥬⚠️📈📊🌤️]/g, '').trim();
+                if (cleanName && cleanName !== 'canvas') { // 排除纯canvas搜索
+                    const allElements = iframeDoc.querySelectorAll('*');
+                    
+                    for (const element of allElements) {
+                        const text = element.textContent?.trim();
+                        if (text && text.includes(cleanName) && element.children.length === 0) {
+                            console.log('策略5成功: 文本内容查找');
+                            return element;
+                        }
+                    }
+                }
+            }
+            
+            // 策略6: 类名部分匹配
+            const classMatches = elementId.match(/([a-zA-Z-]+)/g);
+            if (classMatches) {
+                for (const className of classMatches) {
+                    if (className.length > 4 && !['stable', 'canvas', 'noclass'].includes(className)) {
+                        const elements = iframeDoc.getElementsByClassName(className);
+                        if (elements.length > 0) {
+                            console.log('策略6成功: 类名匹配');
+                            return elements[0];
+                        }
+                    }
+                }
+            }
+            
+            console.log('所有策略都失败了');
+            return null;
+        }
+
+        // 全面诊断系统
+        async function comprehensiveDiagnosis() {
+            console.log('🩺 开始全面诊断...');
+            
+            const annotationContent = document.getElementById('annotationContent');
+            const iframe = document.getElementById('embeddedFrame');
+            
+            // 诊断结果收集
+            const diagnosis = {
+                iframe: { accessible: false, crossOrigin: false, loaded: false },
+                annotations: { total: 0, accessible: 0, broken: 0 },
+                elements: { found: 0, missing: 0, virtual: 0 },
+                recommendations: []
+            };
+            
+            // 1. iframe访问性诊断
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc && iframeDoc.body) {
+                    diagnosis.iframe.accessible = true;
+                    diagnosis.iframe.loaded = true;
+                    console.log('✅ iframe可访问');
+                } else {
+                    diagnosis.iframe.crossOrigin = true;
+                    console.log('❌ iframe跨域限制');
+                }
+            } catch (error) {
+                diagnosis.iframe.crossOrigin = true;
+                console.log('❌ iframe访问失败:', error.message);
+            }
+            
+            // 2. 批注数据诊断
+            diagnosis.annotations.total = Object.values(currentAnnotations).reduce(
+                (total, pageAnnotations) => total + Object.keys(pageAnnotations).length, 0
+            );
+            
+            // 3. 元素定位诊断
+            for (const [pageKey, pageAnnotations] of Object.entries(currentAnnotations)) {
+                for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                    try {
+                        const canHighlight = await testElementHighlight(elementId, false);
+                        if (canHighlight) {
+                            diagnosis.annotations.accessible++;
+                        } else {
+                            diagnosis.annotations.broken++;
+                        }
+                    } catch (error) {
+                        diagnosis.annotations.broken++;
+                    }
+                }
+            }
+            
+            // 4. 虚拟元素统计
+            const pageKey = getCurrentPageKey();
+            const pageElements_current = pageElements[pageKey] || {};
+            diagnosis.elements.found = Object.keys(pageElements_current).length;
+            diagnosis.elements.virtual = Object.values(pageElements_current).filter(el => el.virtual).length;
+            diagnosis.elements.missing = diagnosis.annotations.total - diagnosis.annotations.accessible;
+            
+            // 5. 生成建议
+            if (diagnosis.iframe.crossOrigin) {
+                diagnosis.recommendations.push('建议使用同域iframe或实现postMessage通信');
+            }
+            if (diagnosis.annotations.broken > 0) {
+                diagnosis.recommendations.push(`发现${diagnosis.annotations.broken}个无法定位的批注，建议运行批注修复`);
+            }
+            if (diagnosis.elements.virtual > 0) {
+                diagnosis.recommendations.push('系统正在使用虚拟元素定位，建议优化元素抓取机制');
+            }
+            if (diagnosis.annotations.accessible / diagnosis.annotations.total < 0.8) {
+                diagnosis.recommendations.push('批注可访问率较低，建议重新抓取页面元素');
+            }
+            
+            // 6. 显示诊断结果
+            annotationContent.innerHTML = `
+                <div class="annotation-item">
+                    <div class="annotation-title">🩺 系统诊断报告</div>
+                    <div style="margin-top: 12px; line-height: 1.6;">
+                        <h4 style="color: #00a8ff; margin: 8px 0 4px 0;">📱 iframe状态</h4>
+                        <div style="font-size: 11px; margin-left: 12px;">
+                            <div>• 可访问: ${diagnosis.iframe.accessible ? '✅ 是' : '❌ 否'}</div>
+                            <div>• 跨域限制: ${diagnosis.iframe.crossOrigin ? '⚠️ 是' : '✅ 否'}</div>
+                            <div>• 已加载: ${diagnosis.iframe.loaded ? '✅ 是' : '❌ 否'}</div>
+                        </div>
+                        
+                        <h4 style="color: #00a8ff; margin: 8px 0 4px 0;">📝 批注状态</h4>
+                        <div style="font-size: 11px; margin-left: 12px;">
+                            <div>• 总数: ${diagnosis.annotations.total}</div>
+                            <div>• 可定位: <span style="color: #4CAF50">${diagnosis.annotations.accessible}</span></div>
+                            <div>• 失效: <span style="color: #f44336">${diagnosis.annotations.broken}</span></div>
+                            <div>• 成功率: <span style="color: ${diagnosis.annotations.accessible / diagnosis.annotations.total > 0.8 ? '#4CAF50' : '#ff9800'}">${Math.round(diagnosis.annotations.accessible / diagnosis.annotations.total * 100)}%</span></div>
+                        </div>
+                        
+                        <h4 style="color: #00a8ff; margin: 8px 0 4px 0;">🔍 元素状态</h4>
+                        <div style="font-size: 11px; margin-left: 12px;">
+                            <div>• 已识别: ${diagnosis.elements.found}</div>
+                            <div>• 虚拟元素: ${diagnosis.elements.virtual}</div>
+                            <div>• 缺失: ${diagnosis.elements.missing}</div>
+                        </div>
+                        
+                        ${diagnosis.recommendations.length > 0 ? `
+                        <h4 style="color: #ff9800; margin: 8px 0 4px 0;">💡 优化建议</h4>
+                        <div style="font-size: 11px; margin-left: 12px;">
+                            ${diagnosis.recommendations.map(rec => `<div>• ${rec}</div>`).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #404040;">
+                            <button onclick="autoFixIssues()" class="nav-button" style="margin: 2px; font-size: 10px; background: #4CAF50;">自动修复</button>
+                            <button onclick="exportDiagnosisReport()" class="nav-button" style="margin: 2px; font-size: 10px; background: #2196F3;">导出报告</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            console.log('🩺 诊断完成:', diagnosis);
+            return diagnosis;
+        }
+        
+        // 测试元素高亮（不显示高亮框）
+        async function testElementHighlight(elementId, showHighlight = true) {
+            try {
+                const pageKey = getCurrentPageKey();
+                const elementData = pageElements[pageKey]?.[elementId];
+                const annotation = currentAnnotations[pageKey]?.[elementId];
+                
+                // 虚拟元素总是可以高亮
+                if (elementData && elementData.virtual) {
+                    if (showHighlight) highlightVirtualElement(elementData);
+                    return true;
+                }
+                
+                // 坐标元素可以高亮
+                if (elementData && elementData.rect) {
+                    if (showHighlight) highlightByCoordinates(elementData);
+                    return true;
+                }
+                
+                // 批注信息可以推断
+                if (annotation) {
+                    if (showHighlight) highlightByAnnotationInfo(annotation, elementId);
+                    return true;
+                }
+                
+                // DOM查找
+                const iframe = document.getElementById('embeddedFrame');
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    const element = await findElementByMultipleStrategies(iframeDoc, elementId, annotation);
+                    if (element) {
+                        if (showHighlight) {
+                            // 创建临时高亮
+                            const rect = element.getBoundingClientRect();
+                            const iframeRect = iframe.getBoundingClientRect();
+                            const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+                            const left = iframeRect.left + (rect.left * scale);
+                            const top = iframeRect.top + (rect.top * scale);
+                            const width = rect.width * scale;
+                            const height = rect.height * scale;
+                            createHighlightOverlay(left, top, width, height, 'DOM定位成功');
+                        }
+                        return true;
+                    }
+                } catch (error) {
+                    console.log('DOM查找失败:', error);
+                }
+                
+                return false;
+            } catch (error) {
+                console.log('测试高亮失败:', error);
+                return false;
+            }
+        }
+        
+        // 测试所有批注
+        async function testAllAnnotations() {
+            console.log('🧪 开始测试所有批注...');
+            
+            const results = {
+                total: 0,
+                success: 0,
+                failed: [],
+                tested: []
+            };
+            
+            // 遍历所有批注
+            for (const [pageKey, pageAnnotations] of Object.entries(currentAnnotations)) {
+                for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                    results.total++;
+                    
+                    const success = await testElementHighlight(elementId, false);
+                    if (success) {
+                        results.success++;
+                        results.tested.push({
+                            id: elementId,
+                            name: annotation.name,
+                            status: '✅ 成功',
+                            page: pageKey
+                        });
+                    } else {
+                        results.failed.push({
+                            id: elementId,
+                            name: annotation.name,
+                            status: '❌ 失败',
+                            page: pageKey
+                        });
+                    }
+                    
+                    // 给UI一些时间更新
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+            
+            // 显示测试结果
+            const annotationContent = document.getElementById('annotationContent');
+            annotationContent.innerHTML = `
+                <div class="annotation-item">
+                    <div class="annotation-title">🧪 批注测试报告</div>
+                    <div style="margin-top: 12px; line-height: 1.5;">
+                        <div style="font-size: 12px; margin-bottom: 8px;">
+                            <span style="color: #4CAF50">成功: ${results.success}</span> / 
+                            <span style="color: #f44336">失败: ${results.failed.length}</span> / 
+                            <span style="color: #2196F3">总计: ${results.total}</span>
+                        </div>
+                        
+                        ${results.failed.length > 0 ? `
+                        <h4 style="color: #f44336; margin: 8px 0 4px 0;">❌ 失败项目</h4>
+                        <div style="max-height: 150px; overflow-y: auto; font-size: 10px;">
+                            ${results.failed.map(item => `
+                                <div style="margin: 2px 0; padding: 4px; background: rgba(244, 67, 54, 0.1); border-radius: 2px;">
+                                    <strong>${item.name}</strong><br>
+                                    <span style="color: #999;">ID: ${item.id}</span><br>
+                                    <span style="color: #999;">页面: ${item.page}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #404040;">
+                            <button onclick="highlightNextFailed()" class="nav-button" style="margin: 2px; font-size: 10px;">逐个测试失败项</button>
+                            ${results.failed.length > 0 ? `
+                            <button onclick="fixFailedAnnotations()" class="nav-button" style="margin: 2px; font-size: 10px; background: #ff5722;">修复失败项</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            console.log('🧪 测试完成:', results);
+            
+            // 存储测试结果供其他功能使用
+            window.lastTestResults = results;
+            
+            alert(`批注测试完成！\n成功: ${results.success}\n失败: ${results.failed.length}\n总计: ${results.total}`);
+        }
+
+        // 测试新的精确抓取系统
+        async function testNewCaptureSystem() {
+            console.log('🎯 测试精确抓取系统...');
+            
+            const annotationContent = document.getElementById('annotationContent');
+            
+            annotationContent.innerHTML = `
+                <div class="annotation-item">
+                    <div class="annotation-title">🎯 精确抓取系统测试</div>
+                    <div style="margin-top: 12px; line-height: 1.5;">
+                        <div style="background: rgba(0, 168, 255, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+                            <h4 style="color: #00a8ff; margin: 0 0 8px 0;">测试说明</h4>
+                            <div style="font-size: 12px;">
+                                1. 开启批注模式<br>
+                                2. 点击页面中的任意元素<br>
+                                3. 系统会自动生成精确的元素签名<br>
+                                4. 立即验证定位准确性<br>
+                                5. 显示详细的抓取信息
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 12px 0;">
+                            <button onclick="toggleAnnotationMode()" class="nav-button" style="background: #4CAF50;">
+                                ${isAnnotationMode ? '✅ 批注模式已开启' : '🎯 开启批注模式'}
+                            </button>
+                        </div>
+                        
+                        <div style="background: rgba(255, 193, 7, 0.1); padding: 10px; border-radius: 6px;">
+                            <h4 style="color: #ffc107; margin: 0 0 8px 0;">新系统特性</h4>
+                            <div style="font-size: 11px;">
+                                • 🎯 多重选择器生成 (Primary, XPath, CSS, Unique)<br>
+                                • 📏 精确位置记录 (绝对+相对+索引)<br>
+                                • 🧬 元素特征签名 (属性+样式+内容)<br>
+                                • 🔍 5种重定位策略<br>
+                                • ✅ 实时验证匹配度 (100分制)<br>
+                                • 🔄 智能容错和降级
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 显示元素签名详情
+        function showElementSignatures() {
+            console.log('📋 显示元素签名...');
+            
+            const pageKey = getCurrentPageKey();
+            const pageElements_current = pageElements[pageKey] || {};
+            const annotations = currentAnnotations[pageKey] || {};
+            
+            const annotationContent = document.getElementById('annotationContent');
+            
+            if (Object.keys(pageElements_current).length === 0) {
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">📋 元素签名查看器</div>
+                        <div style="margin-top: 12px; text-align: center; color: #999;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
+                            <div>暂无元素签名数据</div>
+                            <div style="margin-top: 8px; font-size: 12px;">
+                                请先创建批注以生成元素签名
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const signatures = Object.entries(pageElements_current).map(([elementId, signature]) => {
+                const annotation = annotations[elementId];
+                const signatureData = signature.basic ? signature : null; // 检查是否是新格式
+                
+                return {
+                    elementId,
+                    signature: signatureData,
+                    annotation,
+                    hasAnnotation: !!annotation,
+                    isNewFormat: !!signatureData
+                };
+            });
+            
+            annotationContent.innerHTML = `
+                <div class="annotation-item">
+                    <div class="annotation-title">📋 元素签名详情</div>
+                    <div style="margin-top: 12px; line-height: 1.4;">
+                        <div style="margin-bottom: 12px; font-size: 12px;">
+                            <span style="color: #4CAF50">新格式: ${signatures.filter(s => s.isNewFormat).length}</span> / 
+                            <span style="color: #ff9800">旧格式: ${signatures.filter(s => !s.isNewFormat).length}</span> / 
+                            <span style="color: #2196F3">总计: ${signatures.length}</span>
+                        </div>
+                        
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${signatures.map(item => `
+                                <div style="margin: 8px 0; padding: 8px; background: ${item.isNewFormat ? 'rgba(76, 175, 80, 0.1)' : 'rgba(255, 152, 0, 0.1)'}; border-radius: 4px; border-left: 3px solid ${item.isNewFormat ? '#4CAF50' : '#ff9800'};">
+                                    <div style="font-weight: bold; margin-bottom: 4px;">
+                                        ${item.hasAnnotation ? '📝' : '🔍'} ${item.annotation?.name || item.elementId}
+                                    </div>
+                                    
+                                    ${item.isNewFormat ? `
+                                    <div style="font-size: 10px; color: #ccc;">
+                                        <div><strong>标签:</strong> ${item.signature.basic.tagName}</div>
+                                        <div><strong>ID:</strong> ${item.signature.basic.id || 'none'}</div>
+                                        <div><strong>类名:</strong> ${item.signature.basic.className || 'none'}</div>
+                                        <div><strong>层级深度:</strong> ${item.signature.hierarchy.depth}</div>
+                                        <div><strong>选择器数量:</strong> ${Object.keys(item.signature.selectors).length}</div>
+                                        <div><strong>位置索引:</strong> ${item.signature.positioning.siblingIndex.index}/${item.signature.positioning.siblingIndex.total}</div>
+                                        <div><strong>文本内容:</strong> ${item.signature.basic.textContent ? '"' + item.signature.basic.textContent.substring(0, 20) + '..."' : 'none'}</div>
+                                    </div>
+                                    ` : `
+                                    <div style="font-size: 10px; color: #ff9800;">
+                                        旧格式数据 - 建议运行批注修复升级
+                                    </div>
+                                    `}
+                                    
+                                    <div style="margin-top: 6px;">
+                                        <button onclick="testSignatureRelocation('${item.elementId}')" class="nav-button" style="font-size: 9px; padding: 2px 6px;">测试定位</button>
+                                        ${item.isNewFormat ? `
+                                        <button onclick="showDetailedSignature('${item.elementId}')" class="nav-button" style="font-size: 9px; padding: 2px 6px; margin-left: 4px;">详细信息</button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #404040;">
+                            <button onclick="upgradeAllSignatures()" class="nav-button" style="font-size: 10px; background: #ff9800;">升级旧格式签名</button>
+                            <button onclick="exportSignatures()" class="nav-button" style="font-size: 10px; margin-left: 6px; background: #2196F3;">导出签名数据</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 测试签名重定位
+        async function testSignatureRelocation(elementId) {
+            console.log('🔍 测试签名重定位:', elementId);
+            
+            try {
+                const iframe = document.getElementById('embeddedFrame');
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                const pageKey = getCurrentPageKey();
+                const signature = pageElements[pageKey]?.[elementId];
+                
+                if (!signature) {
+                    alert('签名数据不存在');
+                    return;
+                }
+                
+                if (!signature.basic) {
+                    alert('这是旧格式签名，请先升级');
+                    return;
+                }
+                
+                const startTime = performance.now();
+                const foundElement = relocateElementBySignature(signature, iframeDoc);
+                const endTime = performance.now();
+                
+                const duration = Math.round(endTime - startTime);
+                
+                if (foundElement) {
+                    // 高亮找到的元素
+                    highlightElement(elementId);
+                    
+                    // 验证匹配度
+                    const validation = signature.validate(foundElement);
+                    
+                    alert(`🎯 重定位成功！\n\n` +
+                          `耗时: ${duration}ms\n` +
+                          `匹配分数: ${validation.score}/100\n` +
+                          `置信度: ${Math.round(validation.confidence * 100)}%\n` +
+                          `匹配原因: ${validation.reasons.join(', ')}`);
+                } else {
+                    alert(`❌ 重定位失败\n\n耗时: ${duration}ms\n请检查元素是否仍然存在于页面中`);
+                }
+                
+            } catch (error) {
+                console.error('测试重定位失败:', error);
+                alert('测试失败: ' + error.message);
+            }
+        }
+        
+        // 显示详细签名信息
+        function showDetailedSignature(elementId) {
+            const pageKey = getCurrentPageKey();
+            const signature = pageElements[pageKey]?.[elementId];
+            
+            if (!signature || !signature.basic) {
+                alert('签名数据不存在或格式错误');
+                return;
+            }
+            
+            const details = {
+                '基础信息': signature.basic,
+                '层级路径': signature.hierarchy,
+                '属性特征': signature.attributes,
+                '位置信息': signature.positioning,
+                '样式特征': signature.styleFeatures,
+                '内容特征': signature.contentFeatures,
+                '选择器列表': signature.selectors
+            };
+            
+            let output = `📋 元素签名详细信息\n\nID: ${signature.id}\n时间戳: ${new Date(signature.timestamp).toLocaleString()}\n\n`;
+            
+            for (let [category, data] of Object.entries(details)) {
+                output += `${category}:\n${JSON.stringify(data, null, 2)}\n\n`;
+            }
+            
+            console.log('详细签名信息:', signature);
+            
+            // 创建一个可复制的弹窗
+            const textarea = document.createElement('textarea');
+            textarea.value = output;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            alert('📋 详细签名信息已复制到剪贴板！\n也可以在控制台查看完整数据。');
+        }
+
+        // 保存批注数据
+        async function saveAnnotations() {
+            try {
+                // 在浏览器环境下通过下载方式保存
+                downloadAnnotations();
+            } catch (error) {
+                console.log('保存批注数据失败');
+            }
+        }
+
+        // 通过下载方式保存批注数据
+        function downloadAnnotations() {
+            const dataStr = JSON.stringify(currentAnnotations, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'annotations.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // 获取当前页面和功能的唯一标识
+        function getCurrentPageKey() {
+            const currentPage = pages[currentPageIndex];
+            return `${currentPage}-${currentFunction}`;
+        }
+
+        // 抓取页面元素
+        function extractPageElements(iframeDoc) {
+            const pageKey = getCurrentPageKey();
+            pageElements[pageKey] = {};
+
+            try {
+                // 查找所有包含panel-header的元素
+                const panelHeaders = iframeDoc.querySelectorAll('.panel-header, [class*="panel-title"], [class*="title"]');
+                
+                panelHeaders.forEach((element, index) => {
+                    const titleElement = element.querySelector('.panel-title') || element;
+                    const title = titleElement.textContent.trim();
+                    
+                    if (title) {
+                        const elementId = `element-${index}`;
+                        const rect = element.getBoundingClientRect();
+                        
+                        pageElements[pageKey][elementId] = {
+                            id: elementId,
+                            name: title,
+                            desc: `页面元素: ${element.className}`,
+                            element: element,
+                            rect: {
+                                top: rect.top,
+                                left: rect.left,
+                                width: rect.width,
+                                height: rect.height
+                            },
+                            selector: generateElementSelector(element)
+                        };
+                    }
+                });
+
+                // 查找其他重要元素
+                const otherElements = iframeDoc.querySelectorAll('.widget, .chart, .map, .button, [id], [class*="btn"]');
+                otherElements.forEach((element, index) => {
+                    const elementId = `other-${index}`;
+                    if (!pageElements[pageKey][elementId]) {
+                        const name = element.id || element.className.split(' ')[0] || element.tagName;
+                        const rect = element.getBoundingClientRect();
+                        
+                        if (rect.width > 50 && rect.height > 20) { // 过滤太小的元素
+                            pageElements[pageKey][elementId] = {
+                                id: elementId,
+                                name: name,
+                                desc: `${element.tagName.toLowerCase()}元素`,
+                                element: element,
+                                rect: {
+                                    top: rect.top,
+                                    left: rect.left,
+                                    width: rect.width,
+                                    height: rect.height
+                                },
+                                selector: generateElementSelector(element)
+                            };
+                        }
+                    }
+                });
+
+                updateElementList();
+            } catch (error) {
+                console.log('抓取页面元素失败:', error);
+            }
+        }
+
+        // 生成精确的元素选择器 - 改进版
+        function generateElementSelector(element) {
+            // 策略1: 优先使用ID选择器
+            if (element.id) {
+                return `#${element.id}`;
+            }
+            
+            // 策略2: 使用data属性
+            if (element.dataset && element.dataset.function) {
+                return `[data-function="${element.dataset.function}"]`;
+            }
+            
+            // 策略3: 生成复合选择器路径
+            const selectorParts = [];
+            let currentElement = element;
+            let depth = 0;
+            const maxDepth = 4;
+            
+            while (currentElement && currentElement !== document.body && depth < maxDepth) {
+                let selector = currentElement.nodeName.toLowerCase();
+                
+                // 添加ID（如果存在）
+                if (currentElement.id) {
+                    selector += `#${currentElement.id}`;
+                    selectorParts.unshift(selector);
+                    break; // ID是唯一的，可以停止
+                }
+                
+                // 添加重要的类名
+                if (currentElement.className) {
+                    const classes = currentElement.className.split(' ').filter(cls => 
+                        cls && !cls.includes('active') && !cls.includes('hover')
+                    );
+                    if (classes.length > 0) {
+                        selector += '.' + classes.slice(0, 2).join('.');
+                    }
+                }
+                
+                // 添加nth-child以提高精确性
+                const siblings = currentElement.parentElement ? 
+                    Array.from(currentElement.parentElement.children).filter(
+                        sibling => sibling.tagName === currentElement.tagName
+                    ) : [];
+                    
+                if (siblings.length > 1) {
+                    const index = siblings.indexOf(currentElement) + 1;
+                    selector += `:nth-child(${index})`;
+                }
+                
+                selectorParts.unshift(selector);
+                currentElement = currentElement.parentElement;
+                depth++;
+            }
+            
+            // 策略4: 基于文本内容的备用选择器
+            const textContent = element.textContent ? element.textContent.trim() : '';
+            if (textContent && textContent.length < 50) {
+                selectorParts.push(`[textContent*="${textContent.substring(0, 20)}"]`);
+            }
+            
+            const finalSelector = selectorParts.join(' > ');
+            console.log('生成的选择器:', finalSelector);
+            return finalSelector;
+        }
+
+        // 更新页面元素清单
+        function updateElementList() {
+            const elementList = document.getElementById('elementList');
+            const currentPage = pages[currentPageIndex];
+            
+            // 收集所有相关功能的批注
+            const allRelatedAnnotations = {};
+            const functionKeys = Object.keys(functionConfigs);
+            
+            functionKeys.forEach(funcKey => {
+                const pageKey = `${currentPage}-${funcKey}`;
+                const pageAnnotations = currentAnnotations[pageKey] || {};
+                if (Object.keys(pageAnnotations).length > 0) {
+                    allRelatedAnnotations[funcKey] = {
+                        title: functionConfigs[funcKey].title,
+                        annotations: pageAnnotations
+                    };
+                }
+            });
+            
+            console.log('=== 更新元素清单 ===');
+            console.log('当前页面:', currentPage);
+            console.log('当前功能:', currentFunction);
+            console.log('功能键列表:', functionKeys);
+            console.log('所有批注数据:', currentAnnotations);
+            console.log('相关功能批注:', allRelatedAnnotations);
+            console.log('找到的批注数量:', Object.keys(allRelatedAnnotations).length);
+            
+            // 生成按功能分组的批注显示
+            let htmlContent = '';
+            
+            if (Object.keys(allRelatedAnnotations).length === 0) {
+                htmlContent = `
+                    <div style="text-align: center; color: #999; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
+                        <div>暂无批注内容</div>
+                        <div style="margin-top: 8px; font-size: 12px;">
+                            开启批注模式，点击页面元素即可添加批注
+                        </div>
+                    </div>
+                `;
+            } else {
+                htmlContent = Object.entries(allRelatedAnnotations).map(([funcKey, funcData]) => {
+                    const isCurrentFunction = funcKey === currentFunction;
+                    const annotationEntries = Object.entries(funcData.annotations);
+                    
+                    return `
+                        <div style="margin-bottom: 16px; border: 1px solid ${isCurrentFunction ? '#00a8ff' : '#404040'}; border-radius: 6px; overflow: hidden;">
+                            <div style="background: ${isCurrentFunction ? '#00a8ff' : '#404040'}; color: white; padding: 8px 12px; font-weight: bold; font-size: 12px;">
+                                ${isCurrentFunction ? '🔵' : '⚪'} ${funcData.title}
+                                <span style="float: right; font-weight: normal;">${annotationEntries.length}条批注</span>
+                            </div>
+                            <div style="padding: 8px;">
+                                ${annotationEntries.map(([id, annotation]) => `
+                                    <div class="element-item ${selectedElementId === id ? 'active' : ''}" 
+                                         onclick="selectElementFromAnnotation('${funcKey}', '${id}')" 
+                                         data-element-id="${id}"
+                                         style="margin: 4px 0; border: 1px solid #606060; border-radius: 4px; padding: 6px 8px; cursor: pointer; transition: all 0.2s;">
+                                        <div class="element-name" style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">
+                                            📝 ${annotation.name}
+                                        </div>
+                                        <div class="element-desc" style="font-size: 10px; color: #ccc; line-height: 1.3;">
+                                            ${annotation.content.substring(0, 50)}${annotation.content.length > 50 ? '...' : ''}
+                                        </div>
+                                        <div style="font-size: 9px; color: #999; margin-top: 4px;">
+                                            ${annotation.timestamp}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            elementList.innerHTML = htmlContent;
+        }
+        
+        // 从批注选择元素（跨功能）
+        async function selectElementFromAnnotation(functionKey, elementId) {
+            console.log('selectElementFromAnnotation 被调用:', { functionKey, elementId, currentFunction });
+            
+            // 如果不是当前功能，切换到对应功能
+            if (functionKey !== currentFunction) {
+                console.log('切换功能从', currentFunction, '到', functionKey);
+                currentFunction = functionKey;
+                await updatePageContentByFunction(functionKey);
+                
+                // 等待iframe加载完成
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            // 选择元素
+            selectedElementId = elementId;
+            console.log('选中元素ID:', selectedElementId);
+            
+            // 检查批注数据是否存在
+            const pageKey = getCurrentPageKey();
+            const pageAnnotations = currentAnnotations[pageKey] || {};
+            const annotation = pageAnnotations[elementId];
+            
+            console.log('页面键:', pageKey);
+            console.log('页面批注:', pageAnnotations);
+            console.log('目标批注:', annotation);
+            
+            if (!annotation) {
+                console.error('找不到批注数据:', elementId);
+                alert('批注数据不存在，请重新加载批注数据');
+                return;
+            }
+            
+            // 显示批注内容
+            updateAnnotationDisplay(elementId);
+            
+            // 尝试高亮元素（如果存在于当前页面）
+            try {
+                const iframe = document.getElementById('embeddedFrame');
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                // 尝试多种方式查找元素
+                let targetElement = null;
+                
+                // 方式1: 通过ID查找
+                if (elementId.startsWith('id-')) {
+                    const actualId = elementId.substring(3);
+                    targetElement = iframeDoc.getElementById(actualId);
+                }
+                
+                // 方式2: 通过类名查找
+                if (!targetElement && elementId.includes('-')) {
+                    const parts = elementId.split('-');
+                    if (parts.length >= 2) {
+                        const className = parts[1];
+                        const elements = iframeDoc.getElementsByClassName(className);
+                        if (elements.length > 0) {
+                            targetElement = elements[0];
+                        }
+                    }
+                }
+                
+                // 方式3: 通过选择器查找（如果有保存的元素信息）
+                const pageElements = window.pageElements || {};
+                const elementData = pageElements[pageKey]?.[elementId];
+                if (!targetElement && elementData && elementData.selector) {
+                    targetElement = iframeDoc.querySelector(elementData.selector);
+                }
+                
+                if (targetElement) {
+                    console.log('找到目标元素，开始高亮:', targetElement);
+                    
+                    // 如果元素数据不存在，临时创建一个
+                    if (!window.pageElements) window.pageElements = {};
+                    if (!window.pageElements[pageKey]) window.pageElements[pageKey] = {};
+                    if (!window.pageElements[pageKey][elementId]) {
+                        window.pageElements[pageKey][elementId] = {
+                            id: elementId,
+                            name: annotation.name,
+                            element: targetElement,
+                            rect: targetElement.getBoundingClientRect(),
+                            selector: generateElementSelector(targetElement)
+                        };
+                    }
+                    
+                    // 高亮元素
+                    const highlightSuccess = highlightElement(elementId);
+                    
+                    if (!highlightSuccess) {
+                        console.warn('高亮失败，尝试强制高亮');
+                        // 延迟重试高亮
+                        setTimeout(() => {
+                            highlightElement(elementId);
+                        }, 500);
+                    }
+                    
+                    // 滚动到元素
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center', 
+                        inline: 'center' 
+                    });
+                } else {
+                    console.warn('在当前页面找不到对应元素:', elementId);
+                    // 即使找不到元素，也尝试强制高亮
+                    setTimeout(() => {
+                        const success = highlightElement(elementId);
+                        if (!success) {
+                            console.error('所有高亮策略都失败了');
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.log('高亮元素失败:', error);
+                // 错误情况下也尝试强制高亮
+                setTimeout(() => {
+                    highlightElement(elementId);
+                }, 1000);
+            }
+            
+            // 更新元素清单显示
+            updateElementList();
+            
+            console.log('批注选择完成');
+        }
+
+        // 选择页面元素
+        function selectElement(elementId) {
+            selectedElementId = elementId;
+            updateElementList();
+            
+            // 清除之前的高亮
+            clearHighlights();
+            
+            // 高亮选中的元素
+            highlightElement(elementId);
+            
+            // 更新批注内容显示
+            updateAnnotationDisplay(elementId);
+        }
+
+        // 高亮元素（全新的鲁棒版本）
+        function highlightElement(elementId) {
+            console.log('🎯 开始高亮元素:', elementId);
+            clearHighlights();
+            
+            const pageKey = getCurrentPageKey();
+            const elementData = pageElements[pageKey]?.[elementId];
+            const annotation = currentAnnotations[pageKey]?.[elementId];
+            
+            console.log('📊 高亮上下文:', {
+                pageKey,
+                elementData,
+                annotation,
+                elementId
+            });
+            
+            // 策略1: 虚拟元素高亮（如果是虚拟元素）
+            if (elementData && elementData.virtual) {
+                return highlightVirtualElement(elementData);
+            }
+            
+            // 策略2: 坐标高亮（基于已保存的位置信息）
+            if (elementData && elementData.rect) {
+                return highlightByCoordinates(elementData);
+            }
+            
+            // 策略3: 批注信息推断高亮
+            if (annotation) {
+                return highlightByAnnotationInfo(annotation, elementId);
+            }
+            
+            // 策略4: 智能DOM查找高亮
+            return highlightByDOMSearch(elementId);
+        }
+        
+        // 虚拟元素高亮
+        function highlightVirtualElement(elementData) {
+            console.log('🎭 虚拟元素高亮:', elementData.name);
+            
+            const iframe = document.getElementById('embeddedFrame');
+            const iframeRect = iframe.getBoundingClientRect();
+            const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+            
+            // 使用预定义的坐标
+            const rect = elementData.rect;
+            const left = iframeRect.left + (rect.left * scale);
+            const top = iframeRect.top + (rect.top * scale);
+            const width = rect.width * scale;
+            const height = rect.height * scale;
+            
+            createHighlightOverlay(left, top, width, height, '虚拟元素: ' + elementData.name);
+            return true;
+        }
+        
+        // 坐标高亮
+        function highlightByCoordinates(elementData) {
+            console.log('📍 坐标高亮:', elementData.name);
+            
+            const iframe = document.getElementById('embeddedFrame');
+            const iframeRect = iframe.getBoundingClientRect();
+            const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+            
+            const rect = elementData.rect;
+            const left = iframeRect.left + (rect.left * scale);
+            const top = iframeRect.top + (rect.top * scale);
+            const width = rect.width * scale;
+            const height = rect.height * scale;
+            
+            createHighlightOverlay(left, top, width, height, '坐标定位: ' + elementData.name);
+            return true;
+        }
+        
+        // 基于批注信息推断高亮
+        function highlightByAnnotationInfo(annotation, elementId) {
+            console.log('🔮 推断高亮:', annotation.name);
+            
+            const iframe = document.getElementById('embeddedFrame');
+            const iframeRect = iframe.getBoundingClientRect();
+            const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+            
+            // 根据批注名称推断可能的位置
+            let estimatedRect = { left: 100, top: 100, width: 200, height: 100 };
+            
+            const name = annotation.name.toLowerCase();
+            if (name.includes('地图') || name.includes('map')) {
+                estimatedRect = { left: 400, top: 100, width: 600, height: 400 };
+            } else if (name.includes('图表') || name.includes('chart') || name.includes('canvas')) {
+                estimatedRect = { left: 100, top: 300, width: 400, height: 300 };
+            } else if (name.includes('面板') || name.includes('panel')) {
+                estimatedRect = { left: 1100, top: 100, width: 300, height: 200 };
+            } else if (name.includes('按钮') || name.includes('button')) {
+                estimatedRect = { left: 200, top: 50, width: 100, height: 40 };
+            }
+            
+            const left = iframeRect.left + (estimatedRect.left * scale);
+            const top = iframeRect.top + (estimatedRect.top * scale);
+            const width = estimatedRect.width * scale;
+            const height = estimatedRect.height * scale;
+            
+            createHighlightOverlay(left, top, width, height, '智能推断: ' + annotation.name, 'warning');
+            return true;
+        }
+        
+        // DOM查找高亮 - 精确版
+        function highlightByDOMSearch(elementId) {
+            console.log('🔍 DOM精确查找高亮:', elementId);
+            
+            try {
+                const iframe = document.getElementById('embeddedFrame');
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const iframeRect = iframe.getBoundingClientRect();
+                const scale = parseFloat(iframe.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] || 1);
+                
+                const pageKey = getCurrentPageKey();
+                const signature = pageElements[pageKey]?.[elementId];
+                
+                if (!signature) {
+                    console.log('❌ 没有找到元素签名');
+                    return false;
+                }
+                
+                // 使用新的精确重定位系统
+                const targetElement = relocateElementBySignature(signature, iframeDoc);
+                
+                    if (targetElement) {
+                    console.log('✅ 精确定位成功');
+                    
+                    // 获取元素位置信息
+                    const rect = targetElement.getBoundingClientRect();
+                    
+                    // 计算高亮位置
+                    const left = iframeRect.left + (rect.left * scale);
+                    const top = iframeRect.top + (rect.top * scale);
+                    const width = rect.width * scale;
+                    const height = rect.height * scale;
+                    
+                    // 更新元素签名中的元素引用
+                    signature._element = targetElement;
+                    
+                    // 创建高亮
+                    createHighlightOverlay(left, top, width, height, '精确定位: ' + (signature.basic.textContent || signature.basic.tagName), 'success');
+                    
+                    // 滚动到元素
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center', 
+                        inline: 'center' 
+                    });
+                    
+                    return true;
+                } else {
+                    console.log('❌ 精确定位失败，使用备用方案');
+                    
+                    // 备用方案：使用签名中保存的位置信息
+                    if (signature.positioning && signature.positioning.absoluteRect) {
+                        const rect = signature.positioning.absoluteRect;
+                        const left = iframeRect.left + (rect.left * scale);
+                        const top = iframeRect.top + (rect.top * scale);
+                        const width = rect.width * scale;
+                        const height = rect.height * scale;
+                        
+                        createHighlightOverlay(left, top, width, height, '历史位置: ' + (signature.basic.textContent || signature.basic.tagName), 'warning');
+                        return true;
+                    }
+                }
+                
+                // 策略3: 增强的ID和特征匹配
+                if (!targetElement) {
+                    console.log('策略3: 增强的ID和特征匹配');
+                    
+                    // 3.1: 直接ID匹配
+                    if (elementId.startsWith('id-')) {
+                        const actualId = elementId.substring(3);
+                        targetElement = iframeDoc.getElementById(actualId);
+                        console.log('ID匹配:', actualId, targetElement ? '成功' : '失败');
+                    }
+                    
+                    // 3.2: data-function属性匹配
+                    if (!targetElement && elementId.startsWith('data-function-')) {
+                        const functionName = elementId.substring(14);
+                        targetElement = iframeDoc.querySelector(`[data-function="${functionName}"]`);
+                        console.log('data-function匹配:', functionName, targetElement ? '成功' : '失败');
+                    }
+                    
+                    // 3.3: 稳定ID特征匹配
+                    if (!targetElement && elementId.startsWith('stable-')) {
+                        const features = elementId.substring(7).split('-');
+                        const [tagName, className, parentClass] = features;
+                        
+                        // 组合查询
+                        let candidates = [];
+                        if (tagName) {
+                            candidates = Array.from(iframeDoc.getElementsByTagName(tagName));
+                        }
+                        
+                        if (className && candidates.length > 0) {
+                            candidates = candidates.filter(el => el.className.includes(className));
+                        }
+                        
+                        if (parentClass && candidates.length > 0) {
+                            candidates = candidates.filter(el => 
+                                el.parentElement && el.parentElement.className.includes(parentClass)
+                            );
+                        }
+                        
+                        if (candidates.length > 0) {
+                            targetElement = candidates[0];
+                            console.log('稳定特征匹配成功:', features);
+                        }
+                    }
+                    
+                    // 3.4: 类名模糊匹配
+                    if (!targetElement) {
+                        const classMatches = elementId.match(/([a-zA-Z-]+)/g);
+                        if (classMatches) {
+                            for (const className of classMatches) {
+                                if (className.length > 3) { // 忽略太短的匹配
+                                const elements = iframeDoc.getElementsByClassName(className);
+                                if (elements.length > 0) {
+                                    targetElement = elements[0];
+                                    console.log('类名匹配成功:', className);
+                                    break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // 策略4: 模糊搜索（根据批注名称）
+                if (!targetElement) {
+                    console.log('策略4: 模糊搜索');
+                    const annotation = currentAnnotations[pageKey]?.[elementId];
+                    if (annotation && annotation.name) {
+                        // 查找包含相似文本的元素
+                        const allElements = iframeDoc.querySelectorAll('*');
+                        for (const el of allElements) {
+                            const text = el.textContent?.trim();
+                            if (text && text.includes(annotation.name.replace(/[📝🌾🥬⚠️📈📊🌤️]/g, '').trim())) {
+                                targetElement = el;
+                                console.log('模糊搜索成功:', text);
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                if (targetElement) {
+                    console.log('找到目标元素:', targetElement);
+                    
+                    // 获取元素的实际位置
+                    const rect = targetElement.getBoundingClientRect();
+                    console.log('元素位置信息:', rect);
+                    
+                    // 确保元素在iframe的坐标系中
+                    const iframeWindow = iframe.contentWindow;
+                    const iframeScrollX = iframeWindow.pageXOffset || iframeDoc.documentElement.scrollLeft;
+                    const iframeScrollY = iframeWindow.pageYOffset || iframeDoc.documentElement.scrollTop;
+                    
+                    console.log('iframe滚动位置:', { scrollX: iframeScrollX, scrollY: iframeScrollY });
+                    
+                    // 计算高亮层的位置（考虑iframe的位置、缩放和滚动）
+                    const left = iframeRect.left + (rect.left * scale);
+                    const top = iframeRect.top + (rect.top * scale);
+                    const width = rect.width * scale;
+                    const height = rect.height * scale;
+                    
+                    console.log('计算的高亮位置:', { left, top, width, height });
+                    
+                    // 创建高亮覆盖层
+                    const highlight = document.createElement('div');
+                    highlight.className = 'highlight-overlay';
+                    highlight.id = 'current-highlight';
+                    
+                    // 设置样式
+                    highlight.style.position = 'fixed';
+                    highlight.style.left = left + 'px';
+                    highlight.style.top = top + 'px';
+                    highlight.style.width = width + 'px';
+                    highlight.style.height = height + 'px';
+                    highlight.style.zIndex = '1000';
+                    highlight.style.pointerEvents = 'none';
+                    
+                    // 添加明显的视觉效果用于调试
+                    highlight.style.border = '3px solid #ff0000';
+                    highlight.style.background = 'rgba(255, 0, 0, 0.2)';
+                    highlight.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.8)';
+                    
+                    document.body.appendChild(highlight);
+                    
+                    console.log('高亮层已添加到DOM');
+                    
+                    // 更新或创建元素数据
+                    if (!window.pageElements) window.pageElements = {};
+                    if (!window.pageElements[pageKey]) window.pageElements[pageKey] = {};
+                    window.pageElements[pageKey][elementId] = {
+                        id: elementId,
+                        name: currentAnnotations[pageKey]?.[elementId]?.name || 'Unknown',
+                        element: targetElement,
+                        rect: rect,
+                        selector: generateElementSelector(targetElement)
+                    };
+                    
+                    // 滚动到元素
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center', 
+                        inline: 'center' 
+                    });
+                    
+                    // 3秒后恢复正常样式
+                    setTimeout(() => {
+                        if (highlight.parentNode) {
+                            highlight.style.border = '3px solid #ffc107';
+                            highlight.style.background = 'rgba(255, 193, 7, 0.3)';
+                            highlight.style.boxShadow = '0 0 20px rgba(255, 193, 7, 0.5)';
+                        }
+                    }, 3000);
+                    
+                    console.log('高亮完成');
+                    return true;
+                    
+                } else {
+                    console.error('无法找到目标元素，所有策略都失败了');
+                    
+                    // 显示错误提示
+                    const errorOverlay = document.createElement('div');
+                    errorOverlay.style.position = 'fixed';
+                    errorOverlay.style.top = '50%';
+                    errorOverlay.style.left = '50%';
+                    errorOverlay.style.transform = 'translate(-50%, -50%)';
+                    errorOverlay.style.background = 'rgba(220, 53, 69, 0.9)';
+                    errorOverlay.style.color = 'white';
+                    errorOverlay.style.padding = '20px';
+                    errorOverlay.style.borderRadius = '8px';
+                    errorOverlay.style.zIndex = '2000';
+                    errorOverlay.style.textAlign = 'center';
+                    errorOverlay.innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+                        <div>无法找到页面元素</div>
+                        <div style="margin-top: 8px; font-size: 12px;">元素ID: ${elementId}</div>
+                        <div style="margin-top: 8px; font-size: 12px;">可能需要重新抓取页面元素</div>
+                    `;
+                    
+                    document.body.appendChild(errorOverlay);
+                    setTimeout(() => {
+                        if (errorOverlay.parentNode) {
+                            errorOverlay.remove();
+                        }
+                    }, 3000);
+                    
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('高亮过程发生错误:', error);
+                alert('高亮失败: ' + error.message);
+                return false;
+            }
+        }
+
+        // 创建高亮覆盖层
+        function createHighlightOverlay(left, top, width, height, label = '', type = 'success') {
+            console.log('🎨 创建高亮覆盖层:', { left, top, width, height, label, type });
+            
+            // 创建高亮框
+            const highlight = document.createElement('div');
+            highlight.className = 'highlight-overlay';
+            highlight.id = 'current-highlight';
+            
+            // 根据类型设置样式
+            let borderColor, backgroundColor, labelColor;
+            switch (type) {
+                case 'warning':
+                    borderColor = '#ff9800';
+                    backgroundColor = 'rgba(255, 152, 0, 0.2)';
+                    labelColor = '#ff9800';
+                    break;
+                case 'error':
+                    borderColor = '#f44336';
+                    backgroundColor = 'rgba(244, 67, 54, 0.2)';
+                    labelColor = '#f44336';
+                    break;
+                case 'info':
+                    borderColor = '#2196F3';
+                    backgroundColor = 'rgba(33, 150, 243, 0.2)';
+                    labelColor = '#2196F3';
+                    break;
+                default: // success
+                    borderColor = '#4CAF50';
+                    backgroundColor = 'rgba(76, 175, 80, 0.2)';
+                    labelColor = '#4CAF50';
+            }
+            
+            // 设置基本样式
+            highlight.style.position = 'fixed';
+            highlight.style.left = left + 'px';
+            highlight.style.top = top + 'px';
+            highlight.style.width = width + 'px';
+            highlight.style.height = height + 'px';
+            highlight.style.border = `3px solid ${borderColor}`;
+            highlight.style.background = backgroundColor;
+            highlight.style.zIndex = '1000';
+            highlight.style.pointerEvents = 'none';
+            highlight.style.borderRadius = '4px';
+            highlight.style.boxShadow = `0 0 20px ${backgroundColor}`;
+            
+            // 添加动画效果
+            highlight.style.animation = 'highlight-pulse 2s infinite';
+            
+            // 添加标签
+            if (label) {
+                const labelElement = document.createElement('div');
+                labelElement.style.position = 'absolute';
+                labelElement.style.top = '-25px';
+                labelElement.style.left = '0';
+                labelElement.style.background = borderColor;
+                labelElement.style.color = 'white';
+                labelElement.style.padding = '4px 8px';
+                labelElement.style.borderRadius = '4px';
+                labelElement.style.fontSize = '12px';
+                labelElement.style.fontWeight = 'bold';
+                labelElement.style.whiteSpace = 'nowrap';
+                labelElement.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+                labelElement.textContent = label;
+                highlight.appendChild(labelElement);
+            }
+            
+            document.body.appendChild(highlight);
+            
+            // 3秒后淡化效果
+            setTimeout(() => {
+                if (highlight.parentNode) {
+                    highlight.style.opacity = '0.7';
+                    highlight.style.animation = 'none';
+                }
+            }, 3000);
+            
+            return highlight;
+        }
+
+        // 清除高亮
+        function clearHighlights() {
+            const highlights = document.querySelectorAll('.highlight-overlay');
+            highlights.forEach(highlight => {
+                // 添加淡出动画
+                highlight.style.transition = 'opacity 0.3s ease';
+                highlight.style.opacity = '0';
+                setTimeout(() => {
+                    if (highlight.parentNode) {
+                        highlight.remove();
+                    }
+                }, 300);
+            });
+        }
+
+        // 更新批注显示
+        function updateAnnotationDisplay(elementId) {
+            console.log('updateAnnotationDisplay 被调用:', elementId);
+            
+            const pageKey = getCurrentPageKey();
+            const pageAnnotations = currentAnnotations[pageKey] || {};
+            const elementAnnotation = pageAnnotations[elementId];
+            const element = pageElements[pageKey]?.[elementId];
+            
+            console.log('批注显示参数:', {
+                pageKey,
+                elementId,
+                hasAnnotation: !!elementAnnotation,
+                hasElement: !!element,
+                annotation: elementAnnotation
+            });
+            
+            const annotationContent = document.getElementById('annotationContent');
+            
+            if (!annotationContent) {
+                console.error('找不到annotationContent元素');
+                return;
+            }
+            
+            if (elementAnnotation) {
+                // 显示现有批注
+                console.log('显示现有批注:', elementAnnotation);
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">📍 ${elementAnnotation.name}</div>
+                        <div class="annotation-content" style="margin-top: 8px; padding: 8px; background: #333; border-radius: 4px; line-height: 1.4;">
+                            ${elementAnnotation.content}
+                        </div>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040;">
+                            <small style="color: #999;">创建时间: ${elementAnnotation.timestamp}</small>
+                        </div>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040;">
+                            <small style="color: #999;">页面: ${pageKey}</small><br>
+                            <small style="color: #999;">元素ID: ${elementId}</small>
+                        </div>
+                        ${isAnnotationMode ? `
+                        <div style="margin-top: 8px;">
+                            <button onclick="editAnnotation('${elementId}')" class="nav-button" style="margin: 2px;">编辑</button>
+                            <button onclick="deleteAnnotation('${elementId}')" class="nav-button" style="margin: 2px; background: #dc3545;">删除</button>
+                        </div>
+                        ` : `
+                        <div style="margin-top: 8px;">
+                            <button onclick="toggleAnnotationMode()" class="nav-button" style="margin: 2px; background: #667eea;">进入批注模式编辑</button>
+                        </div>
+                        `}
+                    </div>
+                `;
+                
+                // 添加成功提示
+                setTimeout(() => {
+                    const title = annotationContent.querySelector('.annotation-title');
+                    if (title) {
+                        title.style.background = '#4CAF50';
+                        title.style.color = 'white';
+                        title.style.padding = '4px 8px';
+                        title.style.borderRadius = '4px';
+                        title.style.display = 'inline-block';
+                        title.style.marginBottom = '8px';
+                    }
+                }, 100);
+                
+            } else if (isAnnotationMode && element) {
+                // 批注模式下显示创建表单
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">📝 创建新批注</div>
+                        <div style="margin-top: 8px;">
+                            <input type="text" id="annotationTitle" placeholder="批注标题" value="${element.name}"
+                                   style="width: 100%; padding: 6px; background: #404040; border: 1px solid #606060; 
+                                          color: #fff; border-radius: 3px; margin-bottom: 8px;">
+                            <textarea id="annotationContentInput" placeholder="批注内容" rows="4"
+                                      style="width: 100%; padding: 6px; background: #404040; border: 1px solid #606060; 
+                                             color: #fff; border-radius: 3px; resize: vertical; margin-bottom: 8px;"></textarea>
+                            <button onclick="saveElementAnnotation('${elementId}')" class="nav-button">保存批注</button>
+                            <button onclick="cancelAnnotation()" class="nav-button" style="margin-left: 8px;">取消</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 普通模式下显示提示
+                annotationContent.innerHTML = `
+                    <div class="annotation-item">
+                        <div class="annotation-title">💡 提示</div>
+                        <div class="annotation-content">
+                            该元素暂无批注。开启批注模式可以添加批注内容。
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 保存元素批注
+        async function saveElementAnnotation(elementId) {
+            const titleInput = document.getElementById('annotationTitle');
+            const contentInput = document.getElementById('annotationContentInput');
+            
+            if (!titleInput || !contentInput) {
+                alert('无法找到批注表单元素');
+                return;
+            }
+            
+            const title = titleInput.value;
+            const content = contentInput.value;
+            
+            if (!title.trim() || !content.trim()) {
+                alert('请填写批注标题和内容');
+                return;
+            }
+            
+            const pageKey = getCurrentPageKey();
+            if (!currentAnnotations[pageKey]) {
+                currentAnnotations[pageKey] = {};
+            }
+            
+            currentAnnotations[pageKey][elementId] = {
+                name: title,
+                content: content,
+                timestamp: new Date().toLocaleString('zh-CN'),
+                elementId: elementId
+            };
+            
+            // 立即保存到文件并重新加载数据
+            await saveAnnotations();
+            await loadAnnotations(); // 重新从文件加载确保数据一致性
+            updateElementList();
+            updateAnnotationDisplay(elementId);
+        }
+
+        // 编辑批注
+        function editAnnotation(elementId) {
+            const pageKey = getCurrentPageKey();
+            const annotation = currentAnnotations[pageKey][elementId];
+            
+            const annotationContent = document.getElementById('annotationContent');
+            annotationContent.innerHTML = `
+                <div class="annotation-item">
+                    <div class="annotation-title">✏️ 编辑批注</div>
+                    <div style="margin-top: 8px;">
+                        <input type="text" id="annotationTitle" value="${annotation.name}" placeholder="批注标题" 
+                               style="width: 100%; padding: 6px; background: #404040; border: 1px solid #606060; 
+                                      color: #fff; border-radius: 3px; margin-bottom: 8px;">
+                        <textarea id="annotationContentInput" placeholder="批注内容" rows="4"
+                                  style="width: 100%; padding: 6px; background: #404040; border: 1px solid #606060; 
+                                         color: #fff; border-radius: 3px; resize: vertical; margin-bottom: 8px;">${annotation.content}</textarea>
+                        <button onclick="saveElementAnnotation('${elementId}')" class="nav-button">保存修改</button>
+                        <button onclick="updateAnnotationDisplay('${elementId}')" class="nav-button" style="margin-left: 8px;">取消</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 删除批注
+        async function deleteAnnotation(elementId) {
+            if (confirm('确定要删除这个批注吗？')) {
+                const pageKey = getCurrentPageKey();
+                delete currentAnnotations[pageKey][elementId];
+                await saveAnnotations();
+                await loadAnnotations(); // 重新从文件加载确保数据一致性
+                updateElementList();
+                updateAnnotationDisplay(elementId);
+            }
+        }
+
+        // 取消批注
+        function cancelAnnotation() {
+            selectedElementId = null;
+            updateElementList();
+            clearHighlights();
+            
+            // 恢复默认批注显示
+            const currentPage = pages[currentPageIndex];
+            const config = pageConfigs[currentPage];
+            const annotationContent = document.getElementById('annotationContent');
+            annotationContent.innerHTML = config.annotations.map(annotation => `
+                <div class="annotation-item">
+                    <div class="annotation-title">${annotation.title}</div>
+                    <div class="annotation-content">${annotation.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', async function() {
+            console.log('窗口加载完成，开始初始化页面');
+            await initializePage();
+            
+            // 强制刷新元素清单
+            setTimeout(() => {
+                console.log('强制刷新元素清单');
+                updateElementList();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

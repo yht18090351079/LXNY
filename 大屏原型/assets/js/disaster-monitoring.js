@@ -1,1051 +1,1473 @@
-// 灾害监测图层可视化逻辑
-class DisasterMonitoringLayer {
-    constructor(viewer) {
-        this.viewer = viewer;
-        this.temperatureDataSource = null;
-        this.droughtDataSource = null;
-        this.currentLayer = 'temperature';
-        this.init();
-    }
+/**
+ * 农情遥感系统大屏 - 灾害定损功能模块
+ * 功能：灾害监测、损失预测、预警管理、应急响应
+ */
 
-    init() {
-        this.createDataSources();
-        this.loadTemperatureRiskData();
-        this.loadDroughtRiskData();
-        this.initCharts();
-    }
+// ===== 全局变量 =====
+let disasterCharts = {
+    lossPredictionChart: null,
+    historicalDisasterChart: null,
+    disasterDistributionChart: null
+};
 
-    createDataSources() {
-        // 创建高温冻害数据源
-        this.temperatureDataSource = new Cesium.CustomDataSource('temperature-risk');
-        this.viewer.dataSources.add(this.temperatureDataSource);
+// 旧的entity图层已删除，现在使用imagery图层方式
 
-        // 创建干旱监测数据源
-        this.droughtDataSource = new Cesium.CustomDataSource('drought-risk');
-        this.viewer.dataSources.add(this.droughtDataSource);
-        this.droughtDataSource.show = false;
-    }
+let currentMonitoringConfig = {
+    type: null,           // null (未选中), temperature, drought, comprehensive
+    crop: 'wheat',        // wheat, corn, vegetables, potato, rapeseed
+    time: 'current',      // current, week, month, season, year
+    opacity: 85
+};
 
-    // 加载高温冻害风险数据
-    loadTemperatureRiskData() {
-        // 模拟高温冻害风险区域数据
-        const temperatureRiskAreas = [
-            {
-                id: 'temp_risk_1',
-                name: '北部高温风险区',
-                coordinates: [
-                    [103.100, 35.620], [103.120, 35.620], 
-                    [103.120, 35.640], [103.100, 35.640]
-                ],
-                riskLevel: 'extreme', // 极严重
-                temperature: 36.5,
-                cropType: '小麦',
-                affectedArea: 285,
-                estimatedLoss: 185.3
-            },
-            {
-                id: 'temp_risk_2',
-                name: '东部高温风险区',
-                coordinates: [
-                    [103.140, 35.600], [103.170, 35.600],
-                    [103.170, 35.620], [103.140, 35.620]
-                ],
-                riskLevel: 'severe', // 严重
-                temperature: 34.2,
-                cropType: '玉米',
-                affectedArea: 156,
-                estimatedLoss: 98.7
-            },
-            {
-                id: 'temp_risk_3',
-                name: '南部温度风险区',
-                coordinates: [
-                    [103.080, 35.580], [103.110, 35.580],
-                    [103.110, 35.600], [103.080, 35.600]
-                ],
-                riskLevel: 'moderate', // 中等
-                temperature: 32.8,
-                cropType: '小麦',
-                affectedArea: 89,
-                estimatedLoss: 45.2
-            },
-            {
-                id: 'temp_risk_4',
-                name: '西部轻度风险区',
-                coordinates: [
-                    [103.060, 35.610], [103.090, 35.610],
-                    [103.090, 35.630], [103.060, 35.630]
-                ],
-                riskLevel: 'light', // 轻微
-                temperature: 31.2,
-                cropType: '玉米',
-                affectedArea: 45,
-                estimatedLoss: 18.6
-            }
-        ];
+// 灾害弹窗相关变量
+let disasterTooltip = null;
+let disasterMouseHandler = null;
 
-        temperatureRiskAreas.forEach(area => {
-            this.createTemperatureRiskPolygon(area);
-        });
-    }
+// ===== 系统初始化 =====
 
-    // 创建高温风险多边形
-    createTemperatureRiskPolygon(area) {
-        const riskColors = {
-            'extreme': { color: '#F44336', alpha: 0.6 },
-            'severe': { color: '#FF9800', alpha: 0.5 },
-            'moderate': { color: '#FFEB3B', alpha: 0.4 },
-            'light': { color: '#FFF9C4', alpha: 0.3 }
-        };
-
-        const riskColor = riskColors[area.riskLevel];
-        const coordinates = area.coordinates.flat();
-
-        const polygon = this.temperatureDataSource.entities.add({
-            id: area.id,
-            name: area.name,
-            polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArray(coordinates),
-                material: Cesium.Color.fromCssColorString(riskColor.color).withAlpha(riskColor.alpha),
-                outline: true,
-                outlineColor: Cesium.Color.fromCssColorString(riskColor.color),
-                height: 0,
-                extrudedHeight: 50
-            },
-            properties: {
-                riskLevel: area.riskLevel,
-                temperature: area.temperature,
-                cropType: area.cropType,
-                affectedArea: area.affectedArea,
-                estimatedLoss: area.estimatedLoss,
-                type: 'temperature'
-            }
-        });
-
-        // 添加标签
-        this.temperatureDataSource.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(
-                (area.coordinates[0][0] + area.coordinates[2][0]) / 2,
-                (area.coordinates[0][1] + area.coordinates[2][1]) / 2,
-                100
-            ),
-            label: {
-                text: `${area.name}\n${area.temperature}°C`,
-                font: '12pt sans-serif',
-                fillColor: Cesium.Color.WHITE,
-                outlineColor: Cesium.Color.BLACK,
-                outlineWidth: 2,
-                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                pixelOffset: new Cesium.Cartesian2(0, -30),
-                showBackground: true,
-                backgroundColor: Cesium.Color.fromCssColorString(riskColor.color).withAlpha(0.8)
-            }
-        });
-    }
-
-    // 加载干旱风险数据
-    loadDroughtRiskData() {
-        const droughtRiskAreas = [
-            {
-                id: 'drought_risk_1',
-                name: '东南部特旱区',
-                coordinates: [
-                    [103.130, 35.570], [103.160, 35.570],
-                    [103.160, 35.590], [103.130, 35.590]
-                ],
-                droughtLevel: 'extreme', // 特旱
-                soilMoisture: 15,
-                precipitation: -65,
-                cropType: '小麦',
-                affectedArea: 198,
-                estimatedLoss: 156.8
-            },
-            {
-                id: 'drought_risk_2',
-                name: '西北部重旱区',
-                coordinates: [
-                    [103.070, 35.630], [103.100, 35.630],
-                    [103.100, 35.650], [103.070, 35.650]
-                ],
-                droughtLevel: 'severe', // 重旱
-                soilMoisture: 25,
-                precipitation: -45,
-                cropType: '玉米',
-                affectedArea: 142,
-                estimatedLoss: 89.3
-            },
-            {
-                id: 'drought_risk_3',
-                name: '中部中旱区',
-                coordinates: [
-                    [103.100, 35.590], [103.130, 35.590],
-                    [103.130, 35.610], [103.100, 35.610]
-                ],
-                droughtLevel: 'moderate', // 中旱
-                soilMoisture: 35,
-                precipitation: -25,
-                cropType: '辣椒',
-                affectedArea: 86,
-                estimatedLoss: 42.5
-            },
-            {
-                id: 'drought_risk_4',
-                name: '北部轻旱区',
-                coordinates: [
-                    [103.110, 35.640], [103.140, 35.640],
-                    [103.140, 35.660], [103.110, 35.660]
-                ],
-                droughtLevel: 'light', // 轻旱
-                soilMoisture: 45,
-                precipitation: -15,
-                cropType: '玉米',
-                affectedArea: 67,
-                estimatedLoss: 23.4
-            }
-        ];
-
-        droughtRiskAreas.forEach(area => {
-            this.createDroughtRiskPolygon(area);
-        });
-    }
-
-    // 创建干旱风险多边形
-    createDroughtRiskPolygon(area) {
-        const droughtColors = {
-            'extreme': { color: '#673AB7', alpha: 0.6 },
-            'severe': { color: '#1565C0', alpha: 0.5 },
-            'moderate': { color: '#2196F3', alpha: 0.4 },
-            'light': { color: '#E3F2FD', alpha: 0.3 }
-        };
-
-        const droughtColor = droughtColors[area.droughtLevel];
-        const coordinates = area.coordinates.flat();
-
-        this.droughtDataSource.entities.add({
-            id: area.id,
-            name: area.name,
-            polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArray(coordinates),
-                material: Cesium.Color.fromCssColorString(droughtColor.color).withAlpha(droughtColor.alpha),
-                outline: true,
-                outlineColor: Cesium.Color.fromCssColorString(droughtColor.color),
-                height: 0,
-                extrudedHeight: 30
-            },
-            properties: {
-                droughtLevel: area.droughtLevel,
-                soilMoisture: area.soilMoisture,
-                precipitation: area.precipitation,
-                cropType: area.cropType,
-                affectedArea: area.affectedArea,
-                estimatedLoss: area.estimatedLoss,
-                type: 'drought'
-            }
-        });
-
-        // 添加标签
-        this.droughtDataSource.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(
-                (area.coordinates[0][0] + area.coordinates[2][0]) / 2,
-                (area.coordinates[0][1] + area.coordinates[2][1]) / 2,
-                100
-            ),
-            label: {
-                text: `${area.name}\n含水量${area.soilMoisture}%`,
-                font: '12pt sans-serif',
-                fillColor: Cesium.Color.WHITE,
-                outlineColor: Cesium.Color.BLACK,
-                outlineWidth: 2,
-                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                pixelOffset: new Cesium.Cartesian2(0, -30),
-                showBackground: true,
-                backgroundColor: Cesium.Color.fromCssColorString(droughtColor.color).withAlpha(0.8)
-            }
-        });
-    }
-
-    // 切换图层
-    switchLayer(layerType) {
-        this.currentLayer = layerType;
-        
-        if (layerType === 'temperature') {
-            this.temperatureDataSource.show = true;
-            this.droughtDataSource.show = false;
-        } else if (layerType === 'drought') {
-            this.temperatureDataSource.show = false;
-            this.droughtDataSource.show = true;
-        }
-
-        this.updateCharts(layerType);
-    }
-
+/**
+ * 初始化灾害监测系统
+ */
+function initDisasterMonitoring() {
+    console.log('🚨 初始化灾害监测系统...');
+    
+    // 初始化控制面板
+    initDisasterControlPanel();
+    
     // 初始化图表
-    initCharts() {
-        // 添加延时确保DOM元素已经完全渲染
-        setTimeout(() => {
-            this.initTemperatureRiskChart();
-            this.initDroughtLevelChart();
-            this.initLossDistributionChart();
-            this.initHistoricalComparisonChart();
-        }, 100);
-    }
-
-    // 初始化高温风险图表
-    initTemperatureRiskChart() {
-        if (typeof echarts === 'undefined') {
-            console.error('ECharts未加载');
-            return;
-        }
-        
-        const container = document.getElementById('temperature-risk-chart');
-        if (!container) {
-            console.error('找不到temperature-risk-chart容器');
-            return;
-        }
-
-        try {
-            const chart = echarts.init(container);
-            const option = {
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c}% ({d}%)'
-                },
-                series: [{
-                    name: '风险等级',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    center: ['50%', '50%'],
-                    data: [
-                        { value: 8.5, name: '极严重风险', itemStyle: { color: '#F44336' } },
-                        { value: 15.2, name: '严重风险', itemStyle: { color: '#FF9800' } },
-                        { value: 23.8, name: '中等风险', itemStyle: { color: '#FFEB3B' } },
-                        { value: 31.4, name: '轻微风险', itemStyle: { color: '#FFF9C4' } },
-                        { value: 21.1, name: '无风险', itemStyle: { color: 'transparent' } }
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    },
-                    label: {
-                        show: false
-                    },
-                    labelLine: {
-                        show: false
-                    }
-                }]
-            };
-            chart.setOption(option);
-            console.log('高温风险图表初始化成功');
-        } catch (error) {
-            console.error('高温风险图表初始化失败:', error);
-        }
-    }
-
-    // 初始化干旱等级图表
-    initDroughtLevelChart() {
-        if (typeof echarts === 'undefined') {
-            console.error('ECharts未加载');
-            return;
-        }
-        
-        const container = document.getElementById('drought-level-chart');
-        if (!container) {
-            console.error('找不到drought-level-chart容器');
-            return;
-        }
-
-        try {
-            const chart = echarts.init(container);
-            const option = {
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b}: {c}% ({d}%)'
-                },
-                series: [{
-                    name: '干旱等级',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    center: ['50%', '50%'],
-                    data: [
-                        { value: 5.3, name: '特旱', itemStyle: { color: '#673AB7' } },
-                        { value: 12.7, name: '重旱', itemStyle: { color: '#1565C0' } },
-                        { value: 28.5, name: '中旱', itemStyle: { color: '#2196F3' } },
-                        { value: 34.2, name: '轻旱', itemStyle: { color: '#E3F2FD' } },
-                        { value: 19.3, name: '无旱', itemStyle: { color: 'transparent' } }
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    },
-                    label: {
-                        show: false
-                    },
-                    labelLine: {
-                        show: false
-                    }
-                }]
-            };
-            chart.setOption(option);
-            console.log('干旱等级图表初始化成功');
-        } catch (error) {
-            console.error('干旱等级图表初始化失败:', error);
-        }
-    }
-
-    // 初始化损失分布图表
-    initLossDistributionChart() {
-        if (typeof echarts === 'undefined') {
-            console.error('ECharts未加载');
-            return;
-        }
-        
-        const container = document.getElementById('loss-distribution-chart');
-        if (!container) {
-            console.error('找不到loss-distribution-chart容器');
-            return;
-        }
-
-        try {
-            const chart = echarts.init(container);
-            const option = {
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['小麦', '玉米', '辣椒', '其他'],
-                    axisLabel: {
-                        color: '#fff',
-                        fontSize: 10
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.3)'
-                        }
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    name: '损失(万元)',
-                    axisLabel: {
-                        color: '#fff',
-                        fontSize: 10
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.3)'
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    }
-                },
-                series: [{
-                    name: '经济损失',
-                    type: 'bar',
-                    data: [512.3, 344.1, 89.5, 32.8],
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: '#40C4FF' },
-                            { offset: 1, color: '#1976D2' }
-                        ])
-                    },
-                    emphasis: {
-                        itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: '#64B5F6' },
-                                { offset: 1, color: '#1976D2' }
-                            ])
-                        }
-                    }
-                }]
-            };
-            chart.setOption(option);
-            console.log('损失分布图表初始化成功');
-        } catch (error) {
-            console.error('损失分布图表初始化失败:', error);
-        }
-    }
-
-    // 初始化历史对比图表
-    initHistoricalComparisonChart() {
-        if (typeof echarts === 'undefined') {
-            console.error('ECharts未加载');
-            return;
-        }
-        
-        const container = document.getElementById('historical-comparison-chart');
-        if (!container) {
-            console.error('找不到historical-comparison-chart容器');
-            return;
-        }
-
-        try {
-            const chart = echarts.init(container);
-            const option = {
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: ['高温损失', '干旱损失'],
-                    textStyle: {
-                        color: '#fff',
-                        fontSize: 10
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['2022年', '2023年', '2024年', '2025年'],
-                    axisLabel: {
-                        color: '#fff',
-                        fontSize: 10
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.3)'
-                        }
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    name: '损失(万元)',
-                    axisLabel: {
-                        color: '#fff',
-                        fontSize: 10
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.3)'
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        }
-                    }
-                },
-                series: [
-                    {
-                        name: '高温损失',
-                        type: 'line',
-                        data: [320, 412, 675, 856],
-                        itemStyle: {
-                            color: '#FF5722'
-                        },
-                        lineStyle: {
-                            color: '#FF5722'
-                        }
-                    },
-                    {
-                        name: '干旱损失',
-                        type: 'line',
-                        data: [280, 298, 456, 512],
-                        itemStyle: {
-                            color: '#2196F3'
-                        },
-                        lineStyle: {
-                            color: '#2196F3'
-                        }
-                    }
-                ]
-            };
-            chart.setOption(option);
-            console.log('历史对比图表初始化成功');
-        } catch (error) {
-            console.error('历史对比图表初始化失败:', error);
-        }
-    }
-
-    // 更新图表数据
-    updateCharts(layerType) {
-        // 根据图层类型更新相关图表显示
-        if (layerType === 'temperature') {
-            // 显示高温相关数据
-            this.updateOverviewCards('temperature');
-        } else if (layerType === 'drought') {
-            // 显示干旱相关数据
-            this.updateOverviewCards('drought');
-        }
-    }
-
-    // 更新概览卡片
-    updateOverviewCards(type) {
-        const cards = document.querySelectorAll('.overview-card');
-        if (type === 'temperature') {
-            // 更新高温灾害数据
-            cards[0].querySelector('.card-value').textContent = '1,285';
-            cards[1].querySelector('.card-value').textContent = '2,156';
-            cards[2].querySelector('.card-value').textContent = '856.4';
-        } else if (type === 'drought') {
-            // 更新干旱灾害数据
-            cards[0].querySelector('.card-value').textContent = '982';
-            cards[1].querySelector('.card-value').textContent = '1,654';
-            cards[2].querySelector('.card-value').textContent = '623.8';
-        }
-    }
-
-    // 处理点击事件
-    setupClickHandlers() {
-        this.viewer.selectedEntityChanged.addEventListener(() => {
-            const selectedEntity = this.viewer.selectedEntity;
-            if (selectedEntity && selectedEntity.properties) {
-                this.showDisasterDetails(selectedEntity);
-            }
-        });
-    }
-
-    // 显示灾害详情
-    showDisasterDetails(entity) {
-        const props = entity.properties;
-        const type = props.type?.getValue();
-        
-        if (type === 'temperature') {
-            const info = `
-                <div class="disaster-info-popup">
-                    <h4>${entity.name}</h4>
-                    <p>风险等级: ${this.getRiskLevelText(props.riskLevel?.getValue())}</p>
-                    <p>当前温度: ${props.temperature?.getValue()}°C</p>
-                    <p>主要作物: ${props.cropType?.getValue()}</p>
-                    <p>受灾面积: ${props.affectedArea?.getValue()} 公顷</p>
-                    <p>预估损失: ${props.estimatedLoss?.getValue()} 万元</p>
-                </div>
-            `;
-            this.showInfoWindow(info);
-        } else if (type === 'drought') {
-            const info = `
-                <div class="disaster-info-popup">
-                    <h4>${entity.name}</h4>
-                    <p>干旱等级: ${this.getDroughtLevelText(props.droughtLevel?.getValue())}</p>
-                    <p>土壤含水量: ${props.soilMoisture?.getValue()}%</p>
-                    <p>降水距平: ${props.precipitation?.getValue()}%</p>
-                    <p>主要作物: ${props.cropType?.getValue()}</p>
-                    <p>受灾面积: ${props.affectedArea?.getValue()} 公顷</p>
-                    <p>预估损失: ${props.estimatedLoss?.getValue()} 万元</p>
-                </div>
-            `;
-            this.showInfoWindow(info);
-        }
-    }
-
-    // 获取风险等级文本
-    getRiskLevelText(level) {
-        const levels = {
-            'extreme': '极严重',
-            'severe': '严重',
-            'moderate': '中等',
-            'light': '轻微'
-        };
-        return levels[level] || level;
-    }
-
-    // 获取干旱等级文本
-    getDroughtLevelText(level) {
-        const levels = {
-            'extreme': '特旱',
-            'severe': '重旱',
-            'moderate': '中旱',
-            'light': '轻旱'
-        };
-        return levels[level] || level;
-    }
-
-    // 显示信息窗口
-    showInfoWindow(content) {
-        // 这里可以实现自定义的信息窗口显示逻辑
-        console.log('显示灾害详情:', content);
-    }
+    initDisasterCharts();
+    
+    // 初始化地图图层 (会自动处理Cesium未就绪的情况)
+    initDisasterLayers();
+    
+    // 初始化实时数据更新
+    initRealTimeUpdates();
+    
+    // 初始化灾害弹窗
+    initDisasterTooltip();
+    
+    console.log('✅ 灾害监测系统初始化完成');
 }
 
-// 全局变量
-let disasterLayer = null;
-
-// 页面加载完成后初始化
+// 页面加载完成后自动初始化
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('灾害监测模块 - DOM加载完成');
-    
-    // 等待ECharts加载完成
-    if (typeof echarts === 'undefined') {
-        console.error('ECharts未加载，正在等待...');
-        // 检查ECharts是否加载完成的循环
-        const checkECharts = setInterval(() => {
-            if (typeof echarts !== 'undefined') {
-                console.log('ECharts加载完成');
-                clearInterval(checkECharts);
-                initializeDisasterMonitoring();
-            }
+    console.log('📄 DOM内容加载完成');
+    // 延迟一点时间确保其他脚本加载完成
+    setTimeout(() => {
+        console.log('⏰ 开始初始化灾害监测系统');
+        initDisasterMonitoring();
+    }, 500);
+});
+
+// 备用初始化 - 如果DOMContentLoaded没有触发
+window.addEventListener('load', function() {
+    console.log('🌐 页面完全加载完成');
+    // 检查是否已经初始化过
+    if (!document.querySelector('.control-collapse-btn')?.hasAttribute('data-initialized')) {
+        console.log('🔄 备用初始化触发');
+        setTimeout(() => {
+            initDisasterMonitoring();
         }, 100);
-    } else {
-        console.log('ECharts已加载');
-        initializeDisasterMonitoring();
     }
 });
 
-function initializeDisasterMonitoring() {
-    // 等待Cesium地图初始化完成后再创建灾害图层
-    if (window.viewer) {
-        console.log('Cesium viewer已存在，初始化灾害监测');
-        initDisasterMonitoring();
-    } else {
-        console.log('等待Cesium viewer初始化...');
-        // 如果viewer还未初始化，则监听初始化完成事件
-        document.addEventListener('cesiumViewerReady', function() {
-            console.log('收到cesiumViewerReady事件');
-            initDisasterMonitoring();
+// ===== 控制面板管理 =====
+
+/**
+ * 初始化灾害控制面板
+ */
+function initDisasterControlPanel() {
+    console.log('🔧 初始化灾害控制面板...');
+    
+    // 控制面板折叠功能
+    const collapseBtn = document.querySelector('.control-collapse-btn');
+    const controlPanel = document.querySelector('.disaster-control-panel');
+    const controlContent = document.querySelector('.control-content');
+    
+    console.log('🔍 查找DOM元素:', {
+        collapseBtn: !!collapseBtn,
+        controlPanel: !!controlPanel,
+        controlContent: !!controlContent
+    });
+    
+    if (collapseBtn && controlPanel) {
+        console.log('✅ 添加折叠按钮事件监听器');
+        
+        collapseBtn.addEventListener('click', function(e) {
+            console.log('🖱️ 折叠按钮被点击');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            controlPanel.classList.toggle('collapsed');
+            
+            if (controlPanel.classList.contains('collapsed')) {
+                // 收起状态
+                console.log('📦 面板收起');
+                this.textContent = '▶';
+                if (controlContent) {
+                    controlContent.style.display = 'none';
+                }
+            } else {
+                // 展开状态
+                console.log('📂 面板展开');
+                this.textContent = '▼';
+                if (controlContent) {
+                    controlContent.style.display = 'block';
+                }
+            }
         });
         
-        // 备用方案：定时检查viewer是否已经初始化
-        let attempts = 0;
-        const maxAttempts = 50; // 最多等待5秒
-        const checkViewer = setInterval(() => {
-            attempts++;
-            if (window.viewer) {
-                console.log('检测到Cesium viewer已初始化');
-                clearInterval(checkViewer);
-                initDisasterMonitoring();
-            } else if (attempts >= maxAttempts) {
-                console.error('等待Cesium viewer超时');
-                clearInterval(checkViewer);
-                // 即使没有viewer，也尝试初始化图表
-                initChartsOnly();
+        // 标记已初始化
+        collapseBtn.setAttribute('data-initialized', 'true');
+        
+        // 也可以点击整个header来切换
+        const controlHeader = document.querySelector('.control-header');
+        if (controlHeader) {
+            controlHeader.addEventListener('click', function(e) {
+                // 只有点击header本身时才触发，避免与按钮冲突
+                if (e.target === this || e.target.classList.contains('control-title')) {
+                    console.log('🖱️ 控制面板头部被点击');
+                    collapseBtn.click();
+                }
+            });
+        }
+    } else {
+        console.error('❌ 找不到控制面板DOM元素:', {
+            collapseBtn: collapseBtn,
+            controlPanel: controlPanel
+        });
+    }
+    
+    // 监测类型切换
+    initMonitoringTypeSelector();
+    
+    // 作物选择器
+    initCropSelector();
+    
+    // 时间选择器
+    initTimeSelector();
+    
+    // 透明度控制
+    initOpacityControl();
+}
+
+/**
+ * 初始化监测类型选择器
+ */
+function initMonitoringTypeSelector() {
+    const typeButtons = document.querySelectorAll('.type-btn');
+    
+    typeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const layerType = this.dataset.type;
+            const isCurrentlyActive = this.classList.contains('active');
+            const statusIndicator = this.querySelector('.layer-status');
+            
+            if (isCurrentlyActive) {
+                // 当前按钮已激活，点击则取消选中
+                this.classList.remove('active');
+                if (statusIndicator) {
+                    statusIndicator.classList.remove('active');
+                }
+                
+                // 隐藏图层
+                toggleDisasterLayer(layerType, false);
+                currentActiveDisasterLayer = null;
+                currentMonitoringConfig.type = null;
+                
+                console.log(`❌ 取消选中监测类型: ${layerType}`);
+            } else {
+                // 先取消其他按钮的选中状态
+                typeButtons.forEach(b => {
+                    b.classList.remove('active');
+                    const otherStatusIndicator = b.querySelector('.layer-status');
+                    if (otherStatusIndicator) {
+                        otherStatusIndicator.classList.remove('active');
+                    }
+                    
+                    // 隐藏其他图层
+                    const otherLayerType = b.dataset.type;
+                    if (otherLayerType !== layerType) {
+                        toggleDisasterLayer(otherLayerType, false);
+                    }
+                });
+                
+                // 激活当前按钮
+                this.classList.add('active');
+                if (statusIndicator) {
+                    statusIndicator.classList.add('active');
+                }
+                
+                // 更新配置
+                currentMonitoringConfig.type = layerType;
+                
+                // 显示对应图层
+                toggleDisasterLayer(layerType, true);
+                
+                console.log(`✅ 选中监测类型: ${layerType}`);
             }
-        }, 100);
+            
+            // 更新图表数据
+            updateChartsData();
+        });
+    });
+}
+
+/**
+ * 初始化作物选择器
+ */
+function initCropSelector() {
+    const cropButtons = document.querySelectorAll('.crop-btn');
+    
+    cropButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 更新按钮状态
+            cropButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 更新配置
+            currentMonitoringConfig.crop = this.dataset.crop;
+            
+            // 更新图层过滤
+            updateLayerFilter(currentMonitoringConfig.crop);
+            
+            // 更新图表数据
+            updateChartsData();
+            
+            console.log(`切换监测作物: ${currentMonitoringConfig.crop}`);
+        });
+    });
+}
+
+/**
+ * 初始化时间选择器
+ */
+function initTimeSelector() {
+    const timeSelect = document.getElementById('monitoring-time');
+    
+    if (timeSelect) {
+        timeSelect.addEventListener('change', function() {
+            currentMonitoringConfig.time = this.value;
+            
+            // 更新时间范围
+            updateTimeRange(currentMonitoringConfig.time);
+            
+            // 更新图表数据
+            updateChartsData();
+            
+            console.log(`切换时间范围: ${currentMonitoringConfig.time}`);
+        });
     }
 }
 
-function initChartsOnly() {
-    console.log('仅初始化图表（无Cesium）');
-    try {
-        const tempLayer = {
-            initCharts: function() {
-                setTimeout(() => {
-                    initTemperatureRiskChart();
-                    initDroughtLevelChart(); 
-                    initLossDistributionChart();
-                    initHistoricalComparisonChart();
-                }, 200);
+/**
+ * 初始化透明度控制
+ */
+function initOpacityControl() {
+    const opacitySlider = document.getElementById('layer-opacity');
+    const opacityValue = document.querySelector('.opacity-value');
+    
+    if (opacitySlider && opacityValue) {
+        opacitySlider.addEventListener('input', function() {
+            const opacity = parseInt(this.value);
+            currentMonitoringConfig.opacity = opacity;
+            
+            // 更新显示
+            opacityValue.textContent = `${opacity}%`;
+            
+            // 更新图层透明度
+            updateLayerOpacity(opacity);
+            
+            console.log(`调整图层透明度: ${opacity}%`);
+        });
+    }
+}
+
+// ===== 地图图层管理 =====
+
+// 灾害图层状态管理
+let disasterLayerStates = {
+    temperature: { opacity: 0.85, visible: false },
+    drought: { opacity: 0.85, visible: false },
+    comprehensive: { opacity: 0.85, visible: false }
+};
+
+let currentActiveDisasterLayer = null;
+
+/**
+ * 初始化灾害监测图层系统
+ */
+function initDisasterLayers() {
+    if (!window.cesiumViewer) {
+        console.warn('⚠️ Cesium viewer 未找到，延迟初始化图层...');
+        // 延迟重试初始化
+        setTimeout(() => {
+            initDisasterLayers();
+        }, 1000);
+        return;
+    }
+    
+    console.log('✅ 灾害监测图层系统初始化完成');
+}
+
+/**
+ * 切换灾害图层显示 (参考气象图层实现)
+ */
+function toggleDisasterLayer(layerType, visible) {
+    if (!window.cesiumViewer) {
+        console.warn('❌ Cesium Viewer未初始化');
+        return;
+    }
+    
+    // 获取或创建灾害图层
+    let existingLayer = null;
+    
+    // 查找现有图层
+    for (let i = 0; i < window.cesiumViewer.imageryLayers.length; i++) {
+        const layer = window.cesiumViewer.imageryLayers.get(i);
+        if (layer._name === `disaster_${layerType}`) {
+            existingLayer = layer;
+            break;
+        }
+    }
+    
+    if (visible) {
+        if (!existingLayer) {
+            // 创建新的灾害图层
+            existingLayer = createDisasterLayer(layerType);
+            if (existingLayer) {
+                existingLayer._name = `disaster_${layerType}`;
+                window.cesiumViewer.imageryLayers.add(existingLayer);
+                console.log(`✅ 已添加灾害图层: ${layerType}`);
             }
-        };
-        tempLayer.initCharts();
-    } catch (error) {
-        console.error('图表初始化失败:', error);
+        }
+        if (existingLayer) {
+            existingLayer.show = true;
+            console.log(`👁️ 显示灾害图层: ${layerType}`);
+        }
+    } else {
+        if (existingLayer) {
+            existingLayer.show = false;
+            console.log(`🙈 隐藏灾害图层: ${layerType}`);
+        }
     }
+    
+    // 更新状态
+    disasterLayerStates[layerType].visible = visible;
+    console.log(`🚨 ${layerType}图层${visible ? '显示' : '隐藏'}`);
 }
 
-// 独立的图表初始化函数（当Cesium未初始化时使用）
-function initTemperatureRiskChart() {
-    if (typeof echarts === 'undefined') {
-        console.error('ECharts未加载');
+/**
+ * 创建灾害图层 (参考气象图层实现)
+ */
+function createDisasterLayer(layerType) {
+    if (!window.cesiumViewer) {
+        console.warn('❌ Cesium Viewer未初始化');
+        return null;
+    }
+    
+    let imageryProvider = null;
+    
+    try {
+        switch (layerType) {
+            case 'temperature':
+                // 高温/冻害图层
+                console.log('🌡️ 创建高温/冻害栅格图层...');
+                imageryProvider = createDisasterRasterLayer('temperature');
+                break;
+                
+            case 'drought':
+                // 干旱监测图层
+                console.log('💧 创建干旱监测栅格图层...');
+                imageryProvider = createDisasterRasterLayer('drought');
+                break;
+                
+            case 'comprehensive':
+                // 综合评估图层
+                console.log('📊 创建综合评估栅格图层...');
+                imageryProvider = createDisasterRasterLayer('comprehensive');
+                break;
+                
+            default:
+                console.warn(`❌ 未知的灾害图层类型: ${layerType}`);
+                return null;
+        }
+        
+        if (imageryProvider) {
+            const layer = new Cesium.ImageryLayer(imageryProvider);
+            layer.alpha = disasterLayerStates[layerType]?.opacity || 0.7;
+            return layer;
+        }
+        
+    } catch (error) {
+        console.error(`❌ 创建灾害图层失败 (${layerType}):`, error);
+    }
+    
+    return null;
+}
+
+/**
+ * 创建灾害栅格图层 (参考气象栅格图层实现)
+ */
+function createDisasterRasterLayer(layerType) {
+    console.log(`🎨 开始创建 ${layerType} 灾害栅格图层...`);
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 1024;
+    const context = canvas.getContext('2d');
+    
+    // 创建ImageData对象，直接操作像素数据
+    const imageData = context.createImageData(1024, 1024);
+    const data = imageData.data;
+    
+    switch(layerType) {
+        case 'temperature':
+            // 高温/冻害 - 红色系，集中高风险区域
+            drawPixelTemperatureRisk(data, '#FF0000');
+            break;
+        case 'drought':
+            // 干旱监测 - 橙色系，干旱分布模式
+            drawPixelDroughtRisk(data, '#FF8C00');
+            break;
+        case 'comprehensive':
+            // 综合评估 - 紫色系，综合风险模式
+            drawPixelComprehensiveRisk(data, '#8B008B');
+            break;
+        default:
+            return createSimulatedDisasterLayer('未知', '#888888', 0.5);
+    }
+    
+    // 将像素数据绘制到画布
+    context.putImageData(imageData, 0, 0);
+    
+    const dataUrl = canvas.toDataURL();
+    console.log(`✅ ${layerType} 灾害栅格图层创建成功`);
+    
+    return new Cesium.SingleTileImageryProvider({
+        url: dataUrl,
+        rectangle: Cesium.Rectangle.fromDegrees(102.5, 34.5, 104.5, 36.5),
+        credit: `${layerType}灾害监测数据`
+    });
+}
+
+/**
+ * 切换灾害图层显示 (更新原有函数以兼容新的实现)
+ */
+function switchDisasterLayer(layerType) {
+    // 如果layerType为null，隐藏所有图层
+    if (!layerType) {
+        if (currentActiveDisasterLayer) {
+            toggleDisasterLayer(currentActiveDisasterLayer, false);
+            disasterLayerStates[currentActiveDisasterLayer].visible = false;
+            currentActiveDisasterLayer = null;
+        }
+        console.log(`❌ 隐藏所有灾害图层`);
         return;
     }
     
-    const container = document.getElementById('temperature-risk-chart');
-    if (!container) {
-        console.error('找不到temperature-risk-chart容器');
-        return;
+    // 隐藏当前活跃图层
+    if (currentActiveDisasterLayer && currentActiveDisasterLayer !== layerType) {
+        toggleDisasterLayer(currentActiveDisasterLayer, false);
+        disasterLayerStates[currentActiveDisasterLayer].visible = false;
     }
+    
+    // 显示新图层
+    toggleDisasterLayer(layerType, true);
+    disasterLayerStates[layerType].visible = true;
+    currentActiveDisasterLayer = layerType;
+    
+    console.log(`✅ 切换到灾害图层: ${layerType}`);
+}
 
-    try {
-        const chart = echarts.init(container);
-        const option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: '{a} <br/>{b}: {c}% ({d}%)'
-            },
-            series: [{
-                name: '风险等级',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                center: ['50%', '50%'],
-                data: [
-                    { value: 8.5, name: '极严重风险', itemStyle: { color: '#F44336' } },
-                    { value: 15.2, name: '严重风险', itemStyle: { color: '#FF9800' } },
-                    { value: 23.8, name: '中等风险', itemStyle: { color: '#FFEB3B' } },
-                    { value: 31.4, name: '轻微风险', itemStyle: { color: '#FFF9C4' } },
-                    { value: 21.1, name: '无风险', itemStyle: { color: 'transparent' } }
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                },
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            }]
-        };
-        chart.setOption(option);
-        console.log('独立高温风险图表初始化成功');
-    } catch (error) {
-        console.error('独立高温风险图表初始化失败:', error);
+/**
+ * 更新图层过滤器
+ */
+function updateLayerFilter(cropType) {
+    // 根据作物类型过滤显示内容
+    console.log(`更新图层过滤器: ${cropType}`);
+    
+    // 根据不同作物类型调整图层显示
+    const cropInfo = {
+        wheat: { name: '小麦', icon: '🌾', riskFactor: 1.0 },
+        corn: { name: '玉米', icon: '🌽', riskFactor: 0.9 },
+        vegetables: { name: '蔬菜', icon: '🥬', riskFactor: 1.2 },
+        potato: { name: '土豆', icon: '🥔', riskFactor: 0.8 },
+        rapeseed: { name: '油菜', icon: '🌻', riskFactor: 1.1 }
+    };
+    
+    const currentCrop = cropInfo[cropType];
+    if (currentCrop) {
+        console.log(`✅ 切换到作物: ${currentCrop.name} ${currentCrop.icon} (风险系数: ${currentCrop.riskFactor})`);
+        
+        // 这里可以根据作物类型调整图层的显示强度或颜色
+        // 例如：蔬菜类作物可能对某些灾害更敏感
+        
+        // 更新图表数据以反映选定作物的风险
+        updateChartsData();
+    } else {
+        console.warn(`⚠️ 未知的作物类型: ${cropType}`);
     }
 }
 
-function initDroughtLevelChart() {
-    if (typeof echarts === 'undefined') {
-        console.error('ECharts未加载');
+/**
+ * 更新图层透明度
+ */
+function updateLayerOpacity(opacity) {
+    const alpha = opacity / 100;
+    
+    if (!window.cesiumViewer) {
+        console.warn('❌ Cesium Viewer未初始化');
         return;
     }
     
-    const container = document.getElementById('drought-level-chart');
-    if (!container) {
-        console.error('找不到drought-level-chart容器');
-        return;
+    // 更新当前活跃图层的透明度
+    if (currentActiveDisasterLayer) {
+        // 查找对应的图层
+        for (let i = 0; i < window.cesiumViewer.imageryLayers.length; i++) {
+            const layer = window.cesiumViewer.imageryLayers.get(i);
+            if (layer._name === `disaster_${currentActiveDisasterLayer}`) {
+                layer.alpha = alpha;
+                console.log(`🎨 ${currentActiveDisasterLayer}图层透明度设置为: ${opacity}%`);
+                
+                // 更新状态
+                disasterLayerStates[currentActiveDisasterLayer].opacity = alpha;
+                return;
+            }
+        }
+    } else {
+        console.log(`⚠️ 没有活跃的灾害图层，透明度设置将在选择图层后生效`);
     }
-
-    try {
-        const chart = echarts.init(container);
-        const option = {
-            tooltip: {
-                trigger: 'item',
-                formatter: '{a} <br/>{b}: {c}% ({d}%)'
-            },
-            series: [{
-                name: '干旱等级',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                center: ['50%', '50%'],
-                data: [
-                    { value: 5.3, name: '特旱', itemStyle: { color: '#673AB7' } },
-                    { value: 12.7, name: '重旱', itemStyle: { color: '#1565C0' } },
-                    { value: 28.5, name: '中旱', itemStyle: { color: '#2196F3' } },
-                    { value: 34.2, name: '轻旱', itemStyle: { color: '#E3F2FD' } },
-                    { value: 19.3, name: '无旱', itemStyle: { color: 'transparent' } }
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                },
-                label: {
-                    show: false
-                },
-                labelLine: {
-                    show: false
-                }
-            }]
-        };
-        chart.setOption(option);
-        console.log('独立干旱等级图表初始化成功');
-    } catch (error) {
-        console.error('独立干旱等级图表初始化失败:', error);
-    }
+    
+    // 更新所有图层状态的透明度设置
+    Object.keys(disasterLayerStates).forEach(layerType => {
+        disasterLayerStates[layerType].opacity = alpha;
+    });
+    
+    console.log(`更新图层透明度配置: ${opacity}%`);
 }
 
-function initLossDistributionChart() {
+/**
+ * 更新时间范围
+ */
+function updateTimeRange(timeRange) {
+    // 根据时间范围更新数据
+    console.log(`更新时间范围: ${timeRange}`);
+    
+    // 这里可以实现时间范围数据过滤逻辑
+}
+
+// ===== 图表管理 =====
+
+/**
+ * 初始化灾害监测图表
+ */
+function initDisasterCharts() {
     if (typeof echarts === 'undefined') {
-        console.error('ECharts未加载');
+        console.error('❌ ECharts library not loaded');
         return;
     }
     
-    const container = document.getElementById('loss-distribution-chart');
-    if (!container) {
-        console.error('找不到loss-distribution-chart容器');
-        return;
-    }
+    console.log('📊 初始化灾害监测图表...');
+    
+    // 初始化损失预测图表
+    initLossPredictionChart();
+    
+    // 初始化历史灾害对比图表
+    initHistoricalDisasterChart();
+    
+    // 初始化灾害分布统计图表
+    initDisasterDistributionChart();
+    
+    console.log('✅ 灾害监测图表初始化完成');
+}
 
-    try {
-        const chart = echarts.init(container);
-        const option = {
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow'
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'category',
-                data: ['小麦', '玉米', '辣椒', '其他'],
-                axisLabel: {
-                    color: '#fff',
-                    fontSize: 10
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
-                    }
-                }
-            },
-            yAxis: {
-                type: 'value',
-                name: '损失(万元)',
-                axisLabel: {
-                    color: '#fff',
-                    fontSize: 10
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
-                    }
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                }
-            },
-            series: [{
-                name: '经济损失',
+/**
+ * 初始化损失预测图表
+ */
+function initLossPredictionChart() {
+    const container = document.getElementById('loss-prediction-chart');
+    if (!container) return;
+    
+    disasterCharts.lossPredictionChart = echarts.init(container);
+    
+    const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' }
+        },
+        legend: {
+            data: ['面积损失', '产量损失', '经济损失'],
+            textStyle: { color: '#ffffff' },
+            top: 10
+        },
+        grid: {
+            left: '10%',
+            right: '10%',
+            bottom: '15%',
+            top: '25%'
+        },
+        xAxis: {
+            type: 'category',
+            data: ['轻微', '中等', '严重', '极严重'],
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' },
+            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+        },
+        series: [
+            {
+                name: '面积损失',
                 type: 'bar',
-                data: [512.3, 344.1, 89.5, 32.8],
+                data: [89, 246, 435, 687],
                 itemStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#40C4FF' },
-                        { offset: 1, color: '#1976D2' }
+                        { offset: 0, color: '#4CAF50' },
+                        { offset: 1, color: '#2E7D32' }
                     ])
-                },
-                emphasis: {
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: '#64B5F6' },
-                            { offset: 1, color: '#1976D2' }
-                        ])
-                    }
                 }
-            }]
-        };
-        chart.setOption(option);
-        console.log('独立损失分布图表初始化成功');
-    } catch (error) {
-        console.error('独立损失分布图表初始化失败:', error);
-    }
+            },
+            {
+                name: '产量损失',
+                type: 'bar',
+                data: [23, 87, 156, 234],
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#FF9800' },
+                        { offset: 1, color: '#E65100' }
+                    ])
+                }
+            },
+            {
+                name: '经济损失',
+                type: 'bar',
+                data: [12, 45, 89, 187],
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#F44336' },
+                        { offset: 1, color: '#C62828' }
+                    ])
+                }
+            }
+        ]
+    };
+    
+    disasterCharts.lossPredictionChart.setOption(option);
+    
+    // 图表切换功能
+    initLossChartSwitcher();
 }
 
-function initHistoricalComparisonChart() {
-    if (typeof echarts === 'undefined') {
-        console.error('ECharts未加载');
+/**
+ * 初始化历史灾害对比图表
+ */
+function initHistoricalDisasterChart() {
+    const container = document.getElementById('historical-disaster-chart');
+    if (!container) return;
+    
+    disasterCharts.historicalDisasterChart = echarts.init(container);
+    
+    const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' }
+        },
+        grid: {
+            left: '15%',
+            right: '10%',
+            bottom: '15%',
+            top: '10%'
+        },
+        xAxis: {
+            type: 'category',
+            data: ['2020', '2021', '2022', '2023', '2024'],
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' },
+            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+        },
+        series: [
+            {
+                name: '受灾面积',
+                type: 'line',
+                data: [1200, 1450, 980, 1780, 1939],
+                smooth: true,
+                lineStyle: {
+                    color: '#00D4FF',
+                    width: 3
+                },
+                itemStyle: {
+                    color: '#00D4FF',
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(0, 212, 255, 0.3)' },
+                        { offset: 1, color: 'rgba(0, 212, 255, 0.1)' }
+                    ])
+                }
+            }
+        ]
+    };
+    
+    disasterCharts.historicalDisasterChart.setOption(option);
+}
+
+/**
+ * 初始化灾害分布统计图表
+ */
+function initDisasterDistributionChart() {
+    const container = document.getElementById('disaster-distribution-chart');
+    if (!container) return;
+    
+    disasterCharts.disasterDistributionChart = echarts.init(container);
+    
+    const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c} 亩 ({d}%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' }
+        },
+        series: [
+            {
+                name: '灾害类型分布',
+                type: 'pie',
+                radius: ['30%', '70%'],
+                center: ['50%', '50%'],
+                data: [
+                    {
+                        value: 1245,
+                        name: '高温/冻害',
+                        itemStyle: { color: '#F44336' }
+                    },
+                    {
+                        value: 694,
+                        name: '干旱灾害',
+                        itemStyle: { color: '#2196F3' }
+                    }
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 212, 255, 0.5)'
+                    }
+                },
+                label: {
+                    color: '#ffffff',
+                    fontSize: 12
+                },
+                labelLine: {
+                    lineStyle: { color: 'rgba(255, 255, 255, 0.5)' }
+                }
+            }
+        ]
+    };
+    
+    disasterCharts.disasterDistributionChart.setOption(option);
+}
+
+/**
+ * 初始化损失图表切换器
+ */
+function initLossChartSwitcher() {
+    const chartContainer = document.getElementById('loss-prediction-chart');
+    if (!chartContainer || !chartContainer.parentElement) {
+        console.warn('⚠️ 损失预测图表容器未找到');
         return;
     }
     
-    const container = document.getElementById('historical-comparison-chart');
-    if (!container) {
-        console.error('找不到historical-comparison-chart容器');
+    const switchButtons = chartContainer.parentElement.querySelectorAll('.switch-btn');
+    
+    if (switchButtons.length === 0) {
+        console.warn('⚠️ 图表切换按钮未找到');
         return;
     }
+    
+    switchButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 更新按钮状态
+            switchButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 根据类型更新图表数据
+            const chartType = this.dataset.type;
+            updateLossPredictionData(chartType);
+        });
+    });
+    
+    console.log('✅ 损失图表切换器初始化完成');
+}
 
-    try {
-        const chart = echarts.init(container);
-        const option = {
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['高温损失', '干旱损失'],
-                textStyle: {
-                    color: '#fff',
-                    fontSize: 10
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'category',
-                data: ['2022年', '2023年', '2024年', '2025年'],
-                axisLabel: {
-                    color: '#fff',
-                    fontSize: 10
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
-                    }
-                }
-            },
-            yAxis: {
-                type: 'value',
-                name: '损失(万元)',
-                axisLabel: {
-                    color: '#fff',
-                    fontSize: 10
-                },
-                axisLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.3)'
-                    }
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                }
-            },
-            series: [
-                {
-                    name: '高温损失',
-                    type: 'line',
-                    data: [320, 412, 675, 856],
-                    itemStyle: {
-                        color: '#FF5722'
-                    },
-                    lineStyle: {
-                        color: '#FF5722'
-                    }
-                },
-                {
-                    name: '干旱损失',
-                    type: 'line',
-                    data: [280, 298, 456, 512],
-                    itemStyle: {
-                        color: '#2196F3'
-                    },
-                    lineStyle: {
-                        color: '#2196F3'
-                    }
-                }
-            ]
-        };
-        chart.setOption(option);
-        console.log('独立历史对比图表初始化成功');
-    } catch (error) {
-        console.error('独立历史对比图表初始化失败:', error);
+/**
+ * 更新损失预测数据
+ */
+function updateLossPredictionData(type) {
+    if (!disasterCharts.lossPredictionChart) return;
+    
+    let newData;
+    switch (type) {
+        case 'area':
+            newData = {
+                title: '受灾面积 (亩)',
+                data: [89, 246, 435, 687]
+            };
+            break;
+        case 'yield':
+            newData = {
+                title: '产量损失 (吨)',
+                data: [23, 87, 156, 234]
+            };
+            break;
+        case 'economic':
+            newData = {
+                title: '经济损失 (万元)',
+                data: [12, 45, 89, 187]
+            };
+            break;
+    }
+    
+    if (newData) {
+        const option = disasterCharts.lossPredictionChart.getOption();
+        option.series[0].data = newData.data;
+        option.yAxis[0].name = newData.title;
+        disasterCharts.lossPredictionChart.setOption(option);
     }
 }
 
-function initDisasterMonitoring() {
-    if (window.viewer) {
-        disasterLayer = new DisasterMonitoringLayer(window.viewer);
-        disasterLayer.setupClickHandlers();
+/**
+ * 更新所有图表数据
+ */
+function updateChartsData() {
+    // 根据当前配置更新所有图表数据
+    console.log('更新图表数据...', currentMonitoringConfig);
+    
+    // 这里可以根据配置从API获取新数据并更新图表
+    // 目前使用模拟数据
+}
+
+// ===== 像素级图层绘制函数 (参考气象图层实现) =====
+
+/**
+ * 绘制像素级高温/冻害风险数据
+ */
+function drawPixelTemperatureRisk(data, baseColor) {
+    const hexColor = baseColor.replace('#', '');
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const x = (i / 4) % 1024;
+        const y = Math.floor((i / 4) / 1024);
+        
+        // 创建高温风险区域模式 - 集中分布
+        const centerX1 = 300, centerY1 = 400; // 第一个高风险区域
+        const centerX2 = 700, centerY2 = 600; // 第二个高风险区域
+        
+        const dist1 = Math.sqrt((x - centerX1) ** 2 + (y - centerY1) ** 2);
+        const dist2 = Math.sqrt((x - centerX2) ** 2 + (y - centerY2) ** 2);
+        
+        let intensity = 0;
+        if (dist1 < 150) {
+            intensity = Math.max(intensity, 0.95 - (dist1 / 150) * 0.5);
+        }
+        if (dist2 < 120) {
+            intensity = Math.max(intensity, 0.9 - (dist2 / 120) * 0.4);
+        }
+        
+        // 添加一些随机噪声增加真实感
+        intensity += (Math.random() - 0.5) * 0.05;
+        intensity = Math.max(0, Math.min(1, intensity));
+        
+        if (intensity > 0.05) {
+            // 增强颜色饱和度和亮度
+            data[i] = Math.min(255, Math.floor(r * intensity * 1.2));     // Red - 增强
+            data[i + 1] = Math.floor(g * intensity * 0.3); // Green - 降低绿色
+            data[i + 2] = Math.floor(b * intensity * 0.3); // Blue - 降低蓝色
+            data[i + 3] = Math.floor(255 * intensity * 0.95); // Alpha - 更不透明
+        } else {
+            data[i + 3] = 0; // 完全透明
+        }
     }
 }
 
-// 导出给其他模块使用
-window.disasterLayer = disasterLayer;
+/**
+ * 绘制像素级干旱风险数据
+ */
+function drawPixelDroughtRisk(data, baseColor) {
+    const hexColor = baseColor.replace('#', '');
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const x = (i / 4) % 1024;
+        const y = Math.floor((i / 4) / 1024);
+        
+        // 创建干旱区域模式 - 条带状分布
+        const bandY1 = 200, bandY2 = 500, bandY3 = 800;
+        let intensity = 0;
+        
+        // 三个干旱带 - 扩大范围，增强强度
+        if (Math.abs(y - bandY1) < 100) {
+            intensity = Math.max(intensity, 0.85 - Math.abs(y - bandY1) / 100 * 0.3);
+        }
+        if (Math.abs(y - bandY2) < 120) {
+            intensity = Math.max(intensity, 0.9 - Math.abs(y - bandY2) / 120 * 0.4);
+        }
+        if (Math.abs(y - bandY3) < 90) {
+            intensity = Math.max(intensity, 0.8 - Math.abs(y - bandY3) / 90 * 0.3);
+        }
+        
+        // 添加横向变化
+        intensity *= (0.85 + 0.3 * Math.sin(x / 180));
+        intensity += (Math.random() - 0.5) * 0.08;
+        intensity = Math.max(0, Math.min(1, intensity));
+        
+        if (intensity > 0.08) {
+            // 增强橙色，减少其他颜色
+            data[i] = Math.min(255, Math.floor(r * intensity * 1.1));     // Red - 增强
+            data[i + 1] = Math.min(255, Math.floor(g * intensity * 0.8)); // Green - 保持橙色
+            data[i + 2] = Math.floor(b * intensity * 0.2); // Blue - 大幅降低
+            data[i + 3] = Math.floor(255 * intensity * 0.9); // Alpha - 更不透明
+        } else {
+            data[i + 3] = 0;
+        }
+    }
+}
+
+/**
+ * 绘制像素级综合风险数据
+ */
+function drawPixelComprehensiveRisk(data, baseColor) {
+    const hexColor = baseColor.replace('#', '');
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    
+    for (let i = 0; i < data.length; i += 4) {
+        const x = (i / 4) % 1024;
+        const y = Math.floor((i / 4) / 1024);
+        
+        // 创建综合风险模式 - 多中心叠加
+        let intensity = 0;
+        
+        // 多个风险中心 - 增强强度和范围
+        const centers = [
+            {x: 200, y: 300, radius: 180, strength: 0.95},
+            {x: 500, y: 200, radius: 150, strength: 0.85},
+            {x: 800, y: 400, radius: 130, strength: 0.9},
+            {x: 400, y: 700, radius: 200, strength: 0.98}
+        ];
+        
+        centers.forEach(center => {
+            const dist = Math.sqrt((x - center.x) ** 2 + (y - center.y) ** 2);
+            if (dist < center.radius) {
+                intensity = Math.max(intensity, center.strength * (1 - dist / center.radius * 0.8));
+            }
+        });
+        
+        // 添加波纹效果
+        intensity *= (0.8 + 0.25 * Math.sin((x + y) / 40));
+        intensity += (Math.random() - 0.5) * 0.06;
+        intensity = Math.max(0, Math.min(1, intensity));
+        
+        if (intensity > 0.08) {
+            // 增强紫色效果
+            data[i] = Math.min(255, Math.floor(r * intensity * 0.9));     // Red - 保持紫色
+            data[i + 1] = Math.floor(g * intensity * 0.2); // Green - 降低
+            data[i + 2] = Math.min(255, Math.floor(b * intensity * 1.1)); // Blue - 增强紫色
+            data[i + 3] = Math.floor(255 * intensity * 0.92); // Alpha - 更不透明
+        } else {
+            data[i + 3] = 0;
+        }
+    }
+}
+
+/**
+ * 创建简化的模拟图层 (备用方案)
+ */
+function createSimulatedDisasterLayer(name, color, opacity) {
+    console.log(`🔄 创建简化${name}图层...`);
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const context = canvas.getContext('2d');
+    
+    // 简单的渐变效果
+    const gradient = context.createRadialGradient(256, 256, 0, 256, 256, 256);
+    gradient.addColorStop(0, color + '80'); // 50% 透明度
+    gradient.addColorStop(1, color + '00'); // 完全透明
+    
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 512, 512);
+    
+    const dataUrl = canvas.toDataURL();
+    
+    return new Cesium.SingleTileImageryProvider({
+        url: dataUrl,
+        rectangle: Cesium.Rectangle.fromDegrees(102.5, 34.5, 104.5, 36.5),
+        credit: `简化${name}数据`
+    });
+}
+
+// ===== 实时数据更新 =====
+
+/**
+ * 初始化实时数据更新
+ */
+function initRealTimeUpdates() {
+    // 每30秒更新一次数据
+    setInterval(() => {
+        updateRealTimeData();
+    }, 30000);
+    
+    // 初始化自动滚动
+    initAutoScroll();
+    
+    console.log('⏰ 实时数据更新已启动');
+}
+
+/**
+ * 初始化自动滚动功能（已替换为丝滑滚动）
+ */
+function initAutoScroll() {
+    console.log('🔄 使用新的丝滑滚动方案');
+}
+
+/**
+ * 更新实时数据
+ */
+function updateRealTimeData() {
+    // 更新预警信息
+    updateAlertData();
+    
+    // 更新统计数据
+    updateStatisticsData();
+    
+    // 更新图层数据
+    updateLayerData();
+    
+    console.log('🔄 实时数据已更新');
+}
+
+/**
+ * 更新预警数据
+ */
+function updateAlertData() {
+    // 模拟预警数据更新
+    const alertCount = document.querySelector('.alert-badge');
+    if (alertCount) {
+        const currentCount = parseInt(alertCount.textContent);
+        // 随机更新预警数量
+        const newCount = Math.max(0, currentCount + Math.floor(Math.random() * 3) - 1);
+        alertCount.textContent = newCount;
+    }
+}
+
+/**
+ * 更新统计数据
+ */
+function updateStatisticsData() {
+    // 更新损失预测数据
+    const summaryValues = document.querySelectorAll('.summary-value');
+    summaryValues.forEach(elem => {
+        if (elem.textContent.includes('亩')) {
+            const current = parseFloat(elem.textContent.replace(/[^\d.]/g, ''));
+            const variation = (Math.random() - 0.5) * 0.1; // ±5%变化
+            const newValue = Math.max(0, current * (1 + variation));
+            elem.textContent = `${newValue.toFixed(0)} 亩`;
+        }
+    });
+}
+
+/**
+ * 更新图层数据
+ */
+function updateLayerData() {
+    // 模拟图层数据更新
+    // 在实际应用中，这里会从API获取最新的遥感数据
+    console.log('更新图层数据...');
+}
+
+// ===== 窗口大小调整 =====
+
+/**
+ * 处理窗口大小变化
+ */
+function handleWindowResize() {
+    // 重新调整图表大小
+    Object.values(disasterCharts).forEach(chart => {
+        if (chart) {
+            chart.resize();
+        }
+    });
+}
+
+// ===== 事件监听器 =====
+window.addEventListener('resize', handleWindowResize);
+
+// ===== 页面加载完成后初始化 =====
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟初始化，确保其他模块已加载
+    setTimeout(() => {
+        initDisasterMonitoring();
+    }, 1000);
+    
+    // 备用自动滚动初始化
+    setTimeout(() => {
+        initSimpleAutoScroll();
+    }, 3000);
+});
+
+/**
+ * 丝滑连续滚动（主要方案）
+ */
+function initSimpleAutoScroll() {
+    const alertList = document.querySelector('.alert-list');
+    if (!alertList) {
+        console.warn('⚠️ 预警列表未找到');
+        return;
+    }
+    
+    const totalItems = alertList.querySelectorAll('.alert-item').length;
+    if (totalItems <= 3) {
+        console.log('📏 内容不足，无需滚动');
+        return;
+    }
+    
+    let isHovered = false;
+    let scrollPosition = 0;
+    const maxScroll = alertList.scrollHeight - alertList.clientHeight;
+    const scrollSpeed = 0.3; // 每次滚动的像素数（更丝滑）
+    const scrollInterval = 30; // 滚动间隔（毫秒，更频繁更平滑）
+    const pauseTime = 1500; // 每条预警停留时间（毫秒）
+    
+    let isPaused = false;
+    let pauseTimeout = null;
+    
+    // 鼠标交互事件
+    alertList.addEventListener('mouseenter', () => {
+        isHovered = true;
+    });
+    
+    alertList.addEventListener('mouseleave', () => {
+        isHovered = false;
+    });
+    
+    // 丝滑滚动函数
+    function smoothScroll() {
+        if (isHovered || isPaused) return;
+        
+        scrollPosition += scrollSpeed;
+        
+        // 到达底部时重置
+        if (scrollPosition >= maxScroll) {
+            scrollPosition = 0;
+            // 到底部后暂停一下再重新开始
+            isPaused = true;
+            pauseTimeout = setTimeout(() => {
+                isPaused = false;
+            }, pauseTime);
+        }
+        
+        alertList.scrollTop = scrollPosition;
+    }
+    
+    // 每个项目停留检查
+    let lastItemIndex = 0;
+    function checkItemPause() {
+        if (isHovered || isPaused) return;
+        
+        const itemHeight = 78;
+        const currentItemIndex = Math.floor(scrollPosition / itemHeight);
+        
+        // 当滚动到新项目时，暂停一下
+        if (currentItemIndex !== lastItemIndex && currentItemIndex < totalItems) {
+            lastItemIndex = currentItemIndex;
+            isPaused = true;
+            
+            if (pauseTimeout) clearTimeout(pauseTimeout);
+            pauseTimeout = setTimeout(() => {
+                isPaused = false;
+            }, pauseTime);
+        }
+    }
+    
+    // 启动滚动
+    setInterval(smoothScroll, scrollInterval);
+    setInterval(checkItemPause, 200);
+    
+    console.log('✅ 丝滑自动滚动已启动');
+}
+
+// ===== 灾害数据弹窗功能 =====
+
+/**
+ * 初始化灾害数据弹窗功能
+ */
+function initDisasterTooltip() {
+    console.log('🔧 初始化灾害数据弹窗...');
+    
+    disasterTooltip = document.getElementById('disaster-tooltip');
+    if (!disasterTooltip) {
+        console.warn('⚠️ 找不到灾害弹窗元素');
+        return;
+    }
+    
+    // 等待Cesium加载完成后绑定鼠标事件
+    setTimeout(() => {
+        if (window.cesiumViewer) {
+            setupDisasterTooltipMouseHandler();
+            console.log('✅ 灾害弹窗事件绑定完成');
+        } else {
+            console.warn('⚠️ Cesium viewer 未就绪，延迟绑定弹窗事件');
+            // 如果Cesium还没准备好，再等一会
+            setTimeout(() => {
+                if (window.cesiumViewer) {
+                    setupDisasterTooltipMouseHandler();
+                    console.log('✅ 灾害弹窗事件延迟绑定完成');
+                }
+            }, 2000);
+        }
+    }, 1000);
+}
+
+/**
+ * 设置灾害弹窗鼠标事件处理
+ */
+function setupDisasterTooltipMouseHandler() {
+    if (!window.cesiumViewer) {
+        console.warn('⚠️ Cesium viewer 不可用');
+        return;
+    }
+    
+    const scene = window.cesiumViewer.scene;
+    const canvas = scene.canvas;
+    
+    // 移除已存在的处理器
+    if (disasterMouseHandler) {
+        disasterMouseHandler();
+        disasterMouseHandler = null;
+    }
+    
+    // 鼠标移动事件
+    const mouseMoveHandler = (event) => {
+        const position = new Cesium.Cartesian2(event.clientX, event.clientY);
+        
+        // 检查是否在临夏地区范围内
+        const cartesian = window.cesiumViewer.camera.pickEllipsoid(position, scene.globe.ellipsoid);
+        if (cartesian) {
+            const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            const longitude = Cesium.Math.toDegrees(cartographic.longitude);
+            const latitude = Cesium.Math.toDegrees(cartographic.latitude);
+            
+            // 检查是否在临夏地区范围内且有选中的灾害图层 (102.5°-104.5°E, 34.5°-36.5°N)
+            if (longitude >= 102.5 && longitude <= 104.5 && 
+                latitude >= 34.5 && latitude <= 36.5 && 
+                currentMonitoringConfig.type) {
+                // 显示弹窗
+                showDisasterTooltip(event.clientX, event.clientY, longitude, latitude);
+            } else {
+                hideDisasterTooltip();
+            }
+        } else {
+            hideDisasterTooltip();
+        }
+    };
+    
+    // 鼠标离开地图区域
+    const mouseLeaveHandler = () => {
+        hideDisasterTooltip();
+    };
+    
+    // 绑定事件
+    canvas.addEventListener('mousemove', mouseMoveHandler);
+    canvas.addEventListener('mouseleave', mouseLeaveHandler);
+    
+    // 返回清理函数
+    disasterMouseHandler = () => {
+        canvas.removeEventListener('mousemove', mouseMoveHandler);
+        canvas.removeEventListener('mouseleave', mouseLeaveHandler);
+    };
+}
+
+/**
+ * 显示灾害数据弹窗
+ */
+function showDisasterTooltip(x, y, longitude, latitude) {
+    if (!disasterTooltip) return;
+    
+    // 生成模拟灾害数据
+    const disasterInfo = generateTooltipDisasterData(longitude, latitude);
+    
+    // 更新弹窗内容
+    updateDisasterTooltipContent(disasterInfo, longitude, latitude);
+    
+    // 设置弹窗位置
+    const tooltipX = Math.min(x + 15, window.innerWidth - 220);
+    const tooltipY = Math.max(y - 10, 10);
+    
+    disasterTooltip.style.left = tooltipX + 'px';
+    disasterTooltip.style.top = tooltipY + 'px';
+    disasterTooltip.style.display = 'block';
+    disasterTooltip.classList.add('show');
+    disasterTooltip.classList.remove('hide');
+}
+
+/**
+ * 隐藏灾害数据弹窗
+ */
+function hideDisasterTooltip() {
+    if (!disasterTooltip) return;
+    
+    disasterTooltip.classList.add('hide');
+    disasterTooltip.classList.remove('show');
+    
+    setTimeout(() => {
+        if (disasterTooltip.classList.contains('hide')) {
+            disasterTooltip.style.display = 'none';
+        }
+    }, 200);
+}
+
+/**
+ * 生成弹窗灾害数据
+ */
+function generateTooltipDisasterData(longitude, latitude) {
+    const layerNames = {
+        'temperature': '高温/冻害',
+        'drought': '干旱监测',
+        'comprehensive': '综合评估'
+    };
+    
+    // 基于位置生成模拟数据
+    const seed = (longitude * 1000 + latitude * 1000) % 1000;
+    let riskLevel, riskIndex, riskColor;
+    
+    switch (currentMonitoringConfig.type) {
+        case 'temperature':
+            // 高温/冻害风险
+            const tempRisk = Math.sin(seed * 0.01) * 0.5 + 0.5; // 0-1
+            if (tempRisk < 0.3) {
+                riskLevel = '低风险';
+                riskColor = '#52C41A';
+            } else if (tempRisk < 0.6) {
+                riskLevel = '中风险';
+                riskColor = '#FAAD14';
+            } else {
+                riskLevel = '高风险';
+                riskColor = '#F5222D';
+            }
+            riskIndex = (tempRisk * 100).toFixed(1);
+            break;
+            
+        case 'drought':
+            // 干旱风险
+            const droughtRisk = Math.cos(seed * 0.012) * 0.5 + 0.5;
+            if (droughtRisk < 0.25) {
+                riskLevel = '无旱情';
+                riskColor = '#52C41A';
+            } else if (droughtRisk < 0.5) {
+                riskLevel = '轻旱';
+                riskColor = '#FAAD14';
+            } else if (droughtRisk < 0.75) {
+                riskLevel = '中旱';
+                riskColor = '#FA8C16';
+            } else {
+                riskLevel = '重旱';
+                riskColor = '#F5222D';
+            }
+            riskIndex = (droughtRisk * 100).toFixed(1);
+            break;
+            
+        case 'comprehensive':
+            // 综合评估
+            const compRisk = (Math.sin(seed * 0.008) + Math.cos(seed * 0.015)) * 0.25 + 0.5;
+            if (compRisk < 0.3) {
+                riskLevel = '安全';
+                riskColor = '#52C41A';
+            } else if (compRisk < 0.6) {
+                riskLevel = '注意';
+                riskColor = '#FAAD14';
+            } else if (compRisk < 0.8) {
+                riskLevel = '警告';
+                riskColor = '#FA8C16';
+            } else {
+                riskLevel = '危险';
+                riskColor = '#F5222D';
+            }
+            riskIndex = (compRisk * 100).toFixed(1);
+            break;
+            
+        default:
+            riskLevel = '--';
+            riskIndex = '--';
+            riskColor = '#666';
+    }
+    
+    return {
+        layerName: layerNames[currentMonitoringConfig.type] || '未知',
+        riskLevel: riskLevel,
+        riskIndex: riskIndex,
+        riskColor: riskColor,
+        updateTime: new Date().toLocaleString('zh-CN', {
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    };
+}
+
+/**
+ * 更新弹窗内容
+ */
+function updateDisasterTooltipContent(disasterInfo, longitude, latitude) {
+    // 更新标题和坐标
+    const titleElement = document.getElementById('disaster-tooltip-layer-type');
+    const coordsElement = document.getElementById('disaster-tooltip-coords');
+    
+    if (titleElement) {
+        titleElement.textContent = disasterInfo.layerName;
+    }
+    
+    if (coordsElement) {
+        coordsElement.textContent = `${longitude.toFixed(3)}°, ${latitude.toFixed(3)}°`;
+    }
+    
+    // 更新数据项
+    const riskLevelElement = document.getElementById('disaster-tooltip-risk-level');
+    const timeElement = document.getElementById('disaster-tooltip-time');
+    
+    if (riskLevelElement) {
+        riskLevelElement.textContent = disasterInfo.riskLevel;
+        riskLevelElement.style.color = disasterInfo.riskColor;
+    }
+    
+    if (timeElement) {
+        timeElement.textContent = disasterInfo.updateTime;
+    }
+}
+
+console.log('📄 灾害定损模块已加载');

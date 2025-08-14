@@ -854,8 +854,8 @@
 
 .gauge-details {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
 .gauge-item {
@@ -863,17 +863,14 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 12px 8px;
+    padding: 15px 12px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 12px;
-    gap: 4px;
+    gap: 6px;
 }
 
-.gauge-item.highlight {
-    background: rgba(0, 212, 255, 0.1);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-}
+
 
 .gauge-label {
     color: rgba(255, 255, 255, 0.8);

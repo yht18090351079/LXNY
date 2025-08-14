@@ -1,693 +1,873 @@
-/* 灾害定损页面专用样式 */
+/* 农情遥感系统大屏 - 灾害定损专用样式 */
 
-/* 图层控制面板 */
-.layer-control-panel {
-    position: absolute;
-    top: 120px;
-    right: 20px;
-    background: rgba(0, 20, 40, 0.9);
-    border: 1px solid rgba(64, 196, 255, 0.3);
-    border-radius: 8px;
-    backdrop-filter: blur(10px);
-    padding: 16px;
-    z-index: 1000;
-    min-width: 200px;
-}
-
-.layer-control-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #40C4FF;
-}
-
-.layer-control-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.layer-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.layer-btn:hover {
-    background: rgba(64, 196, 255, 0.2);
-    border-color: rgba(64, 196, 255, 0.5);
-    transform: translateX(2px);
-}
-
-.layer-btn.active {
-    background: rgba(64, 196, 255, 0.3);
-    border-color: #40C4FF;
-    box-shadow: 0 0 10px rgba(64, 196, 255, 0.3);
-}
-
-.layer-btn .layer-icon {
-    font-size: 16px;
-}
-
-.layer-btn .layer-text {
-    font-size: 13px;
-    color: #fff;
-}
-
-.layer-indicator {
-    position: absolute;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #4CAF50;
-    box-shadow: 0 0 6px rgba(76, 175, 80, 0.6);
-}
-
-.layer-btn:not(.active) .layer-indicator {
-    background: #666;
-    box-shadow: none;
-}
-
-/* 预警提示框 */
-.alert-notification {
-    position: absolute;
-    top: 20px;
+/* ===== 灾害监测控制面板 ===== */
+.disaster-control-panel {
+    position: fixed;
+    top: 160px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(244, 67, 54, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    padding: 12px 16px;
+    width: 800px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    z-index: 1500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disaster-control-panel.collapsed .control-content {
+    display: none;
+}
+
+.disaster-control-panel.collapsed {
+    width: 300px;
+    height: auto;
+}
+
+.disaster-control-panel.collapsed .control-header {
+    border-bottom: none;
+}
+
+.control-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    z-index: 2000;
-    animation: alertSlideDown 0.5s ease;
-    backdrop-filter: blur(10px);
-    min-width: 300px;
-    box-shadow: 0 4px 20px rgba(244, 67, 54, 0.3);
-}
-
-@keyframes alertSlideDown {
-    from {
-        transform: translateX(-50%) translateY(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-    }
-}
-
-.alert-icon {
-    font-size: 20px;
-    animation: alertPulse 2s infinite;
-}
-
-@keyframes alertPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-.alert-content {
-    flex: 1;
-}
-
-.alert-title {
-    font-weight: 600;
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 4px;
-}
-
-.alert-message {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.alert-close {
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 4px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
 }
 
-.alert-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
-/* 灾害类型切换 */
-.disaster-type-switch {
+.control-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
     display: flex;
+    align-items: center;
     gap: 8px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 4px;
 }
 
-.disaster-type-switch .switch-btn {
-    flex: 1;
+.control-collapse-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 4px;
+    position: relative;
+    z-index: 10;
+    min-width: 24px;
+    min-height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.control-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.control-content {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* ===== 选择器组件样式 ===== */
+.monitoring-type-selector,
+.crop-selector,
+.time-selector,
+.opacity-control {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    padding: 12px 16px;
-    border-radius: 6px;
+}
+
+.selector-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.type-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.crop-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.type-btn,
+.crop-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 12px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    white-space: nowrap;
 }
 
-.disaster-type-switch .switch-btn:hover {
+.crop-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.type-btn:hover,
+.crop-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(0, 212, 255, 0.5);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.type-btn.active,
+.crop-btn.active {
+    background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+    border-color: #00D4FF;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+}
+
+.time-select {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.disaster-type-switch .switch-btn.active {
-    background: rgba(64, 196, 255, 0.3);
-    color: #40C4FF;
-    box-shadow: 0 2px 8px rgba(64, 196, 255, 0.2);
-}
-
-.disaster-type-switch .switch-icon {
-    font-size: 16px;
-}
-
-.disaster-type-switch .switch-text {
-    font-size: 13px;
-    font-weight: 500;
-}
-
-/* 监测区域样式 */
-.monitoring-section {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
+    color: #ffffff;
+    padding: 8px 12px;
+    font-size: 13px;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
 }
 
-.section-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 14px;
+.time-select:focus {
+    outline: none;
+    border-color: #00D4FF;
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.time-select option {
+    background: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+}
+
+/* ===== 透明度控制 ===== */
+.opacity-control {
+    grid-column: span 2;
+}
+
+.opacity-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(0, 212, 255, 0.6) 100%);
+    outline: none;
+    cursor: pointer;
+}
+
+.opacity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #00D4FF;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 212, 255, 0.4);
+}
+
+.opacity-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #00D4FF;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 212, 255, 0.4);
+}
+
+.opacity-value {
+    color: #00D4FF;
+    font-size: 12px;
     font-weight: 600;
-    color: #40C4FF;
+    text-align: center;
+    margin-top: 4px;
 }
 
-.section-icon {
-    font-size: 16px;
+/* ===== 灾害概览统计 ===== */
+.disaster-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
-/* 风险等级图例 */
-.risk-legend, .drought-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-}
-
-.legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.legend-text {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* 作物监测指标 */
-.crop-indicators {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.indicator-item {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.indicator-header {
+.overview-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
-.crop-icon {
+.overview-item.critical {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(244, 67, 54, 0.1) 100%);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.overview-item.severe {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.overview-item.moderate {
+    background: linear-gradient(135deg, rgba(255, 235, 59, 0.2) 0%, rgba(255, 235, 59, 0.1) 100%);
+    border: 1px solid rgba(255, 235, 59, 0.3);
+}
+
+.overview-item.low {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.1) 100%);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.overview-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.overview-icon {
     font-size: 16px;
-}
-
-.crop-name {
-    font-weight: 500;
-    color: #fff;
-}
-
-.indicator-status {
-    margin-left: auto;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 500;
-}
-
-.indicator-status.normal {
-    background: rgba(76, 175, 80, 0.3);
-    color: #4CAF50;
-}
-
-.indicator-status.warning {
-    background: rgba(255, 152, 0, 0.3);
-    color: #FF9800;
-}
-
-.indicator-status.danger {
-    background: rgba(244, 67, 54, 0.3);
-    color: #F44336;
-}
-
-.indicator-metrics {
+    width: 32px;
+    height: 32px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.metric-item {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 12px;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
-.metric-label {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.metric-value {
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-}
-
-.metric-value.normal {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-}
-
-.metric-value.warning {
-    background: rgba(255, 152, 0, 0.2);
-    color: #FF9800;
-}
-
-.metric-value.danger {
-    background: rgba(244, 67, 54, 0.2);
-    color: #F44336;
-}
-
-/* 温度阈值设置 */
-.threshold-settings {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.threshold-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-}
-
-.threshold-label {
-    color: rgba(255, 255, 255, 0.8);
+.overview-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.threshold-value {
+.overview-main {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.threshold-input {
-    width: 60px;
-    padding: 4px 8px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+.overview-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.overview-value {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.overview-percent {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 9px;
+}
+
+/* ===== 损失预测样式 ===== */
+.prediction-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 6px 4px;
+}
+
+.summary-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 10px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.summary-value {
     font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.summary-value.danger {
+    color: #F44336;
+}
+
+.summary-value.warning {
+    color: #FF9800;
+}
+
+.summary-value.info {
+    color: #2196F3;
+}
+
+/* ===== 历史对比样式 ===== */
+.historical-summary {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+/* 当在图表下方时的样式 */
+.stat-card .historical-summary:not(.stat-header .historical-summary) {
+    justify-content: space-around;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-left: 0;
+}
+
+.comparison-item {
     text-align: center;
 }
 
-.threshold-input:focus {
-    outline: none;
-    border-color: #40C4FF;
-    box-shadow: 0 0 0 2px rgba(64, 196, 255, 0.2);
-}
-
-.threshold-unit {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 11px;
-}
-
-/* 干旱监测指标 */
-.drought-indicators {
+/* 在表头中的对比项样式 */
+.stat-header .comparison-item {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-}
-
-.drought-metric {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.metric-header {
-    display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
 }
 
-.metric-icon {
-    font-size: 16px;
-}
-
-.metric-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: #fff;
-}
-
-.metric-chart {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.metric-percent {
-    font-size: 12px;
-    font-weight: 600;
-    color: #40C4FF;
-    min-width: 35px;
-    text-align: right;
-}
-
-/* 损失预测面板样式 */
-.loss-overview-section {
-    margin-bottom: 20px;
-}
-
-.overview-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.overview-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 16px;
-    transition: all 0.3s ease;
-}
-
-.overview-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-}
-
-.overview-card .card-icon {
-    font-size: 24px;
-    opacity: 0.8;
-}
-
-.overview-card .card-content {
-    flex: 1;
-}
-
-.overview-card .card-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: #40C4FF;
-    margin-bottom: 4px;
-}
-
-.overview-card .card-label {
-    font-size: 12px;
+.stat-header .comparison-label {
     color: rgba(255, 255, 255, 0.7);
+    font-size: 9px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+}
+
+.stat-header .comparison-value {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* 默认样式（图表下方） */
+.comparison-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
     margin-bottom: 4px;
 }
 
-.overview-card .card-change {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 6px;
-    border-radius: 4px;
+.comparison-value {
+    font-size: 16px;
+    font-weight: 700;
 }
 
-.overview-card .card-change.negative {
-    background: rgba(244, 67, 54, 0.2);
+.comparison-value.increase {
     color: #F44336;
 }
 
-.overview-card .card-change.positive {
-    background: rgba(76, 175, 80, 0.2);
+.comparison-value.decrease {
     color: #4CAF50;
 }
 
-/* 损失详情表格 */
-.loss-table-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.loss-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.loss-table th,
-.loss-table td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 12px;
-}
-
-.loss-table th {
-    background: rgba(64, 196, 255, 0.1);
-    color: #40C4FF;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.loss-table td {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.loss-table .crop-icon {
-    margin-right: 6px;
-    font-size: 14px;
-}
-
-.loss-level {
-    padding: 3px 8px;
-    border-radius: 12px;
+/* ===== 预警信息样式 ===== */
+.update-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 10px;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.update-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4CAF50;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.alert-count {
+    display: flex;
+    align-items: center;
+}
+
+.alert-badge {
+    background: #F44336;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.alert-badge.critical {
+    background: #F44336;
+    animation: alertBlink 2s infinite;
+}
+
+@keyframes alertBlink {
+    0%, 50% { opacity: 1; }
+    25%, 75% { opacity: 0.6; }
+}
+
+/* ===== 预警卡片固定高度 ===== */
+.alert-card {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.alert-card .stat-header {
+    flex-shrink: 0;
+}
+
+.alert-list {
+    height: 220px;
+    overflow: hidden; /* 完全隐藏滚动条，JavaScript控制滚动 */
+    flex: 1;
+    position: relative;
+    scroll-behavior: smooth;
+}
+
+/* 平滑滚动优化 */
+.alert-list * {
+    will-change: transform;
+}
+
+/* 滚动条已移除，使用纯JavaScript控制滚动 */
+
+.alert-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 60px;
+}
+
+.alert-item.critical {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(244, 67, 54, 0.1) 100%);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+.alert-item.severe {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.4);
+}
+
+.alert-item.moderate {
+    background: linear-gradient(135deg, rgba(255, 235, 59, 0.2) 0%, rgba(255, 235, 59, 0.1) 100%);
+    border: 1px solid rgba(255, 235, 59, 0.4);
+}
+
+.alert-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    min-height: auto;
+}
+
+.alert-icon {
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.alert-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alert-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.alert-item:hover .alert-details {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 4px;
+}
+
+.alert-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.alert-location,
+.alert-time {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+}
+
+.alert-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    line-height: 1.4;
+    margin-top: 4px;
+}
+
+.alert-status {
+    align-self: flex-start;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
     text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
 }
 
-.loss-level.severe {
-    background: rgba(244, 67, 54, 0.3);
-    color: #F44336;
+/* ===== 灾害分布统计样式已移除 ===== */
+
+/* ===== 右侧面板stat-card间隔调整 ===== */
+.right-panel .stat-card {
+    margin-bottom: 8px; /* 从默认的15px减少到8px */
 }
 
-.loss-level.moderate {
-    background: rgba(255, 152, 0, 0.3);
-    color: #FF9800;
+/* ===== 图层状态指示器 ===== */
+.layer-status {
+    display: inline-block;
+    font-size: 8px;
+    margin-left: 4px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.3s ease;
 }
 
-.loss-level.light {
-    background: rgba(255, 193, 7, 0.3);
-    color: #FFC107;
+.layer-status.active {
+    color: #00D4FF;
+    text-shadow: 0 0 4px rgba(0, 212, 255, 0.5);
+    animation: layerStatusPulse 2s ease-in-out infinite alternate;
 }
 
-/* 实时预警信息 */
-.warning-list {
+@keyframes layerStatusPulse {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* ===== 应急响应建议 ===== */
+.response-suggestions {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 300px;
-    overflow-y: auto;
 }
 
-.warning-item {
+.suggestion-item {
     display: flex;
     gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
     padding: 12px;
-    border-left: 4px solid;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
-.warning-item.high {
-    border-left-color: #F44336;
-    background: rgba(244, 67, 54, 0.1);
+.suggestion-item.urgent {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(244, 67, 54, 0.1) 100%);
+    border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
-.warning-item.medium {
-    border-left-color: #FF9800;
-    background: rgba(255, 152, 0, 0.1);
+.suggestion-item.important {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.3);
 }
 
-.warning-item.low {
-    border-left-color: #FFC107;
-    background: rgba(255, 193, 7, 0.1);
+.suggestion-item.normal {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.2) 0%, rgba(33, 150, 243, 0.1) 100%);
+    border: 1px solid rgba(33, 150, 243, 0.3);
 }
 
-.warning-item:hover {
-    transform: translateX(4px);
+.suggestion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.warning-level {
+.suggestion-priority {
     padding: 4px 8px;
-    border-radius: 12px;
+    border-radius: 4px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    white-space: nowrap;
-    align-self: flex-start;
+    text-align: center;
+    min-width: 50px;
+    height: fit-content;
+    color: #ffffff;
 }
 
-.warning-item.high .warning-level {
-    background: rgba(244, 67, 54, 0.3);
-    color: #F44336;
+.suggestion-item.urgent .suggestion-priority {
+    background: #F44336;
 }
 
-.warning-item.medium .warning-level {
-    background: rgba(255, 152, 0, 0.3);
-    color: #FF9800;
+.suggestion-item.important .suggestion-priority {
+    background: #FF9800;
 }
 
-.warning-item.low .warning-level {
-    background: rgba(255, 193, 7, 0.3);
-    color: #FFC107;
+.suggestion-item.normal .suggestion-priority {
+    background: #2196F3;
 }
 
-.warning-content {
+.suggestion-content {
     flex: 1;
 }
 
-.warning-title {
+.suggestion-title {
+    color: #ffffff;
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
     margin-bottom: 4px;
 }
 
-.warning-desc {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 6px;
+.suggestion-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
     line-height: 1.4;
 }
 
-.warning-time {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
-}
+/* ===== 应急联系方式样式已移除 ===== */
 
-/* 图表容器 */
-.chart-container {
-    height: 200px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* 响应式调整 */
-@media (max-width: 1400px) {
-    .overview-cards {
-        gap: 8px;
+/* ===== 响应式适配 ===== */
+@media (max-width: 1600px) {
+    .disaster-control-panel {
+        width: 700px;
     }
     
-    .overview-card {
-        padding: 12px;
+    .control-content {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
     
-    .overview-card .card-value {
-        font-size: 18px;
+    .opacity-control {
+        grid-column: span 1;
     }
 }
 
 @media (max-width: 1200px) {
-    .layer-control-panel {
-        right: 10px;
-        min-width: 180px;
+    .disaster-control-panel {
+        width: 90vw;
+        max-width: 600px;
     }
-    
-    .alert-notification {
-        min-width: 280px;
-        padding: 10px 14px;
+}
+
+/* ===== 动画效果 ===== */
+.disaster-control-panel {
+    animation: slideInFromTop 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
     }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.alert-item,
+.overview-item,
+.suggestion-item {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== 特殊状态样式 ===== */
+.right-panel .stat-card:first-of-type .alert-badge {
+    animation: criticalAlert 1.5s infinite;
+}
+
+@keyframes criticalAlert {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(244, 67, 54, 0.8);
+    }
+}
+
+/* ===== 地图图层控制提示 ===== */
+.layer-legend {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 200px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    z-index: 1000;
+}
+
+.legend-title {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.legend-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+}
+
+/* ===== 灾害数据弹窗样式 ===== */
+.disaster-tooltip {
+    position: absolute;
+    z-index: 10000;
+    background: rgba(15, 20, 25, 0.95);
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    border-radius: 8px;
+    padding: 0;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.disaster-tooltip .tooltip-header {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 7px 7px 0 0;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.disaster-tooltip .tooltip-title {
+    font-size: 12px;
+}
+
+.disaster-tooltip .tooltip-coords {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-left: 8px;
+}
+
+.disaster-tooltip .tooltip-content {
+    padding: 10px 12px;
+}
+
+.disaster-tooltip .data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+
+.disaster-tooltip .data-item:last-child {
+    margin-bottom: 0;
+}
+
+.disaster-tooltip .data-label {
+    color: #A0AEC0;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.disaster-tooltip .data-value {
+    color: #FF6B6B;
+    font-weight: 500;
+    text-align: right;
+}
+
+/* 弹窗动画 */
+.disaster-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.disaster-tooltip.hide {
+    opacity: 0;
+    transform: translateY(-10px);
 }

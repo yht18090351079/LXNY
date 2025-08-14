@@ -1,5 +1,10 @@
 /* 农情遥感系统大屏 - 气象监测功能样式文件 */
 
+/* ===== 左侧面板stat-card间隔调整 ===== */
+.left-panel .stat-card {
+    margin-bottom: 8px; /* 从默认的15px减少到8px */
+}
+
 /* ===== 气象图层选择样式（MSN天气风格）===== */
 .weather-layer-tabs {
     display: grid;
