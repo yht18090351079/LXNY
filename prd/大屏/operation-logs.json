@@ -1,0 +1,101 @@
+[
+  {
+    "timestamp": "2025-08-14T03:47:44.560Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-span-noid-crop-area-9-1-1-1256亩",
+    "annotation": {
+      "name": "span: 1,256 亩",
+      "content": "123"
+    },
+    "backup": "annotations-backup-1755143264558.json"
+  },
+  {
+    "timestamp": "2025-08-14T06:45:59.921Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-area-item-7-2-4",
+    "annotation": {
+      "name": "div: 🌶️",
+      "content": "辣椒\n"
+    },
+    "backup": "annotations-backup-1755153959919.json"
+  },
+  {
+    "timestamp": "2025-08-14T06:49:07.652Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-stat-value-9-0-0-63",
+    "annotation": {
+      "name": "div: 6.3%",
+      "content": "324"
+    },
+    "backup": "annotations-backup-1755154147643.json"
+  },
+  {
+    "timestamp": "2025-08-14T06:50:25.990Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-stat-item-8-0-0",
+    "annotation": {
+      "name": "div: 186           ...",
+      "content": "123"
+    },
+    "backup": "annotations-backup-1755154225987.json"
+  },
+  {
+    "timestamp": "2025-08-14T06:51:17.205Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-summary-item-7-0-0",
+    "annotation": {
+      "name": "div: 2,970         ...",
+      "content": "123"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-14T07:07:39.991Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-canvas-noid-noclass-8-0-0",
+    "annotation": {
+      "name": "ECharts图表",
+      "content": "1"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-14T07:12:15.646Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-canvas-noid-noclass-8-0-0",
+    "annotation": {
+      "name": "ECharts图表",
+      "content": "q we"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-14T07:13:43.606Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-overlay-switch-btn-4-3-8-作物选择",
+    "annotation": {
+      "name": "div: 🌾            作物选择",
+      "content": "- **叠加功能按钮**: 2个多选按钮，开启附加功能\n  - 📱 设备监控 (覆盖设备位置信息)\n  - 🌾 作物选择 (作物图层筛选器)"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-14T07:14:02.128Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-main-switch-btn-5-0-0",
+    "annotation": {
+      "name": "div: 🌾            ...",
+      "content": "- **主功能按钮**: 5个单选按钮，切换不同页面功能\n  - 🌾 作物分布 (当前页面)\n  - 📊 长势分析 (growth-analysis.html)\n  - 📈 产量预估 (yield-estimation.html)\n  - 🌤️ 气象监测 (weather-monitoring.html)\n  - ⚠️ 灾害定损 (disaster-monitoring.html)"
+    },
+    "backup": null
+  }
+]

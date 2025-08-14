@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动刷新测试页面</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status-title {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+        
+        .log-entry.connected {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .log-entry.updated {
+            background: rgba(33, 150, 243, 0.2);
+            border-left: 3px solid #2196F3;
+        }
+        
+        .log-entry.error {
+            background: rgba(244, 67, 54, 0.2);
+            border-left: 3px solid #F44336;
+        }
+        
+        .log-entry.ping {
+            background: rgba(158, 158, 158, 0.1);
+            border-left: 3px solid #9E9E9E;
+            opacity: 0.7;
+        }
+        
+        .timestamp {
+            color: #999;
+            font-size: 11px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+        }
+        
+        .btn.disconnect {
+            background: #f44336;
+        }
+        
+        .btn.disconnect:hover {
+            background: #da190b;
+        }
+        
+        .annotations-preview {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .annotation-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .annotation-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .annotation-content {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 PRD系统自动刷新测试</h1>
+            <p>监听批注数据的实时更新</p>
+        </div>
+        
+        <div class="status">
+            <div class="status-card">
+                <div class="status-title">连接状态</div>
+                <div class="status-value" id="connectionStatus">未连接</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">收到消息数</div>
+                <div class="status-value" id="messageCount">0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">批注总数</div>
+                <div class="status-value" id="annotationCount">-</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">页面总数</div>
+                <div class="status-value" id="pageCount">-</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="connect()">连接</button>
+            <button class="btn disconnect" onclick="disconnect()">断开连接</button>
+            <button class="btn" onclick="clearLog()">清空日志</button>
+            <button class="btn" onclick="testManualRefresh()">手动刷新</button>
+        </div>
+        
+        <h3>📡 实时日志</h3>
+        <div class="log-container" id="logContainer"></div>
+        
+        <h3>📝 当前批注预览</h3>
+        <div class="annotations-preview" id="annotationsPreview">
+            <p style="text-align: center; opacity: 0.6;">等待数据加载...</p>
+        </div>
+    </div>
+
+    <script>
+        let eventSource = null;
+        let messageCount = 0;
+        let currentAnnotations = {};
+        
+        // 自动检测API地址
+        const apiBaseUrl = window.location.protocol + '//' + window.location.host + '/api';
+        
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `
+                <span class="timestamp">[${timestamp}]</span> ${message}
+            `;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function updateStatus() {
+            document.getElementById('connectionStatus').textContent = 
+                eventSource && eventSource.readyState === EventSource.OPEN ? '已连接' : '未连接';
+            document.getElementById('messageCount').textContent = messageCount;
+        }
+        
+        function updateAnnotationsPreview(annotations) {
+            currentAnnotations = annotations;
+            const container = document.getElementById('annotationsPreview');
+            
+            if (!annotations || Object.keys(annotations).length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6;">暂无批注数据</p>';
+                return;
+            }
+            
+            let html = '';
+            let totalAnnotations = 0;
+            let pageCount = 0;
+            
+            for (const [pageKey, pageAnnotations] of Object.entries(annotations)) {
+                pageCount++;
+                const annotationCount = Object.keys(pageAnnotations).length;
+                totalAnnotations += annotationCount;
+                
+                html += `<div style="margin-bottom: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: #4CAF50;">📄 ${pageKey} (${annotationCount}个批注)</h4>`;
+                
+                for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                    html += `
+                        <div class="annotation-item">
+                            <div class="annotation-title">${annotation.name}</div>
+                            <div class="annotation-content">${annotation.content}</div>
+                            <div style="font-size: 11px; opacity: 0.7; margin-top: 5px;">
+                                ${annotation.timestamp} | ${elementId}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+            document.getElementById('annotationCount').textContent = totalAnnotations;
+            document.getElementById('pageCount').textContent = pageCount;
+        }
+        
+        function connect() {
+            if (eventSource) {
+                log('正在断开现有连接...', 'info');
+                eventSource.close();
+            }
+            
+            log(`正在连接到 ${apiBaseUrl}/events...`, 'info');
+            
+            eventSource = new EventSource(`${apiBaseUrl}/events`);
+            
+            eventSource.onopen = function(event) {
+                log('✅ SSE连接已建立', 'connected');
+                updateStatus();
+            };
+            
+            eventSource.onmessage = function(event) {
+                messageCount++;
+                updateStatus();
+                
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    switch(data.type) {
+                        case 'connected':
+                            log(`🎉 连接确认: ${data.message} (客户端ID: ${data.clientId})`, 'connected');
+                            // 连接成功后立即请求当前数据
+                            testManualRefresh();
+                            break;
+                            
+                        case 'annotations_updated':
+                            log(`🔄 批注数据更新: ${data.data.stats.totalAnnotations}个批注，${data.data.stats.pageCount}个页面`, 'updated');
+                            updateAnnotationsPreview(data.data.annotations);
+                            break;
+                            
+                        case 'annotation_updated':
+                            log(`✏️ 单个批注${data.data.operation}: ${data.data.annotation.name}`, 'updated');
+                            break;
+                            
+                        case 'ping':
+                            log('💓 心跳', 'ping');
+                            break;
+                            
+                        case 'error':
+                            log(`❌ 服务器错误: ${data.data.message}`, 'error');
+                            break;
+                            
+                        default:
+                            log(`📨 收到消息: ${data.type}`, 'info');
+                    }
+                } catch (error) {
+                    log(`❌ 解析消息失败: ${event.data}`, 'error');
+                }
+            };
+            
+            eventSource.onerror = function(event) {
+                log('❌ SSE连接错误', 'error');
+                updateStatus();
+                
+                if (eventSource.readyState === EventSource.CLOSED) {
+                    log('🔌 连接已关闭', 'error');
+                }
+            };
+        }
+        
+        function disconnect() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+                log('🔌 已断开连接', 'info');
+                updateStatus();
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            messageCount = 0;
+            updateStatus();
+        }
+        
+        async function testManualRefresh() {
+            try {
+                log('🔄 手动刷新批注数据...', 'info');
+                const response = await fetch(`${apiBaseUrl}/annotations`);
+                const annotations = await response.json();
+                updateAnnotationsPreview(annotations);
+                log('✅ 手动刷新完成', 'info');
+            } catch (error) {
+                log(`❌ 手动刷新失败: ${error.message}`, 'error');
+            }
+        }
+        
+        // 页面加载时自动连接
+        window.addEventListener('load', function() {
+            log('🚀 页面加载完成，准备测试自动刷新功能', 'info');
+            updateStatus();
+        });
+        
+        // 页面卸载时清理连接
+        window.addEventListener('beforeunload', function() {
+            if (eventSource) {
+                eventSource.close();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -452,7 +452,9 @@
 <body>
     <!-- 工具栏 -->
     <div class="toolbar" id="mainToolbar">
-
+        <button class="toolbar-btn annotation-btn" id="annotationBtn" onclick="toggleAnnotationMode()" title="批注模式">
+            <span id="annotationIcon">📝</span>
+        </button>
         <button class="toolbar-btn fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="全屏显示">
             <span id="fullscreenIcon">⛶</span>
         </button>
@@ -464,7 +466,7 @@
     <div class="prd-container">
         <!-- 左上角 - 内嵌页面区域 (70%) -->
         <div class="embedded-page">
-            <iframe id="embeddedFrame" src="大屏原型/index.html" title="农情遥感系统大屏"></iframe>
+            <iframe id="embeddedFrame" src="/prototype/index.html" title="农情遥感系统大屏"></iframe>
         </div>
 
         <!-- 右侧 - 页面元素批注区域 -->
@@ -797,7 +799,72 @@
             alert(`🚫 权限不足\n\n${message}\n\n当前模式: ${CURRENT_ENV.icon} ${CURRENT_ENV.name}`);
         }
         
+        // ========== 模式指示器 ==========
+        
+        // 创建模式指示器
+        function createModeIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'mode-indicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 12px;
+                left: 12px;
+                z-index: 3000;
+                background: ${APP_MODE === 'development' ? 'rgba(76, 175, 80, 0.9)' : 'rgba(33, 150, 243, 0.9)'};
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                cursor: pointer;
+                transition: all 0.2s ease;
+            `;
+            
+            indicator.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px;">${CURRENT_ENV.icon}</span>
+                    <span>${CURRENT_ENV.name}</span>
+                    ${CURRENT_ENV.debugMode ? '<span style="font-size: 10px; opacity: 0.8;">DEBUG</span>' : ''}
+                </div>
+            `;
+            
+            indicator.addEventListener('click', showModeInfo);
+            indicator.addEventListener('mouseenter', () => {
+                indicator.style.transform = 'translateY(-1px)';
+                indicator.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+            });
+            indicator.addEventListener('mouseleave', () => {
+                indicator.style.transform = 'translateY(0)';
+                indicator.style.boxShadow = 'none';
+            });
+            
+            document.body.appendChild(indicator);
+        }
+        
+        // 显示模式信息
+        function showModeInfo() {
+            const info = `
+🌍 当前运行模式: ${CURRENT_ENV.icon} ${CURRENT_ENV.name}
 
+📋 功能权限:
+• 查看批注: ✅ 允许
+• 添加批注: ${CURRENT_ENV.allowAnnotation ? '✅ 允许' : '❌ 禁止'}
+• 编辑内容: ${CURRENT_ENV.allowEdit ? '✅ 允许' : '❌ 禁止'}
+• 调试工具: ${CURRENT_ENV.showDebugTools ? '✅ 启用' : '❌ 禁用'}
+
+🔗 数据源:
+• API地址: ${CURRENT_ENV.apiBaseUrl || '本地文件'}
+• 实时同步: ${CURRENT_ENV.enableRealTimeSync ? '✅ 启用' : '❌ 禁用'}
+
+💡 模式切换:
+• 开发模式: 添加 ?mode=dev 参数
+• 线上模式: 添加 ?mode=prod 参数
+            `.trim();
+            
+            alert(info);
+        }
 
         // 功能模块配置数据 - 基于功能切换栏的data-function属性
         const functionConfigs = {
@@ -806,8 +873,20 @@
                 mdFile: '作物分布监测.md',
                 annotations: [
                     {
-                        title: '💡 提示',
-                        content: '请从页面元素清单中选择要查看的元素'
+                        title: '🗺️ 三维地图视图',
+                        content: '基于Cesium.js的三维地球，支持多种地图底图切换，可进行缩放、旋转、倾斜等操作。'
+                    },
+                    {
+                        title: '📊 右侧数据面板',
+                        content: '包含作物面积环形图、大棚统计卡片、区域面积汇总等数据可视化组件。'
+                    },
+                    {
+                        title: '📈 左侧分析面板',
+                        content: '展示种植结构对比柱状图、作物轮作桑基图、数据更新状态等分析图表。'
+                    },
+                    {
+                        title: '⚙️ 功能导航栏',
+                        content: '底部导航栏提供不同功能模块的快速切换，包括作物分布、灾害监测等。'
                     }
                 ]
             },
@@ -968,8 +1047,9 @@
         async function initializePage() {
             console.log('=== 页面初始化开始 ===');
             
-            // 步骤0: UI适配
+            // 步骤0: 创建模式指示器和UI适配
             console.log('步骤0: 环境配置和UI适配');
+            createModeIndicator();
             adaptUIForCurrentMode();
             
             // 检查API连接（开发模式下）
@@ -1478,7 +1558,7 @@
             const selectedPage = pages[currentPageIndex];
             
             const iframe = document.getElementById('embeddedFrame');
-            iframe.src = '大屏原型/' + selectedPage;
+            iframe.src = '/prototype/' + selectedPage;
             
             // 重置当前功能为默认值
             currentFunction = 'crop-distribution';
@@ -5218,11 +5298,8 @@
                 annotationContent.innerHTML = `
                     <div class="annotation-item">
                         <div class="annotation-title">📍 ${elementAnnotation.name}</div>
-                        <div style="margin-top: 12px;">
-                            <div style="font-size: 12px; color: #999; margin-bottom: 6px; font-weight: 600;">批注内容</div>
-                            <div class="annotation-content" style="padding: 12px; background: #404040; border-radius: 8px; line-height: 1.5; border: 1px solid #606060; color: #ffffff; font-weight: 500;">
-                                ${elementAnnotation.content}
-                            </div>
+                        <div class="annotation-content" style="margin-top: 8px; padding: 8px; background: #333; border-radius: 4px; line-height: 1.4;">
+                            ${elementAnnotation.content}
                         </div>
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040;">
                             <small style="color: #999;">创建时间: ${elementAnnotation.timestamp}</small>
@@ -5236,7 +5313,11 @@
                             <button onclick="editAnnotation('${elementId}')" class="nav-button" style="margin: 2px;">编辑</button>
                             <button onclick="deleteAnnotation('${elementId}')" class="nav-button" style="margin: 2px; background: #dc3545;">删除</button>
                         </div>
-                        ` : ``}
+                        ` : `
+                        <div style="margin-top: 8px;">
+                            <button onclick="toggleAnnotationMode()" class="nav-button" style="margin: 2px; background: #667eea;">进入批注模式编辑</button>
+                        </div>
+                        `}
                     </div>
                 `;
                 
@@ -5285,10 +5366,28 @@
 
         // 生成智能元素选择器
         function generateSmartSelector(element) {
+            // 参数验证
+            if (!element) {
+                console.warn('generateSmartSelector: element参数为空');
+                return '';
+            }
+            
+            if (!element.tagName) {
+                console.warn('generateSmartSelector: element不是有效的DOM元素', element);
+                return '';
+            }
+            
             const path = [];
             let current = element;
             
-            while (current && current !== document.body) {
+            while (current && current !== document.body && current.nodeType === Node.ELEMENT_NODE) {
+                // 确保current是元素节点且有tagName属性
+                if (!current.tagName) {
+                    console.warn('generateSmartSelector: 遇到无效节点，跳过', current);
+                    current = current.parentElement; // 使用parentElement而不是parentNode
+                    continue;
+                }
+                
                 let selector = current.tagName.toLowerCase();
                 
                 // 添加ID（如果有且唯一）
@@ -5307,11 +5406,15 @@
                 }
                 
                 // 如果元素有特殊属性，添加属性选择器
-                if (current.hasAttribute('data-function')) {
-                    selector += `[data-function="${current.getAttribute('data-function')}"]`;
-                }
-                if (current.hasAttribute('data-chart-type')) {
-                    selector += `[data-chart-type="${current.getAttribute('data-chart-type')}"]`;
+                try {
+                    if (current.hasAttribute && current.hasAttribute('data-function')) {
+                        selector += `[data-function="${current.getAttribute('data-function')}"]`;
+                    }
+                    if (current.hasAttribute && current.hasAttribute('data-chart-type')) {
+                        selector += `[data-chart-type="${current.getAttribute('data-chart-type')}"]`;
+                    }
+                } catch (e) {
+                    console.warn('检查元素属性失败:', e);
                 }
                 
                 // 如果有文本内容，作为额外的识别信息
@@ -5337,38 +5440,65 @@
                 }
                 
                 path.unshift(selector);
-                current = current.parentNode;
+                current = current.parentElement; // 使用parentElement确保始终是元素节点
             }
             
-            return path.join(' > ');
+            // 返回结果前进行验证
+            const result = path.join(' > ');
+            if (!result) {
+                console.warn('generateSmartSelector: 生成的选择器为空');
+                return element.tagName ? element.tagName.toLowerCase() : 'unknown';
+            }
+            
+            return result;
         }
 
         // 生成元素指纹（用于内容识别）
         function generateElementFingerprint(element) {
+            // 参数验证
+            if (!element || !element.tagName) {
+                console.warn('generateElementFingerprint: element参数无效', element);
+                return {
+                    tagName: 'unknown',
+                    className: '',
+                    textContent: '',
+                    attributes: {},
+                    position: { offsetLeft: 0, offsetTop: 0, offsetWidth: 0, offsetHeight: 0 }
+                };
+            }
+            
             const fingerprint = {
-                tagName: element.tagName,
-                className: element.className,
+                tagName: element.tagName || 'unknown',
+                className: element.className || '',
                 textContent: element.textContent?.trim().substring(0, 100) || '',
                 attributes: {},
                 position: {
-                    offsetLeft: element.offsetLeft,
-                    offsetTop: element.offsetTop,
-                    offsetWidth: element.offsetWidth,
-                    offsetHeight: element.offsetHeight
+                    offsetLeft: element.offsetLeft || 0,
+                    offsetTop: element.offsetTop || 0,
+                    offsetWidth: element.offsetWidth || 0,
+                    offsetHeight: element.offsetHeight || 0
                 }
             };
             
             // 收集重要属性
             const importantAttrs = ['id', 'data-function', 'data-chart-type', 'data-panel', 'role', 'aria-label'];
             importantAttrs.forEach(attr => {
-                if (element.hasAttribute(attr)) {
-                    fingerprint.attributes[attr] = element.getAttribute(attr);
+                try {
+                    if (element.hasAttribute && element.hasAttribute(attr)) {
+                        fingerprint.attributes[attr] = element.getAttribute(attr);
+                    }
+                } catch (e) {
+                    console.warn(`获取属性 ${attr} 失败:`, e);
                 }
             });
             
             // 如果是图表容器，尝试获取图表类型
-            if (element.querySelector('canvas') || element.querySelector('.echarts-instance')) {
-                fingerprint.chartType = 'echarts';
+            try {
+                if (element.querySelector && (element.querySelector('canvas') || element.querySelector('.echarts-instance'))) {
+                    fingerprint.chartType = 'echarts';
+                }
+            } catch (e) {
+                console.warn('检查图表类型失败:', e);
             }
             
             return fingerprint;
@@ -5393,8 +5523,12 @@
                 
                 // 属性匹配
                 Object.entries(fingerprint.attributes).forEach(([attr, value]) => {
-                    if (element.hasAttribute(attr) && element.getAttribute(attr) === value) {
-                        score += 20;
+                    try {
+                        if (element.hasAttribute && element.hasAttribute(attr) && element.getAttribute(attr) === value) {
+                            score += 20;
+                        }
+                    } catch (e) {
+                        console.warn(`属性匹配检查失败 ${attr}:`, e);
                     }
                 });
                 

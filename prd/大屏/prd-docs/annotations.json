@@ -1,0 +1,62 @@
+{
+  "index.html-crop-distribution": {
+    "precise-div-noid-overlay-switch-btn-4-3-8-作物选择": {
+      "name": "div: 🌾            作物选择",
+      "content": "- **叠加功能按钮**: 2个多选按钮，开启附加功能\n  - 📱 设备监控 (覆盖设备位置信息)\n  - 🌾 作物选择 (作物图层筛选器)",
+      "timestamp": "2025/8/14 15:13:43",
+      "elementId": "precise-div-noid-overlay-switch-btn-4-3-8-作物选择",
+      "targetInfo": {
+        "smartSelector": "html > body > div.function-switch-bar > div.overlay-switch-btn[data-function=\"crop-selection\"]:nth-of-type(2)",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "overlay-switch-btn",
+          "textContent": "🌾\n            作物选择",
+          "attributes": {
+            "data-function": "crop-selection"
+          },
+          "position": {
+            "offsetLeft": 642,
+            "offsetTop": 12,
+            "offsetWidth": 100,
+            "offsetHeight": 40
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.overlay-switch-btn",
+        "textContent": "🌾\n            作物选择",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-14T07:13:43.573Z"
+      },
+      "lastModified": "2025-08-14T07:13:43.604Z"
+    },
+    "precise-div-noid-main-switch-btn-5-0-0": {
+      "name": "div: 🌾            ...",
+      "content": "- **主功能按钮**: 5个单选按钮，切换不同页面功能\n  - 🌾 作物分布 (当前页面)\n  - 📊 长势分析 (growth-analysis.html)\n  - 📈 产量预估 (yield-estimation.html)\n  - 🌤️ 气象监测 (weather-monitoring.html)\n  - ⚠️ 灾害定损 (disaster-monitoring.html)",
+      "timestamp": "2025/8/14 15:14:02",
+      "elementId": "precise-div-noid-main-switch-btn-5-0-0",
+      "targetInfo": {
+        "smartSelector": "html > body > div.function-switch-bar > div.main-switch-buttons > div.main-switch-btn.active[data-function=\"crop-distribution\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "main-switch-btn active",
+          "textContent": "🌾\n                作物分布",
+          "attributes": {
+            "data-function": "crop-distribution"
+          },
+          "position": {
+            "offsetLeft": 20,
+            "offsetTop": 12,
+            "offsetWidth": 80,
+            "offsetHeight": 40
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.main-switch-btn.active",
+        "textContent": "🌾\n                作物分布",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-14T07:14:02.033Z"
+      },
+      "lastModified": "2025-08-14T07:14:02.127Z"
+    }
+  }
+}

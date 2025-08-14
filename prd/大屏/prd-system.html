@@ -464,7 +464,7 @@
     <div class="prd-container">
         <!-- 左上角 - 内嵌页面区域 (70%) -->
         <div class="embedded-page">
-            <iframe id="embeddedFrame" src="大屏原型/index.html" title="农情遥感系统大屏"></iframe>
+            <iframe id="embeddedFrame" src="/prototype/index.html" title="农情遥感系统大屏"></iframe>
         </div>
 
         <!-- 右侧 - 页面元素批注区域 -->
@@ -1478,7 +1478,7 @@
             const selectedPage = pages[currentPageIndex];
             
             const iframe = document.getElementById('embeddedFrame');
-            iframe.src = '大屏原型/' + selectedPage;
+            iframe.src = '/prototype/' + selectedPage;
             
             // 重置当前功能为默认值
             currentFunction = 'crop-distribution';
