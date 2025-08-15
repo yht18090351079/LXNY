@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 监控设备</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/device-management.css">
+    <link rel="stylesheet" href="../../assets/css/device-monitoring.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>设备管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>监控设备</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索监控设备...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="device-monitoring.html" class="nav-subitem active">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-video"></i>
+                    监控设备管理
+                </h1>
+                <p class="page-description">管理农情遥感系统中的视频监控、图像采集等监控设备，实时掌握农田状况</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshMonitoringDevices()">
+                    <i class="fas fa-sync"></i>
+                    刷新设备
+                </button>
+                <button class="btn btn-secondary" onclick="batchControl()">
+                    <i class="fas fa-sliders-h"></i>
+                    批量控制
+                </button>
+                <button class="btn btn-primary" onclick="showAddMonitoringModal()">
+                    <i class="fas fa-plus"></i>
+                    添加设备
+                </button>
+            </div>
+        </div>
+
+        <!-- 监控设备概览 -->
+        <div class="monitoring-overview">
+            <div class="monitoring-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalMonitoringDevices">128</div>
+                    <div class="stat-label">监控设备</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-plus"></i>
+                        +8 本月新增
+                    </div>
+                </div>
+            </div>
+            
+            <div class="monitoring-stat-card">
+                <div class="stat-icon online">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="onlineDevices">115</div>
+                    <div class="stat-label">在线设备</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-signal"></i>
+                        89.8% 在线率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="monitoring-stat-card">
+                <div class="stat-icon recording">
+                    <i class="fas fa-record-vinyl"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="recordingDevices">87</div>
+                    <div class="stat-label">录制中</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-play-circle"></i>
+                        67.9% 录制率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="monitoring-stat-card">
+                <div class="stat-icon alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="alertDevices">5</div>
+                    <div class="stat-label">告警设备</div>
+                    <div class="stat-change warning">
+                        <i class="fas fa-bell"></i>
+                        需要关注
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 实时监控视图 -->
+        <div class="live-monitoring-section">
+            <div class="section-header">
+                <h3>
+                    <i class="fas fa-broadcast-tower"></i>
+                    实时监控视图
+                </h3>
+                <div class="view-controls">
+                    <button class="view-btn active" onclick="setMonitoringView('grid')" data-view="grid">
+                        <i class="fas fa-th"></i>
+                        网格视图
+                    </button>
+                    <button class="view-btn" onclick="setMonitoringView('list')" data-view="list">
+                        <i class="fas fa-list"></i>
+                        列表视图
+                    </button>
+                    <button class="view-btn" onclick="setMonitoringView('map')" data-view="map">
+                        <i class="fas fa-map"></i>
+                        地图视图
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 网格视图 -->
+            <div class="monitoring-grid" id="monitoringGrid">
+                <!-- 监控画面网格将通过JavaScript生成 -->
+            </div>
+            
+            <!-- 监控控制面板 -->
+            <div class="monitoring-controls">
+                <div class="control-group">
+                    <label>显示数量:</label>
+                    <select class="form-control" id="gridSize" onchange="changeGridSize()">
+                        <option value="4">2×2</option>
+                        <option value="9" selected>3×3</option>
+                        <option value="16">4×4</option>
+                        <option value="25">5×5</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>筛选状态:</label>
+                    <select class="form-control" id="statusFilter" onchange="filterByStatus()">
+                        <option value="">全部状态</option>
+                        <option value="online">在线</option>
+                        <option value="offline">离线</option>
+                        <option value="recording">录制中</option>
+                        <option value="alert">告警</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>区域筛选:</label>
+                    <select class="form-control" id="areaFilter" onchange="filterByArea()">
+                        <option value="">全部区域</option>
+                        <option value="north">北部片区</option>
+                        <option value="south">南部片区</option>
+                        <option value="east">东部片区</option>
+                        <option value="west">西部片区</option>
+                        <option value="center">中部片区</option>
+                    </select>
+                </div>
+                
+                <div class="control-actions">
+                    <button class="btn btn-secondary" onclick="startAllRecording()">
+                        <i class="fas fa-play"></i>
+                        全部录制
+                    </button>
+                    <button class="btn btn-secondary" onclick="stopAllRecording()">
+                        <i class="fas fa-stop"></i>
+                        停止录制
+                    </button>
+                    <button class="btn btn-secondary" onclick="captureAll()">
+                        <i class="fas fa-camera"></i>
+                        批量截图
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备状态分析 -->
+        <div class="monitoring-analytics">
+            <div class="device-status-chart">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        设备状态分布
+                    </h3>
+                    <div class="analytics-actions">
+                        <button class="btn-icon" onclick="refreshStatusChart()" data-tooltip="刷新图表">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn-icon" onclick="exportChart('status')" data-tooltip="导出图表">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="deviceStatusChart" class="chart"></div>
+                </div>
+            </div>
+            
+            <div class="monitoring-timeline">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        监控活动趋势
+                    </h3>
+                    <div class="time-range-selector">
+                        <button class="time-btn active" onclick="setTimeRange('24h')">24小时</button>
+                        <button class="time-btn" onclick="setTimeRange('7d')">7天</button>
+                        <button class="time-btn" onclick="setTimeRange('30d')">30天</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="monitoringTrendChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备管理表格 -->
+        <div class="monitoring-table-container">
+            <div class="table-header">
+                <h3>监控设备列表</h3>
+                <div class="table-controls">
+                    <div class="filter-group">
+                        <select class="form-control" id="deviceTypeFilter">
+                            <option value="">全部类型</option>
+                            <option value="camera">网络摄像头</option>
+                            <option value="drone">无人机</option>
+                            <option value="satellite">卫星图像</option>
+                            <option value="thermal">热成像仪</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" class="form-control" id="deviceSearch" placeholder="搜索设备...">
+                        <button class="btn btn-secondary" onclick="searchDevices()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="table" id="monitoringTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllMonitoring" onchange="toggleSelectAllMonitoring()">
+                            </th>
+                            <th data-sort="deviceName">
+                                设备名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="deviceType">
+                                设备类型
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="location">
+                                安装位置
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="status">
+                                在线状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="resolution">
+                                分辨率
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="recording">
+                                录制状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="lastActive">
+                                最后活动
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monitoringTableBody">
+                        <!-- 监控设备数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页控件 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span id="monitoringPageStart">1</span> - <span id="monitoringPageEnd">20</span> 条，
+                    共 <span id="totalMonitoringRecords">128</span> 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-secondary" onclick="changeMonitoringPage('first')" id="firstMonitoringPageBtn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeMonitoringPage('prev')" id="prevMonitoringPageBtn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    
+                    <div class="page-numbers" id="monitoringPageNumbers">
+                        <!-- 页码按钮将通过JavaScript生成 -->
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="changeMonitoringPage('next')" id="nextMonitoringPageBtn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeMonitoringPage('last')" id="lastMonitoringPageBtn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 添加监控设备模态框 -->
+    <div class="modal-overlay" id="addMonitoringModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">添加监控设备</h3>
+                <button class="modal-close" onclick="closeAddMonitoringModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addMonitoringForm" class="monitoring-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">设备名称:</label>
+                            <input type="text" class="form-control" id="deviceName" placeholder="请输入设备名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">设备类型:</label>
+                            <select class="form-control" id="deviceType" required>
+                                <option value="">请选择设备类型</option>
+                                <option value="camera">网络摄像头</option>
+                                <option value="drone">无人机</option>
+                                <option value="satellite">卫星图像</option>
+                                <option value="thermal">热成像仪</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">设备IP地址:</label>
+                            <input type="text" class="form-control" id="deviceIP" placeholder="192.168.1.100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">端口号:</label>
+                            <input type="number" class="form-control" id="devicePort" placeholder="8080" min="1" max="65535">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">安装位置:</label>
+                            <input type="text" class="form-control" id="location" placeholder="请输入安装位置" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">所属区域:</label>
+                            <select class="form-control" id="area" required>
+                                <option value="">请选择区域</option>
+                                <option value="north">北部片区</option>
+                                <option value="south">南部片区</option>
+                                <option value="east">东部片区</option>
+                                <option value="west">西部片区</option>
+                                <option value="center">中部片区</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">分辨率:</label>
+                            <select class="form-control" id="resolution">
+                                <option value="720p">720P (1280×720)</option>
+                                <option value="1080p" selected>1080P (1920×1080)</option>
+                                <option value="4k">4K (3840×2160)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">帧率:</label>
+                            <select class="form-control" id="frameRate">
+                                <option value="15">15 fps</option>
+                                <option value="25" selected>25 fps</option>
+                                <option value="30">30 fps</option>
+                                <option value="60">60 fps</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">用户名:</label>
+                            <input type="text" class="form-control" id="username" placeholder="设备登录用户名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">密码:</label>
+                            <input type="password" class="form-control" id="password" placeholder="设备登录密码">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">GPS坐标:</label>
+                            <div class="coordinate-inputs">
+                                <input type="number" class="form-control" id="latitude" placeholder="纬度" step="0.000001">
+                                <input type="number" class="form-control" id="longitude" placeholder="经度" step="0.000001">
+                                <button type="button" class="btn btn-secondary" onclick="getDeviceLocation()">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    获取位置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">设备描述:</label>
+                        <textarea class="form-control" id="deviceDescription" rows="3" placeholder="请输入设备描述信息..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">功能配置:</label>
+                        <div class="feature-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="autoRecord" checked>
+                                <span>自动录制</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="motionDetection">
+                                <span>运动检测</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="nightVision">
+                                <span>夜视功能</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="audioRecord">
+                                <span>音频录制</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="testConnection()">测试连接</button>
+                <button class="btn btn-secondary" onclick="closeAddMonitoringModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveMonitoringDevice()">保存设备</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设备详情模态框 -->
+    <div class="modal-overlay" id="monitoringDetailModal">
+        <div class="modal-content extra-large">
+            <div class="modal-header">
+                <h3 class="modal-title">监控设备详情</h3>
+                <button class="modal-close" onclick="closeMonitoringDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="monitoring-detail-content" id="monitoringDetailContent">
+                    <!-- 设备详情内容将通过JavaScript生成 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="editMonitoringDevice()">编辑设备</button>
+                <button class="btn btn-secondary" onclick="controlDevice()">设备控制</button>
+                <button class="btn btn-primary" onclick="closeMonitoringDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 实时预览模态框 -->
+    <div class="modal-overlay" id="livePreviewModal">
+        <div class="modal-content fullscreen">
+            <div class="modal-header">
+                <h3 class="modal-title" id="previewTitle">实时预览</h3>
+                <div class="preview-controls">
+                    <button class="btn-icon" onclick="captureFrame()" data-tooltip="截图">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleRecording()" data-tooltip="录制">
+                        <i class="fas fa-record-vinyl"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleFullscreen()" data-tooltip="全屏">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <button class="modal-close" onclick="closeLivePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="live-preview-container" id="livePreviewContainer">
+                    <!-- 实时视频流将通过JavaScript生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/device-monitoring.js"></script>
+    
+    <!-- 页面加载检查和修复脚本 -->
+    <script>
+    // 设备监控页面加载检查和导航修复 - 增强版
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('📹 设备监控页面加载检查...');
+        console.log('🔍 诊断模式：检查页面基础元素...');
+        
+        // 基础诊断
+        const sidebar = document.querySelector('.sidebar');
+        const navGroups = document.querySelectorAll('.nav-group');
+        const deviceGroup = document.querySelector('.nav-group.expanded');
+        
+        console.log(`📊 诊断结果:`);
+        console.log(`- 侧边栏: ${sidebar ? '✓ 存在' : '❌ 缺失'}`);
+        console.log(`- 导航组数量: ${navGroups.length}`);
+        console.log(`- 设备管理组: ${deviceGroup ? '✓ 找到' : '❌ 未找到'}`);
+        
+        if (typeof initializeSidebar === 'function') {
+            console.log('✓ common.js 已加载');
+        } else {
+            console.log('❌ common.js 未正确加载');
+        }
+        
+        // 确保基础功能正常
+        setTimeout(() => {
+            // 检查并修复时间显示
+            const currentTimeEl = document.getElementById('current-time');
+            if (currentTimeEl && currentTimeEl.textContent === '2024-01-15 14:30:25') {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString('zh-CN');
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 强化导航修复
+            console.log('🔧 执行设备监控页面导航强化修复...');
+            
+            // 1. 确保设备管理组展开
+            const deviceGroup = document.querySelector('.nav-group.expanded');
+            if (deviceGroup) {
+                const submenu = deviceGroup.querySelector('.nav-submenu');
+                if (submenu) {
+                    submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                    console.log('✓ 设备管理组已展开');
+                }
+            }
+            
+            // 2. 确保当前页面高亮
+            const currentNavItem = document.querySelector('a[href="device-monitoring.html"].nav-subitem');
+            if (currentNavItem) {
+                currentNavItem.classList.add('active');
+                console.log('✓ 设备监控页面已高亮');
+            }
+            
+            // 3. 添加导航组点击事件
+            const navGroups = document.querySelectorAll('.nav-group');
+            navGroups.forEach(group => {
+                const header = group.querySelector('.nav-item');
+                const submenu = group.querySelector('.nav-submenu');
+                if (header && submenu) {
+                    header.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (group.classList.contains('expanded')) {
+                            group.classList.remove('expanded');
+                            submenu.style.maxHeight = '0';
+                        } else {
+                            group.classList.add('expanded');
+                            submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                        }
+                    });
+                }
+            });
+            
+            // 4. 确保通用导航功能
+            if (typeof initializeSidebar === 'function') {
+                initializeSidebar();
+                console.log('✓ 通用导航初始化完成');
+            }
+            
+            console.log('✅ 设备监控页面导航修复完成');
+        }, 500);
+    });
+    </script>
+</body>
+</html>

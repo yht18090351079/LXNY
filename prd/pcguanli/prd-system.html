@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能化PRD系统 - 农情遥感系统产品需求文档 (开发版)</title>
+    <title>管理端PRD系统 - 农情遥感系统管理端产品需求文档</title>
     <style>
         * {
             margin: 0;
@@ -517,9 +517,7 @@
 <body>
     <!-- 工具栏 -->
     <div class="toolbar" id="mainToolbar">
-        <button class="toolbar-btn annotation-btn" id="annotationBtn" onclick="toggleAnnotationMode()" title="批注模式">
-            <span id="annotationIcon">📝</span>
-        </button>
+
         <button class="toolbar-btn fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="全屏显示">
             <span id="fullscreenIcon">⛶</span>
         </button>
@@ -884,251 +882,157 @@
             alert(`🚫 权限不足\n\n${message}\n\n当前模式: ${CURRENT_ENV.icon} ${CURRENT_ENV.name}`);
         }
         
-        // ========== 模式指示器 ==========
-        
-        // 创建模式指示器
-        function createModeIndicator() {
-            const indicator = document.createElement('div');
-            indicator.id = 'mode-indicator';
-            indicator.style.cssText = `
-                position: fixed;
-                top: 12px;
-                left: 12px;
-                z-index: 3000;
-                background: ${APP_MODE === 'development' ? 'rgba(76, 175, 80, 0.9)' : 'rgba(33, 150, 243, 0.9)'};
-                color: white;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                cursor: pointer;
-                transition: all 0.2s ease;
-            `;
-            
-            indicator.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 14px;">${CURRENT_ENV.icon}</span>
-                    <span>${CURRENT_ENV.name}</span>
-                    ${CURRENT_ENV.debugMode ? '<span style="font-size: 10px; opacity: 0.8;">DEBUG</span>' : ''}
-                </div>
-            `;
-            
-            indicator.addEventListener('click', showModeInfo);
-            indicator.addEventListener('mouseenter', () => {
-                indicator.style.transform = 'translateY(-1px)';
-                indicator.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-            });
-            indicator.addEventListener('mouseleave', () => {
-                indicator.style.transform = 'translateY(0)';
-                indicator.style.boxShadow = 'none';
-            });
-            
-            document.body.appendChild(indicator);
-        }
-        
-        // 显示模式信息
-        function showModeInfo() {
-            const info = `
-🌍 当前运行模式: ${CURRENT_ENV.icon} ${CURRENT_ENV.name}
 
-📋 功能权限:
-• 查看批注: ✅ 允许
-• 添加批注: ${CURRENT_ENV.allowAnnotation ? '✅ 允许' : '❌ 禁止'}
-• 编辑内容: ${CURRENT_ENV.allowEdit ? '✅ 允许' : '❌ 禁止'}
-• 调试工具: ${CURRENT_ENV.showDebugTools ? '✅ 启用' : '❌ 禁用'}
 
-🔗 数据源:
-• API地址: ${CURRENT_ENV.apiBaseUrl || '本地文件'}
-• 实时同步: ${CURRENT_ENV.enableRealTimeSync ? '✅ 启用' : '❌ 禁用'}
-
-💡 模式切换:
-• 开发模式: 添加 ?mode=dev 参数
-• 线上模式: 添加 ?mode=prod 参数
-            `.trim();
-            
-            alert(info);
-        }
-
-        // 功能模块配置数据 - 基于功能切换栏的data-function属性
+        // 功能模块配置数据 - 管理端原型页面配置
         const functionConfigs = {
-            'crop-distribution': {
-                title: '作物分布监测',
-                mdFile: '作物分布监测.md',
+            'dashboard': {
+                title: '仪表板',
+                mdFile: '仪表板功能.md',
                 annotations: [
                     {
-                        title: '🗺️ 三维地图视图',
-                        content: '基于Cesium.js的三维地球，支持多种地图底图切换，可进行缩放、旋转、倾斜等操作。'
+                        title: '💡 提示',
+                        content: '请从页面元素清单中选择要查看的元素，或浏览仪表板的各个功能区域'
                     },
                     {
-                        title: '📊 右侧数据面板',
-                        content: '包含作物面积环形图、大棚统计卡片、区域面积汇总等数据可视化组件。'
+                        title: '📊 统计卡片',
+                        content: `顶部四个统计卡片显示系统关键指标：
+- 数据记录：2,847条 (+12%)
+- 在线设备：45台 (0%)  
+- 活跃用户：28人 (+5%)
+- 待处理警告：3个 (-2)`
                     },
                     {
-                        title: '📈 左侧分析面板',
-                        content: '展示种植结构对比柱状图、作物轮作桑基图、数据更新状态等分析图表。'
-                    },
-                    {
-                        title: '⚙️ 功能导航栏',
-                        content: `底部导航栏提供不同功能模块的快速切换，包括作物分布、灾害监测等。
-
-- **主功能按钮**: 5个单选按钮，切换不同页面功能
-  - 🌾 作物分布 (当前页面)
-  - 📊 长势分析 (growth-analysis.html)
-  - 📈 产量预估 (yield-estimation.html)
-  - 🌤️ 气象监测 (weather-monitoring.html)
-  - ⚠️ 灾害定损 (disaster-monitoring.html)`
+                        title: '📈 图表区域',
+                        content: `包含数据使用趋势图、设备状态分布图和系统性能监控图，提供可视化的数据分析`
                     }
                 ]
             },
-            'growth-analysis': {
-                title: '长势分析功能',
-                mdFile: '长势分析功能.md',
+            'remote-sensing': {
+                title: '遥感数据管理',
+                mdFile: '遥感数据管理页面.md',
                 annotations: [
                     {
-                        title: '📊 长势等级图表',
-                        content: '以饼图或柱状图形式展示不同长势等级的面积分布。'
-                    },
-                    {
-                        title: '🗺️ 长势空间分布',
-                        content: '在地图上用不同颜色表示各区域的作物长势等级。'
-                    },
-                    {
-                        title: '📈 植被指数曲线',
-                        content: '显示NDVI等植被指数的时间序列变化曲线。'
-                    },
-                    {
-                        title: '🔍 发育期标注',
-                        content: '在时间轴上标注作物的关键发育期节点。'
+                        title: '🛰️ 遥感数据管理',
+                        content: '管理农业遥感影像数据，包括数据上传、处理监控、质量评估等功能'
                     }
                 ]
             },
-            'yield-estimation': {
-                title: '产量预估功能',
-                mdFile: '产量预估功能.md',
+            'weather-data': {
+                title: '气象数据管理', 
+                mdFile: '气象数据管理页面.md',
                 annotations: [
                     {
-                        title: '📊 产量预估图表',
-                        content: '以柱状图、折线图等形式展示各作物的产量预估结果和历史对比。'
-                    },
-                    {
-                        title: '🗺️ 产量空间分布',
-                        content: '在地图上以色彩渐变方式显示不同区域的产量预估水平。'
-                    },
-                    {
-                        title: '📈 生长监测曲线',
-                        content: '显示作物生长季内NDVI等植被指数的变化曲线。'
-                    },
-                    {
-                        title: '🎯 精度验证面板',
-                        content: '展示产量预估模型的精度指标和验证结果。'
+                        title: '🌤️ 气象数据管理',
+                        content: '管理农业气象观测数据，包括实时数据、历史统计和预报数据'
                     }
                 ]
             },
-            'weather-monitoring': {
-                title: '气象监测功能',
-                mdFile: '气象监测功能.md',
+            'crop-data': {
+                title: '作物数据管理',
+                mdFile: '作物数据管理页面.md', 
                 annotations: [
                     {
-                        title: '🌡️ 气象要素显示',
-                        content: '实时显示温度、湿度、气压、风速风向等基本气象要素数据。'
-                    },
-                    {
-                        title: '🌧️ 降水分布图',
-                        content: '以等值线或色彩填充方式显示降水分布，支持历史回放功能。'
-                    },
-                    {
-                        title: '📈 气象趋势图',
-                        content: '展示气象要素的时间变化趋势，支持多要素同时显示。'
-                    },
-                    {
-                        title: '⚠️ 预警信息面板',
-                        content: '显示当前生效的气象预警信息，包括预警等级和影响区域。'
+                        title: '🌾 作物数据管理',
+                        content: '管理农作物相关数据，包括品种信息、种植记录、生长监测等'
                     }
                 ]
             },
-            'disaster-monitoring': {
-                title: '灾害定损功能',
-                mdFile: '灾害定损功能.md',
+            'gis-data': {
+                title: '地理数据管理',
+                mdFile: '地理数据管理页面.md',
                 annotations: [
                     {
-                        title: '🌪️ 灾害类型识别',
-                        content: '系统可自动识别洪涝、干旱、冰雹、病虫害等多种农业灾害类型。'
-                    },
-                    {
-                        title: '📍 受灾区域标注',
-                        content: '在地图上用不同颜色标注受灾区域，支持点击查看详细灾害信息。'
-                    },
-                    {
-                        title: '📊 损失统计图表',
-                        content: '提供受灾面积统计、经济损失评估、灾害等级分布等数据图表。'
-                    },
-                    {
-                        title: '🔍 影像对比工具',
-                        content: '支持灾前灾后遥感影像对比，直观展示灾害影响程度。'
+                        title: '🗺️ 地理数据管理', 
+                        content: '管理GIS地理信息数据，包括矢量数据、栅格数据、地图图层等'
                     }
                 ]
             },
-            'device-monitoring': {
-                title: '设备监控功能',
-                mdFile: '设备监控功能.md',
+            'sensors': {
+                title: '传感器管理',
+                mdFile: '传感器管理页面.md',
                 annotations: [
                     {
-                        title: '📱 设备状态监控',
-                        content: '实时监控各类农业物联网设备的运行状态和数据传输情况。'
-                    },
-                    {
-                        title: '📊 设备数据统计',
-                        content: '统计设备数据采集量、在线率、故障率等关键指标。'
-                    },
-                    {
-                        title: '⚠️ 设备异常预警',
-                        content: '设备离线、数据异常、设备故障等情况的及时预警提醒。'
-                    },
-                    {
-                        title: '🔧 设备管理工具',
-                        content: '提供设备配置、参数设置、远程控制等管理功能。'
+                        title: '🌡️ 传感器管理',
+                        content: '管理农田传感器设备，包括设备注册、配置、监控、维护等功能'
                     }
                 ]
             },
-            'crop-selection': {
-                title: '作物选择功能',
-                mdFile: '作物选择功能.md',
+            'monitoring': {
+                title: '监控设备管理',
+                mdFile: '监控设备管理页面.md',
                 annotations: [
                     {
-                        title: '🌾 作物类型筛选',
-                        content: '支持按作物类型（小麦、玉米、辣椒等）进行地图显示筛选。'
-                    },
+                        title: '📷 监控设备管理',
+                        content: '管理农田视频监控设备，包括摄像头、无人机等监控设备的管理和视频分析'
+                    }
+                ]
+            },
+            'maintenance': {
+                title: '设备维护管理',
+                mdFile: '设备维护管理页面.md',
+                annotations: [
                     {
-                        title: '📅 生长期筛选',
-                        content: '按作物不同生长发育期进行数据筛选和分析展示。'
-                    },
+                        title: '🔧 设备维护管理',
+                        content: '管理设备维护工作，包括维护计划、故障处理、备件管理等功能'
+                    }
+                ]
+            },
+            'users': {
+                title: '用户账户管理',
+                mdFile: '用户账户管理页面.md',
+                annotations: [
                     {
-                        title: '🗺️ 空间范围选择',
-                        content: '支持框选、圆选、多边形选择等多种空间范围选择方式。'
-                    },
-                    {
-                        title: '📊 条件组合筛选',
-                        content: '支持多条件组合筛选，实现精准的数据查询和分析。'
+                        title: '👥 用户账户管理',
+                        content: '管理系统用户账户，包括用户创建、编辑、权限分配、状态控制等功能'
                     }
                 ]
             }
         };
 
-        // 页面配置数据 - 兼容原有的页面切换逻辑
+        // 页面配置数据 - 管理端原型页面配置映射
         const pageConfigs = {
-            'index.html': functionConfigs['crop-distribution'],
-            'disaster-monitoring.html': functionConfigs['disaster-monitoring'],
-            'weather-monitoring.html': functionConfigs['weather-monitoring'],
-            'yield-estimation.html': functionConfigs['yield-estimation'],
-            'growth-analysis.html': functionConfigs['growth-analysis']
+            'index.html': functionConfigs['dashboard'],
+            'pages/data-management/remote-sensing.html': functionConfigs['remote-sensing'],
+            'pages/data-management/weather-data.html': functionConfigs['weather-data'],
+            'pages/data-management/crop-data.html': functionConfigs['crop-data'],
+            'pages/data-management/gis-data.html': functionConfigs['gis-data'],
+            'pages/device-management/sensors.html': functionConfigs['sensors'],
+            'pages/device-management/monitoring.html': functionConfigs['monitoring'],
+            'pages/device-management/maintenance.html': functionConfigs['maintenance'],
+            'pages/user-management/users.html': functionConfigs['users'],
+            'pages/user-management/roles.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/user-management/logs.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/system-settings/display.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/system-settings/algorithms.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/system-settings/monitoring.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/reports/data-quality.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/reports/business.html': functionConfigs['dashboard'], // 暂时使用默认配置
+            'pages/reports/export.html': functionConfigs['dashboard'] // 暂时使用默认配置
         };
 
-        // 页面列表
-        const pages = ['index.html', 'disaster-monitoring.html', 'weather-monitoring.html', 'yield-estimation.html', 'growth-analysis.html'];
+        // 页面列表 - 管理端原型所有页面
+        const pages = [
+            'index.html',
+            'pages/data-management/remote-sensing.html',
+            'pages/data-management/weather-data.html', 
+            'pages/data-management/crop-data.html',
+            'pages/data-management/gis-data.html',
+            'pages/device-management/sensors.html',
+            'pages/device-management/monitoring.html',
+            'pages/device-management/maintenance.html',
+            'pages/user-management/users.html',
+            'pages/user-management/roles.html',
+            'pages/user-management/logs.html',
+            'pages/system-settings/display.html',
+            'pages/system-settings/algorithms.html',
+            'pages/system-settings/monitoring.html',
+            'pages/reports/data-quality.html',
+            'pages/reports/business.html',
+            'pages/reports/export.html'
+        ];
         let currentPageIndex = 0;
-        let currentFunction = 'crop-distribution'; // 当前选中的功能
+        let currentFunction = 'dashboard'; // 当前选中的功能
         let isFullscreen = false; // 全屏状态
         let isAnnotationMode = false; // 批注模式状态
         let currentAnnotations = {}; // 当前页面的批注数据
@@ -1148,15 +1052,15 @@
             
             if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000')) {
                 // 通过API服务器访问
-                targetPath = '/prototype/index.html';
+                targetPath = '/管理端原型/index.html';
                 console.log('🌐 检测到API服务器环境，使用服务器路径');
             } else if (currentUrl.includes('127.0.0.1:5501') || currentUrl.includes('localhost:5501')) {
                 // 通过Live Server访问
-                targetPath = '/大屏原型/index.html';
+                targetPath = '/管理端原型/index.html';
                 console.log('🌐 检测到Live Server环境，使用服务器路径');
             } else {
                 // 直接打开文件
-                targetPath = '../../大屏原型/index.html';
+                targetPath = '../../管理端原型/index.html';
                 console.log('📁 检测到本地文件访问，使用相对路径');
             }
             
@@ -1172,9 +1076,8 @@
             console.log('步骤0: 智能设置iframe路径');
             setupSmartIframePath();
             
-            // 步骤1: 创建模式指示器和UI适配
+            // 步骤1: UI适配
             console.log('步骤1: 环境配置和UI适配');
-            createModeIndicator();
             adaptUIForCurrentMode();
             
             // 检查API连接（开发模式下）
@@ -1196,25 +1099,23 @@
             updateLastUpdateTime();
             
             console.log('步骤5: 加载全局说明');
-            
-            console.log('步骤6: 启动页面状态监听');
-            startPageStateMonitoring();
-            
-            console.log('步骤7: 设置键盘快捷键');
-            setupKeyboardShortcuts();
             await loadGlobalDescription();
             
             // 计算并应用iframe缩放
-            console.log('步骤8: 计算iframe缩放');
+            console.log('步骤6: 计算iframe缩放');
             calculateIframeScale();
             
             // 设置iframe加载完成后的监听
-            console.log('步骤9: 设置iframe监听');
+            console.log('步骤7: 设置iframe监听');
             setupIframeListener();
+            
+            // 设置键盘快捷键
+            console.log('步骤8: 设置键盘快捷键');
+            setupKeyboardShortcuts();
             
             // 延迟更新元素清单，确保所有数据都已加载
             setTimeout(() => {
-                console.log('步骤10: 延迟更新元素清单');
+                console.log('步骤9: 延迟更新元素清单');
                 updateElementList();
             }, 2000);
             
@@ -1287,18 +1188,10 @@
                     border-left: 3px solid ${APP_MODE === 'development' ? '#4CAF50' : '#2196F3'};
                 `;
                 
-                // 获取当前页面信息
-                const detectedFunction = detectCurrentFunction();
-                const functionTitle = functionConfigs[detectedFunction]?.title || detectedFunction;
-                const currentPageKey = getCurrentPageKey();
-                const hasAnnotations = currentAnnotations[currentPageKey] && Object.keys(currentAnnotations[currentPageKey]).length > 0;
-                
                 modeInfo.innerHTML = `
                     <div style="font-weight: bold; margin-bottom: 4px;">
                         ${CURRENT_ENV.icon} 当前模式: ${CURRENT_ENV.name}
                     </div>
-                    <div>• 当前页面: 🎯 ${functionTitle}</div>
-                    <div>• 页面批注: ${hasAnnotations ? '✅ 有数据' : '📝 待添加'}</div>
                     <div>• 批注功能: ${CURRENT_ENV.allowAnnotation ? '✅ 启用' : '❌ 禁用'}</div>
                     <div>• 编辑功能: ${CURRENT_ENV.allowEdit ? '✅ 启用' : '❌ 禁用'}</div>
                     <div>• 数据同步: ${CURRENT_ENV.enableRealTimeSync ? '✅ 实时' : '📁 本地'}</div>
@@ -1433,11 +1326,6 @@
                         console.log('✅ iframe直接访问成功');
                         iframeAccessible = true;
                         setupIframeContent(iframeDoc);
-                        
-                        // 检测当前功能状态并更新
-                        setTimeout(() => {
-                            detectCurrentFunction();
-                        }, 1000);
                     }
                 } catch (error) {
                     console.log('❌ iframe直接访问失败:', error.message);
@@ -4611,255 +4499,10 @@
             return cleaned;
         }
 
-        // 自动检测当前激活的功能页面
-        function detectCurrentFunction() {
-            const iframe = document.getElementById('embeddedFrame');
-            if (!iframe || !iframe.contentWindow) {
-                console.warn('无法访问iframe，使用默认功能');
-                return currentFunction;
-            }
-            
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            if (!iframeDoc) {
-                console.warn('无法访问iframe文档，使用默认功能');
-                return currentFunction;
-            }
-            
-            try {
-                // 查找激活的主功能按钮
-                const activeMainBtn = iframeDoc.querySelector('.main-switch-btn.active');
-                if (activeMainBtn) {
-                    const detectedFunction = activeMainBtn.getAttribute('data-function');
-                    if (detectedFunction && detectedFunction !== currentFunction) {
-                        console.log(`🔄 检测到页面功能变化: ${currentFunction} → ${detectedFunction}`);
-                        currentFunction = detectedFunction;
-                        
-                        // 更新页面元素清单和系统状态
-                        setTimeout(() => {
-                            updateElementList();
-                            updateSystemStatus();
-                        }, 500);
-                    }
-                    return detectedFunction;
-                }
-                
-                // 如果没有找到激活按钮，尝试从URL或页面内容推断
-                const url = iframe.contentWindow.location.href;
-                if (url.includes('growth-analysis')) {
-                    return 'growth-analysis';
-                } else if (url.includes('yield-estimation')) {
-                    return 'yield-estimation';
-                } else if (url.includes('weather-monitoring')) {
-                    return 'weather-monitoring';
-                } else if (url.includes('disaster-monitoring')) {
-                    return 'disaster-monitoring';
-                } else {
-                    return 'crop-distribution'; // 默认值
-                }
-            } catch (error) {
-                console.warn('检测当前功能时出错:', error);
-                return currentFunction;
-            }
-        }
-
         // 获取当前页面和功能的唯一标识
         function getCurrentPageKey() {
-            // 先检测当前实际的功能状态
-            const detectedFunction = detectCurrentFunction();
             const currentPage = pages[currentPageIndex];
-            return `${currentPage}-${detectedFunction}`;
-        }
-
-        // 切换到指定功能页面
-        function switchToFunction(targetFunction) {
-            console.log(`🔄 切换到功能页面: ${targetFunction}`);
-            
-            const iframe = document.getElementById('embeddedFrame');
-            if (!iframe || !iframe.contentWindow) {
-                console.error('无法访问iframe');
-                return;
-            }
-            
-            try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                if (!iframeDoc) {
-                    console.error('无法访问iframe文档');
-                    return;
-                }
-                
-                // 查找目标功能按钮
-                const targetBtn = iframeDoc.querySelector(`[data-function="${targetFunction}"]`);
-                if (targetBtn) {
-                    // 移除当前激活状态
-                    const currentActiveBtn = iframeDoc.querySelector('.main-switch-btn.active');
-                    if (currentActiveBtn) {
-                        currentActiveBtn.classList.remove('active');
-                    }
-                    
-                    // 激活目标按钮
-                    targetBtn.classList.add('active');
-                    
-                    // 更新currentFunction变量
-                    currentFunction = targetFunction;
-                    
-                    // 触发点击事件（如果有相关的JavaScript逻辑）
-                    targetBtn.click();
-                    
-                    // 延迟更新元素清单和系统状态
-                    setTimeout(() => {
-                        updateElementList();
-                        updateSystemStatus();
-                        console.log(`✅ 已切换到 ${targetFunction} 页面`);
-                    }, 500);
-                } else {
-                    console.error(`找不到功能按钮: ${targetFunction}`);
-                    alert(`无法找到 "${targetFunction}" 功能按钮`);
-                }
-            } catch (error) {
-                console.error('切换功能页面时出错:', error);
-                alert('切换页面失败: ' + error.message);
-            }
-        }
-
-        // 启动页面状态监听
-        function startPageStateMonitoring() {
-            console.log('🔍 启动页面状态监听器');
-            
-            // 定期检测页面状态变化
-            setInterval(() => {
-                try {
-                    const iframe = document.getElementById('embeddedFrame');
-                    if (iframe && iframe.contentWindow && iframe.contentDocument) {
-                        detectCurrentFunction();
-                    }
-                } catch (error) {
-                    console.warn('页面状态检测失败:', error);
-                }
-            }, 2000); // 每2秒检测一次
-            
-            // 监听iframe的点击事件（如果可能）
-            try {
-                const iframe = document.getElementById('embeddedFrame');
-                if (iframe && iframe.contentWindow) {
-                    iframe.contentWindow.addEventListener('click', () => {
-                        // 延迟检测，等待点击事件完成
-                        setTimeout(() => {
-                            detectCurrentFunction();
-                        }, 300);
-                    });
-                }
-            } catch (error) {
-                console.warn('无法监听iframe点击事件:', error);
-            }
-        }
-
-        // 更新批注导航状态
-        function updateAnnotationNavigation() {
-            const detectedFunction = detectCurrentFunction();
-            const currentPageKey = getCurrentPageKey();
-            const currentPageAnnotations = currentAnnotations[currentPageKey] || {};
-            
-            // 更新当前页面批注列表
-            currentPageAnnotationList = Object.keys(currentPageAnnotations);
-            
-            const navigationDiv = document.getElementById('annotationNavigation');
-            const prevBtn = document.getElementById('prevAnnotationBtn');
-            const nextBtn = document.getElementById('nextAnnotationBtn');
-            const counter = document.getElementById('annotationCounter');
-            
-            if (currentPageAnnotationList.length > 0) {
-                // 有批注时显示导航
-                navigationDiv.style.display = 'block';
-                
-                // 确保当前索引有效
-                if (selectedElementId) {
-                    const selectedIndex = currentPageAnnotationList.indexOf(selectedElementId);
-                    if (selectedIndex !== -1) {
-                        currentAnnotationIndex = selectedIndex;
-                    }
-                } else if (currentAnnotationIndex >= currentPageAnnotationList.length) {
-                    currentAnnotationIndex = 0;
-                }
-                
-                // 更新计数器
-                counter.textContent = `${currentAnnotationIndex + 1}/${currentPageAnnotationList.length}`;
-                
-                // 更新按钮状态
-                const hasMultiple = currentPageAnnotationList.length > 1;
-                prevBtn.disabled = !hasMultiple || currentAnnotationIndex === 0;
-                nextBtn.disabled = !hasMultiple || currentAnnotationIndex === currentPageAnnotationList.length - 1;
-                
-                // 设置按钮样式
-                prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
-                nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
-                prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
-                nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
-                
-            } else {
-                // 没有批注时显示空状态导航
-                navigationDiv.style.display = 'block';
-                counter.textContent = '0/0';
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-                prevBtn.style.opacity = '0.3';
-                nextBtn.style.opacity = '0.3';
-                prevBtn.style.cursor = 'not-allowed';
-                nextBtn.style.cursor = 'not-allowed';
-            }
-        }
-
-        // 导航到上一个批注
-        function navigateToPreviousAnnotation() {
-            if (currentPageAnnotationList.length === 0) return;
-            
-            currentAnnotationIndex = Math.max(0, currentAnnotationIndex - 1);
-            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
-            
-            console.log(`🔼 导航到上一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
-            
-            // 选中并高亮目标批注
-            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
-        }
-
-        // 导航到下一个批注
-        function navigateToNextAnnotation() {
-            if (currentPageAnnotationList.length === 0) return;
-            
-            currentAnnotationIndex = Math.min(currentPageAnnotationList.length - 1, currentAnnotationIndex + 1);
-            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
-            
-            console.log(`🔽 导航到下一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
-            
-            // 选中并高亮目标批注
-            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
-        }
-
-        // 设置键盘快捷键
-        function setupKeyboardShortcuts() {
-            document.addEventListener('keydown', function(event) {
-                // 只在非输入元素时响应快捷键
-                if (event.target.tagName === 'INPUT' || 
-                    event.target.tagName === 'TEXTAREA' || 
-                    event.target.contentEditable === 'true') {
-                    return;
-                }
-                
-                // 上一个批注: 左箭头或 J 键
-                if (event.key === 'ArrowLeft' || event.key === 'j' || event.key === 'J') {
-                    event.preventDefault();
-                    navigateToPreviousAnnotation();
-                }
-                
-                // 下一个批注: 右箭头或 K 键
-                if (event.key === 'ArrowRight' || event.key === 'k' || event.key === 'K') {
-                    event.preventDefault();
-                    navigateToNextAnnotation();
-                }
-                
-                console.log('键盘快捷键:', event.key);
-            });
-            
-            console.log('🎹 键盘快捷键已设置: ← → J K 键可切换批注');
+            return `${currentPage}-${currentFunction}`;
         }
 
         // 抓取页面元素
@@ -4990,6 +4633,165 @@
             const finalSelector = selectorParts.join(' > ');
             console.log('生成的选择器:', finalSelector);
             return finalSelector;
+        }
+
+        // 自动检测当前激活的功能页面
+        function detectCurrentFunction() {
+            const iframe = document.getElementById('embeddedFrame');
+            if (!iframe || !iframe.contentWindow) {
+                console.warn('无法访问iframe，使用默认功能');
+                return currentFunction;
+            }
+            
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            if (!iframeDoc) {
+                console.warn('无法访问iframe文档，使用默认功能');
+                return currentFunction;
+            }
+            
+            try {
+                // 查找激活的主功能按钮
+                const activeMainBtn = iframeDoc.querySelector('.main-switch-btn.active');
+                if (activeMainBtn) {
+                    const detectedFunction = activeMainBtn.getAttribute('data-function');
+                    if (detectedFunction && detectedFunction !== currentFunction) {
+                        console.log(`🔄 检测到页面功能变化: ${currentFunction} → ${detectedFunction}`);
+                        currentFunction = detectedFunction;
+                        
+                        // 更新页面元素清单和系统状态
+                        setTimeout(() => {
+                            updateElementList();
+                        }, 500);
+                    }
+                    return detectedFunction;
+                }
+                
+                // 如果没有找到激活按钮，尝试从URL或页面内容推断
+                const url = iframe.contentWindow.location.href;
+                if (url.includes('growth-analysis')) {
+                    return 'growth-analysis';
+                } else if (url.includes('yield-estimation')) {
+                    return 'yield-estimation';
+                } else if (url.includes('weather-monitoring')) {
+                    return 'weather-monitoring';
+                } else if (url.includes('disaster-monitoring')) {
+                    return 'disaster-monitoring';
+                } else {
+                    return 'crop-distribution'; // 默认值
+                }
+            } catch (error) {
+                console.warn('检测当前功能时出错:', error);
+                return currentFunction;
+            }
+        }
+
+        // 更新批注导航状态
+        function updateAnnotationNavigation() {
+            const detectedFunction = detectCurrentFunction();
+            const currentPageKey = getCurrentPageKey();
+            const currentPageAnnotations = currentAnnotations[currentPageKey] || {};
+            
+            // 更新当前页面批注列表
+            currentPageAnnotationList = Object.keys(currentPageAnnotations);
+            
+            const navigationDiv = document.getElementById('annotationNavigation');
+            const prevBtn = document.getElementById('prevAnnotationBtn');
+            const nextBtn = document.getElementById('nextAnnotationBtn');
+            const counter = document.getElementById('annotationCounter');
+            
+            if (currentPageAnnotationList.length > 0) {
+                // 有批注时显示导航
+                navigationDiv.style.display = 'block';
+                
+                // 确保当前索引有效
+                if (selectedElementId) {
+                    const selectedIndex = currentPageAnnotationList.indexOf(selectedElementId);
+                    if (selectedIndex !== -1) {
+                        currentAnnotationIndex = selectedIndex;
+                    }
+                } else if (currentAnnotationIndex >= currentPageAnnotationList.length) {
+                    currentAnnotationIndex = 0;
+                }
+                
+                // 更新计数器
+                counter.textContent = `${currentAnnotationIndex + 1}/${currentPageAnnotationList.length}`;
+                
+                // 更新按钮状态
+                const hasMultiple = currentPageAnnotationList.length > 1;
+                prevBtn.disabled = !hasMultiple || currentAnnotationIndex === 0;
+                nextBtn.disabled = !hasMultiple || currentAnnotationIndex === currentPageAnnotationList.length - 1;
+                
+                // 设置按钮样式
+                prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+                nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+                prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+                nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
+                
+            } else {
+                // 没有批注时显示空状态导航
+                navigationDiv.style.display = 'block';
+                counter.textContent = '0/0';
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                prevBtn.style.opacity = '0.3';
+                nextBtn.style.opacity = '0.3';
+                prevBtn.style.cursor = 'not-allowed';
+                nextBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // 导航到上一个批注
+        function navigateToPreviousAnnotation() {
+            if (currentPageAnnotationList.length === 0) return;
+            
+            currentAnnotationIndex = Math.max(0, currentAnnotationIndex - 1);
+            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
+            
+            console.log(`🔼 导航到上一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
+            
+            // 选中并高亮目标批注
+            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
+        }
+
+        // 导航到下一个批注
+        function navigateToNextAnnotation() {
+            if (currentPageAnnotationList.length === 0) return;
+            
+            currentAnnotationIndex = Math.min(currentPageAnnotationList.length - 1, currentAnnotationIndex + 1);
+            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
+            
+            console.log(`🔽 导航到下一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
+            
+            // 选中并高亮目标批注
+            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
+        }
+
+        // 设置键盘快捷键
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(event) {
+                // 只在非输入元素时响应快捷键
+                if (event.target.tagName === 'INPUT' || 
+                    event.target.tagName === 'TEXTAREA' || 
+                    event.target.contentEditable === 'true') {
+                    return;
+                }
+                
+                // 上一个批注: 左箭头或 J 键
+                if (event.key === 'ArrowLeft' || event.key === 'j' || event.key === 'J') {
+                    event.preventDefault();
+                    navigateToPreviousAnnotation();
+                }
+                
+                // 下一个批注: 右箭头或 K 键
+                if (event.key === 'ArrowRight' || event.key === 'k' || event.key === 'K') {
+                    event.preventDefault();
+                    navigateToNextAnnotation();
+                }
+                
+                console.log('键盘快捷键:', event.key);
+            });
+            
+            console.log('🎹 键盘快捷键已设置: ← → J K 键可切换批注');
         }
 
         // 更新页面元素清单
@@ -5759,8 +5561,11 @@
                 annotationContent.innerHTML = `
                     <div class="annotation-item">
                         <div class="annotation-title">📍 ${elementAnnotation.name}</div>
-                        <div class="annotation-content" style="margin-top: 8px; padding: 8px; background: #333; border-radius: 4px; line-height: 1.4;">
-                            ${convertMarkdownToHTML(elementAnnotation.content)}
+                        <div style="margin-top: 12px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 6px; font-weight: 600;">批注内容</div>
+                            <div class="annotation-content" style="padding: 12px; background: #404040; border-radius: 8px; line-height: 1.5; border: 1px solid #606060; color: #ffffff; font-weight: 500;">
+                                ${convertMarkdownToHTML(elementAnnotation.content)}
+                            </div>
                         </div>
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040;">
                             <small style="color: #999;">创建时间: ${elementAnnotation.timestamp}</small>
@@ -5774,11 +5579,7 @@
                             <button onclick="editAnnotation('${elementId}')" class="nav-button" style="margin: 2px;">编辑</button>
                             <button onclick="deleteAnnotation('${elementId}')" class="nav-button" style="margin: 2px; background: #dc3545;">删除</button>
                         </div>
-                        ` : `
-                        <div style="margin-top: 8px;">
-                            <button onclick="toggleAnnotationMode()" class="nav-button" style="margin: 2px; background: #667eea;">进入批注模式编辑</button>
-                        </div>
-                        `}
+                        ` : ``}
                     </div>
                 `;
                 
@@ -5825,26 +5626,12 @@
             }
         }
 
-        // 验证DOM元素是否有效
-        function isValidDOMElement(element) {
-            return element && 
-                   element.nodeType === Node.ELEMENT_NODE && 
-                   element.tagName && 
-                   typeof element.tagName === 'string';
-        }
-
         // 生成智能元素选择器
         function generateSmartSelector(element) {
-            // 验证输入元素
-            if (!isValidDOMElement(element)) {
-                console.error('❌ generateSmartSelector: 无效的元素参数', element);
-                return null;
-            }
-            
             const path = [];
             let current = element;
             
-            while (current && current !== document.body && current.tagName) {
+            while (current && current !== document.body) {
                 let selector = current.tagName.toLowerCase();
                 
                 // 添加ID（如果有且唯一）
@@ -5901,12 +5688,6 @@
 
         // 生成元素指纹（用于内容识别）
         function generateElementFingerprint(element) {
-            // 验证输入元素
-            if (!isValidDOMElement(element)) {
-                console.error('❌ generateElementFingerprint: 无效的元素参数', element);
-                return null;
-            }
-            
             const fingerprint = {
                 tagName: element.tagName,
                 className: element.className,
@@ -6197,26 +5978,9 @@
             console.log(`🎯 成功重新定位元素! 策略: ${matchStrategy}`);
             console.log('目标元素:', targetElement);
             
-            // 最终验证目标元素的有效性
-            if (!isValidDOMElement(targetElement)) {
-                console.error('❌ 重新定位的元素无效', targetElement);
-                alert('定位到的元素无效，无法保存批注。请尝试选择其他元素。');
-                return;
-            }
-            
             // 生成智能选择器和元素指纹（参考示例数据格式）
             const smartSelector = generateSmartSelector(targetElement);
-            if (!smartSelector) {
-                console.error('❌ 无法生成智能选择器，跳过保存');
-                alert('元素选择器生成失败，无法保存批注。请尝试选择其他元素。');
-                return;
-            }
             const elementFingerprint = generateElementFingerprint(targetElement);
-            if (!elementFingerprint) {
-                console.error('❌ 无法生成元素指纹，跳过保存');
-                alert('元素指纹生成失败，无法保存批注。请尝试选择其他元素。');
-                return;
-            }
             
             // 获取元素的基本信息
             const elementText = targetElement.textContent?.trim() || title;

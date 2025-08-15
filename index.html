@@ -351,8 +351,8 @@
 
         .navigation {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             margin-top: 20px;
         }
 
@@ -464,28 +464,6 @@
             box-shadow: 
                 0 30px 60px rgba(231, 76, 60, 0.4),
                 0 0 40px rgba(231, 76, 60, 0.3);
-        }
-
-        .nav-card.prd {
-            background: linear-gradient(135deg, 
-                rgba(138, 43, 226, 0.7) 0%, 
-                rgba(75, 0, 130, 0.7) 50%,
-                rgba(138, 43, 226, 0.7) 100%);
-        }
-
-        .nav-card.prd::after {
-            background: linear-gradient(45deg, 
-                #8a2be2 0%,
-                #4b0082 25%,
-                #9370db 50%,
-                #663399 75%,
-                #8a2be2 100%);
-        }
-
-        .nav-card.prd:hover {
-            box-shadow: 
-                0 30px 60px rgba(138, 43, 226, 0.4),
-                0 0 40px rgba(138, 43, 226, 0.3);
         }
 
         .nav-icon {
@@ -696,28 +674,6 @@
                     <p class="nav-description">
                         系统管理员后台界面，支持用户管理、数据管理、设备管理、
                         系统配置等功能，确保系统稳定运行
-                    </p>
-                </a>
-
-                <a href="prd/大屏/prd-system.html" class="nav-card prd">
-                    <span class="nav-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </span>
-                    <h3 class="nav-title">大屏PRD</h3>
-                    <p class="nav-description">
-                        产品需求文档，详细说明数据可视化大屏的功能规格、
-                        技术要求和设计规范
-                    </p>
-                </a>
-
-                <a href="#" class="nav-card prd">
-                    <span class="nav-icon">
-                        <i class="fas fa-file-code"></i>
-                    </span>
-                    <h3 class="nav-title">管理端PRD</h3>
-                    <p class="nav-description">
-                        管理端产品需求文档，系统架构设计、功能模块规范
-                        和开发指导说明
                     </p>
                 </a>
             </div>

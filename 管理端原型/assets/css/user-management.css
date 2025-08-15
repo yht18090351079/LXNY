@@ -1,0 +1,1981 @@
+/* ===============================
+   农情遥感系统管理端 - 用户管理样式
+   =============================== */
+
+/* 用户统计概览 */
+.user-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.user-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transition: width var(--transition-normal);
+}
+
+.user-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.user-stat-card:hover::before {
+    width: 8px;
+}
+
+.user-stat-card .stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-stat-card .stat-icon.active {
+    background: linear-gradient(135deg, var(--success-color), #66BB6A);
+}
+
+.user-stat-card .stat-icon.admin {
+    background: linear-gradient(135deg, var(--warning-color), #FFB74D);
+}
+
+.user-stat-card .stat-icon.online {
+    background: linear-gradient(135deg, var(--accent-color), #42A5F5);
+}
+
+.user-stat-card .stat-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.user-stat-card .stat-content {
+    flex: 1;
+}
+
+.user-stat-card .stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-stat-card .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.user-stat-card .stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.user-stat-card .stat-change.positive {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.user-stat-card .stat-change.neutral {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+/* 用户分析图表 */
+.user-analytics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.role-distribution,
+.user-activity {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.analytics-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.analytics-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.analytics-header h3 i {
+    color: var(--primary-color);
+}
+
+.analytics-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.chart-content {
+    padding: var(--spacing-lg);
+}
+
+.chart {
+    width: 100%;
+    height: 300px;
+}
+
+/* 用户控制区域 */
+.user-controls {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--spacing-xl);
+}
+
+.filter-section {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-end;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 140px;
+}
+
+.filter-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.filter-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.batch-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* 用户表格容器 */
+.user-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* 用户专用表格样式 */
+.user-table-container .table td.user-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-avatar-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+}
+
+.user-info h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.user-email {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-badge.admin {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.role-badge.manager {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.role-badge.operator {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.role-badge.viewer {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.department-tag {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    background: var(--background-color);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.user-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.user-status.active {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.user-status.inactive {
+    background: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.user-status.locked {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.user-status.disabled {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.login-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.create-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+/* 用户表单样式 */
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-top: var(--spacing-xs);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--text-white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* 用户详情模态框 */
+.modal-content.large {
+    min-width: 800px;
+    max-width: 90vw;
+}
+
+.user-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+.detail-section {
+    background: var(--background-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.detail-section h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.detail-grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item label {
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+.detail-item span {
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin: 0 auto var(--spacing-lg) auto;
+}
+
+.permission-list {
+    display: grid;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm);
+    background: var(--surface-color);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.permission-name {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.permission-status {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.permission-status.granted {
+    color: var(--success-color);
+}
+
+.permission-status.denied {
+    color: var(--error-color);
+}
+
+.activity-timeline {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.timeline-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    margin-top: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-action {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+}
+
+.timeline-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.timeline-details {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+/* 用户卡片视图 */
+.user-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+}
+
+.user-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-normal);
+}
+
+.user-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.user-card:hover::before {
+    transform: scaleX(1);
+}
+
+.user-card-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    margin: 0 auto var(--spacing-md) auto;
+}
+
+.user-card-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-card-email {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-md);
+}
+
+.user-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
+}
+
+.user-card-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: center;
+}
+
+.user-card-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.user-card-btn.view {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.user-card-btn.view:hover {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+.user-card-btn.edit {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.user-card-btn.edit:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.user-card-btn.delete {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.user-card-btn.delete:hover {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+/* 角色权限管理专用样式 */
+.role-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.role-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.role-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transition: width var(--transition-normal);
+}
+
+.role-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.role-stat-card:hover::before {
+    width: 8px;
+}
+
+.role-stat-card .stat-icon.permissions {
+    background: linear-gradient(135deg, var(--accent-color), #42A5F5);
+}
+
+/* 权限矩阵样式 */
+.permission-management {
+    margin-bottom: var(--spacing-xl);
+}
+
+.permission-matrix {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.matrix-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.matrix-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.matrix-header h3 i {
+    color: var(--primary-color);
+}
+
+.matrix-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.permission-table-container {
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.permission-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.permission-table th {
+    background: var(--background-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 2px solid var(--divider-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.permission-table th.permission-name {
+    min-width: 250px;
+    width: 40%;
+}
+
+.permission-table th.role-column {
+    min-width: 120px;
+    text-align: center;
+}
+
+.permission-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.permission-group-header {
+    background: rgba(46, 125, 50, 0.05);
+}
+
+.permission-group-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.permission-group-title i {
+    color: var(--primary-color);
+}
+
+.permission-count {
+    color: var(--text-tertiary);
+    font-weight: normal;
+    font-size: var(--font-size-xs);
+}
+
+.group-permission-summary {
+    text-align: center;
+}
+
+.permission-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.granted-count {
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.permission-detail {
+    padding-left: var(--spacing-lg);
+}
+
+.permission-info .permission-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.permission-desc {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
+.permission-cell {
+    text-align: center;
+}
+
+/* 权限开关样式 */
+.permission-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.permission-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: var(--transition-fast);
+    border-radius: 24px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: var(--transition-fast);
+    border-radius: 50%;
+}
+
+input:checked + .switch-slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .switch-slider:before {
+    transform: translateX(20px);
+}
+
+input:disabled + .switch-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 角色卡片样式 */
+.role-list-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.role-list-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.role-list-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.role-list-header h3 i {
+    color: var(--primary-color);
+}
+
+.role-list-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.role-cards-container {
+    padding: var(--spacing-lg);
+}
+
+.role-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.role-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.role-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.role-card.disabled {
+    opacity: 0.7;
+}
+
+.role-card-header {
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(76, 175, 80, 0.02));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.role-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-xl);
+}
+
+.status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.enabled {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.status-badge.disabled {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.role-card-body {
+    padding: var(--spacing-lg);
+}
+
+.role-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.role-description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+}
+
+.role-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.permission-progress {
+    margin-bottom: var(--spacing-md);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.progress-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.progress-percentage {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.role-card-actions {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--background-color);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.role-action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.role-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.role-action-btn.view {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.role-action-btn.view:hover:not(:disabled) {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+.role-action-btn.edit {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.role-action-btn.edit:hover:not(:disabled) {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.role-action-btn.enable {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.role-action-btn.enable:hover:not(:disabled) {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.role-action-btn.disable {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.role-action-btn.disable:hover:not(:disabled) {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+.role-action-btn.delete {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.role-action-btn.delete:hover:not(:disabled) {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+.role-card-footer {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--background-color);
+    border-top: 1px solid var(--divider-color);
+}
+
+.update-time {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+}
+
+/* 权限复选框样式 */
+.permission-checkboxes {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+}
+
+.permission-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.permission-group h5 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.permission-group h5 i {
+    color: var(--primary-color);
+}
+
+.permission-checkboxes-grid {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.permission-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.permission-checkbox:hover {
+    background: var(--background-color);
+}
+
+.permission-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.permission-checkbox .checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.permission-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.permission-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--text-white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.permission-label {
+    flex: 1;
+}
+
+.permission-label .permission-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.permission-label .permission-desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    line-height: 1.4;
+}
+
+/* 角色详情模态框样式 */
+.role-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.role-basic-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: var(--background-color);
+    border-radius: var(--radius-md);
+}
+
+.role-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    flex-shrink: 0;
+}
+
+.role-info h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.role-info p {
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.role-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.meta-item i {
+    color: var(--primary-color);
+}
+
+.meta-item.status-enabled {
+    color: var(--success-color);
+}
+
+.meta-item.status-disabled {
+    color: var(--error-color);
+}
+
+.role-permissions-detail h4,
+.role-timeline h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.role-permissions-detail h4 i,
+.role-timeline h4 i {
+    color: var(--primary-color);
+}
+
+.permission-group-detail {
+    margin-bottom: var(--spacing-lg);
+}
+
+.permission-group-detail h5 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.permission-group-detail h5 i {
+    color: var(--primary-color);
+}
+
+.permission-items {
+    display: grid;
+    gap: var(--spacing-sm);
+    padding-left: var(--spacing-lg);
+}
+
+.permission-item {
+    padding: var(--spacing-sm);
+    background: var(--background-color);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary-color);
+}
+
+.permission-item .permission-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.permission-item .permission-desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+/* 操作日志管理专用样式 */
+.log-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.log-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.log-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transition: width var(--transition-normal);
+}
+
+.log-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.log-stat-card:hover::before {
+    width: 8px;
+}
+
+.log-stat-card .stat-icon.today {
+    background: linear-gradient(135deg, var(--accent-color), #42A5F5);
+}
+
+.log-stat-card .stat-icon.warning {
+    background: linear-gradient(135deg, var(--warning-color), #FFB74D);
+}
+
+.log-stat-card .stat-icon.error {
+    background: linear-gradient(135deg, var(--error-color), #EF5350);
+}
+
+/* 日志图表区域 */
+.log-analytics {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.log-timeline,
+.log-categories {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.time-range-selector {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.time-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--background-color);
+    color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.time-btn:hover {
+    background: var(--primary-light);
+    color: var(--text-primary);
+}
+
+.time-btn.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border-color: var(--primary-color);
+}
+
+/* 日志筛选控制 */
+.log-controls {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.date-range-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.date-separator {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+}
+
+/* 日志表格样式 */
+.log-table-container .table td.log-timestamp {
+    min-width: 120px;
+}
+
+.timestamp-main {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.timestamp-time {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+}
+
+.log-level {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.log-level.info {
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--success-color);
+}
+
+.log-level.warning {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.log-level.error {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.log-level.debug {
+    background: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.action-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    background: var(--background-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.log-user .user-info h4 {
+    margin: 0;
+}
+
+.user-id {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+}
+
+.log-target {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.log-description {
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+.log-ip code {
+    background: var(--background-color);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.result-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.result-badge.success {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.result-badge.failed {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.log-row {
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.log-row:hover {
+    background: rgba(46, 125, 50, 0.02);
+}
+
+.log-row[data-level="error"] {
+    border-left: 3px solid var(--error-color);
+}
+
+.log-row[data-level="warning"] {
+    border-left: 3px solid var(--warning-color);
+}
+
+/* 时间线视图样式 */
+.log-timeline-container {
+    padding: var(--spacing-lg);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.log-timeline-item {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.log-timeline-item:hover {
+    background: rgba(46, 125, 50, 0.02);
+    transform: translateX(4px);
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-top: var(--spacing-sm);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.timeline-dot.info {
+    background: var(--success-color);
+}
+
+.timeline-dot.warning {
+    background: var(--warning-color);
+}
+
+.timeline-dot.error {
+    background: var(--error-color);
+}
+
+.timeline-dot.debug {
+    background: var(--text-tertiary);
+}
+
+.timeline-dot::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 2px;
+    height: 60px;
+    background: var(--divider-color);
+    transform: translateX(-50%);
+}
+
+.log-timeline-item:last-child .timeline-dot::before {
+    display: none;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.log-time {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.log-badges {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.log-content .log-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.log-content .log-desc {
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-md) 0;
+    line-height: 1.4;
+}
+
+.log-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.meta-item i {
+    color: var(--primary-color);
+    width: 12px;
+}
+
+/* 日志详情模态框样式 */
+.log-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.log-basic-info {
+    padding: var(--spacing-lg);
+    background: var(--background-color);
+    border-radius: var(--radius-md);
+}
+
+.log-header-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.log-header-detail h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.log-badges-detail {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.log-description-detail {
+    color: var(--text-secondary);
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.log-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.metadata-section {
+    background: var(--background-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.metadata-section h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.metadata-section h4 i {
+    color: var(--primary-color);
+}
+
+.metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.metadata-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.metadata-item:last-child {
+    border-bottom: none;
+}
+
+.metadata-item label {
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 80px;
+}
+
+.metadata-item span {
+    color: var(--text-secondary);
+    text-align: right;
+    flex: 1;
+}
+
+.metadata-item.error {
+    color: var(--error-color);
+}
+
+.metadata-item.error span {
+    color: var(--error-color);
+}
+
+.error-section {
+    border-left: 4px solid var(--error-color);
+}
+
+.error-section h4 {
+    color: var(--error-color);
+}
+
+.error-message {
+    background: rgba(244, 67, 54, 0.05);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+}
+
+.error-message code {
+    color: var(--error-color);
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .user-analytics {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-lg);
+    }
+    
+    .filter-section {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .filter-group {
+        min-width: 120px;
+    }
+    
+    .user-detail-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content.large {
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .user-stat-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .batch-actions {
+        flex-direction: column;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content.large {
+        min-width: auto;
+        width: 95vw;
+    }
+    
+    .user-card-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-stat-card .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: var(--font-size-xl);
+    }
+    
+    .user-card {
+        padding: var(--spacing-md);
+    }
+    
+    .user-card-meta {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .analytics-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

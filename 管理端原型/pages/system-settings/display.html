@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 大屏配置</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/system-settings.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>系统设置</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>大屏配置</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索配置项...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="display.html" class="nav-subitem active">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-desktop"></i>
+                    大屏配置管理
+                </h1>
+                <p class="page-description">配置农情遥感系统大屏显示参数，包括布局、样式、数据源和更新频率设置</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="previewDisplay()">
+                    <i class="fas fa-eye"></i>
+                    预览大屏
+                </button>
+                <button class="btn btn-secondary" onclick="resetToDefault()">
+                    <i class="fas fa-undo"></i>
+                    恢复默认
+                </button>
+                <button class="btn btn-primary" onclick="saveDisplayConfig()">
+                    <i class="fas fa-save"></i>
+                    保存配置
+                </button>
+            </div>
+        </div>
+
+        <!-- 配置状态概览 -->
+        <div class="config-overview">
+            <div class="config-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="displayCount">4</div>
+                    <div class="stat-label">大屏数量</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-desktop"></i>
+                        已配置
+                    </div>
+                </div>
+            </div>
+            
+            <div class="config-stat-card">
+                <div class="stat-icon active">
+                    <i class="fas fa-power-off"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activeDisplays">3</div>
+                    <div class="stat-label">在线大屏</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-signal"></i>
+                        75% 在线率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="config-stat-card">
+                <div class="stat-icon update">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="updateInterval">30</div>
+                    <div class="stat-label">更新间隔(秒)</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-clock"></i>
+                        自动刷新
+                    </div>
+                </div>
+            </div>
+            
+            <div class="config-stat-card">
+                <div class="stat-icon theme">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="themeCount">3</div>
+                    <div class="stat-label">主题样式</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-brush"></i>
+                        可选择
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配置选项卡 -->
+        <div class="config-tabs">
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchConfigTab('layout')">
+                    <i class="fas fa-th-large"></i>
+                    布局配置
+                </button>
+                <button class="tab-btn" onclick="switchConfigTab('theme')">
+                    <i class="fas fa-palette"></i>
+                    主题样式
+                </button>
+                <button class="tab-btn" onclick="switchConfigTab('data')">
+                    <i class="fas fa-database"></i>
+                    数据源配置
+                </button>
+                <button class="tab-btn" onclick="switchConfigTab('performance')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    性能配置
+                </button>
+                <button class="tab-btn" onclick="switchConfigTab('screen')">
+                    <i class="fas fa-tv"></i>
+                    屏幕管理
+                </button>
+            </div>
+            
+            <!-- 布局配置标签页 -->
+            <div class="tab-content active" id="layoutTab">
+                <div class="config-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-th-large"></i>
+                            页面布局配置
+                        </h3>
+                        <p>配置大屏页面的组件布局和排列方式</p>
+                    </div>
+                    
+                    <div class="layout-config">
+                        <div class="layout-preview">
+                            <div class="preview-container">
+                                <div class="preview-screen" id="layoutPreview">
+                                    <div class="layout-grid" id="layoutGrid">
+                                        <!-- 布局预览将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="preview-controls">
+                                    <button class="btn btn-secondary" onclick="addLayoutComponent()">
+                                        <i class="fas fa-plus"></i>
+                                        添加组件
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resetLayout()">
+                                        <i class="fas fa-refresh"></i>
+                                        重置布局
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="layout-settings">
+                            <div class="settings-group">
+                                <h4>布局类型</h4>
+                                <div class="layout-types">
+                                    <label class="layout-type-option">
+                                        <input type="radio" name="layoutType" value="grid" checked>
+                                        <div class="layout-type-card">
+                                            <i class="fas fa-th"></i>
+                                            <span>网格布局</span>
+                                        </div>
+                                    </label>
+                                    <label class="layout-type-option">
+                                        <input type="radio" name="layoutType" value="flex">
+                                        <div class="layout-type-card">
+                                            <i class="fas fa-align-justify"></i>
+                                            <span>弹性布局</span>
+                                        </div>
+                                    </label>
+                                    <label class="layout-type-option">
+                                        <input type="radio" name="layoutType" value="custom">
+                                        <div class="layout-type-card">
+                                            <i class="fas fa-cogs"></i>
+                                            <span>自定义布局</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <h4>网格设置</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>列数:</label>
+                                        <input type="number" class="form-control" id="gridColumns" value="4" min="1" max="12">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>行数:</label>
+                                        <input type="number" class="form-control" id="gridRows" value="3" min="1" max="10">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>列间距(px):</label>
+                                        <input type="number" class="form-control" id="gridGapX" value="16" min="0" max="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>行间距(px):</label>
+                                        <input type="number" class="form-control" id="gridGapY" value="16" min="0" max="50">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-group">
+                                <h4>组件配置</h4>
+                                <div class="component-list" id="componentList">
+                                    <!-- 组件列表将通过JavaScript生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 主题样式标签页 -->
+            <div class="tab-content" id="themeTab">
+                <div class="config-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-palette"></i>
+                            主题样式配置
+                        </h3>
+                        <p>配置大屏的色彩主题、字体样式和视觉效果</p>
+                    </div>
+                    
+                    <div class="theme-config">
+                        <div class="theme-selector">
+                            <h4>预设主题</h4>
+                            <div class="theme-options">
+                                <div class="theme-option active" data-theme="default">
+                                    <div class="theme-preview">
+                                        <div class="theme-colors">
+                                            <span style="background: #2E7D32;"></span>
+                                            <span style="background: #1976D2;"></span>
+                                            <span style="background: #388E3C;"></span>
+                                            <span style="background: #1565C0;"></span>
+                                        </div>
+                                    </div>
+                                    <span class="theme-name">农业绿色</span>
+                                </div>
+                                <div class="theme-option" data-theme="tech">
+                                    <div class="theme-preview">
+                                        <div class="theme-colors">
+                                            <span style="background: #1E88E5;"></span>
+                                            <span style="background: #039BE5;"></span>
+                                            <span style="background: #00ACC1;"></span>
+                                            <span style="background: #26C6DA;"></span>
+                                        </div>
+                                    </div>
+                                    <span class="theme-name">科技蓝色</span>
+                                </div>
+                                <div class="theme-option" data-theme="dark">
+                                    <div class="theme-preview">
+                                        <div class="theme-colors">
+                                            <span style="background: #424242;"></span>
+                                            <span style="background: #616161;"></span>
+                                            <span style="background: #757575;"></span>
+                                            <span style="background: #9E9E9E;"></span>
+                                        </div>
+                                    </div>
+                                    <span class="theme-name">暗色主题</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="color-config">
+                            <h4>自定义配色</h4>
+                            <div class="color-groups">
+                                <div class="color-group">
+                                    <label>主色调:</label>
+                                    <input type="color" class="color-picker" id="primaryColor" value="#2E7D32">
+                                </div>
+                                <div class="color-group">
+                                    <label>辅助色:</label>
+                                    <input type="color" class="color-picker" id="secondaryColor" value="#1976D2">
+                                </div>
+                                <div class="color-group">
+                                    <label>背景色:</label>
+                                    <input type="color" class="color-picker" id="backgroundColor" value="#F5F5F5">
+                                </div>
+                                <div class="color-group">
+                                    <label>文字色:</label>
+                                    <input type="color" class="color-picker" id="textColor" value="#212121">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="font-config">
+                            <h4>字体设置</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>字体族:</label>
+                                    <select class="form-control" id="fontFamily">
+                                        <option value="system">系统默认</option>
+                                        <option value="microsoft-yahei">微软雅黑</option>
+                                        <option value="pingfang-sc">苹方</option>
+                                        <option value="source-han-sans">思源黑体</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>基础字号(px):</label>
+                                    <input type="number" class="form-control" id="baseFontSize" value="14" min="10" max="24">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="effect-config">
+                            <h4>视觉效果</h4>
+                            <div class="effect-toggles">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableShadows" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用阴影效果
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableAnimations" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用动画效果
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableGradients" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用渐变背景
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableBlur">
+                                    <span class="toggle-slider"></span>
+                                    启用毛玻璃效果
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据源配置标签页 -->
+            <div class="tab-content" id="dataTab">
+                <div class="config-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-database"></i>
+                            数据源配置
+                        </h3>
+                        <p>配置大屏显示的数据来源和更新策略</p>
+                    </div>
+                    
+                    <div class="data-source-config">
+                        <div class="data-sources-list">
+                            <h4>数据源列表</h4>
+                            <div class="data-source-cards" id="dataSourceCards">
+                                <!-- 数据源卡片将通过JavaScript生成 -->
+                            </div>
+                            <button class="btn btn-secondary" onclick="addDataSource()">
+                                <i class="fas fa-plus"></i>
+                                添加数据源
+                            </button>
+                        </div>
+                        
+                        <div class="update-strategy">
+                            <h4>更新策略</h4>
+                            <div class="strategy-options">
+                                <label class="strategy-option">
+                                    <input type="radio" name="updateStrategy" value="realtime" checked>
+                                    <div class="strategy-card">
+                                        <i class="fas fa-bolt"></i>
+                                        <h5>实时更新</h5>
+                                        <p>数据发生变化时立即更新显示</p>
+                                    </div>
+                                </label>
+                                <label class="strategy-option">
+                                    <input type="radio" name="updateStrategy" value="interval">
+                                    <div class="strategy-card">
+                                        <i class="fas fa-clock"></i>
+                                        <h5>定时更新</h5>
+                                        <p>按固定时间间隔更新数据</p>
+                                    </div>
+                                </label>
+                                <label class="strategy-option">
+                                    <input type="radio" name="updateStrategy" value="manual">
+                                    <div class="strategy-card">
+                                        <i class="fas fa-hand-pointer"></i>
+                                        <h5>手动更新</h5>
+                                        <p>需要手动触发才更新数据</p>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="update-settings">
+                                <div class="form-group">
+                                    <label>更新间隔(秒):</label>
+                                    <input type="number" class="form-control" id="updateInterval" value="30" min="5" max="3600">
+                                </div>
+                                <div class="form-group">
+                                    <label>缓存时间(分钟):</label>
+                                    <input type="number" class="form-control" id="cacheTimeout" value="10" min="1" max="60">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 性能配置标签页 -->
+            <div class="tab-content" id="performanceTab">
+                <div class="config-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-tachometer-alt"></i>
+                            性能配置
+                        </h3>
+                        <p>优化大屏显示性能和资源使用</p>
+                    </div>
+                    
+                    <div class="performance-config">
+                        <div class="performance-metrics">
+                            <h4>性能指标</h4>
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-memory"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-value">85%</span>
+                                        <span class="metric-label">内存使用率</span>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-microchip"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-value">42%</span>
+                                        <span class="metric-label">CPU使用率</span>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-wifi"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-value">120ms</span>
+                                        <span class="metric-label">网络延迟</span>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-value">60fps</span>
+                                        <span class="metric-label">渲染帧率</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="optimization-settings">
+                            <h4>优化设置</h4>
+                            <div class="optimization-options">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableVirtualization" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用虚拟化渲染
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableLazyLoading" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用懒加载
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableDataCompression">
+                                    <span class="toggle-slider"></span>
+                                    启用数据压缩
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="enableResourceCaching" checked>
+                                    <span class="toggle-slider"></span>
+                                    启用资源缓存
+                                </label>
+                            </div>
+                            
+                            <div class="performance-limits">
+                                <div class="form-group">
+                                    <label>最大并发请求数:</label>
+                                    <input type="number" class="form-control" id="maxConcurrentRequests" value="10" min="1" max="50">
+                                </div>
+                                <div class="form-group">
+                                    <label>数据点数限制:</label>
+                                    <input type="number" class="form-control" id="maxDataPoints" value="1000" min="100" max="10000">
+                                </div>
+                                <div class="form-group">
+                                    <label>图表刷新率(fps):</label>
+                                    <input type="number" class="form-control" id="chartFrameRate" value="30" min="10" max="60">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 屏幕管理标签页 -->
+            <div class="tab-content" id="screenTab">
+                <div class="config-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-tv"></i>
+                            屏幕管理
+                        </h3>
+                        <p>管理连接的显示屏幕和分屏配置</p>
+                    </div>
+                    
+                    <div class="screen-management">
+                        <div class="screen-list">
+                            <h4>屏幕列表</h4>
+                            <div class="screen-cards" id="screenCards">
+                                <!-- 屏幕卡片将通过JavaScript生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="screen-settings">
+                            <h4>屏幕设置</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>默认分辨率:</label>
+                                    <select class="form-control" id="defaultResolution">
+                                        <option value="1920x1080">1920×1080 (Full HD)</option>
+                                        <option value="2560x1440">2560×1440 (2K)</option>
+                                        <option value="3840x2160">3840×2160 (4K)</option>
+                                        <option value="1366x768">1366×768 (HD)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>屏幕方向:</label>
+                                    <select class="form-control" id="screenOrientation">
+                                        <option value="landscape">横屏</option>
+                                        <option value="portrait">竖屏</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="display-modes">
+                                <h5>显示模式</h5>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="fullscreenMode" checked>
+                                    <span class="toggle-slider"></span>
+                                    全屏显示
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="autoScale" checked>
+                                    <span class="toggle-slider"></span>
+                                    自动缩放
+                                </label>
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="hideTaskbar">
+                                    <span class="toggle-slider"></span>
+                                    隐藏任务栏
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/display.js"></script>
+</body>
+</html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

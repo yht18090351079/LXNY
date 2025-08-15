@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据质量报告 - 农情遥感系统管理端</title>
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/reports.css">
+    <link rel="stylesheet" href="../../assets/css/data-quality.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 导航修复样式 -->
+    <style>
+    .nav-group .nav-item {
+        cursor: pointer !important;
+        user-select: none;
+    }
+    
+    .nav-submenu {
+        overflow: hidden !important;
+        transition: max-height 0.3s ease !important;
+        display: block !important;
+    }
+    
+    .nav-group.expanded .nav-submenu {
+        max-height: 300px !important;
+    }
+    
+    .nav-group:not(.expanded) .nav-submenu {
+        max-height: 0 !important;
+    }
+    
+    .nav-subitem.active {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #4CAF50 !important;
+    }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>统计报表</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>数据质量报告</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索报表...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="data-quality.html" class="nav-subitem active">
+                        <i class="fas fa-chart-bar"></i>
+                        数据质量报告
+                    </a>
+                    <a href="business.html" class="nav-subitem">
+                        <i class="fas fa-chart-pie"></i>
+                        业务统计
+                    </a>
+                    <a href="export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面内容 -->
+        <div class="content-wrapper">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>
+                        <i class="fas fa-clipboard-check"></i>
+                        数据质量报告
+                    </h1>
+                    <p class="page-description">监控和分析系统中各类数据的质量状况，确保数据准确性和完整性</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新数据
+                    </button>
+                    <button class="btn btn-primary" id="generateReportBtn">
+                        <i class="fas fa-file-pdf"></i>
+                        生成报告
+                    </button>
+                </div>
+            </div>
+
+            <!-- 数据质量概览 -->
+            <div class="quality-overview">
+                <div class="overview-cards">
+                    <div class="quality-card excellent">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>优秀数据</h3>
+                                <p class="card-value" id="excellentCount">1,247</p>
+                                <p class="card-percentage">85.2%</p>
+                            </div>
+                        </div>
+                        <div class="card-trend">
+                            <i class="fas fa-arrow-up trend-up"></i>
+                            <span>+3.2%</span>
+                        </div>
+                    </div>
+
+                    <div class="quality-card good">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>良好数据</h3>
+                                <p class="card-value" id="goodCount">186</p>
+                                <p class="card-percentage">12.7%</p>
+                            </div>
+                        </div>
+                        <div class="card-trend">
+                            <i class="fas fa-arrow-down trend-down"></i>
+                            <span>-1.8%</span>
+                        </div>
+                    </div>
+
+                    <div class="quality-card warning">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>警告数据</h3>
+                                <p class="card-value" id="warningCount">24</p>
+                                <p class="card-percentage">1.6%</p>
+                            </div>
+                        </div>
+                        <div class="card-trend">
+                            <i class="fas fa-arrow-up trend-up"></i>
+                            <span>+0.3%</span>
+                        </div>
+                    </div>
+
+                    <div class="quality-card error">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>异常数据</h3>
+                                <p class="card-value" id="errorCount">7</p>
+                                <p class="card-percentage">0.5%</p>
+                            </div>
+                        </div>
+                        <div class="card-trend">
+                            <i class="fas fa-arrow-down trend-down"></i>
+                            <span>-0.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据质量分析 -->
+            <div class="content-grid">
+                <!-- 数据质量趋势图 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-chart-line"></i>
+                            数据质量趋势分析
+                        </h3>
+                        <div class="card-actions">
+                            <select id="trendPeriod" class="form-select">
+                                <option value="7">最近7天</option>
+                                <option value="30" selected>最近30天</option>
+                                <option value="90">最近90天</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="qualityTrendChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 数据源质量分布 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-pie-chart"></i>
+                            数据源质量分布
+                        </h3>
+                        <div class="card-actions">
+                            <button class="btn btn-ghost btn-sm" id="refreshSourceBtn">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="sourceQualityChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 数据完整性统计 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-tasks"></i>
+                            数据完整性统计
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="completeness-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">遥感数据完整性</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 94.5%"></div>
+                                    <span class="progress-text">94.5%</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">气象数据完整性</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 97.2%"></div>
+                                    <span class="progress-text">97.2%</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">传感器数据完整性</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 91.8%"></div>
+                                    <span class="progress-text">91.8%</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">作物数据完整性</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 89.3%"></div>
+                                    <span class="progress-text">89.3%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据准确性分析 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-bullseye"></i>
+                            数据准确性分析
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="accuracyChart" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- 异常数据详情 -->
+                <div class="content-card full-width">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-exclamation-circle"></i>
+                            异常数据详情
+                        </h3>
+                        <div class="card-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索异常数据..." id="searchAnomalies">
+                            </div>
+                            <select id="anomalyFilter" class="form-select">
+                                <option value="all">全部类型</option>
+                                <option value="missing">缺失数据</option>
+                                <option value="outlier">异常值</option>
+                                <option value="duplicate">重复数据</option>
+                                <option value="format">格式错误</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-container">
+                            <table class="data-table" id="anomaliesTable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" id="selectAll">
+                                        </th>
+                                        <th>数据源</th>
+                                        <th>异常类型</th>
+                                        <th>数据字段</th>
+                                        <th>异常描述</th>
+                                        <th>发现时间</th>
+                                        <th>严重程度</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="anomaliesTableBody">
+                                    <!-- 数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-pagination">
+                            <div class="pagination-info">
+                                显示 <span id="pageStart">1</span> - <span id="pageEnd">10</span> 条，共 <span id="totalRecords">31</span> 条记录
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="btn btn-ghost btn-sm" id="prevPage" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="page-numbers" id="pageNumbers"></span>
+                                <button class="btn btn-ghost btn-sm" id="nextPage">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 详情模态框 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>异常数据详情</h3>
+                <button class="modal-close" id="closeDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-tabs">
+                    <button class="tab-btn active" data-tab="basic">基本信息</button>
+                    <button class="tab-btn" data-tab="analysis">异常分析</button>
+                    <button class="tab-btn" data-tab="history">处理历史</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="basicTab">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>数据源</label>
+                                <span id="detailSource">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>异常类型</label>
+                                <span id="detailType">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>数据字段</label>
+                                <span id="detailField">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>异常值</label>
+                                <span id="detailValue">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>期望范围</label>
+                                <span id="detailRange">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>发现时间</label>
+                                <span id="detailTime">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="analysisTab">
+                        <div id="analysisChart" class="chart-container"></div>
+                    </div>
+                    <div class="tab-pane" id="historyTab">
+                        <div class="history-timeline" id="historyTimeline">
+                            <!-- 处理历史将动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="ignoreAnomaly">
+                    <i class="fas fa-eye-slash"></i>
+                    忽略异常
+                </button>
+                <button class="btn btn-warning" id="fixAnomaly">
+                    <i class="fas fa-wrench"></i>
+                    修复数据
+                </button>
+                <button class="btn btn-danger" id="deleteAnomaly">
+                    <i class="fas fa-trash"></i>
+                    删除数据
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载中遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>正在生成报告...</p>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/data-quality.js"></script>
+    
+    <!-- 导航修复脚本 - 简化版 -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('📊 数据质量报告页面 - 简化导航修复');
+        
+        // 简单直接的导航修复
+        setTimeout(() => {
+            // 1. 修复时间显示
+            const currentTimeEl = document.getElementById('current-time');
+            if (currentTimeEl) {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString('zh-CN');
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 2. 强制导航修复 - 直接操作
+            const navGroups = document.querySelectorAll('.nav-group');
+            console.log(`找到 ${navGroups.length} 个导航组`);
+            
+            navGroups.forEach((group, index) => {
+                const navItem = group.querySelector('.nav-item');
+                const submenu = group.querySelector('.nav-submenu');
+                const navText = group.querySelector('.nav-text')?.textContent || `组${index+1}`;
+                
+                if (navItem && submenu) {
+                    console.log(`处理导航组: ${navText}`);
+                    
+                    // 强制设置样式
+                    submenu.style.overflow = 'hidden';
+                    submenu.style.transition = 'max-height 0.3s ease';
+                    submenu.style.display = 'block';
+                    navItem.style.cursor = 'pointer';
+                    navItem.style.userSelect = 'none';
+                    
+                    // 设置初始状态
+                    if (group.classList.contains('expanded')) {
+                        submenu.style.maxHeight = '500px';
+                        console.log(`✓ ${navText} 初始展开`);
+                    } else {
+                        submenu.style.maxHeight = '0px';
+                        console.log(`- ${navText} 初始收起`);
+                    }
+                    
+                    // 移除旧事件，添加新事件
+                    navItem.onclick = null;
+                    navItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log(`🖱️ 点击导航组: ${navText}`);
+                        
+                        const isCurrentlyExpanded = group.classList.contains('expanded');
+                        
+                        if (isCurrentlyExpanded) {
+                            group.classList.remove('expanded');
+                            submenu.style.maxHeight = '0px';
+                            console.log(`📁 ${navText} 已收起`);
+                        } else {
+                            group.classList.add('expanded');
+                            submenu.style.maxHeight = '500px';
+                            console.log(`📂 ${navText} 已展开`);
+                        }
+                    });
+                    
+                    console.log(`✅ 导航组 "${navText}" 事件绑定完成`);
+                }
+            });
+            
+            // 3. 高亮当前页面
+            const currentItem = document.querySelector('a[href="data-quality.html"]');
+            if (currentItem) {
+                currentItem.classList.add('active');
+            }
+            
+            console.log('✅ 简化导航修复完成');
+        }, 100);
+    });
+    </script>
+</body>
+</html>

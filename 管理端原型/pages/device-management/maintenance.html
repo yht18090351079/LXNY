@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 设备维护</title>
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/device-management.css">
+    <link rel="stylesheet" href="../../assets/css/maintenance.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>设备管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>设备维护</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索维护记录...">
+            </div>
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            <!-- 设备管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="maintenance.html" class="nav-subitem active">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-tools"></i>
+                    设备维护管理
+                </h1>
+                <p class="page-description">管理农情遥感系统设备的维护计划、维修记录和保养任务，确保设备正常运行</p>
+            </div>
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="generateMaintenanceReport()">
+                    <i class="fas fa-file-alt"></i>
+                    维护报告
+                </button>
+                <button class="btn btn-secondary" onclick="scheduleMaintenanceBatch()">
+                    <i class="fas fa-calendar-plus"></i>
+                    批量排期
+                </button>
+                <button class="btn btn-primary" onclick="showAddMaintenanceModal()">
+                    <i class="fas fa-plus"></i>
+                    新增维护
+                </button>
+            </div>
+        </div>
+        <!-- 维护概览 -->
+        <div class="maintenance-overview">
+            <div class="maintenance-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalMaintenanceItems">156</div>
+                    <div class="stat-label">维护项目</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-plus"></i>
+                        +12 本月新增
+                    </div>
+                </div>
+            </div>
+            <div class="maintenance-stat-card">
+                <div class="stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="pendingMaintenance">23</div>
+                    <div class="stat-label">待维护</div>
+                    <div class="stat-change warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        需要关注
+                    </div>
+                </div>
+            </div>
+            <div class="maintenance-stat-card">
+                <div class="stat-icon completed">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="completedMaintenance">89</div>
+                    <div class="stat-label">已完成</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-chart-line"></i>
+                        57.1% 完成率
+                    </div>
+                </div>
+            </div>
+            <div class="maintenance-stat-card">
+                <div class="stat-icon cost">
+                    <i class="fas fa-yuan-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="maintenanceCost">28,560</div>
+                    <div class="stat-label">维护成本(元)</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-calculator"></i>
+                        本月支出
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 维护日历和提醒 -->
+        <div class="maintenance-calendar-section">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h3>
+                        <i class="fas fa-calendar-alt"></i>
+                        维护日历
+                    </h3>
+                    <div class="calendar-controls">
+                        <button class="btn-icon" onclick="prevMonth()" data-tooltip="上个月">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="current-month" id="currentMonth">2024年1月</span>
+                        <button class="btn-icon" onclick="nextMonth()" data-tooltip="下个月">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="goToToday()">今天</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- 日历将通过JavaScript生成 -->
+                </div>
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <span class="legend-color scheduled"></span>
+                        <span>计划维护</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color urgent"></span>
+                        <span>紧急维修</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color completed"></span>
+                        <span>已完成</span>
+                    </div>
+                </div>
+            </div>
+            <div class="maintenance-alerts">
+                <div class="alerts-header">
+                    <h3>
+                        <i class="fas fa-bell"></i>
+                        维护提醒
+                    </h3>
+                    <button class="btn-icon" onclick="refreshAlerts()" data-tooltip="刷新提醒">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+                <div class="alerts-list" id="alertsList">
+                    <!-- 提醒项目将通过JavaScript生成 -->
+                </div>
+                <div class="alerts-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="markAllAlertsRead()">
+                        <i class="fas fa-check-double"></i>
+                        全部已读
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="configureAlerts()">
+                        <i class="fas fa-cog"></i>
+                        提醒设置
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 维护统计分析 -->
+        <div class="maintenance-analytics">
+            <div class="maintenance-trends">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        维护趋势分析
+                    </h3>
+                    <div class="time-range-selector">
+                        <button class="time-btn active" onclick="setMaintenanceTimeRange('month')">本月</button>
+                        <button class="time-btn" onclick="setMaintenanceTimeRange('quarter')">本季</button>
+                        <button class="time-btn" onclick="setMaintenanceTimeRange('year')">本年</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="maintenanceTrendChart" class="chart"></div>
+                </div>
+            </div>
+            <div class="maintenance-types">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        维护类型分布
+                    </h3>
+                    <div class="analytics-actions">
+                        <button class="btn-icon" onclick="refreshMaintenanceTypes()" data-tooltip="刷新数据">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn-icon" onclick="exportMaintenanceChart()" data-tooltip="导出图表">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="maintenanceTypesChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 维护任务筛选和操作 -->
+        <div class="maintenance-controls">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>维护类型:</label>
+                    <select class="form-control" id="maintenanceTypeFilter">
+                        <option value="">全部类型</option>
+                        <option value="preventive">预防性维护</option>
+                        <option value="corrective">纠正性维护</option>
+                        <option value="emergency">紧急维修</option>
+                        <option value="upgrade">设备升级</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>维护状态:</label>
+                    <select class="form-control" id="maintenanceStatusFilter">
+                        <option value="">全部状态</option>
+                        <option value="scheduled">已排期</option>
+                        <option value="in-progress">进行中</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>设备类型:</label>
+                    <select class="form-control" id="deviceTypeFilter">
+                        <option value="">全部设备</option>
+                        <option value="sensor">传感器</option>
+                        <option value="camera">监控设备</option>
+                        <option value="weather">气象站</option>
+                        <option value="network">网络设备</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>优先级:</label>
+                    <select class="form-control" id="priorityFilter">
+                        <option value="">全部优先级</option>
+                        <option value="high">高优先级</option>
+                        <option value="medium">中优先级</option>
+                        <option value="low">低优先级</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" onclick="applyMaintenanceFilters()">
+                        <i class="fas fa-filter"></i>
+                        应用筛选
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearMaintenanceFilters()">
+                        <i class="fas fa-times"></i>
+                        清除筛选
+                    </button>
+                </div>
+            </div>
+            <div class="batch-actions">
+                <button class="btn btn-secondary" onclick="batchSchedule()" disabled id="batchScheduleBtn">
+                    <i class="fas fa-calendar-plus"></i>
+                    批量排期
+                </button>
+                <button class="btn btn-secondary" onclick="batchComplete()" disabled id="batchCompleteBtn">
+                    <i class="fas fa-check"></i>
+                    批量完成
+                </button>
+                <button class="btn btn-secondary" onclick="batchExportMaintenance()" disabled id="batchExportMaintenanceBtn">
+                    <i class="fas fa-file-export"></i>
+                    批量导出
+                </button>
+            </div>
+        </div>
+        <!-- 维护记录列表 -->
+        <div class="maintenance-table-container">
+            <div class="table-header">
+                <h3>维护记录列表</h3>
+                <div class="table-actions">
+                    <button class="btn-icon" onclick="toggleMaintenanceView('timeline')" data-tooltip="时间线视图">
+                        <i class="fas fa-stream"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleMaintenanceView('kanban')" data-tooltip="看板视图">
+                        <i class="fas fa-columns"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleMaintenanceView('table')" data-tooltip="表格视图">
+                        <i class="fas fa-table"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-container" id="maintenanceTableContainer">
+                <table class="table" id="maintenanceTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllMaintenance" onchange="toggleSelectAllMaintenance()">
+                            </th>
+                            <th data-sort="taskName">
+                                任务名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="deviceName">
+                                设备名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="maintenanceType">
+                                维护类型
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="priority">
+                                优先级
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="scheduledDate">
+                                计划时间
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="status">
+                                状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="assignee">
+                                负责人
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="cost">
+                                费用(元)
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maintenanceTableBody">
+                        <!-- 维护记录数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- 分页控件 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span id="maintenancePageStart">1</span> - <span id="maintenancePageEnd">20</span> 条，
+                    共 <span id="totalMaintenanceRecords">156</span> 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-secondary" onclick="changeMaintenancePage('first')" id="firstMaintenancePageBtn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeMaintenancePage('prev')" id="prevMaintenancePageBtn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    <div class="page-numbers" id="maintenancePageNumbers">
+                        <!-- 页码按钮将通过JavaScript生成 -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="changeMaintenancePage('next')" id="nextMaintenancePageBtn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeMaintenancePage('last')" id="lastMaintenancePageBtn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    <!-- 新增维护任务模态框 -->
+    <div class="modal-overlay" id="addMaintenanceModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">新增维护任务</h3>
+                <button class="modal-close" onclick="closeAddMaintenanceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addMaintenanceForm" class="maintenance-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">任务名称:</label>
+                            <input type="text" class="form-control" id="taskName" placeholder="请输入维护任务名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">维护类型:</label>
+                            <select class="form-control" id="maintenanceType" required>
+                                <option value="">请选择维护类型</option>
+                                <option value="preventive">预防性维护</option>
+                                <option value="corrective">纠正性维护</option>
+                                <option value="emergency">紧急维修</option>
+                                <option value="upgrade">设备升级</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">设备名称:</label>
+                            <select class="form-control" id="deviceName" required>
+                                <option value="">请选择设备</option>
+                                <option value="sensor-001">温度传感器-001</option>
+                                <option value="camera-001">监控摄像头-001</option>
+                                <option value="weather-001">气象站-001</option>
+                                <option value="router-001">网络路由器-001</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">优先级:</label>
+                            <select class="form-control" id="priority" required>
+                                <option value="">请选择优先级</option>
+                                <option value="high">高优先级</option>
+                                <option value="medium" selected>中优先级</option>
+                                <option value="low">低优先级</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">计划开始时间:</label>
+                            <input type="datetime-local" class="form-control" id="scheduledStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">计划结束时间:</label>
+                            <input type="datetime-local" class="form-control" id="scheduledEndDate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">负责人:</label>
+                            <select class="form-control" id="assignee" required>
+                                <option value="">请选择负责人</option>
+                                <option value="张工程师">张工程师</option>
+                                <option value="李技术员">李技术员</option>
+                                <option value="王维修员">王维修员</option>
+                                <option value="陈主管">陈主管</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">预估费用(元):</label>
+                            <input type="number" class="form-control" id="estimatedCost" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">维护内容:</label>
+                        <textarea class="form-control" id="maintenanceContent" rows="4" placeholder="请详细描述维护内容和要求..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">备注信息:</label>
+                        <textarea class="form-control" id="remarks" rows="3" placeholder="请输入备注信息..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">相关文件:</label>
+                        <div class="file-upload-area" onclick="document.getElementById('maintenanceFileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>点击选择文件或拖拽文件到此区域</p>
+                            <p class="file-hint">支持图片、文档等格式，最大10MB</p>
+                        </div>
+                        <input type="file" id="maintenanceFileInput" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" style="display: none;" onchange="handleMaintenanceFileSelect(event)">
+                        <div class="selected-maintenance-files" id="selectedMaintenanceFiles"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddMaintenanceModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveMaintenanceTask()">保存任务</button>
+            </div>
+        </div>
+    </div>
+    <!-- 维护详情模态框 -->
+    <div class="modal-overlay" id="maintenanceDetailModal">
+        <div class="modal-content extra-large">
+            <div class="modal-header">
+                <h3 class="modal-title">维护任务详情</h3>
+                <button class="modal-close" onclick="closeMaintenanceDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="maintenance-detail-content" id="maintenanceDetailContent">
+                    <!-- 维护详情内容将通过JavaScript生成 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="editMaintenanceTask()">编辑任务</button>
+                <button class="btn btn-secondary" onclick="updateMaintenanceStatus()">更新状态</button>
+                <button class="btn btn-primary" onclick="closeMaintenanceDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/maintenance.js"></script>
+</body>
+</html>
+    
+    <!-- 页面加载检查和修复脚本 -->
+    <script>
+    // 设备维护页面加载检查和导航修复 - 增强版
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("🔧 设备维护页面加载检查...");
+        console.log("🔍 诊断模式：检查页面基础元素...");
+        
+        // 基础诊断
+        const sidebar = document.querySelector(".sidebar");
+        const navGroups = document.querySelectorAll(".nav-group");
+        const deviceGroup = document.querySelector(".nav-group.expanded");
+        
+        console.log("📊 诊断结果:");
+        console.log(`- 侧边栏: ${sidebar ? "✓ 存在" : "❌ 缺失"}`);
+        console.log(`- 导航组数量: ${navGroups.length}`);
+        console.log(`- 设备管理组: ${deviceGroup ? "✓ 找到" : "❌ 未找到"}`);
+        
+        if (typeof initializeSidebar === "function") {
+            console.log("✓ common.js 已加载");
+        } else {
+            console.log("❌ common.js 未正确加载");
+        }
+        
+        // 确保基础功能正常
+        setTimeout(() => {
+            // 检查并修复时间显示
+            const currentTimeEl = document.getElementById("current-time");
+            if (currentTimeEl && currentTimeEl.textContent === "2024-01-15 14:30:25") {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString("zh-CN");
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 强化导航修复
+            console.log("🔧 执行设备维护页面导航强化修复...");
+            
+            // 1. 确保设备管理组展开
+            const deviceGroup = document.querySelector(".nav-group.expanded");
+            if (deviceGroup) {
+                const submenu = deviceGroup.querySelector(".nav-submenu");
+                if (submenu) {
+                    submenu.style.maxHeight = submenu.scrollHeight + "px";
+                    console.log("✓ 设备管理组已展开");
+                }
+            }
+            
+            // 2. 确保当前页面高亮
+            const currentNavItem = document.querySelector('a[href="maintenance.html"].nav-subitem');
+            if (currentNavItem) {
+                currentNavItem.classList.add("active");
+                console.log("✓ 设备维护页面已高亮");
+            }
+            
+            // 3. 添加导航组点击事件
+            const navGroups = document.querySelectorAll(".nav-group");
+            navGroups.forEach(group => {
+                const header = group.querySelector(".nav-item");
+                const submenu = group.querySelector(".nav-submenu");
+                if (header && submenu) {
+                    header.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        if (group.classList.contains("expanded")) {
+                            group.classList.remove("expanded");
+                            submenu.style.maxHeight = "0";
+                        } else {
+                            group.classList.add("expanded");
+                            submenu.style.maxHeight = submenu.scrollHeight + "px";
+                        }
+                    });
+                }
+            });
+            
+            // 4. 确保通用导航功能
+            if (typeof initializeSidebar === "function") {
+                initializeSidebar();
+                console.log("✓ 通用导航初始化完成");
+            }
+            
+            console.log("✅ 设备维护页面导航修复完成");
+        }, 500);
+    });
+    </script>
+</body>
+</html>

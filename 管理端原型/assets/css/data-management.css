@@ -1,0 +1,2075 @@
+/* ===============================
+   农情遥感系统管理端 - 数据管理样式
+   =============================== */
+
+/* 页面头部 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.page-title h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.page-title h1 i {
+    color: var(--primary-color);
+}
+
+.page-description {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.page-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-shrink: 0;
+}
+
+/* 统计概览区域 */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.stats-overview .stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-overview .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    transition: width var(--transition-normal);
+}
+
+.stats-overview .stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.stats-overview .stat-card:hover::before {
+    width: 8px;
+}
+
+.stats-overview .stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    position: relative;
+}
+
+.stats-overview .stat-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.stats-overview .stat-content {
+    flex: 1;
+}
+
+.stats-overview .stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stats-overview .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stats-overview .stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.stats-overview .stat-change.positive {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.stats-overview .stat-change.negative {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.stats-overview .stat-change.neutral {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.stats-overview .stat-change.warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+/* 数据控制区域 */
+.data-controls {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--spacing-xl);
+}
+
+.filter-section {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-end;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 120px;
+}
+
+.filter-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.filter-group .form-control {
+    font-size: var(--font-size-sm);
+}
+
+.filter-group span {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    align-self: center;
+    margin: 0 var(--spacing-sm);
+}
+
+.filter-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.batch-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* 数据表格容器 */
+.data-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.table-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.table-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.table-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* 表格样式增强 */
+.table-container {
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.table th {
+    background: var(--background-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--divider-color);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--divider-color);
+    color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.table tr:hover {
+    background-color: rgba(46, 125, 50, 0.02);
+}
+
+.table tr.selected {
+    background-color: rgba(46, 125, 50, 0.05);
+}
+
+/* 状态标签 */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.status-badge.processing {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.status-badge.completed {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.status-badge.failed {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+/* 质量评分 */
+.quality-score {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.quality-bar {
+    width: 60px;
+    height: 6px;
+    background: var(--divider-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.quality-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width var(--transition-normal);
+}
+
+.quality-fill.excellent {
+    background: linear-gradient(90deg, var(--success-color), #66BB6A);
+}
+
+.quality-fill.good {
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+}
+
+.quality-fill.fair {
+    background: linear-gradient(90deg, var(--warning-color), #FFB74D);
+}
+
+.quality-fill.poor {
+    background: linear-gradient(90deg, var(--error-color), #E57373);
+}
+
+.quality-text {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    min-width: 40px;
+}
+
+/* 操作按钮 */
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.action-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-xs);
+}
+
+.action-btn.view {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.action-btn.view:hover {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+.action-btn.download {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.action-btn.download:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.action-btn.delete {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.action-btn.delete:hover {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+.action-btn.process {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.action-btn.process:hover {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+/* 分页控件 */
+.pagination {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-top: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--background-color);
+}
+
+.pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.page-numbers {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+}
+
+.page-btn:hover {
+    background: var(--divider-color);
+}
+
+.page-btn.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border-color: var(--primary-color);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 处理监控区域 */
+.processing-monitor {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.monitor-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(33, 150, 243, 0.01));
+}
+
+.monitor-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.monitor-header h3 i {
+    color: var(--accent-color);
+}
+
+.processing-list {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.processing-item {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(33, 150, 243, 0.01));
+    transition: all var(--transition-fast);
+}
+
+.processing-item:last-child {
+    margin-bottom: 0;
+}
+
+.processing-item:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.processing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.processing-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.processing-status {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.processing-progress {
+    margin-bottom: var(--spacing-sm);
+}
+
+.processing-progress .progress-bar {
+    height: 6px;
+    background: var(--divider-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.processing-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), #42A5F5);
+    border-radius: var(--radius-sm);
+    transition: width var(--transition-normal);
+}
+
+.processing-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.processing-time {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+/* 上传模态框 */
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--spacing-lg);
+}
+
+.upload-zone.dragover {
+    border-color: var(--primary-color);
+    background: rgba(46, 125, 50, 0.02);
+}
+
+.upload-content i {
+    font-size: var(--font-size-3xl);
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.upload-content h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.upload-content p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.upload-progress {
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-item {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    background: var(--background-color);
+}
+
+.progress-item:last-child {
+    margin-bottom: 0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.filename {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.progress-percent {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.upload-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.upload-options .form-group:last-child {
+    grid-column: 1 / -1;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-tertiary);
+}
+
+.empty-state i {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+.empty-state p {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ===============================
+   作物数据管理专用样式
+   =============================== */
+
+/* 作物概览统计 */
+.crop-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.crop-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.crop-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    transition: width var(--transition-normal);
+}
+
+.crop-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.crop-stat-card:hover::before {
+    width: 8px;
+}
+
+.crop-stat-card .stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    position: relative;
+}
+
+.crop-stat-card .stat-icon.active {
+    background: linear-gradient(135deg, #8BC34A, #AED581);
+}
+
+.crop-stat-card .stat-icon.harvest {
+    background: linear-gradient(135deg, #FF9800, #FFB74D);
+}
+
+.crop-stat-card .stat-icon.area {
+    background: linear-gradient(135deg, #2196F3, #64B5F6);
+}
+
+.crop-stat-card .stat-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.crop-stat-card .stat-content {
+    flex: 1;
+}
+
+.crop-stat-card .stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.crop-stat-card .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.crop-stat-card .stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.crop-stat-card .stat-change.positive {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.crop-stat-card .stat-change.neutral {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+/* 作物分析图表 */
+.crop-analytics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.crop-distribution,
+.growth-timeline {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.analytics-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(139, 195, 74, 0.02));
+}
+
+.analytics-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.analytics-header h3 i {
+    color: var(--success-color);
+}
+
+.analytics-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.time-range-selector {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.time-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.time-btn:hover {
+    background: var(--divider-color);
+    color: var(--text-primary);
+}
+
+.time-btn.active {
+    background: var(--success-color);
+    color: var(--text-white);
+    border-color: var(--success-color);
+}
+
+.chart-content {
+    padding: var(--spacing-lg);
+    height: 300px;
+}
+
+.chart {
+    width: 100%;
+    height: 100%;
+}
+
+/* 作物筛选控制区域 */
+.crop-controls {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--spacing-xl);
+}
+
+.crop-controls .filter-section {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-end;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.crop-controls .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 140px;
+}
+
+.crop-controls .filter-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.date-range-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.date-separator {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+/* 作物表格容器 */
+.crop-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.crop-table-container .table-header {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(139, 195, 74, 0.02));
+}
+
+/* 排序图标 */
+.sort-icon {
+    margin-left: var(--spacing-xs);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+    transition: color var(--transition-fast);
+}
+
+.table th:hover .sort-icon {
+    color: var(--text-secondary);
+}
+
+.table th.sorted-asc .sort-icon::before {
+    content: '\f0de';
+    color: var(--primary-color);
+}
+
+.table th.sorted-desc .sort-icon::before {
+    content: '\f0dd';
+    color: var(--primary-color);
+}
+
+/* 作物表格特定样式 */
+.crop-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.crop-type {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.crop-type.grains {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #F57C00;
+}
+
+.crop-type.cash {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.crop-type.vegetables {
+    background-color: rgba(139, 195, 74, 0.1);
+    color: #689F38;
+}
+
+.crop-type.fruits {
+    background-color: rgba(255, 87, 34, 0.1);
+    color: #D84315;
+}
+
+.growth-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.growth-status.seeding {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.growth-status.growing {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.growth-status.flowering {
+    background-color: rgba(233, 30, 99, 0.1);
+    color: #C2185B;
+}
+
+.growth-status.fruiting {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.growth-status.mature {
+    background-color: rgba(103, 58, 183, 0.1);
+    color: #7B1FA2;
+}
+
+.growth-status.harvested {
+    background-color: rgba(96, 125, 139, 0.1);
+    color: #455A64;
+}
+
+.area-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.yield-value {
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+/* 作物表单样式 */
+.crop-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.coordinate-inputs {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.coordinate-inputs .form-control {
+    flex: 1;
+}
+
+/* 作物详情样式 */
+.crop-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+.detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.detail-section h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--divider-color);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* 按钮图标样式 */
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-color);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.btn-icon:hover {
+    background: var(--divider-color);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.btn-icon[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: var(--text-white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* ===============================
+   地理数据管理专用样式
+   =============================== */
+
+/* 地理数据概览统计 */
+.gis-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.gis-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.gis-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    transition: width var(--transition-normal);
+}
+
+.gis-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.gis-stat-card:hover::before {
+    width: 8px;
+}
+
+.gis-stat-card .stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, #2196F3, #64B5F6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    position: relative;
+}
+
+.gis-stat-card .stat-icon.area {
+    background: linear-gradient(135deg, #FF9800, #FFB74D);
+}
+
+.gis-stat-card .stat-icon.storage {
+    background: linear-gradient(135deg, #9C27B0, #BA68C8);
+}
+
+.gis-stat-card .stat-icon.accuracy {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+}
+
+.gis-stat-card .stat-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+/* GIS工作区 */
+.gis-workspace {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+    height: 600px;
+}
+
+.map-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(100, 181, 246, 0.02));
+}
+
+.map-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.map-header h3 i {
+    color: var(--primary-color);
+}
+
+.map-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.map-view {
+    flex: 1;
+    position: relative;
+    background: var(--background-color);
+}
+
+.map-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.map-placeholder i {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+.map-placeholder h4 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.map-status {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-top: 1px solid var(--divider-color);
+    background: var(--background-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.map-status .coordinates,
+.map-status .scale {
+    font-family: var(--font-mono);
+}
+
+/* 图层面板 */
+.layer-panel {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(102, 187, 106, 0.02));
+}
+
+.panel-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.panel-header h3 i {
+    color: var(--success-color);
+}
+
+.panel-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.layer-tree {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.layer-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.layer-group-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--background-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.layer-group-header:hover {
+    background: var(--divider-color);
+}
+
+.layer-group-toggle {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: transform var(--transition-fast);
+}
+
+.layer-group.expanded .layer-group-toggle {
+    transform: rotate(90deg);
+}
+
+.layer-group-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.layer-group-count {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    background: var(--surface-color);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.layer-items {
+    margin-left: var(--spacing-lg);
+    margin-top: var(--spacing-sm);
+    display: none;
+}
+
+.layer-group.expanded .layer-items {
+    display: block;
+}
+
+.layer-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+    margin-bottom: var(--spacing-xs);
+}
+
+.layer-item:hover {
+    background: var(--background-color);
+}
+
+.layer-visibility {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.layer-visibility.visible {
+    color: var(--primary-color);
+}
+
+.layer-name {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.layer-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.layer-item:hover .layer-actions {
+    opacity: 1;
+}
+
+.layer-action-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-xs);
+}
+
+.layer-action-btn:hover {
+    background: var(--divider-color);
+    color: var(--text-primary);
+}
+
+.layer-tools {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--divider-color);
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* GIS分析图表 */
+.gis-analytics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.data-type-distribution,
+.spatial-coverage {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.gis-analytics .analytics-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(100, 181, 246, 0.02));
+}
+
+.gis-analytics .analytics-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.gis-analytics .analytics-header h3 i {
+    color: var(--primary-color);
+}
+
+.coverage-legend {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-color.high {
+    background: var(--success-color);
+}
+
+.legend-color.medium {
+    background: var(--warning-color);
+}
+
+.legend-color.low {
+    background: var(--error-color);
+}
+
+/* 数据质量监控区域 */
+.data-quality-section {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.section-header h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.section-header h3 i {
+    color: var(--primary-color);
+}
+
+.quality-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.quality-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.quality-card {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-fast);
+}
+
+.quality-card:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.quality-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.quality-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    color: white;
+}
+
+.quality-icon.complete {
+    background: linear-gradient(135deg, var(--success-color), #66BB6A);
+}
+
+.quality-icon.accuracy {
+    background: linear-gradient(135deg, var(--primary-color), #64B5F6);
+}
+
+.quality-icon.consistency {
+    background: linear-gradient(135deg, var(--warning-color), #FFB74D);
+}
+
+.quality-icon.timeliness {
+    background: linear-gradient(135deg, #9C27B0, #BA68C8);
+}
+
+.quality-header h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.quality-content {
+    text-align: center;
+}
+
+.quality-score {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.quality-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.quality-details .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.quality-details .detail-item span:last-child {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 地理数据表格 */
+.gis-data-table {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.gis-data-table .table-header {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(100, 181, 246, 0.02));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.table-controls {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-group {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+/* 地理数据表格特定样式 */
+.data-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.data-type-badge.boundary {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: var(--primary-color);
+}
+
+.data-type-badge.landuse {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.data-type-badge.terrain {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.data-type-badge.water {
+    background-color: rgba(3, 169, 244, 0.1);
+    color: #0277BD;
+}
+
+.data-type-badge.transport {
+    background-color: rgba(156, 39, 176, 0.1);
+    color: #7B1FA2;
+}
+
+.format-badge {
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    background: var(--background-color);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.file-size {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.feature-count {
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+/* GIS表单样式 */
+.gis-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.file-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background: var(--background-color);
+}
+
+.file-upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(33, 150, 243, 0.02);
+}
+
+.file-upload-area i {
+    font-size: var(--font-size-2xl);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.file-upload-area p {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.file-hint {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.selected-files {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--background-color);
+    border-radius: var(--radius-sm);
+    display: none;
+}
+
+.selected-files.show {
+    display: block;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.file-item:last-child {
+    margin-bottom: 0;
+}
+
+.file-icon {
+    color: var(--primary-color);
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.file-size-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.file-remove {
+    color: var(--error-color);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.file-remove:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* 样式配置 */
+.style-config {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--background-color);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.style-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.style-row label {
+    min-width: 80px;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.color-picker {
+    width: 40px;
+    height: 32px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.opacity-value {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+    min-width: 40px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .data-controls,
+    .crop-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-lg);
+    }
+    
+    .crop-analytics,
+    .gis-analytics {
+        grid-template-columns: 1fr;
+    }
+    
+    .crop-detail-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .gis-workspace {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .layer-panel {
+        order: -1;
+    }
+    
+    .map-container {
+        height: 400px;
+    }
+    
+    .quality-metrics {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .table-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-section {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .filter-group {
+        min-width: 100px;
+    }
+    
+    .upload-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        align-items: stretch;
+    }
+    
+    .stats-overview,
+    .crop-overview,
+    .gis-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .gis-workspace {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .layer-panel {
+        height: 300px;
+    }
+    
+    .coverage-legend {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .coordinate-inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-range-picker {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-sm);
+    }
+    
+    .date-separator {
+        text-align: center;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .batch-actions {
+        flex-direction: column;
+    }
+    
+    .table-container {
+        font-size: var(--font-size-xs);
+    }
+    
+    .table th,
+    .table td {
+        padding: var(--spacing-sm);
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-actions {
+        flex-direction: column;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+    }
+    
+    .pagination-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+ 
+ 
+ 
+ 
+
+
+ 
+ 
+ 
+ 

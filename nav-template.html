@@ -1,0 +1,142 @@
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='NAV_PATH_TO_INDEX'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="NAV_PATH_TO_DATA/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="NAV_PATH_TO_DATA/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="NAV_PATH_TO_DATA/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="NAV_PATH_TO_DATA/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="NAV_PATH_TO_DEVICE/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="NAV_PATH_TO_DEVICE/monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="NAV_PATH_TO_DEVICE/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="NAV_PATH_TO_USER/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="NAV_PATH_TO_USER/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="NAV_PATH_TO_USER/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="NAV_PATH_TO_SYSTEM/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="NAV_PATH_TO_SYSTEM/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="NAV_PATH_TO_SYSTEM/monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="NAV_PATH_TO_REPORTS/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="NAV_PATH_TO_REPORTS/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="NAV_PATH_TO_REPORTS/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>

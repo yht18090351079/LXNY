@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 算法参数配置</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/system-settings.css">
+    <link rel="stylesheet" href="../../assets/css/algorithms.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>系统设置</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>算法参数配置</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索算法参数...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="algorithms.html" class="nav-subitem active">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-brain"></i>
+                    算法参数配置
+                </h1>
+                <p class="page-description">配置农情遥感系统中各种算法模型的参数，优化数据处理和分析效果</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="resetToDefaults()">
+                    <i class="fas fa-undo"></i>
+                    恢复默认
+                </button>
+                <button class="btn btn-secondary" onclick="exportConfig()">
+                    <i class="fas fa-file-export"></i>
+                    导出配置
+                </button>
+                <button class="btn btn-primary" onclick="saveAllConfig()">
+                    <i class="fas fa-save"></i>
+                    保存配置
+                </button>
+            </div>
+        </div>
+
+        <!-- 算法配置概览 -->
+        <div class="algorithm-overview">
+            <div class="algorithm-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalAlgorithms">12</div>
+                    <div class="stat-label">算法模块</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-check-circle"></i>
+                        全部运行正常
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-stat-card">
+                <div class="stat-icon active">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activeAlgorithms">10</div>
+                    <div class="stat-label">活跃算法</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-chart-line"></i>
+                        83.3% 活跃率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-stat-card">
+                <div class="stat-icon performance">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="avgPerformance">92.5%</div>
+                    <div class="stat-label">平均性能</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-thumbs-up"></i>
+                        性能优秀
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-stat-card">
+                <div class="stat-icon update">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="lastUpdate">2小时前</div>
+                    <div class="stat-label">最后更新</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-clock"></i>
+                        配置同步
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 算法配置选项卡 -->
+        <div class="algorithm-tabs">
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchAlgorithmTab('crop-analysis')">
+                    <i class="fas fa-seedling"></i>
+                    作物分析算法
+                </button>
+                <button class="tab-btn" onclick="switchAlgorithmTab('weather-prediction')">
+                    <i class="fas fa-cloud-sun"></i>
+                    气象预测算法
+                </button>
+                <button class="tab-btn" onclick="switchAlgorithmTab('disease-detection')">
+                    <i class="fas fa-bug"></i>
+                    病虫害识别
+                </button>
+                <button class="tab-btn" onclick="switchAlgorithmTab('yield-estimation')">
+                    <i class="fas fa-chart-bar"></i>
+                    产量预估算法
+                </button>
+                <button class="tab-btn" onclick="switchAlgorithmTab('image-processing')">
+                    <i class="fas fa-image"></i>
+                    图像处理算法
+                </button>
+            </div>
+            
+            <!-- 作物分析算法配置 -->
+            <div class="tab-content active" id="crop-analysis">
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-seedling"></i>
+                            作物生长分析算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('crop-growth')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>NDVI 植被指数参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>健康阈值:</label>
+                                    <input type="range" class="range-input" id="ndvi-healthy" min="0.3" max="0.9" step="0.01" value="0.7">
+                                    <span class="range-value">0.70</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>警告阈值:</label>
+                                    <input type="range" class="range-input" id="ndvi-warning" min="0.2" max="0.6" step="0.01" value="0.4">
+                                    <span class="range-value">0.40</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>采样频率(天):</label>
+                                    <input type="number" class="form-control" id="ndvi-frequency" value="7" min="1" max="30">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>作物识别参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>识别精度:</label>
+                                    <select class="form-control" id="crop-recognition-accuracy">
+                                        <option value="high">高精度 (95%+)</option>
+                                        <option value="medium" selected>中精度 (85-95%)</option>
+                                        <option value="low">低精度 (75-85%)</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>最小地块面积(亩):</label>
+                                    <input type="number" class="form-control" id="min-plot-area" value="0.5" step="0.1" min="0.1">
+                                </div>
+                                <div class="config-item">
+                                    <label>边界容差(米):</label>
+                                    <input type="number" class="form-control" id="boundary-tolerance" value="2" min="1" max="10">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>生长阶段判定</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>播种期NDVI:</label>
+                                    <input type="range" class="range-input" id="seeding-ndvi" min="0.1" max="0.3" step="0.01" value="0.15">
+                                    <span class="range-value">0.15</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>生长期NDVI:</label>
+                                    <input type="range" class="range-input" id="growing-ndvi" min="0.3" max="0.7" step="0.01" value="0.5">
+                                    <span class="range-value">0.50</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>成熟期NDVI:</label>
+                                    <input type="range" class="range-input" id="mature-ndvi" min="0.2" max="0.5" step="0.01" value="0.3">
+                                    <span class="range-value">0.30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-chart-line"></i>
+                            长势监测算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('growth-monitoring')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>监测参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>监测周期(天):</label>
+                                    <input type="number" class="form-control" id="monitoring-cycle" value="3" min="1" max="14">
+                                </div>
+                                <div class="config-item">
+                                    <label>异常检测灵敏度:</label>
+                                    <select class="form-control" id="anomaly-sensitivity">
+                                        <option value="high">高灵敏度</option>
+                                        <option value="medium" selected>中灵敏度</option>
+                                        <option value="low">低灵敏度</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>历史数据权重:</label>
+                                    <input type="range" class="range-input" id="history-weight" min="0.1" max="0.9" step="0.1" value="0.3">
+                                    <span class="range-value">0.30</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 气象预测算法配置 -->
+            <div class="tab-content" id="weather-prediction">
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-cloud"></i>
+                            天气预报算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('weather-forecast')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>预测参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>预测天数:</label>
+                                    <input type="number" class="form-control" id="forecast-days" value="7" min="1" max="15">
+                                </div>
+                                <div class="config-item">
+                                    <label>数据更新频率(小时):</label>
+                                    <input type="number" class="form-control" id="weather-update-freq" value="6" min="1" max="24">
+                                </div>
+                                <div class="config-item">
+                                    <label>预测精度要求:</label>
+                                    <select class="form-control" id="weather-accuracy">
+                                        <option value="high" selected>高精度 (90%+)</option>
+                                        <option value="medium">中精度 (80-90%)</option>
+                                        <option value="low">低精度 (70-80%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>气象要素权重</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>温度权重:</label>
+                                    <input type="range" class="range-input" id="temp-weight" min="0.1" max="1.0" step="0.1" value="0.3">
+                                    <span class="range-value">0.30</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>湿度权重:</label>
+                                    <input type="range" class="range-input" id="humidity-weight" min="0.1" max="1.0" step="0.1" value="0.2">
+                                    <span class="range-value">0.20</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>降雨权重:</label>
+                                    <input type="range" class="range-input" id="rainfall-weight" min="0.1" max="1.0" step="0.1" value="0.4">
+                                    <span class="range-value">0.40</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>风速权重:</label>
+                                    <input type="range" class="range-input" id="wind-weight" min="0.1" max="1.0" step="0.1" value="0.1">
+                                    <span class="range-value">0.10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            极端天气预警
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('extreme-weather')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>预警阈值</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>高温预警(°C):</label>
+                                    <input type="number" class="form-control" id="high-temp-threshold" value="35" min="25" max="45">
+                                </div>
+                                <div class="config-item">
+                                    <label>低温预警(°C):</label>
+                                    <input type="number" class="form-control" id="low-temp-threshold" value="5" min="-10" max="15">
+                                </div>
+                                <div class="config-item">
+                                    <label>强降雨预警(mm/h):</label>
+                                    <input type="number" class="form-control" id="heavy-rain-threshold" value="20" min="5" max="50">
+                                </div>
+                                <div class="config-item">
+                                    <label>大风预警(m/s):</label>
+                                    <input type="number" class="form-control" id="strong-wind-threshold" value="12" min="5" max="25">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 病虫害识别算法配置 -->
+            <div class="tab-content" id="disease-detection">
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-bug"></i>
+                            病虫害识别算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('disease-recognition')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>识别参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>识别置信度:</label>
+                                    <input type="range" class="range-input" id="disease-confidence" min="0.6" max="0.95" step="0.05" value="0.8">
+                                    <span class="range-value">0.80</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>最小病斑面积(像素):</label>
+                                    <input type="number" class="form-control" id="min-lesion-area" value="100" min="50" max="500">
+                                </div>
+                                <div class="config-item">
+                                    <label>扫描频率(天):</label>
+                                    <input type="number" class="form-control" id="disease-scan-freq" value="5" min="1" max="14">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>病害类型权重</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>叶斑病权重:</label>
+                                    <input type="range" class="range-input" id="leaf-spot-weight" min="0.1" max="1.0" step="0.1" value="0.3">
+                                    <span class="range-value">0.30</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>锈病权重:</label>
+                                    <input type="range" class="range-input" id="rust-weight" min="0.1" max="1.0" step="0.1" value="0.25">
+                                    <span class="range-value">0.25</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>白粉病权重:</label>
+                                    <input type="range" class="range-input" id="powdery-mildew-weight" min="0.1" max="1.0" step="0.1" value="0.2">
+                                    <span class="range-value">0.20</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>其他病害权重:</label>
+                                    <input type="range" class="range-input" id="other-disease-weight" min="0.1" max="1.0" step="0.1" value="0.25">
+                                    <span class="range-value">0.25</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-spider"></i>
+                            虫害检测算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('pest-detection')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>检测参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>检测灵敏度:</label>
+                                    <select class="form-control" id="pest-sensitivity">
+                                        <option value="high">高灵敏度</option>
+                                        <option value="medium" selected>中灵敏度</option>
+                                        <option value="low">低灵敏度</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>最小虫害密度(/㎡):</label>
+                                    <input type="number" class="form-control" id="min-pest-density" value="5" min="1" max="20">
+                                </div>
+                                <div class="config-item">
+                                    <label>监测时间段:</label>
+                                    <select class="form-control" id="pest-monitoring-time">
+                                        <option value="all-day">全天监测</option>
+                                        <option value="day-only" selected>仅白天</option>
+                                        <option value="night-only">仅夜间</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 产量预估算法配置 -->
+            <div class="tab-content" id="yield-estimation">
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-chart-bar"></i>
+                            产量预估算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('yield-prediction')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>预估参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>预估精度要求:</label>
+                                    <select class="form-control" id="yield-accuracy">
+                                        <option value="high">高精度 (±5%)</option>
+                                        <option value="medium" selected>中精度 (±10%)</option>
+                                        <option value="low">低精度 (±15%)</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>历史数据年限:</label>
+                                    <input type="number" class="form-control" id="historical-years" value="5" min="3" max="10">
+                                </div>
+                                <div class="config-item">
+                                    <label>预估更新频率(天):</label>
+                                    <input type="number" class="form-control" id="yield-update-freq" value="10" min="5" max="30">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>影响因子权重</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>植被指数权重:</label>
+                                    <input type="range" class="range-input" id="ndvi-yield-weight" min="0.1" max="1.0" step="0.1" value="0.4">
+                                    <span class="range-value">0.40</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>气象数据权重:</label>
+                                    <input type="range" class="range-input" id="weather-yield-weight" min="0.1" max="1.0" step="0.1" value="0.3">
+                                    <span class="range-value">0.30</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>土壤数据权重:</label>
+                                    <input type="range" class="range-input" id="soil-yield-weight" min="0.1" max="1.0" step="0.1" value="0.2">
+                                    <span class="range-value">0.20</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>管理措施权重:</label>
+                                    <input type="range" class="range-input" id="management-yield-weight" min="0.1" max="1.0" step="0.1" value="0.1">
+                                    <span class="range-value">0.10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 图像处理算法配置 -->
+            <div class="tab-content" id="image-processing">
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-image"></i>
+                            图像预处理算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('image-preprocessing')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>图像增强参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>对比度增强:</label>
+                                    <input type="range" class="range-input" id="contrast-enhance" min="0.5" max="2.0" step="0.1" value="1.2">
+                                    <span class="range-value">1.20</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>亮度调整:</label>
+                                    <input type="range" class="range-input" id="brightness-adjust" min="0.5" max="1.5" step="0.1" value="1.0">
+                                    <span class="range-value">1.00</span>
+                                </div>
+                                <div class="config-item">
+                                    <label>锐化强度:</label>
+                                    <input type="range" class="range-input" id="sharpening-intensity" min="0.0" max="2.0" step="0.1" value="0.5">
+                                    <span class="range-value">0.50</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>噪声处理</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>降噪强度:</label>
+                                    <select class="form-control" id="noise-reduction">
+                                        <option value="none">不处理</option>
+                                        <option value="light">轻度降噪</option>
+                                        <option value="medium" selected>中度降噪</option>
+                                        <option value="heavy">重度降噪</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>滤波器类型:</label>
+                                    <select class="form-control" id="filter-type">
+                                        <option value="gaussian" selected>高斯滤波</option>
+                                        <option value="median">中值滤波</option>
+                                        <option value="bilateral">双边滤波</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <h4>几何校正</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>自动校正:</label>
+                                    <label class="toggle-label">
+                                        <input type="checkbox" id="auto-correction" checked>
+                                        <span class="toggle-slider"></span>
+                                        启用
+                                    </label>
+                                </div>
+                                <div class="config-item">
+                                    <label>校正精度:</label>
+                                    <select class="form-control" id="correction-accuracy">
+                                        <option value="high" selected>高精度</option>
+                                        <option value="medium">中精度</option>
+                                        <option value="low">低精度</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="algorithm-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-eye"></i>
+                            特征提取算法
+                        </h3>
+                        <div class="section-status">
+                            <span class="status-badge active">运行中</span>
+                            <button class="btn-icon" onclick="toggleAlgorithm('feature-extraction')" data-tooltip="启用/禁用">
+                                <i class="fas fa-power-off"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <h4>特征参数</h4>
+                            <div class="config-items">
+                                <div class="config-item">
+                                    <label>特征点数量:</label>
+                                    <input type="number" class="form-control" id="feature-points" value="1000" min="500" max="5000">
+                                </div>
+                                <div class="config-item">
+                                    <label>提取算法:</label>
+                                    <select class="form-control" id="extraction-algorithm">
+                                        <option value="sift">SIFT</option>
+                                        <option value="surf" selected>SURF</option>
+                                        <option value="orb">ORB</option>
+                                    </select>
+                                </div>
+                                <div class="config-item">
+                                    <label>匹配阈值:</label>
+                                    <input type="range" class="range-input" id="match-threshold" min="0.1" max="1.0" step="0.1" value="0.7">
+                                    <span class="range-value">0.70</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 算法性能监控 -->
+        <div class="algorithm-performance">
+            <div class="performance-header">
+                <h3>
+                    <i class="fas fa-chart-line"></i>
+                    算法性能监控
+                </h3>
+                <div class="performance-controls">
+                    <button class="btn btn-secondary" onclick="refreshPerformance()">
+                        <i class="fas fa-sync"></i>
+                        刷新数据
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportPerformanceReport()">
+                        <i class="fas fa-file-export"></i>
+                        导出报告
+                    </button>
+                </div>
+            </div>
+            
+            <div class="performance-charts">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h4>算法执行时间</h4>
+                    </div>
+                    <div id="executionTimeChart" class="chart"></div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h4>算法准确率</h4>
+                    </div>
+                    <div id="accuracyChart" class="chart"></div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h4>资源使用情况</h4>
+                    </div>
+                    <div id="resourceUsageChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 配置导入模态框 -->
+    <div class="modal-overlay" id="importConfigModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">导入算法配置</h3>
+                <button class="modal-close" onclick="closeImportConfigModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="file-upload-area" onclick="document.getElementById('configFileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>点击选择配置文件或拖拽文件到此区域</p>
+                    <p class="file-hint">支持 .json, .xml 格式</p>
+                </div>
+                <input type="file" id="configFileInput" accept=".json,.xml" style="display: none;" onchange="handleConfigFileSelect(event)">
+                <div class="selected-config-file" id="selectedConfigFile"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeImportConfigModal()">取消</button>
+                <button class="btn btn-primary" onclick="importConfiguration()">导入配置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/algorithms.js"></script>
+</body>
+</html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

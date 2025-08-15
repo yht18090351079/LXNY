@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能化PRD系统 - 农情遥感系统产品需求文档 (开发版)</title>
+    <title>管理端PRD系统 - 农情遥感系统管理端产品需求文档 (开发版)</title>
     <style>
         * {
             margin: 0;
@@ -1125,8 +1125,8 @@
             'growth-analysis.html': functionConfigs['growth-analysis']
         };
 
-        // 页面列表
-        const pages = ['index.html', 'disaster-monitoring.html', 'weather-monitoring.html', 'yield-estimation.html', 'growth-analysis.html'];
+        // 页面列表 - 管理端原型主要页面
+        const pages = ['index.html'];
         let currentPageIndex = 0;
         let currentFunction = 'crop-distribution'; // 当前选中的功能
         let isFullscreen = false; // 全屏状态
@@ -1148,15 +1148,15 @@
             
             if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000')) {
                 // 通过API服务器访问
-                targetPath = '/prototype/index.html';
+                targetPath = '/管理端原型/index.html';
                 console.log('🌐 检测到API服务器环境，使用服务器路径');
             } else if (currentUrl.includes('127.0.0.1:5501') || currentUrl.includes('localhost:5501')) {
                 // 通过Live Server访问
-                targetPath = '/大屏原型/index.html';
+                targetPath = '/管理端原型/index.html';
                 console.log('🌐 检测到Live Server环境，使用服务器路径');
             } else {
                 // 直接打开文件
-                targetPath = '../../大屏原型/index.html';
+                targetPath = '../../管理端原型/index.html';
                 console.log('📁 检测到本地文件访问，使用相对路径');
             }
             

@@ -245,6 +245,10 @@
             padding: 16px;
             overflow-y: auto;
             flex: 1;
+            font-size: 12px;
+            color: #cccccc;
+            line-height: 1.5;
+            max-height: calc(100vh - 270px); /* 再减少50px高度，确保底部按钮更好显示 */
         }
 
         .annotation-item {
@@ -268,10 +272,71 @@
             font-size: 13px;
         }
 
-        .annotation-content {
-            font-size: 12px;
-            color: #cccccc;
-            line-height: 1.5;
+        /* Markdown样式支持 */
+        .annotation-content ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .annotation-content li {
+            margin: 4px 0;
+            list-style-type: disc;
+        }
+
+        .annotation-content li.nested {
+            margin-left: 15px;
+            list-style-type: circle;
+            color: #aaaaaa;
+        }
+
+        .annotation-content strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .annotation-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+        }
+
+        .annotation-content h3, .annotation-content h4 {
+            color: #00a8ff;
+            margin: 12px 0 6px 0;
+            font-size: 13px;
+        }
+
+        .annotation-content p {
+            margin: 6px 0;
+        }
+
+        /* 长内容批注样式优化 */
+        .annotation-content div[style*="margin-top: 8px"] {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+            /* 为滚动条预留空间 */
+        }
+
+        /* 批注内容区域的滚动条美化 */
+        .annotation-content div[style*="margin-top: 8px"]::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .annotation-content div[style*="margin-top: 8px"]::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+
+        .annotation-content div[style*="margin-top: 8px"]::-webkit-scrollbar-thumb {
+            background: #555555;
+            border-radius: 3px;
+        }
+
+        .annotation-content div[style*="margin-top: 8px"]::-webkit-scrollbar-thumb:hover {
+            background: #666666;
         }
 
         /* 底部三栏区域 */
@@ -464,7 +529,7 @@
     <div class="prd-container">
         <!-- 左上角 - 内嵌页面区域 (70%) -->
         <div class="embedded-page">
-            <iframe id="embeddedFrame" src="/prototype/index.html" title="农情遥感系统大屏"></iframe>
+            <iframe id="embeddedFrame" src="../../大屏原型/index.html" title="农情遥感系统大屏"></iframe>
         </div>
 
         <!-- 右侧 - 页面元素批注区域 -->
@@ -497,7 +562,27 @@
 
             <!-- 第三栏 - 页面元素清单 -->
             <div class="panel">
-                <div class="panel-header">📋 页面元素清单</div>
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+                    <span>📋 页面元素清单</span>
+                    <!-- 批注导航按钮 -->
+                    <div id="annotationNavigation" style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <button id="prevAnnotationBtn" onclick="navigateToPreviousAnnotation()" 
+                                    style="background: #667eea; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 9px;"
+                                    title="上一批注 (← 或 J 键)">
+                                ←
+                            </button>
+                            <div id="annotationCounter" style="font-size: 9px; color: #ccc; white-space: nowrap;">
+                                1/5
+                            </div>
+                            <button id="nextAnnotationBtn" onclick="navigateToNextAnnotation()" 
+                                    style="background: #667eea; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 9px;"
+                                    title="下一批注 (→ 或 K 键)">
+                                →
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel-content">
 
                       <div class="element-list" id="elementList">
@@ -808,6 +893,17 @@
                     {
                         title: '💡 提示',
                         content: '请从页面元素清单中选择要查看的元素'
+                    },
+                    {
+                        title: '⚙️ 功能导航栏',
+                        content: `底部导航栏提供不同功能模块的快速切换，包括作物分布、灾害监测等。
+
+- **主功能按钮**: 5个单选按钮，切换不同页面功能
+  - 🌾 作物分布 (当前页面)
+  - 📊 长势分析 (growth-analysis.html)
+  - 📈 产量预估 (yield-estimation.html)
+  - 🌤️ 气象监测 (weather-monitoring.html)
+  - ⚠️ 灾害定损 (disaster-monitoring.html)`
                     }
                 ]
             },
@@ -963,47 +1059,84 @@
         let currentAnnotations = {}; // 当前页面的批注数据
         let selectedElementId = null; // 当前选中的元素ID
         let pageElements = {}; // 抓取到的页面元素
+        
+        // 批注导航相关变量
+        let currentPageAnnotationList = []; // 当前页面的批注列表
+        let currentAnnotationIndex = 0; // 当前选中的批注索引
+
+        // 智能检测并设置iframe路径
+        function setupSmartIframePath() {
+            const iframe = document.getElementById('embeddedFrame');
+            const currentUrl = window.location.href;
+            
+            let targetPath;
+            
+            if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000')) {
+                // 通过API服务器访问
+                targetPath = '/prototype/index.html';
+                console.log('🌐 检测到API服务器环境，使用服务器路径');
+            } else if (currentUrl.includes('127.0.0.1:5501') || currentUrl.includes('localhost:5501')) {
+                // 通过Live Server访问
+                targetPath = '/大屏原型/index.html';
+                console.log('🌐 检测到Live Server环境，使用服务器路径');
+            } else {
+                // 直接打开文件
+                targetPath = '../../大屏原型/index.html';
+                console.log('📁 检测到本地文件访问，使用相对路径');
+            }
+            
+            iframe.src = targetPath;
+            console.log('🎯 iframe路径已设置为:', targetPath);
+        }
 
         // 初始化页面
         async function initializePage() {
             console.log('=== 页面初始化开始 ===');
             
-            // 步骤0: UI适配
-            console.log('步骤0: 环境配置和UI适配');
+            // 步骤0: 智能设置iframe路径
+            console.log('步骤0: 智能设置iframe路径');
+            setupSmartIframePath();
+            
+            // 步骤1: UI适配
+            console.log('步骤1: 环境配置和UI适配');
             adaptUIForCurrentMode();
             
             // 检查API连接（开发模式下）
             if (CURRENT_ENV.enableRealTimeSync) {
-                console.log('步骤0.5: 检查API连接');
+                console.log('步骤1.5: 检查API连接');
                 const apiConnected = await apiClient.checkConnection();
                 updateConnectionStatus(apiConnected);
             }
             
             // 首先加载批注数据
-            console.log('步骤1: 加载批注数据');
+            console.log('步骤2: 加载批注数据');
             await loadAnnotations();
             
             // 然后更新页面内容
-            console.log('步骤2: 更新页面内容');
+            console.log('步骤3: 更新页面内容');
             await updatePageContent();
 
-            console.log('步骤3: 更新时间戳');
+            console.log('步骤4: 更新时间戳');
             updateLastUpdateTime();
             
-            console.log('步骤4: 加载全局说明');
+            console.log('步骤5: 加载全局说明');
             await loadGlobalDescription();
             
             // 计算并应用iframe缩放
-            console.log('步骤5: 计算iframe缩放');
+            console.log('步骤6: 计算iframe缩放');
             calculateIframeScale();
             
             // 设置iframe加载完成后的监听
-            console.log('步骤6: 设置iframe监听');
+            console.log('步骤7: 设置iframe监听');
             setupIframeListener();
+            
+            // 设置键盘快捷键
+            console.log('步骤8: 设置键盘快捷键');
+            setupKeyboardShortcuts();
             
             // 延迟更新元素清单，确保所有数据都已加载
             setTimeout(() => {
-                console.log('步骤7: 延迟更新元素清单');
+                console.log('步骤9: 延迟更新元素清单');
                 updateElementList();
             }, 2000);
             
@@ -1413,8 +1546,12 @@
             }
         }
 
-        // 简单的Markdown转HTML转换器
+        // 增强的Markdown转HTML转换器
         function convertMarkdownToHTML(markdown) {
+            if (!markdown || typeof markdown !== 'string') {
+                return '';
+            }
+            
             return markdown
                 // 标题转换
                 .replace(/^### (.*$)/gim, '<h4>$1</h4>')
@@ -1424,20 +1561,25 @@
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 // 代码转换
                 .replace(/`(.*?)`/g, '<code>$1</code>')
-                // 列表转换
-                .replace(/^\* (.*$)/gim, '<li>$1</li>')
-                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-                // 段落转换
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/^(.*)$/gim, '<p>$1</p>')
+                // 带编号的列表转换
+                .replace(/^\d+\.\s+(.*$)/gim, '<li>$1</li>')
+                // 普通列表转换 (支持 - 和 * 两种格式)
+                .replace(/^[\-\*]\s+(.*$)/gim, '<li>$1</li>')
+                // 嵌套列表转换 (支持2级缩进)
+                .replace(/^  [\-\*]\s+(.*$)/gim, '<li class="nested">$1</li>')
+                // 包装连续的li为ul
+                .replace(/((?:<li(?:\s+class="[^"]*")?>[^<]*<\/li>\s*)+)/g, '<ul>$1</ul>')
+                // 段落转换 (先处理换行)
+                .replace(/\n\n+/g, '</p><p>')
+                .replace(/^(?!<[uh]|<li)(.+)$/gim, '<p>$1</p>')
                 // 清理多余的p标签
-                .replace(/<p><h([1-6])>(.*?)<\/h[1-6]><\/p>/g, '<h$1>$2</h$1>')
-                .replace(/<p><ul>/g, '<ul>')
-                .replace(/<\/ul><\/p>/g, '</ul>')
-                .replace(/<p><li>/g, '<li>')
-                .replace(/<\/li><\/p>/g, '</li>')
+                .replace(/<p>(<h[1-6]>.*?<\/h[1-6]>)<\/p>/g, '$1')
+                .replace(/<p>(<ul>.*?<\/ul>)<\/p>/gs, '$1')
+                .replace(/<p>(<ol>.*?<\/ol>)<\/p>/gs, '$1')
                 // 清理空段落
-                .replace(/<p><\/p>/g, '');
+                .replace(/<p><\/p>/g, '')
+                // 清理开头和结尾的空p标签
+                .replace(/^<p><\/p>|<p><\/p>$/g, '');
         }
 
         // 计算iframe缩放比例
@@ -1505,7 +1647,7 @@
             annotationContent.innerHTML = config.annotations.map(annotation => `
                 <div class="annotation-item">
                     <div class="annotation-title">${annotation.title}</div>
-                    <div class="annotation-content">${annotation.content}</div>
+                    <div class="annotation-content">${convertMarkdownToHTML(annotation.content)}</div>
                 </div>
             `).join('');
             
@@ -1529,7 +1671,7 @@
             annotationContent.innerHTML = config.annotations.map(annotation => `
                 <div class="annotation-item">
                     <div class="annotation-title">${annotation.title}</div>
-                    <div class="annotation-content">${annotation.content}</div>
+                    <div class="annotation-content">${convertMarkdownToHTML(annotation.content)}</div>
                 </div>
             `).join('');
             
@@ -4514,6 +4656,165 @@
             return finalSelector;
         }
 
+        // 自动检测当前激活的功能页面
+        function detectCurrentFunction() {
+            const iframe = document.getElementById('embeddedFrame');
+            if (!iframe || !iframe.contentWindow) {
+                console.warn('无法访问iframe，使用默认功能');
+                return currentFunction;
+            }
+            
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            if (!iframeDoc) {
+                console.warn('无法访问iframe文档，使用默认功能');
+                return currentFunction;
+            }
+            
+            try {
+                // 查找激活的主功能按钮
+                const activeMainBtn = iframeDoc.querySelector('.main-switch-btn.active');
+                if (activeMainBtn) {
+                    const detectedFunction = activeMainBtn.getAttribute('data-function');
+                    if (detectedFunction && detectedFunction !== currentFunction) {
+                        console.log(`🔄 检测到页面功能变化: ${currentFunction} → ${detectedFunction}`);
+                        currentFunction = detectedFunction;
+                        
+                        // 更新页面元素清单和系统状态
+                        setTimeout(() => {
+                            updateElementList();
+                        }, 500);
+                    }
+                    return detectedFunction;
+                }
+                
+                // 如果没有找到激活按钮，尝试从URL或页面内容推断
+                const url = iframe.contentWindow.location.href;
+                if (url.includes('growth-analysis')) {
+                    return 'growth-analysis';
+                } else if (url.includes('yield-estimation')) {
+                    return 'yield-estimation';
+                } else if (url.includes('weather-monitoring')) {
+                    return 'weather-monitoring';
+                } else if (url.includes('disaster-monitoring')) {
+                    return 'disaster-monitoring';
+                } else {
+                    return 'crop-distribution'; // 默认值
+                }
+            } catch (error) {
+                console.warn('检测当前功能时出错:', error);
+                return currentFunction;
+            }
+        }
+
+        // 更新批注导航状态
+        function updateAnnotationNavigation() {
+            const detectedFunction = detectCurrentFunction();
+            const currentPageKey = getCurrentPageKey();
+            const currentPageAnnotations = currentAnnotations[currentPageKey] || {};
+            
+            // 更新当前页面批注列表
+            currentPageAnnotationList = Object.keys(currentPageAnnotations);
+            
+            const navigationDiv = document.getElementById('annotationNavigation');
+            const prevBtn = document.getElementById('prevAnnotationBtn');
+            const nextBtn = document.getElementById('nextAnnotationBtn');
+            const counter = document.getElementById('annotationCounter');
+            
+            if (currentPageAnnotationList.length > 0) {
+                // 有批注时显示导航
+                navigationDiv.style.display = 'block';
+                
+                // 确保当前索引有效
+                if (selectedElementId) {
+                    const selectedIndex = currentPageAnnotationList.indexOf(selectedElementId);
+                    if (selectedIndex !== -1) {
+                        currentAnnotationIndex = selectedIndex;
+                    }
+                } else if (currentAnnotationIndex >= currentPageAnnotationList.length) {
+                    currentAnnotationIndex = 0;
+                }
+                
+                // 更新计数器
+                counter.textContent = `${currentAnnotationIndex + 1}/${currentPageAnnotationList.length}`;
+                
+                // 更新按钮状态
+                const hasMultiple = currentPageAnnotationList.length > 1;
+                prevBtn.disabled = !hasMultiple || currentAnnotationIndex === 0;
+                nextBtn.disabled = !hasMultiple || currentAnnotationIndex === currentPageAnnotationList.length - 1;
+                
+                // 设置按钮样式
+                prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+                nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+                prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
+                nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
+                
+            } else {
+                // 没有批注时显示空状态导航
+                navigationDiv.style.display = 'block';
+                counter.textContent = '0/0';
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                prevBtn.style.opacity = '0.3';
+                nextBtn.style.opacity = '0.3';
+                prevBtn.style.cursor = 'not-allowed';
+                nextBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // 导航到上一个批注
+        function navigateToPreviousAnnotation() {
+            if (currentPageAnnotationList.length === 0) return;
+            
+            currentAnnotationIndex = Math.max(0, currentAnnotationIndex - 1);
+            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
+            
+            console.log(`🔼 导航到上一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
+            
+            // 选中并高亮目标批注
+            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
+        }
+
+        // 导航到下一个批注
+        function navigateToNextAnnotation() {
+            if (currentPageAnnotationList.length === 0) return;
+            
+            currentAnnotationIndex = Math.min(currentPageAnnotationList.length - 1, currentAnnotationIndex + 1);
+            const targetElementId = currentPageAnnotationList[currentAnnotationIndex];
+            
+            console.log(`🔽 导航到下一个批注: ${targetElementId} (${currentAnnotationIndex + 1}/${currentPageAnnotationList.length})`);
+            
+            // 选中并高亮目标批注
+            selectElementFromAnnotation(detectCurrentFunction(), targetElementId);
+        }
+
+        // 设置键盘快捷键
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(event) {
+                // 只在非输入元素时响应快捷键
+                if (event.target.tagName === 'INPUT' || 
+                    event.target.tagName === 'TEXTAREA' || 
+                    event.target.contentEditable === 'true') {
+                    return;
+                }
+                
+                // 上一个批注: 左箭头或 J 键
+                if (event.key === 'ArrowLeft' || event.key === 'j' || event.key === 'J') {
+                    event.preventDefault();
+                    navigateToPreviousAnnotation();
+                }
+                
+                // 下一个批注: 右箭头或 K 键
+                if (event.key === 'ArrowRight' || event.key === 'k' || event.key === 'K') {
+                    event.preventDefault();
+                    navigateToNextAnnotation();
+                }
+                
+                console.log('键盘快捷键:', event.key);
+            });
+            
+            console.log('🎹 键盘快捷键已设置: ← → J K 键可切换批注');
+        }
+
         // 更新页面元素清单
         function updateElementList() {
             const elementList = document.getElementById('elementList');
@@ -4545,41 +4846,95 @@
             // 生成按功能分组的批注显示
             let htmlContent = '';
             
+            // 获取当前页面的功能键
+            const detectedFunction = detectCurrentFunction();
+            const currentPageKey = getCurrentPageKey();
+            const currentFunctionAnnotations = currentAnnotations[currentPageKey] || {};
+            
             if (Object.keys(allRelatedAnnotations).length === 0) {
+                // 检查是否是因为当前功能页面没有批注数据
+                const functionTitle = functionConfigs[detectedFunction]?.title || detectedFunction;
+                
                 htmlContent = `
                     <div style="text-align: center; color: #999; padding: 20px;">
                         <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
-                        <div>暂无批注内容</div>
+                        <div style="margin-bottom: 8px;">当前页面：${functionTitle}</div>
+                        <div style="margin-bottom: 12px;">暂无批注内容</div>
+                        <div style="font-size: 12px; color: #666; line-height: 1.4;">
+                            💡 提示：<br>
+                            • 目前仅有 "作物分布" 页面的批注数据<br>
+                            • 其他页面的批注正在完善中<br>
+                            • 您可以开启批注模式为当前页面添加批注
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <button onclick="switchToFunction('crop-distribution')" 
+                                    style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                📋 查看作物分布批注
+                            </button>
+                        </div>
                         <div style="margin-top: 8px; font-size: 12px;">
                             开启批注模式，点击页面元素即可添加批注
                         </div>
                     </div>
                 `;
             } else {
-                htmlContent = Object.entries(allRelatedAnnotations).map(([funcKey, funcData]) => {
-                    const isCurrentFunction = funcKey === currentFunction;
-                    const annotationEntries = Object.entries(funcData.annotations);
-                    
-                    return annotationEntries.map(([id, annotation]) => `
-                        <div class="element-item ${selectedElementId === id ? 'active' : ''}" 
-                             onclick="selectElementFromAnnotation('${funcKey}', '${id}')" 
-                             data-element-id="${id}"
-                             style="margin: 4px 0; border: 1px solid #606060; border-radius: 4px; padding: 6px 8px; cursor: pointer; transition: all 0.2s;">
-                            <div class="element-name" style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">
-                                📝 ${annotation.name}
+                // 只显示当前功能页面的批注
+                const currentPageAnnotations = currentAnnotations[currentPageKey] || {};
+                
+                // 直接显示当前页面的批注，不要包装容器
+                if (Object.keys(currentPageAnnotations).length > 0) {
+                    Object.entries(currentPageAnnotations).forEach(([elementId, annotation]) => {
+                        const isSelected = selectedElementId === elementId;
+                        htmlContent += `
+                            <div class="element-item ${isSelected ? 'active' : ''}" 
+                                 onclick="selectElementFromAnnotation('${detectedFunction}', '${elementId}')" 
+                                 data-element-id="${elementId}"
+                                 style="margin: 4px 0; border: 1px solid #606060; border-radius: 4px; padding: 6px 8px; cursor: pointer; transition: all 0.2s;">
+                                <div class="element-name" style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">
+                                    📝 ${annotation.name}
+                                </div>
+                                <div class="element-desc" style="font-size: 10px; color: #ccc; line-height: 1.3;">
+                                    ${annotation.content ? annotation.content.substring(0, 80) + (annotation.content.length > 80 ? '...' : '') : '无描述'}
+                                </div>
+                                <div style="font-size: 9px; color: #999; margin-top: 4px;">
+                                    ${annotation.timestamp}
+                                </div>
                             </div>
-                            <div class="element-desc" style="font-size: 10px; color: #ccc; line-height: 1.3;">
-                                ${annotation.content.substring(0, 50)}${annotation.content.length > 50 ? '...' : ''}
+                        `;
+                    });
+                } else {
+                    // 当前页面没有批注时的提示
+                    const functionTitle = functionConfigs[detectedFunction]?.title || detectedFunction;
+                    htmlContent = `
+                        <div style="text-align: center; color: #999; padding: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
+                            <div style="margin-bottom: 8px;">当前页面：${functionTitle}</div>
+                            <div style="margin-bottom: 12px;">暂无批注内容</div>
+                            <div style="font-size: 12px; color: #666; line-height: 1.4;">
+                                💡 提示：<br>
+                                • 目前仅有 "作物分布" 页面的批注数据<br>
+                                • 其他页面的批注正在完善中<br>
+                                • 您可以开启批注模式为当前页面添加批注
                             </div>
-                            <div style="font-size: 9px; color: #999; margin-top: 4px;">
-                                ${annotation.timestamp}
+                            <div style="margin-top: 12px;">
+                                <button onclick="switchToFunction('crop-distribution')" 
+                                        style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+                                    📋 查看作物分布批注
+                                </button>
+                            </div>
+                            <div style="margin-top: 8px; font-size: 12px;">
+                                开启批注模式，点击页面元素即可添加批注
                             </div>
                         </div>
-                    `).join('');
-                }).join('');
+                    `;
+                }
+                
             }
             
             elementList.innerHTML = htmlContent;
+            
+            // 更新批注导航状态
+            updateAnnotationNavigation();
         }
         
         // 从批注选择元素（跨功能）
@@ -4720,6 +5075,15 @@
         // 选择页面元素
         function selectElement(elementId) {
             selectedElementId = elementId;
+            
+            // 更新当前批注在列表中的索引
+            if (currentPageAnnotationList.length > 0) {
+                const index = currentPageAnnotationList.indexOf(elementId);
+                if (index !== -1) {
+                    currentAnnotationIndex = index;
+                }
+            }
+            
             updateElementList();
             
             // 清除之前的高亮
@@ -5221,7 +5585,7 @@
                         <div style="margin-top: 12px;">
                             <div style="font-size: 12px; color: #999; margin-bottom: 6px; font-weight: 600;">批注内容</div>
                             <div class="annotation-content" style="padding: 12px; background: #404040; border-radius: 8px; line-height: 1.5; border: 1px solid #606060; color: #ffffff; font-weight: 500;">
-                                ${elementAnnotation.content}
+                                ${convertMarkdownToHTML(elementAnnotation.content)}
                             </div>
                         </div>
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #404040;">
@@ -5795,7 +6159,7 @@
             annotationContent.innerHTML = config.annotations.map(annotation => `
                 <div class="annotation-item">
                     <div class="annotation-title">${annotation.title}</div>
-                    <div class="annotation-content">${annotation.content}</div>
+                    <div class="annotation-content">${convertMarkdownToHTML(annotation.content)}</div>
                 </div>
             `).join('');
         }

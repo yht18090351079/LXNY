@@ -1,0 +1,755 @@
+/* ===============================
+   农情遥感系统管理端 - 气象数据管理样式
+   =============================== */
+
+/* 实时气象概览 */
+.weather-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.weather-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.weather-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transition: width var(--transition-normal);
+}
+
+.weather-card.temperature::before {
+    background: linear-gradient(135deg, #FF6B35, #FF8A65);
+}
+
+.weather-card.humidity::before {
+    background: linear-gradient(135deg, #2196F3, #42A5F5);
+}
+
+.weather-card.rainfall::before {
+    background: linear-gradient(135deg, #607D8B, #78909C);
+}
+
+.weather-card.windspeed::before {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+}
+
+.weather-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.weather-card:hover::before {
+    width: 8px;
+}
+
+.weather-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    color: var(--text-white);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.weather-card.temperature .weather-icon {
+    background: linear-gradient(135deg, #FF6B35, #FF8A65);
+}
+
+.weather-card.humidity .weather-icon {
+    background: linear-gradient(135deg, #2196F3, #42A5F5);
+}
+
+.weather-card.rainfall .weather-icon {
+    background: linear-gradient(135deg, #607D8B, #78909C);
+}
+
+.weather-card.windspeed .weather-icon {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+}
+
+.weather-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.weather-content {
+    flex: 1;
+}
+
+.weather-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+}
+
+.weather-value {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.current-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.unit {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.weather-trend {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.weather-trend.positive {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.weather-trend.negative {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.weather-trend.neutral {
+    background: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+.weather-chart {
+    width: 80px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+/* 气象站状态 */
+.station-status {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(33, 150, 243, 0.01));
+}
+
+.section-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.section-header h3 i {
+    color: var(--accent-color);
+}
+
+.section-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.station-grid {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.station-card {
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.01));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.station-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.station-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.station-info h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.station-location {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.station-status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.station-status-badge.online {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.station-status-badge.offline {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.station-status-badge.maintenance {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.station-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.data-item {
+    text-align: center;
+}
+
+.data-value {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+}
+
+.data-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.station-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: center;
+}
+
+.station-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.station-btn.view {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.station-btn.view:hover {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+.station-btn.config {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.station-btn.config:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.station-btn.maintenance {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.station-btn.maintenance:hover {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+/* 数据可视化 */
+.data-visualization {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.chart-container {
+    width: 100%;
+}
+
+.chart-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.chart-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.chart-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.tab-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    background: var(--background-color);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+    background: var(--divider-color);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border-color: var(--primary-color);
+}
+
+.chart-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.chart-content {
+    padding: var(--spacing-lg);
+}
+
+.chart {
+    width: 100%;
+    height: 400px;
+}
+
+/* 数据质量监控 */
+.quality-monitor {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.monitor-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(76, 175, 80, 0.01));
+}
+
+.monitor-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.monitor-header h3 i {
+    color: var(--success-color);
+}
+
+.quality-grid {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.quality-card {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(76, 175, 80, 0.01));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.quality-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--success-color);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.quality-card.warning::before {
+    background: var(--warning-color);
+}
+
+.quality-card.error::before {
+    background: var(--error-color);
+}
+
+.quality-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.quality-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.quality-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-sm);
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.quality-card.warning .quality-icon {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.quality-card.error .quality-icon {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.quality-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.quality-content {
+    text-align: center;
+}
+
+.quality-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.quality-count {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+/* 导入模态框 */
+.import-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.import-option {
+    padding: var(--spacing-xl);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.01), rgba(76, 175, 80, 0.01));
+}
+
+.import-option:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.import-option.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(76, 175, 80, 0.02));
+}
+
+.option-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    color: var(--text-white);
+    margin: 0 auto var(--spacing-lg) auto;
+    position: relative;
+}
+
+.option-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.option-content h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.option-content p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* 温度数值样式 */
+.temperature-value {
+    color: #FF6B35;
+}
+
+.temperature-value.hot {
+    color: #FF3D00;
+    font-weight: 700;
+}
+
+.temperature-value.cold {
+    color: #2196F3;
+    font-weight: 700;
+}
+
+/* 湿度数值样式 */
+.humidity-value {
+    color: #2196F3;
+}
+
+.humidity-value.high {
+    color: #1976D2;
+    font-weight: 700;
+}
+
+.humidity-value.low {
+    color: #FF9800;
+    font-weight: 700;
+}
+
+/* 降雨量数值样式 */
+.rainfall-value {
+    color: #607D8B;
+}
+
+.rainfall-value.heavy {
+    color: #455A64;
+    font-weight: 700;
+}
+
+.rainfall-value.light {
+    color: #90A4AE;
+}
+
+/* 风速数值样式 */
+.windspeed-value {
+    color: #4CAF50;
+}
+
+.windspeed-value.strong {
+    color: #2E7D32;
+    font-weight: 700;
+}
+
+.windspeed-value.calm {
+    color: #81C784;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .weather-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .station-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    
+    .chart-controls {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .chart-tabs {
+        order: 2;
+    }
+    
+    .chart-actions {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .weather-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .weather-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .weather-chart {
+        width: 100%;
+        height: 60px;
+    }
+    
+    .station-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quality-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .import-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .weather-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .current-value {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .weather-icon {
+        width: 48px;
+        height: 48px;
+        font-size: var(--font-size-xl);
+    }
+    
+    .quality-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

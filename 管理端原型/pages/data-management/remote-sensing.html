@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 遥感数据管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入ECharts图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/data-management.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>数据管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>遥感数据管理</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索遥感数据...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="remote-sensing.html" class="nav-subitem active">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-satellite"></i>
+                    遥感数据管理
+                </h1>
+                <p class="page-description">管理和监控农业遥感影像数据，包括数据上传、处理状态跟踪和质量评估</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync"></i>
+                    刷新数据
+                </button>
+                <button class="btn btn-primary" onclick="showUploadModal()">
+                    <i class="fas fa-upload"></i>
+                    上传遥感数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据统计概览 -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalImages">1,247</div>
+                    <div class="stat-label">影像总数</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +23 本月
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hdd"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalStorage">2.8 TB</div>
+                    <div class="stat-label">存储使用</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-chart-line"></i>
+                        +156 GB 本月
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="processingCount">8</div>
+                    <div class="stat-label">处理中</div>
+                    <div class="stat-change warning">
+                        <i class="fas fa-clock"></i>
+                        平均 45分钟
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="qualityScore">92.5%</div>
+                    <div class="stat-label">数据质量</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +1.2% 本月
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据过滤和操作区 -->
+        <div class="data-controls">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>数据类型:</label>
+                    <select class="form-control" id="dataTypeFilter">
+                        <option value="">全部类型</option>
+                        <option value="landsat">Landsat</option>
+                        <option value="sentinel">Sentinel-2</option>
+                        <option value="modis">MODIS</option>
+                        <option value="gf">高分系列</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>处理状态:</label>
+                    <select class="form-control" id="statusFilter">
+                        <option value="">全部状态</option>
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="completed">已完成</option>
+                        <option value="failed">处理失败</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>时间范围:</label>
+                    <input type="date" class="form-control" id="startDate">
+                    <span>至</span>
+                    <input type="date" class="form-control" id="endDate">
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i>
+                        应用筛选
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i>
+                        清除筛选
+                    </button>
+                </div>
+            </div>
+            
+            <div class="batch-actions">
+                <button class="btn btn-secondary" onclick="batchDelete()" disabled id="batchDeleteBtn">
+                    <i class="fas fa-trash"></i>
+                    批量删除
+                </button>
+                <button class="btn btn-secondary" onclick="batchDownload()" disabled id="batchDownloadBtn">
+                    <i class="fas fa-download"></i>
+                    批量下载
+                </button>
+                <button class="btn btn-secondary" onclick="batchProcess()" disabled id="batchProcessBtn">
+                    <i class="fas fa-play"></i>
+                    批量处理
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据列表 -->
+        <div class="data-table-container">
+            <div class="table-header">
+                <h3>遥感数据列表</h3>
+                <div class="table-actions">
+                    <button class="btn-icon" onclick="toggleView('grid')" data-tooltip="网格视图">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleView('list')" data-tooltip="列表视图">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="btn-icon" onclick="exportTable()" data-tooltip="导出表格">
+                        <i class="fas fa-file-export"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th data-sort="name">
+                                文件名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="type">
+                                数据类型
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="date">
+                                获取时间
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="size">
+                                文件大小
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="status">
+                                处理状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="quality">
+                                数据质量
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- 数据行将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页控件 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span id="pageStart">1</span> - <span id="pageEnd">20</span> 条，
+                    共 <span id="totalRecords">247</span> 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-secondary" onclick="changePage('first')" id="firstPageBtn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changePage('prev')" id="prevPageBtn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    
+                    <div class="page-numbers" id="pageNumbers">
+                        <!-- 页码按钮将通过JavaScript生成 -->
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="changePage('next')" id="nextPageBtn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changePage('last')" id="lastPageBtn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据处理状态监控 -->
+        <div class="processing-monitor">
+            <div class="monitor-header">
+                <h3>
+                    <i class="fas fa-tasks"></i>
+                    数据处理监控
+                </h3>
+                <button class="btn btn-secondary" onclick="refreshProcessingStatus()">
+                    <i class="fas fa-sync"></i>
+                    刷新状态
+                </button>
+            </div>
+            
+            <div class="processing-list" id="processingList">
+                <!-- 处理任务列表将通过JavaScript生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 上传数据模态框 -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">上传遥感数据</h3>
+                <button class="modal-close" onclick="closeUploadModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h4>拖拽文件到此处或点击选择文件</h4>
+                        <p>支持格式: .tif, .img, .jp2, .zip (最大 2GB)</p>
+                        <input type="file" id="fileInput" multiple accept=".tif,.img,.jp2,.zip" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-folder-open"></i>
+                            选择文件
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress-item">
+                        <div class="progress-info">
+                            <span class="filename">landsat_2024_01_15.tif</span>
+                            <span class="progress-percent">45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="upload-options">
+                    <div class="form-group">
+                        <label class="form-label">数据类型:</label>
+                        <select class="form-control" id="uploadDataType">
+                            <option value="landsat">Landsat</option>
+                            <option value="sentinel">Sentinel-2</option>
+                            <option value="modis">MODIS</option>
+                            <option value="gf">高分系列</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">获取时间:</label>
+                        <input type="datetime-local" class="form-control" id="acquisitionTime">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">备注信息:</label>
+                        <textarea class="form-control" id="uploadNotes" rows="3" placeholder="请输入备注信息..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeUploadModal()">取消</button>
+                <button class="btn btn-primary" onclick="startUpload()">开始上传</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/remote-sensing.js"></script>
+</body>
+</html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
