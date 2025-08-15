@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeUserMenu();
     initializeNotifications();
     initializeModals();
+    initializeQuickActions();
     
     console.log('✅ 管理端系统初始化完成');
 });
@@ -499,6 +500,331 @@ function throttle(func, limit) {
     };
 }
 
+/**
+ * 快捷操作配置和控制
+ */
+let quickActionsConfig = [
+    {
+        id: 'upload-remote-sensing',
+        title: '上传遥感数据',
+        icon: 'fas fa-satellite',
+        url: 'pages/data-management/remote-sensing.html',
+        color: 'primary'
+    },
+    {
+        id: 'add-device',
+        title: '添加设备',
+        icon: 'fas fa-plus',
+        url: 'pages/device-management/sensors.html',
+        color: 'success'
+    },
+    {
+        id: 'create-user',
+        title: '创建用户',
+        icon: 'fas fa-user-plus',
+        url: 'pages/user-management/users.html',
+        color: 'info'
+    },
+    {
+        id: 'export-report',
+        title: '导出报表',
+        icon: 'fas fa-download',
+        url: 'pages/reports/export.html',
+        color: 'warning'
+    }
+];
+
+// 可选的快捷操作预设
+const quickActionsPresets = [
+    {
+        id: 'data-import',
+        title: '数据导入',
+        icon: 'fas fa-upload',
+        url: 'pages/data-management/import.html',
+        color: 'primary'
+    },
+    {
+        id: 'system-backup',
+        title: '系统备份',
+        icon: 'fas fa-database',
+        url: 'pages/system-settings/backup.html',
+        color: 'secondary'
+    },
+    {
+        id: 'weather-sync',
+        title: '气象同步',
+        icon: 'fas fa-cloud-sun',
+        url: 'pages/data-management/weather.html',
+        color: 'info'
+    },
+    {
+        id: 'alert-config',
+        title: '告警配置',
+        icon: 'fas fa-bell',
+        url: 'pages/system-settings/alerts.html',
+        color: 'danger'
+    },
+    {
+        id: 'analysis-report',
+        title: '分析报告',
+        icon: 'fas fa-chart-line',
+        url: 'pages/reports/analysis.html',
+        color: 'success'
+    },
+    {
+        id: 'maintenance',
+        title: '系统维护',
+        icon: 'fas fa-tools',
+        url: 'pages/system-settings/maintenance.html',
+        color: 'secondary'
+    }
+];
+
+/**
+ * 初始化快捷操作
+ */
+function initializeQuickActions() {
+    // 从本地存储加载配置
+    loadQuickActionsConfig();
+    
+    // 渲染快捷操作
+    renderQuickActions();
+    
+    console.log('📌 快捷操作边栏已初始化（可自定义模式）');
+}
+
+/**
+ * 从本地存储加载快捷操作配置
+ */
+function loadQuickActionsConfig() {
+    const savedConfig = localStorage.getItem('quickActionsConfig');
+    if (savedConfig) {
+        try {
+            quickActionsConfig = JSON.parse(savedConfig);
+        } catch (e) {
+            console.warn('快捷操作配置加载失败，使用默认配置', e);
+        }
+    }
+}
+
+/**
+ * 保存快捷操作配置到本地存储
+ */
+function saveQuickActionsConfig() {
+    try {
+        localStorage.setItem('quickActionsConfig', JSON.stringify(quickActionsConfig));
+        console.log('快捷操作配置已保存');
+    } catch (e) {
+        console.error('保存快捷操作配置失败', e);
+    }
+}
+
+/**
+ * 渲染快捷操作
+ */
+function renderQuickActions() {
+    const grid = document.getElementById('quickActionGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    quickActionsConfig.forEach(action => {
+        const actionItem = createActionItem(action);
+        grid.appendChild(actionItem);
+    });
+}
+
+/**
+ * 创建快捷操作项
+ */
+function createActionItem(action) {
+    const item = document.createElement('div');
+    item.className = 'action-item';
+    item.onclick = () => {
+        if (action.url) {
+            window.location.href = action.url;
+        } else if (action.callback && typeof window[action.callback] === 'function') {
+            window[action.callback]();
+        }
+    };
+    
+    item.innerHTML = `
+        <i class="${action.icon}"></i>
+        <span>${action.title}</span>
+    `;
+    
+    return item;
+}
+
+/**
+ * 打开自定义模态框
+ */
+function openCustomizeModal() {
+    const modal = document.getElementById('customizeModal');
+    if (!modal) return;
+    
+    // 渲染当前操作和可选操作
+    renderCurrentActionsList();
+    renderAvailableActionsList();
+    
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * 关闭自定义模态框
+ */
+function closeCustomizeModal() {
+    const modal = document.getElementById('customizeModal');
+    if (!modal) return;
+    
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+/**
+ * 渲染当前操作列表
+ */
+function renderCurrentActionsList() {
+    const list = document.getElementById('currentActionsList');
+    if (!list) return;
+    
+    list.innerHTML = '';
+    
+    if (quickActionsConfig.length === 0) {
+        list.innerHTML = '<div class="empty-state">暂无快捷操作</div>';
+        return;
+    }
+    
+    quickActionsConfig.forEach((action, index) => {
+        const item = document.createElement('div');
+        item.className = 'customize-action-item';
+        item.innerHTML = `
+            <i class="${action.icon}"></i>
+            <span>${action.title}</span>
+            <button class="remove-btn" onclick="removeQuickAction(${index})">×</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+/**
+ * 渲染可选操作列表
+ */
+function renderAvailableActionsList() {
+    const list = document.getElementById('availableActionsList');
+    if (!list) return;
+    
+    list.innerHTML = '';
+    
+    // 过滤掉已经添加的操作
+    const currentIds = quickActionsConfig.map(action => action.id);
+    const availableActions = quickActionsPresets.filter(action => !currentIds.includes(action.id));
+    
+    if (availableActions.length === 0) {
+        list.innerHTML = '<div class="empty-state">暂无可添加的操作</div>';
+        return;
+    }
+    
+    availableActions.forEach(action => {
+        const item = document.createElement('div');
+        item.className = 'customize-action-item';
+        item.onclick = () => addQuickAction(action);
+        item.innerHTML = `
+            <i class="${action.icon}"></i>
+            <span>${action.title}</span>
+        `;
+        list.appendChild(item);
+    });
+}
+
+/**
+ * 添加快捷操作
+ */
+function addQuickAction(action) {
+    if (quickActionsConfig.find(item => item.id === action.id)) {
+        showNotification('提示', '该操作已存在', 'warning', 2000);
+        return;
+    }
+    
+    quickActionsConfig.push(action);
+    
+    // 重新渲染列表
+    renderCurrentActionsList();
+    renderAvailableActionsList();
+}
+
+/**
+ * 移除快捷操作
+ */
+function removeQuickAction(index) {
+    if (index >= 0 && index < quickActionsConfig.length) {
+        quickActionsConfig.splice(index, 1);
+        
+        // 重新渲染列表
+        renderCurrentActionsList();
+        renderAvailableActionsList();
+    }
+}
+
+/**
+ * 保存自定义配置
+ */
+function saveCustomization() {
+    saveQuickActionsConfig();
+    renderQuickActions();
+    closeCustomizeModal();
+    showNotification('保存成功', '快捷操作配置已更新', 'success', 2000);
+}
+
+/**
+ * 侧边栏控制
+ */
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (!sidebar) return;
+    
+    sidebar.classList.toggle('collapsed');
+    
+    if (sidebar.classList.contains('collapsed')) {
+        console.log('📱 左侧边栏已收起');
+    } else {
+        console.log('📱 左侧边栏已展开');
+    }
+}
+
+/**
+ * 用户菜单控制
+ */
+function toggleUserMenu() {
+    const userDropdown = document.getElementById('userDropdown');
+    if (!userDropdown) return;
+    
+    userDropdown.classList.toggle('show');
+}
+
+/**
+ * 用户操作函数
+ */
+function showUserProfile() {
+    showNotification('个人信息功能正在开发中...', 'info');
+}
+
+function showSystemSettings() {
+    showNotification('系统设置功能正在开发中...', 'info');
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        showNotification('正在退出...', 'info');
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 1000);
+    }
+}
+
 // 导出常用函数到全局
 window.showNotification = showNotification;
 window.openModal = openModal;
@@ -510,3 +836,17 @@ window.throttle = throttle;
 window.validateForm = validateForm;
 window.initializeSidebar = initializeSidebar;
 window.updateTime = initializeTime;
+window.initializeQuickActions = initializeQuickActions;
+window.loadQuickActionsConfig = loadQuickActionsConfig;
+window.saveQuickActionsConfig = saveQuickActionsConfig;
+window.renderQuickActions = renderQuickActions;
+window.openCustomizeModal = openCustomizeModal;
+window.closeCustomizeModal = closeCustomizeModal;
+window.addQuickAction = addQuickAction;
+window.removeQuickAction = removeQuickAction;
+window.saveCustomization = saveCustomization;
+window.toggleSidebar = toggleSidebar;
+window.toggleUserMenu = toggleUserMenu;
+window.showUserProfile = showUserProfile;
+window.showSystemSettings = showSystemSettings;
+window.logout = logout;

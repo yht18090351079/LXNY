@@ -330,30 +330,8 @@
                 </div>
             </div>
             
-            <!-- 快捷操作和最近活动 -->
+            <!-- 最近活动 -->
             <div class="bottom-section">
-                <div class="quick-actions">
-                    <h3 class="section-title">快捷操作</h3>
-                    <div class="action-grid">
-                        <div class="action-item" onclick="window.location.href='pages/data-management/remote-sensing.html'">
-                            <i class="fas fa-satellite"></i>
-                            <span>上传遥感数据</span>
-                        </div>
-                        <div class="action-item" onclick="window.location.href='pages/device-management/sensors.html'">
-                            <i class="fas fa-plus"></i>
-                            <span>添加设备</span>
-                        </div>
-                        <div class="action-item" onclick="window.location.href='pages/user-management/users.html'">
-                            <i class="fas fa-user-plus"></i>
-                            <span>创建用户</span>
-                        </div>
-                        <div class="action-item" onclick="window.location.href='pages/reports/export.html'">
-                            <i class="fas fa-download"></i>
-                            <span>导出报表</span>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="recent-activities">
                     <h3 class="section-title">最近活动</h3>
                     <div class="activity-list">
@@ -395,10 +373,57 @@
         </div>
     </main>
 
+    <!-- 快捷操作边栏 -->
+    <div class="quick-actions" id="quickActions">
+        <div class="bg-gradient"></div>
+        <div class="quick-actions-hint">快捷操作</div>
+        <div class="quick-actions-content">
+            <h3 class="section-title">快捷操作</h3>
+            <div class="action-grid" id="quickActionGrid">
+                <!-- 动态生成的快捷操作项 -->
+            </div>
+            <div class="action-customize">
+                <button class="customize-btn" onclick="openCustomizeModal()">
+                    <i class="fas fa-cog"></i>
+                    <span>自定义</span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+
     <!-- 侧边栏切换按钮 -->
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
+
+    <!-- 快捷操作自定义模态框 -->
+    <div class="modal-overlay" id="customizeModal">
+        <div class="modal-content customize-modal">
+            <div class="modal-header">
+                <h3>自定义快捷操作</h3>
+                <button class="modal-close" onclick="closeCustomizeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="current-actions">
+                    <h4>当前快捷操作</h4>
+                    <div class="current-actions-list" id="currentActionsList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+                <div class="available-actions">
+                    <h4>可选操作</h4>
+                    <div class="available-actions-list" id="availableActionsList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCustomizeModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveCustomization()">保存</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/common.js"></script>
