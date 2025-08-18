@@ -104,6 +104,10 @@
                         <i class="fas fa-map"></i>
                         地理数据管理
                     </a>
+                    <a href="weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
                 </div>
             </div>
             
@@ -558,7 +562,33 @@
 
                     <!-- 24小时趋势图表 -->
                     <div class="detail-section">
-                        <h4>24小时数据趋势</h4>
+                        <div class="trend-header">
+                            <h4>数据趋势</h4>
+                            <div class="trend-time-controls">
+                                <button class="trend-time-btn active" onclick="switchTrendTimeRange('24h')" data-range="24h">24小时</button>
+                                <button class="trend-time-btn" onclick="switchTrendTimeRange('7d')" data-range="7d">7日</button>
+                                <button class="trend-time-btn" onclick="switchTrendTimeRange('history')" data-range="history">历史</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 历史日期选择器 -->
+                        <div class="history-date-picker" id="historyDatePicker" style="display: none;">
+                            <div class="date-picker-container">
+                                <div class="date-input-group">
+                                    <label>起始日期:</label>
+                                    <input type="date" id="historyStartDate" class="form-control date-input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label>结束日期:</label>
+                                    <input type="date" id="historyEndDate" class="form-control date-input">
+                                </div>
+                                <button class="btn btn-primary" onclick="applyHistoryDateRange()">
+                                    <i class="fas fa-search"></i>
+                                    查询
+                                </button>
+                            </div>
+                        </div>
+                        
                         <div class="trend-chart-container">
                             <div id="stationTrendChart" class="station-trend-chart"></div>
                         </div>
@@ -644,10 +674,6 @@
                 <button class="btn btn-secondary" onclick="exportStationData()">
                     <i class="fas fa-download"></i>
                     导出数据
-                </button>
-                <button class="btn btn-secondary" onclick="configStation()">
-                    <i class="fas fa-cog"></i>
-                    配置设置
                 </button>
                 <button class="btn btn-primary" onclick="closeStationDetailModal()">
                     <i class="fas fa-times"></i>

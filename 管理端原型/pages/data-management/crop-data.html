@@ -100,6 +100,10 @@
                         <i class="fas fa-map"></i>
                         地理数据管理
                     </a>
+                    <a href="weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
                 </div>
             </div>
             
@@ -365,7 +369,7 @@
                 </div>
                 
                 <div class="filter-group">
-                    <label>种植区域:</label>
+                    <label>种植地块:</label>
                     <select class="form-control" id="areaFilter">
                         <option value="">全部区域</option>
                         <option value="north">北部片区</option>
@@ -462,7 +466,7 @@
                                 <i class="fas fa-sort sort-icon"></i>
                             </th>
                             <th data-sort="region">
-                                种植区域
+                                种植地块
                                 <i class="fas fa-sort sort-icon"></i>
                             </th>
                             <th data-sort="expectedYield">
@@ -564,9 +568,9 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">种植区域:</label>
+                            <label class="form-label">种植地块:</label>
                             <select class="form-control" id="region" required>
-                                <option value="">请选择种植区域</option>
+                                <option value="">请选择种植地块</option>
                                 <option value="north">北部片区</option>
                                 <option value="south">南部片区</option>
                                 <option value="east">东部片区</option>

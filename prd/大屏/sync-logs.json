@@ -470,5 +470,125 @@
       "name": "经济价值分析卡",
       "elementId": "precise-span-noid-breakdown-label-10-0-0-小麦优质种植收益"
     }
+  },
+  {
+    "timestamp": "2025-08-18T06:23:49.301Z",
+    "action": "create",
+    "annotation": {
+      "name": "气象图层选择控制",
+      "elementId": "precise-div-noid-stat-card-5-1-2"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T06:24:36.464Z",
+    "action": "create",
+    "annotation": {
+      "name": "气象图层选择控制",
+      "elementId": "precise-div-noid-stat-card-5-1-2"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T06:25:25.258Z",
+    "action": "create",
+    "annotation": {
+      "name": "时间控制模块",
+      "elementId": "precise-div-noid-stat-header-6-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T06:41:52.709Z",
+    "action": "create",
+    "annotation": {
+      "name": "气象预警滚动显示",
+      "elementId": "precise-div-noid-stat-header-6-0-0-气象预警"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:14:27.786Z",
+    "action": "create",
+    "annotation": {
+      "name": "农业气象指数",
+      "elementId": "precise-div-noid-stat-header-6-0-0-农业气象指数"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:16:04.626Z",
+    "action": "create",
+    "annotation": {
+      "name": "当前天气状况",
+      "elementId": "precise-div-noid-stat-header-6-0-0-当前天气状况"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:18:25.537Z",
+    "action": "create",
+    "annotation": {
+      "name": "ECharts图表",
+      "elementId": "precise-canvas-noid-noclass-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:32:21.050Z",
+    "action": "create",
+    "annotation": {
+      "name": "灾害概览统计 (disaster-overview)",
+      "elementId": "precise-div-noid-overview-item-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:32:43.340Z",
+    "action": "create",
+    "annotation": {
+      "name": "损失预测评估图表",
+      "elementId": "precise-div-loss-prediction-chart-noclass-6-1-2"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:33:04.945Z",
+    "action": "create",
+    "annotation": {
+      "name": "历史灾害对比分析",
+      "elementId": "precise-canvas-noid-noclass-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:33:35.654Z",
+    "action": "create",
+    "annotation": {
+      "name": "实时预警信息",
+      "elementId": "precise-div-noid-alert-item-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:34:05.331Z",
+    "action": "create",
+    "annotation": {
+      "name": "灾害分布统计",
+      "elementId": "precise-div-noid-stat-header-6-0-0-灾害分布统计"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:34:17.257Z",
+    "action": "create",
+    "annotation": {
+      "name": "div: 🛡️ 应急响应建议",
+      "elementId": "precise-div-noid-stat-header-6-0-0-应急响应建议"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T07:34:54.914Z",
+    "action": "create",
+    "annotation": {
+      "name": " 灾害数据弹窗",
+      "elementId": "precise-div-noid-control-header-5-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-18T08:24:13.953Z",
+    "action": "create",
+    "annotation": {
+      "name": "长势等级比例堆叠图",
+      "elementId": "precise-span-noid-excellence-rate-8-1-1-优良率726"
+    }
   }
 ]

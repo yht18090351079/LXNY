@@ -908,6 +908,318 @@ function initializeStationTrendChart(stationId) {
 }
 
 /**
+ * 切换趋势图时间范围
+ * @param {string} range - 时间范围: '24h', '7d', 'history'
+ */
+function switchTrendTimeRange(range) {
+    // 更新按钮状态
+    document.querySelectorAll('.trend-time-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-range="${range}"]`).classList.add('active');
+    
+    // 获取当前气象站ID
+    const stationName = document.getElementById('detailStationName')?.textContent;
+    if (!stationName) return;
+    
+    // 处理历史日期选择器显示/隐藏
+    const historyDatePicker = document.getElementById('historyDatePicker');
+    if (range === 'history') {
+        // 显示历史日期选择器
+        historyDatePicker.style.display = 'block';
+        
+        // 设置默认日期范围（最近30天）
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 30);
+        
+        document.getElementById('historyStartDate').value = startDate.toISOString().split('T')[0];
+        document.getElementById('historyEndDate').value = endDate.toISOString().split('T')[0];
+        
+        // 使用默认日期范围更新图表
+        updateStationTrendChart(range, startDate, endDate);
+    } else {
+        // 隐藏历史日期选择器
+        historyDatePicker.style.display = 'none';
+        // 根据选择的时间范围更新图表
+        updateStationTrendChart(range);
+    }
+    
+    // 显示切换通知
+    const rangeNames = {
+        '24h': '24小时',
+        '7d': '7日',
+        'history': '历史'
+    };
+    showNotification(`已切换到${rangeNames[range]}趋势图`, 'success');
+}
+
+/**
+ * 更新气象站趋势图表
+ * @param {string} range - 时间范围
+ * @param {Date} customStartDate - 自定义开始日期（可选）
+ * @param {Date} customEndDate - 自定义结束日期（可选）
+ */
+function updateStationTrendChart(range, customStartDate = null, customEndDate = null) {
+    if (!charts.stationTrend) return;
+    
+    // 根据时间范围生成不同的模拟数据
+    let timePoints = [];
+    let dataLength = 0;
+    
+    switch(range) {
+        case '24h':
+            dataLength = 24;
+            for (let i = 0; i < dataLength; i++) {
+                timePoints.push(new Date(Date.now() - (23 - i) * 60 * 60 * 1000).toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'}));
+            }
+            break;
+        case '7d':
+            dataLength = 7;
+            for (let i = 0; i < dataLength; i++) {
+                timePoints.push(new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('zh-CN', {month: '2-digit', day: '2-digit'}));
+            }
+            break;
+        case 'history':
+            if (customStartDate && customEndDate) {
+                // 使用自定义日期范围
+                const daysDiff = Math.ceil((customEndDate - customStartDate) / (1000 * 60 * 60 * 24));
+                dataLength = Math.min(daysDiff + 1, 90); // 最多显示90个数据点
+                
+                for (let i = 0; i < dataLength; i++) {
+                    const date = new Date(customStartDate);
+                    date.setDate(date.getDate() + Math.floor(i * daysDiff / (dataLength - 1)));
+                    timePoints.push(date.toLocaleDateString('zh-CN', {month: '2-digit', day: '2-digit'}));
+                }
+    } else {
+                // 默认显示最近30天
+                dataLength = 30;
+                for (let i = 0; i < dataLength; i++) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - (29 - i));
+                    timePoints.push(date.toLocaleDateString('zh-CN', {month: '2-digit', day: '2-digit'}));
+                }
+            }
+            break;
+    }
+    
+    // 生成模拟数据
+    const tempData = [], humidityData = [], rainfallData = [], windspeedData = [];
+    
+    for (let i = 0; i < dataLength; i++) {
+        tempData.push((15 + Math.random() * 20).toFixed(1));
+        humidityData.push((40 + Math.random() * 40).toFixed(0));
+        rainfallData.push((Math.random() * 15).toFixed(1));
+        windspeedData.push((Math.random() * 12).toFixed(1));
+    }
+    
+    // 生成图表标题
+    let chartTitle = '';
+    if (range === '24h') {
+        chartTitle = '数据趋势 - 24小时';
+    } else if (range === '7d') {
+        chartTitle = '数据趋势 - 7日';
+    } else if (range === 'history') {
+        if (customStartDate && customEndDate) {
+            const formatDate = (date) => date.toLocaleDateString('zh-CN', {month: '2-digit', day: '2-digit'});
+            chartTitle = `数据趋势 - ${formatDate(customStartDate)} 至 ${formatDate(customEndDate)}`;
+        } else {
+            chartTitle = '数据趋势 - 历史（最近30天）';
+        }
+    }
+
+    // 更新图表配置
+    const option = {
+        title: {
+            text: chartTitle,
+            left: 'center',
+            textStyle: {
+                fontSize: 14,
+                fontWeight: 'normal',
+                color: '#666'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#E0E0E0',
+            borderWidth: 1,
+            textStyle: {
+                color: '#333'
+            }
+        },
+        legend: {
+            data: ['温度', '湿度', '降雨量', '风速'],
+            bottom: 10,
+            textStyle: {
+                color: '#666'
+            }
+        },
+        grid: {
+            top: 50,
+            left: 50,
+            right: 50,
+            bottom: 60,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: timePoints,
+            axisLine: {
+                lineStyle: {
+                    color: '#E0E0E0'
+                }
+            },
+            axisTick: {
+                lineStyle: {
+                    color: '#E0E0E0'
+                }
+            },
+            axisLabel: {
+                color: '#666',
+                fontSize: 11
+            }
+        },
+        yAxis: [
+            {
+                type: 'value',
+                name: '温度(°C) / 湿度(%)',
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        color: '#E0E0E0'
+                    }
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#E0E0E0'
+                    }
+                },
+                axisLabel: {
+                    color: '#666',
+                    fontSize: 11
+                }
+            },
+            {
+                type: 'value',
+                name: '降雨量(mm) / 风速(m/s)',
+                position: 'right',
+                axisLine: {
+                    lineStyle: {
+                        color: '#E0E0E0'
+                    }
+                },
+                axisTick: {
+                    lineStyle: {
+                        color: '#E0E0E0'
+                    }
+                },
+                axisLabel: {
+                    color: '#666',
+                    fontSize: 11
+                }
+            }
+        ],
+        series: [
+            {
+                name: '温度',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 6,
+                itemStyle: {
+                    color: '#FF6B6B'
+                },
+                lineStyle: {
+                    color: '#FF6B6B',
+                    width: 2
+                },
+                data: tempData
+            },
+            {
+                name: '湿度',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 6,
+                itemStyle: {
+                    color: '#4ECDC4'
+                },
+                lineStyle: {
+                    color: '#4ECDC4',
+                    width: 2
+                },
+                data: humidityData
+            },
+            {
+                name: '降雨量',
+                type: 'bar',
+                yAxisIndex: 1,
+                itemStyle: {
+                    color: '#45B7D1',
+                    borderRadius: [2, 2, 0, 0]
+                },
+                data: rainfallData
+            },
+            {
+                name: '风速',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 6,
+                yAxisIndex: 1,
+                itemStyle: {
+                    color: '#96CEB4'
+                },
+                lineStyle: {
+                    color: '#96CEB4',
+                    width: 2
+                },
+                data: windspeedData
+            }
+        ]
+    };
+    
+    charts.stationTrend.setOption(option, true);
+}
+
+/**
+ * 应用历史日期范围查询
+ */
+function applyHistoryDateRange() {
+    const startDateInput = document.getElementById('historyStartDate');
+    const endDateInput = document.getElementById('historyEndDate');
+    
+    if (!startDateInput.value || !endDateInput.value) {
+        showNotification('请选择起始日期和结束日期', 'warning');
+        return;
+    }
+    
+    const startDate = new Date(startDateInput.value);
+    const endDate = new Date(endDateInput.value);
+    
+    // 验证日期范围
+    if (startDate >= endDate) {
+        showNotification('起始日期必须早于结束日期', 'warning');
+        return;
+    }
+    
+    // 验证日期范围不超过1年
+    const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    if (daysDiff > 365) {
+        showNotification('日期范围不能超过1年', 'warning');
+        return;
+    }
+    
+    // 更新图表
+    updateStationTrendChart('history', startDate, endDate);
+    
+    // 显示查询成功消息
+    const formatDate = (date) => date.toLocaleDateString('zh-CN');
+    showNotification(`已查询 ${formatDate(startDate)} 至 ${formatDate(endDate)} 的数据`, 'success');
+}
+
+/**
  * 导出气象站数据
  */
 function exportStationData() {
