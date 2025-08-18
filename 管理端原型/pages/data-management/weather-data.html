@@ -235,302 +235,146 @@
                     <i class="fas fa-map-marker-alt"></i>
                     气象站管理
                 </button>
-                <button class="btn btn-primary" onclick="showDataImport()">
-                    <i class="fas fa-file-import"></i>
-                    导入气象数据
-                </button>
+
             </div>
         </div>
 
-        <!-- 实时气象概览 -->
-        <div class="weather-overview">
-            <div class="weather-card temperature">
-                <div class="weather-icon">
-                    <i class="fas fa-thermometer-half"></i>
-                </div>
-                <div class="weather-content">
-                    <div class="weather-label">平均气温</div>
-                    <div class="weather-value">
-                        <span class="current-value" id="avgTemperature">23.5</span>
-                        <span class="unit">°C</span>
-                    </div>
-                    <div class="weather-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>较昨日 +2.3°C</span>
-                    </div>
-                </div>
-                <div class="weather-chart" id="temperatureChart"></div>
-            </div>
-            
-            <div class="weather-card humidity">
-                <div class="weather-icon">
-                    <i class="fas fa-tint"></i>
-                </div>
-                <div class="weather-content">
-                    <div class="weather-label">平均湿度</div>
-                    <div class="weather-value">
-                        <span class="current-value" id="avgHumidity">68</span>
-                        <span class="unit">%</span>
-                    </div>
-                    <div class="weather-trend negative">
-                        <i class="fas fa-arrow-down"></i>
-                        <span>较昨日 -5%</span>
-                    </div>
-                </div>
-                <div class="weather-chart" id="humidityChart"></div>
-            </div>
-            
-            <div class="weather-card rainfall">
-                <div class="weather-icon">
-                    <i class="fas fa-cloud-rain"></i>
-                </div>
-                <div class="weather-content">
-                    <div class="weather-label">今日降雨</div>
-                    <div class="weather-value">
-                        <span class="current-value" id="todayRainfall">12.5</span>
-                        <span class="unit">mm</span>
-                    </div>
-                    <div class="weather-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>较昨日 +8.2mm</span>
-                    </div>
-                </div>
-                <div class="weather-chart" id="rainfallChart"></div>
-            </div>
-            
-            <div class="weather-card windspeed">
-                <div class="weather-icon">
-                    <i class="fas fa-wind"></i>
-                </div>
-                <div class="weather-content">
-                    <div class="weather-label">平均风速</div>
-                    <div class="weather-value">
-                        <span class="current-value" id="avgWindSpeed">3.2</span>
-                        <span class="unit">m/s</span>
-                    </div>
-                    <div class="weather-trend neutral">
-                        <i class="fas fa-minus"></i>
-                        <span>较昨日 持平</span>
-                    </div>
-                </div>
-                <div class="weather-chart" id="windSpeedChart"></div>
-            </div>
-        </div>
-
-        <!-- 气象站状态 -->
-        <div class="station-status">
+        <!-- 综合气象监测看板 -->
+        <div class="comprehensive-weather-dashboard">
             <div class="section-header">
                 <h3>
-                    <i class="fas fa-broadcast-tower"></i>
-                    气象站状态监控
+                    <i class="fas fa-cloud-sun"></i>
+                    综合气象监测看板
                 </h3>
                 <div class="section-actions">
-                    <button class="btn btn-secondary" onclick="refreshStationStatus()">
+                    <button class="btn btn-secondary" onclick="refreshAllData()">
                         <i class="fas fa-sync"></i>
-                        刷新状态
+                        刷新数据
                     </button>
                     <button class="btn btn-secondary" onclick="showStationMap()">
                         <i class="fas fa-map"></i>
                         查看地图
                     </button>
-                </div>
-            </div>
-            
-            <div class="station-grid" id="stationGrid">
-                <!-- 气象站卡片将通过JavaScript生成 -->
-            </div>
-        </div>
-
-        <!-- 数据筛选和操作 -->
-        <div class="data-controls">
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label>气象站:</label>
-                    <select class="form-control" id="stationFilter">
-                        <option value="">全部气象站</option>
-                        <option value="station_001">临夏主站</option>
-                        <option value="station_002">康乐分站</option>
-                        <option value="station_003">和政分站</option>
-                        <option value="station_004">积石山分站</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label>数据类型:</label>
-                    <select class="form-control" id="dataTypeFilter">
-                        <option value="">全部类型</option>
-                        <option value="temperature">温度</option>
-                        <option value="humidity">湿度</option>
-                        <option value="rainfall">降雨量</option>
-                        <option value="windspeed">风速</option>
-                        <option value="pressure">气压</option>
-                        <option value="radiation">太阳辐射</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label>时间粒度:</label>
-                    <select class="form-control" id="timeGranularity">
-                        <option value="hourly">小时数据</option>
-                        <option value="daily">日数据</option>
-                        <option value="monthly">月数据</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label>日期范围:</label>
-                    <input type="date" class="form-control" id="startDate">
-                    <span>至</span>
-                    <input type="date" class="form-control" id="endDate">
-                </div>
-                
-                <div class="filter-actions">
-                    <button class="btn btn-secondary" onclick="applyFilters()">
-                        <i class="fas fa-filter"></i>
-                        应用筛选
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearFilters()">
-                        <i class="fas fa-times"></i>
-                        清除筛选
-                    </button>
-                </div>
-            </div>
-            
-            <div class="data-actions">
-                <button class="btn btn-secondary" onclick="exportData()">
-                    <i class="fas fa-file-export"></i>
-                    导出数据
-                </button>
-                <button class="btn btn-secondary" onclick="generateReport()">
-                    <i class="fas fa-chart-line"></i>
-                    生成报表
-                </button>
-                <button class="btn btn-secondary" onclick="dataQualityCheck()">
-                    <i class="fas fa-check-circle"></i>
-                    质量检查
-                </button>
-            </div>
-        </div>
-
-        <!-- 数据可视化 -->
-        <div class="data-visualization">
-            <div class="chart-container">
-                <div class="chart-header">
-                    <h3>气象要素变化趋势</h3>
-                    <div class="chart-controls">
-                        <div class="chart-tabs">
-                            <button class="tab-btn active" onclick="switchChart('temperature')">温度</button>
-                            <button class="tab-btn" onclick="switchChart('humidity')">湿度</button>
-                            <button class="tab-btn" onclick="switchChart('rainfall')">降雨量</button>
-                            <button class="tab-btn" onclick="switchChart('windspeed')">风速</button>
-                        </div>
-                        <div class="chart-actions">
-                            <button class="btn-icon" onclick="refreshChart()" data-tooltip="刷新图表">
-                                <i class="fas fa-sync"></i>
-                            </button>
-                            <button class="btn-icon" onclick="exportChart()" data-tooltip="导出图表">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button class="btn-icon" onclick="fullscreenChart()" data-tooltip="全屏显示">
-                                <i class="fas fa-expand"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart-content">
-                    <div id="weatherTrendChart" class="chart"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 数据表格 -->
-        <div class="data-table-container">
-            <div class="table-header">
-                <h3>气象观测数据</h3>
-                <div class="table-actions">
-                    <button class="btn-icon" onclick="toggleView('grid')" data-tooltip="网格视图">
-                        <i class="fas fa-th-large"></i>
-                    </button>
-                    <button class="btn-icon" onclick="toggleView('list')" data-tooltip="列表视图">
-                        <i class="fas fa-list"></i>
-                    </button>
-                    <button class="btn-icon" onclick="exportTable()" data-tooltip="导出表格">
+                    <button class="btn btn-secondary" onclick="exportWeatherReport()">
                         <i class="fas fa-file-export"></i>
+                        导出报告
                     </button>
                 </div>
             </div>
             
-            <div class="table-container">
-                <table class="table" id="weatherDataTable">
-                    <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                            </th>
-                            <th data-sort="station">
-                                气象站
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="datetime">
-                                观测时间
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="temperature">
-                                温度(°C)
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="humidity">
-                                湿度(%)
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="rainfall">
-                                降雨量(mm)
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="windspeed">
-                                风速(m/s)
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th data-sort="quality">
-                                数据质量
-                                <i class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- 数据行将通过JavaScript动态生成 -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- 分页控件 -->
-            <div class="pagination">
-                <div class="pagination-info">
-                    显示第 <span id="pageStart">1</span> - <span id="pageEnd">20</span> 条，
-                    共 <span id="totalRecords">1,542</span> 条记录
-                </div>
-                <div class="pagination-controls">
-                    <button class="btn btn-secondary" onclick="changePage('first')" id="firstPageBtn">
-                        <i class="fas fa-angle-double-left"></i>
-                    </button>
-                    <button class="btn btn-secondary" onclick="changePage('prev')" id="prevPageBtn">
-                        <i class="fas fa-angle-left"></i>
-                    </button>
-                    
-                    <div class="page-numbers" id="pageNumbers">
-                        <!-- 页码按钮将通过JavaScript生成 -->
+            <div class="dashboard-layout">
+                <!-- 左侧：实时数据概览和趋势 -->
+                <div class="dashboard-main">
+                    <!-- 核心指标卡片 -->
+                    <div class="key-metrics">
+                        <div class="metric-card temperature">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h4>温度监测</h4>
+                                    <div class="metric-range">
+                                        <span class="range-min" id="tempMin">18.5°C</span>
+                                        <span class="range-separator">~</span>
+                                        <span class="range-max" id="tempMax">26.8°C</span>
+                                    </div>
+                                </div>
+                                <div class="metric-average">
+                                    <span class="avg-label">平均</span>
+                                    <span class="avg-value" id="tempAvg">23.1°C</span>
+                                </div>
+                            </div>
+                            <div class="metric-chart" id="tempMiniChart"></div>
+                        </div>
+                        
+                        <div class="metric-card humidity">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h4>湿度监测</h4>
+                                    <div class="metric-range">
+                                        <span class="range-min" id="humidityMin">45%</span>
+                                        <span class="range-separator">~</span>
+                                        <span class="range-max" id="humidityMax">82%</span>
+                                    </div>
+                                </div>
+                                <div class="metric-average">
+                                    <span class="avg-label">平均</span>
+                                    <span class="avg-value" id="humidityAvg">64%</span>
+                                </div>
+                            </div>
+                            <div class="metric-chart" id="humidityMiniChart"></div>
+                        </div>
                     </div>
                     
-                    <button class="btn btn-secondary" onclick="changePage('next')" id="nextPageBtn">
-                        <i class="fas fa-angle-right"></i>
-                    </button>
-                    <button class="btn btn-secondary" onclick="changePage('last')" id="lastPageBtn">
-                        <i class="fas fa-angle-double-right"></i>
-                    </button>
+                    <!-- 天气趋势图表 -->
+                    <div class="weather-trend-section">
+                        <div class="trend-header">
+                            <h4>24小时气象数据趋势</h4>
+                            <div class="trend-controls">
+                                <button class="trend-btn active" onclick="switchTrendMetric('temperature')">温度</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('humidity')">湿度</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('rainfall')">降雨</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('wind')">风速</button>
+                            </div>
+                        </div>
+                        <div class="trend-chart-container">
+                            <div id="weatherTrendChart" class="trend-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：气象站状态监控 -->
+                <div class="dashboard-sidebar">
+                    <div class="sidebar-header">
+                        <h4>
+                            <i class="fas fa-broadcast-tower"></i>
+                            气象站状态
+                            <span class="station-count" id="stationStatus">4/5</span>
+                        </h4>
+                        <button class="sidebar-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="station-list" id="stationList">
+                        <!-- 气象站状态列表将通过JavaScript生成 -->
+                    </div>
+                    
+                    <!-- 底部汇总信息 -->
+                    <div class="dashboard-summary">
+                        <h5>今日汇总</h5>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">总降雨量</span>
+                                <span class="summary-value" id="totalRainfall">15.7mm</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">最大风速</span>
+                                <span class="summary-value" id="maxWindSpeed">12.3m/s</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">数据质量</span>
+                                <span class="summary-value quality-good" id="dataQuality">优</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">异常报警</span>
+                                <span class="summary-value" id="alertCount">0</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
+
+
+
+
 
         <!-- 数据质量监控 -->
         <div class="quality-monitor">
@@ -606,47 +450,209 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- 数据导入模态框 -->
-    <div class="modal-overlay" id="importModal">
-        <div class="modal-content">
+    <!-- 气象站详情模态框 -->
+    <div class="modal-overlay" id="stationDetailModal">
+        <div class="modal-content station-detail-modal">
             <div class="modal-header">
-                <h3 class="modal-title">导入气象数据</h3>
-                <button class="modal-close" onclick="closeImportModal()">
+                <h3 class="modal-title">
+                    <i class="fas fa-broadcast-tower"></i>
+                    气象站详情
+                </h3>
+                <button class="modal-close" onclick="closeStationDetailModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="import-options">
-                    <div class="import-option" onclick="selectImportType('file')">
-                        <div class="option-icon">
-                            <i class="fas fa-file-upload"></i>
+                <div class="station-detail-content">
+                    <!-- 基本信息 -->
+                    <div class="detail-section">
+                        <h4>基本信息</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>气象站名称:</label>
+                                <span id="detailStationName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>站点编号:</label>
+                                <span id="detailStationId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>所在位置:</label>
+                                <span id="detailStationLocation">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>运行状态:</label>
+                                <span id="detailStationStatus" class="status-badge">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>最后更新:</label>
+                                <span id="detailLastUpdate">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>安装日期:</label>
+                                <span id="detailInstallDate">2020年3月15日</span>
                         </div>
-                        <div class="option-content">
-                            <h4>文件导入</h4>
-                            <p>从CSV、Excel文件导入气象数据</p>
                         </div>
                     </div>
                     
-                    <div class="import-option" onclick="selectImportType('api')">
-                        <div class="option-icon">
-                            <i class="fas fa-cloud-download-alt"></i>
+                    <!-- 实时数据 -->
+                    <div class="detail-section">
+                        <h4>实时观测数据</h4>
+                        <div class="current-data-grid">
+                            <div class="data-card temperature">
+                                <div class="data-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailTemperature">--°C</div>
+                                    <div class="data-label">当前温度</div>
+                                </div>
+                            </div>
+                            <div class="data-card humidity">
+                                <div class="data-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailHumidity">--%</div>
+                                    <div class="data-label">相对湿度</div>
+                                </div>
+                            </div>
+                            <div class="data-card rainfall">
+                                <div class="data-icon">
+                                    <i class="fas fa-cloud-rain"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailRainfall">--mm</div>
+                                    <div class="data-label">当日降雨</div>
+                                </div>
+                            </div>
+                            <div class="data-card windspeed">
+                                <div class="data-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailWindspeed">--m/s</div>
+                                    <div class="data-label">风速</div>
+                                </div>
+                            </div>
+                            <div class="data-card pressure">
+                                <div class="data-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailPressure">--hPa</div>
+                                    <div class="data-label">气压</div>
+                                </div>
+                            </div>
+                            <div class="data-card radiation">
+                                <div class="data-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailRadiation">--W/m²</div>
+                                    <div class="data-label">太阳辐射</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="option-content">
-                            <h4>API接口导入</h4>
-                            <p>从气象部门API接口同步数据</p>
+                    </div>
+
+                    <!-- 24小时趋势图表 -->
+                    <div class="detail-section">
+                        <h4>24小时数据趋势</h4>
+                        <div class="trend-chart-container">
+                            <div id="stationTrendChart" class="station-trend-chart"></div>
                         </div>
                     </div>
                     
-                    <div class="import-option" onclick="selectImportType('manual')">
-                        <div class="option-icon">
-                            <i class="fas fa-keyboard"></i>
+                    <!-- 设备状态 -->
+                    <div class="detail-section">
+                        <h4>设备状态</h4>
+                        <div class="equipment-status">
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">温度传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">湿度传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">风速传感器</div>
+                                    <div class="equipment-status-text warning">警告</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength medium">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-cloud-rain"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">雨量传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
                         </div>
-                        <div class="option-content">
-                            <h4>手动录入</h4>
-                            <p>手动输入观测数据</p>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="exportStationData()">
+                    <i class="fas fa-download"></i>
+                    导出数据
+                </button>
+                <button class="btn btn-secondary" onclick="configStation()">
+                    <i class="fas fa-cog"></i>
+                    配置设置
+                </button>
+                <button class="btn btn-primary" onclick="closeStationDetailModal()">
+                    <i class="fas fa-times"></i>
+                    关闭
+                </button>
             </div>
         </div>
     </div>

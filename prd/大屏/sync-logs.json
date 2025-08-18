@@ -414,5 +414,61 @@
       "name": "历史优良率对比卡",
       "elementId": "precise-div-noid-historical-comparison-cards-7-2-10"
     }
+  },
+  {
+    "timestamp": "2025-08-15T09:41:28.098Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物产量预估详情",
+      "elementId": "precise-div-noid-section-title-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:44:45.462Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物产量预估详情",
+      "elementId": "precise-div-noid-section-title-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:45:39.174Z",
+    "action": "create",
+    "annotation": {
+      "name": "估产模型参数看板",
+      "elementId": "precise-div-noid-model-parameters-7-1-1"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:48:21.638Z",
+    "action": "create",
+    "annotation": {
+      "name": "灾害损失修正模块",
+      "elementId": "precise-div-noid-disaster-correction-7-1-1"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:52:13.286Z",
+    "action": "create",
+    "annotation": {
+      "name": "区域估产达成度仪表盘",
+      "elementId": "precise-div-noid-achievement-progress-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:53:04.450Z",
+    "action": "create",
+    "annotation": {
+      "name": "五年产量对比",
+      "elementId": "precise-div-noid-five-year-comparison-container-7-1-2"
+    }
+  },
+  {
+    "timestamp": "2025-08-15T09:54:48.372Z",
+    "action": "create",
+    "annotation": {
+      "name": "经济价值分析卡",
+      "elementId": "precise-span-noid-breakdown-label-10-0-0-小麦优质种植收益"
+    }
   }
 ]

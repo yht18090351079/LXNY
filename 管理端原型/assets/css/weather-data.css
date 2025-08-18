@@ -11,16 +11,29 @@
 }
 
 .weather-card {
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-xl);
+    background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 0.97) 0%, 
+        rgba(248, 250, 253, 0.94) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-2xl);
     position: relative;
     overflow: hidden;
-    transition: all var(--transition-fast);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
+    flex-direction: column;
+    height: 300px;
+    
+    /* 增强的玻璃态效果 */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    
+    /* 现代化多层阴影 */
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 4px 16px rgba(102, 126, 234, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
 }
 
 .weather-card::before {
@@ -28,63 +41,122 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
-    height: 100%;
-    transition: width var(--transition-normal);
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right,
+        rgba(102, 126, 234, 0.08) 0%,
+        rgba(168, 85, 247, 0.04) 50%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
 }
 
-.weather-card.temperature::before {
-    background: linear-gradient(135deg, #FF6B35, #FF8A65);
+/* 为每种类型的卡片添加装饰元素 */
+.weather-card.temperature::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
-.weather-card.humidity::before {
-    background: linear-gradient(135deg, #2196F3, #42A5F5);
+.weather-card.humidity::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
-.weather-card.rainfall::before {
-    background: linear-gradient(135deg, #607D8B, #78909C);
+.weather-card.rainfall::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
-.weather-card.windspeed::before {
-    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+.weather-card.windspeed::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(156, 39, 176, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
 .weather-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.15),
+        0 12px 32px rgba(102, 126, 234, 0.18),
+        0 6px 16px rgba(168, 85, 247, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.95) inset;
+    
+    /* 增强背景 */
+    background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 1) 0%, 
+        rgba(248, 250, 253, 0.98) 100%
+    );
 }
 
 .weather-card:hover::before {
-    width: 8px;
+    opacity: 1;
 }
 
 .weather-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: var(--radius-xl);
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-2xl);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-2xl);
-    color: var(--text-white);
+    margin-bottom: var(--spacing-lg);
     position: relative;
-    flex-shrink: 0;
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(102, 126, 234, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
 }
 
+.weather-icon i {
+    font-size: 24px;
+    color: var(--text-white);
+}
+
+/* 温度卡片 */
 .weather-card.temperature .weather-icon {
-    background: linear-gradient(135deg, #FF6B35, #FF8A65);
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8A65 50%, #FFAB91 100%);
 }
 
+/* 湿度卡片 */
 .weather-card.humidity .weather-icon {
-    background: linear-gradient(135deg, #2196F3, #42A5F5);
+    background: linear-gradient(135deg, #2196F3 0%, #42A5F5 50%, #64B5F6 100%);
 }
 
+/* 降雨量卡片 */
 .weather-card.rainfall .weather-icon {
-    background: linear-gradient(135deg, #607D8B, #78909C);
+    background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #81C784 100%);
 }
 
+/* 风速卡片 */
 .weather-card.windspeed .weather-icon {
-    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    background: linear-gradient(135deg, #9C27B0 0%, #AB47BC 50%, #BA68C8 100%);
 }
 
 .weather-icon::after {
@@ -98,28 +170,42 @@
     z-index: -1;
 }
 
+/* 气象内容区域 */
 .weather-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+    position: relative;
 }
 
 .weather-label {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-md);
+    font-weight: 600;
     color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .weather-value {
     display: flex;
     align-items: baseline;
     gap: var(--spacing-xs);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
 }
 
 .current-value {
-    font-size: var(--font-size-3xl);
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: var(--font-size-4xl);
+    font-weight: 800;
+    background: linear-gradient(135deg,
+        rgba(102, 126, 234, 0.9) 0%,
+        rgba(168, 85, 247, 0.8) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1;
 }
 
@@ -129,35 +215,132 @@
     font-weight: 500;
 }
 
+/* 趋势指示器 */
 .weather-trend {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-xs);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: var(--spacing-lg);
+    transition: all 0.2s ease;
 }
 
 .weather-trend.positive {
-    background: rgba(76, 175, 80, 0.1);
-    color: var(--success-color);
+    background: linear-gradient(135deg,
+        rgba(76, 175, 80, 0.15) 0%,
+        rgba(129, 199, 132, 0.1) 100%
+    );
+    color: #2E7D32;
 }
 
 .weather-trend.negative {
-    background: rgba(244, 67, 54, 0.1);
-    color: var(--error-color);
+    background: linear-gradient(135deg,
+        rgba(244, 67, 54, 0.15) 0%,
+        rgba(229, 115, 115, 0.1) 100%
+    );
+    color: #C62828;
 }
 
 .weather-trend.neutral {
-    background: rgba(158, 158, 158, 0.1);
+    background: linear-gradient(135deg,
+        rgba(158, 158, 158, 0.15) 0%,
+        rgba(189, 189, 189, 0.1) 100%
+    );
+    color: #424242;
+}
+
+/* 气象图表区域 */
+.weather-chart {
+    height: 80px;
+    margin-top: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    background: rgba(102, 126, 234, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-chart::before {
+    content: '实时趋势图';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--font-size-xs);
     color: var(--text-tertiary);
+    text-align: center;
+}
+
+/* 气象卡片hover增强效果 */
+.weather-card:hover .weather-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 
+        0 12px 36px rgba(0, 0, 0, 0.15),
+        0 4px 16px rgba(102, 126, 234, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.weather-card:hover .current-value {
+    transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .weather-overview {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--spacing-lg);
+    }
+    
+    .weather-card {
+        height: 280px;
+        padding: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .weather-overview {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .weather-card {
+        height: 240px;
+        padding: var(--spacing-md);
+    }
+    
+    .weather-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .weather-icon i {
+        font-size: 20px;
+    }
+    
+    .current-value {
+        font-size: var(--font-size-3xl);
 }
 
 .weather-chart {
-    width: 80px;
-    height: 40px;
-    flex-shrink: 0;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .weather-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .weather-card {
+        height: 220px;
+        padding: var(--spacing-sm);
+    }
 }
 
 /* 气象站状态 */
@@ -336,82 +519,7 @@
     background: rgba(255, 152, 0, 0.2);
 }
 
-/* 数据可视化 */
-.data-visualization {
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: var(--spacing-xl);
-}
 
-.chart-container {
-    width: 100%;
-}
-
-.chart-header {
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid var(--divider-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
-}
-
-.chart-header h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-.chart-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-lg);
-}
-
-.chart-tabs {
-    display: flex;
-    gap: var(--spacing-xs);
-}
-
-.tab-btn {
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-color);
-    background: var(--background-color);
-    color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.tab-btn:hover {
-    background: var(--divider-color);
-    color: var(--text-primary);
-}
-
-.tab-btn.active {
-    background: var(--primary-color);
-    color: var(--text-white);
-    border-color: var(--primary-color);
-}
-
-.chart-actions {
-    display: flex;
-    gap: var(--spacing-xs);
-}
-
-.chart-content {
-    padding: var(--spacing-lg);
-}
-
-.chart {
-    width: 100%;
-    height: 400px;
-}
 
 /* 数据质量监控 */
 .quality-monitor {
@@ -452,14 +560,24 @@
     gap: var(--spacing-lg);
 }
 
+/* 质量卡片重新设计 */
 .quality-card {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.02), rgba(76, 175, 80, 0.01));
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-lg);
-    text-align: center;
-    transition: all var(--transition-fast);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.98) 0%, 
+        rgba(248, 250, 252, 0.95) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
     position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 6px 24px rgba(0, 0, 0, 0.06),
+        0 2px 12px rgba(102, 126, 234, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .quality-card::before {
@@ -468,119 +586,102 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: var(--success-color);
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-}
-
-.quality-card.warning::before {
-    background: var(--warning-color);
-}
-
-.quality-card.error::before {
-    background: var(--error-color);
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(76, 175, 80, 0.04) 0%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
 }
 
 .quality-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(76, 175, 80, 0.3);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(76, 175, 80, 0.15),
+        0 4px 12px rgba(129, 199, 132, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.quality-card:hover::before {
+    opacity: 1;
+}
+
+/* 警告状态卡片 */
+.quality-card.warning {
+    border-left: 4px solid #FF9800;
+}
+
+.quality-card.warning::before {
+    background: linear-gradient(135deg,
+        rgba(255, 152, 0, 0.04) 0%,
+        transparent 100%
+    );
+}
+
+.quality-card.warning:hover {
+    border-color: rgba(255, 152, 0, 0.3);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(255, 152, 0, 0.15),
+        0 4px 12px rgba(255, 183, 77, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* 错误状态卡片 */
+.quality-card.error {
+    border-left: 4px solid #F44336;
+}
+
+.quality-card.error::before {
+    background: linear-gradient(135deg,
+        rgba(244, 67, 54, 0.04) 0%,
+        transparent 100%
+    );
+}
+
+.quality-card.error:hover {
+    border-color: rgba(244, 67, 54, 0.3);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(244, 67, 54, 0.15),
+        0 4px 12px rgba(239, 115, 115, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* 正常状态卡片 */
+.quality-card:not(.warning):not(.error) {
+    border-left: 4px solid #4CAF50;
 }
 
 .quality-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .quality-icon {
     width: 48px;
     height: 48px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-sm);
-    background: rgba(76, 175, 80, 0.1);
-    color: var(--success-color);
-}
-
-.quality-card.warning .quality-icon {
-    background: rgba(255, 152, 0, 0.1);
-    color: var(--warning-color);
-}
-
-.quality-card.error .quality-icon {
-    background: rgba(244, 67, 54, 0.1);
-    color: var(--error-color);
-}
-
-.quality-title {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.quality-content {
-    text-align: center;
-}
-
-.quality-value {
-    font-size: var(--font-size-2xl);
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
-}
-
-.quality-count {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-}
-
-/* 导入模态框 */
-.import-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-}
-
-.import-option {
-    padding: var(--spacing-xl);
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    text-align: center;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    background: linear-gradient(135deg, rgba(46, 125, 50, 0.01), rgba(76, 175, 80, 0.01));
-}
-
-.import-option:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.import-option.selected {
-    border-color: var(--primary-color);
-    background: linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(76, 175, 80, 0.02));
-}
-
-.option-icon {
-    width: 64px;
-    height: 64px;
     border-radius: var(--radius-xl);
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-2xl);
-    color: var(--text-white);
-    margin: 0 auto var(--spacing-lg) auto;
+    font-size: var(--font-size-lg);
+    color: white;
     position: relative;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
 }
 
-.option-icon::after {
+.quality-icon::before {
     content: '';
     position: absolute;
     inset: -2px;
@@ -591,19 +692,53 @@
     z-index: -1;
 }
 
-.option-content h4 {
+.quality-card:hover .quality-icon {
+    transform: scale(1.1);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.quality-card.warning .quality-icon {
+    background: linear-gradient(135deg, #FF9800, #FFB74D);
+}
+
+.quality-card.error .quality-icon {
+    background: linear-gradient(135deg, #F44336, #EF5350);
+}
+
+.quality-title {
     font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--text-primary);
-    margin: 0 0 var(--spacing-sm) 0;
-}
-
-.option-content p {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    line-height: 1.5;
     margin: 0;
 }
+
+.quality-content {
+    text-align: left;
+}
+
+.quality-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    background: linear-gradient(135deg,
+        rgba(102, 126, 234, 0.9) 0%,
+        rgba(168, 85, 247, 0.8) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: var(--spacing-sm);
+}
+
+.quality-count {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+
 
 /* 温度数值样式 */
 .temperature-value {
@@ -711,9 +846,7 @@
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .import-options {
-        grid-template-columns: 1fr;
-    }
+
     
     .chart {
         height: 300px;
@@ -745,11 +878,970 @@
     }
 }
  
- 
- 
- 
- 
- 
- 
- 
+/* ===== 综合气象监测看板样式 ===== */
+.comprehensive-weather-dashboard {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+/* ===== 主要内容区域 (左侧) ===== */
+.dashboard-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+/* 核心指标卡片 */
+.key-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.metric-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.97) 0%, 
+        rgba(248, 250, 253, 0.94) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(102, 126, 234, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    transition: all 0.3s ease;
+}
+
+.metric-card.temperature::before {
+    background: linear-gradient(90deg, #FF6B35, #FFAB91);
+}
+
+.metric-card.humidity::before {
+    background: linear-gradient(90deg, #2196F3, #64B5F6);
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 36px rgba(0, 0, 0, 0.12),
+        0 4px 16px rgba(102, 126, 234, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.95) inset;
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.metric-card.temperature .metric-icon {
+    background: linear-gradient(135deg, #FF6B35, #FFAB91);
+}
+
+.metric-card.humidity .metric-icon {
+    background: linear-gradient(135deg, #2196F3, #64B5F6);
+}
+
+.metric-info {
+    flex: 1;
+}
+
+.metric-info h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.metric-range {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.range-separator {
+    color: var(--text-tertiary);
+}
+
+.metric-average {
+    text-align: center;
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.avg-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.avg-value {
+    display: block;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    background: linear-gradient(135deg, #1e293b, #475569);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.metric-chart {
+    height: 80px;
+    margin-top: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+/* 天气趋势图表区域 */
+.weather-trend-section {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.97) 0%, 
+        rgba(248, 250, 253, 0.94) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(102, 126, 234, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.trend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.trend-header h4 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.trend-controls {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.trend-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.trend-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+}
+
+.trend-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.trend-chart-container {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.trend-chart {
+    width: 100%;
+    height: 300px;
+}
+
+/* ===== 侧边栏区域 (右侧) ===== */
+.dashboard-sidebar {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.97) 0%, 
+        rgba(248, 250, 253, 0.94) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(102, 126, 234, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-header h4 {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.station-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 20px;
+    padding: 0 var(--spacing-xs);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    margin-left: var(--spacing-sm);
+}
+
+.sidebar-toggle {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* 气象站状态列表 */
+.station-list {
+    flex: 1;
+    padding: var(--spacing-md);
+    overflow-y: auto;
+}
+
+.station-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.station-item:hover {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 1px 4px rgba(102, 126, 234, 0.1);
+}
+
+.station-item:last-child {
+    margin-bottom: 0;
+}
+
+.station-status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+}
+
+.station-status-dot.online {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.station-status-dot.offline {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.station-status-dot.maintenance {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.station-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.station-item-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.station-item-location {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.station-item-data {
+    text-align: right;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.station-temp {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* 底部汇总信息 */
+.dashboard-summary {
+    padding: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-summary h5 {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.summary-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.summary-value.quality-good {
+    color: #22c55e;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr 280px;
+        gap: var(--spacing-lg);
+    }
+    
+    .key-metrics {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .dashboard-sidebar {
+        order: -1;
+    }
+    
+    .trend-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+    }
+    
+    .trend-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .trend-btn {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .trend-chart {
+        height: 250px;
+    }
+}
+
+/* ===== 气象站详情模态框样式 ===== */
+.station-detail-modal {
+    max-width: 1200px;
+    width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.98) 0%, 
+        rgba(248, 250, 253, 0.95) 100%
+    );
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-2xl);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.15),
+        0 10px 30px rgba(102, 126, 234, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.station-detail-content {
+    padding: 0;
+}
+
+.detail-section {
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.6) 0%, 
+        rgba(248, 250, 253, 0.4) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.detail-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        0 3px 10px rgba(102, 126, 234, 0.1);
+}
+
+.detail-section h4 {
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.detail-section h4::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: var(--radius-sm);
+}
+
+/* 基本信息网格 */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.detail-item label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item span {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 状态标识 */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.status-badge.online {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.status-badge.offline {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.status-badge.maintenance {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s infinite;
+}
+
+/* 实时数据网格 */
+.current-data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.current-data-grid .data-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(248, 250, 253, 0.6) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.current-data-grid .data-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right,
+        rgba(102, 126, 234, 0.05) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.current-data-grid .data-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.1),
+        0 3px 10px rgba(102, 126, 234, 0.15);
+}
+
+.current-data-grid .data-card:hover::before {
+    opacity: 1;
+}
+
+.current-data-grid .data-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xl);
+    color: #fff;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.current-data-grid .data-card.temperature .data-icon {
+    background: linear-gradient(135deg, #FF6B35, #FFAB91);
+}
+
+.current-data-grid .data-card.humidity .data-icon {
+    background: linear-gradient(135deg, #2196F3, #64B5F6);
+}
+
+.current-data-grid .data-card.rainfall .data-icon {
+    background: linear-gradient(135deg, #4CAF50, #81C784);
+}
+
+.current-data-grid .data-card.windspeed .data-icon {
+    background: linear-gradient(135deg, #9C27B0, #BA68C8);
+}
+
+.current-data-grid .data-card.pressure .data-icon {
+    background: linear-gradient(135deg, #FF9800, #FFB74D);
+}
+
+.current-data-grid .data-card.radiation .data-icon {
+    background: linear-gradient(135deg, #FFC107, #FFCA28);
+}
+
+.current-data-grid .data-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.current-data-grid .data-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    background: linear-gradient(135deg, #1e293b, #475569);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+
+.current-data-grid .data-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 趋势图表容器 */
+.trend-chart-container {
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.station-trend-chart {
+    width: 100%;
+    height: 300px;
+}
+
+/* 设备状态 */
+.equipment-status {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.equipment-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.equipment-item:hover {
+    transform: translateX(5px);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        -3px 0 0 rgba(102, 126, 234, 0.3);
+}
+
+.equipment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 
+        0 4px 15px rgba(102, 126, 234, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.equipment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.equipment-name {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.equipment-status-text {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    width: fit-content;
+}
+
+.equipment-status-text.normal {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+}
+
+.equipment-status-text.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.equipment-status-text.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+/* 信号强度指示器 */
+.equipment-signal {
+    flex-shrink: 0;
+}
+
+.signal-strength {
+    display: flex;
+    align-items: end;
+    gap: 2px;
+    height: 20px;
+}
+
+.signal-bar {
+    width: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.signal-bar:nth-child(1) {
+    height: 25%;
+}
+
+.signal-bar:nth-child(2) {
+    height: 50%;
+}
+
+.signal-bar:nth-child(3) {
+    height: 75%;
+}
+
+.signal-bar:nth-child(4) {
+    height: 100%;
+}
+
+.signal-strength.strong .signal-bar {
+    background: #22c55e;
+}
+
+.signal-strength.medium .signal-bar:nth-child(-n+2) {
+    background: #f59e0b;
+}
+
+.signal-strength.weak .signal-bar:nth-child(1) {
+    background: #ef4444;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .station-detail-modal {
+        width: 98vw;
+        max-height: 95vh;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .current-data-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .station-detail-modal {
+        width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .detail-section {
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+    }
+    
+    .current-data-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+    
+    .current-data-grid .data-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    
+    .current-data-grid .data-icon {
+        width: 45px;
+        height: 45px;
+        font-size: var(--font-size-lg);
+    }
+    
+    .current-data-grid .data-value {
+        font-size: var(--font-size-lg);
+    }
+    
+    .equipment-item {
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+    
+    .equipment-icon {
+        width: 35px;
+        height: 35px;
+        font-size: var(--font-size-md);
+    }
+    
+    .station-trend-chart {
+        height: 250px;
+    }
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+} 
  

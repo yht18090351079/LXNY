@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRD系统修复测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .success { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #28a745; }
+        .info { background: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #17a2b8; }
+        .test-result { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0; border: 1px solid #dee2e6; }
+        button { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; font-size: 14px; }
+        button:hover { background: #0056b3; }
+        .test-link { color: #007bff; text-decoration: none; font-weight: bold; }
+        .test-link:hover { text-decoration: underline; }
+        .code { background: #f8f9fa; padding: 8px; border-radius: 3px; font-family: monospace; border: 1px solid #e9ecef; }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #495057; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .status { font-weight: bold; }
+        .timestamp { color: #6c757d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 PRD系统修复测试页面</h1>
+        
+        <div class="info">
+            <strong>修复说明：</strong>已修复智能路径检测函数，现在支持局域网IP地址访问<br>
+            <strong>修复时间：</strong><span class="timestamp" id="timestamp"></span><br>
+            <strong>当前访问地址：</strong><span class="code" id="currentUrl"></span>
+        </div>
+
+        <h2>📋 测试清单</h2>
+
+        <div class="test-result">
+            <h3>1. iframe-test.html 测试 (✅ 已确认正常)</h3>
+            <p>基础iframe路径测试页面，用于诊断路径配置问题</p>
+            <a href="http://192.168.101.16:3000/iframe-test.html" class="test-link" target="_blank">
+                → 访问 iframe-test.html
+            </a>
+        </div>
+
+        <div class="test-result">
+            <h3>2. PRD系统开发版测试 (🔧 待验证)</h3>
+            <p>主要的PRD系统页面，应该能正常显示内嵌的大屏原型</p>
+            <a href="http://192.168.101.16:3000/prd-system-dev.html" class="test-link" target="_blank">
+                → 访问 PRD系统开发版
+            </a>
+            <div class="info">
+                <strong>验证要点：</strong><br>
+                • iframe应该显示大屏原型内容，不再是空白<br>
+                • 浏览器控制台应该显示："🌐 检测到API服务器环境，使用服务器路径"<br>
+                • iframe路径应该被设置为："/prototype/index.html"
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>3. PRD系统生产版测试</h3>
+            <p>PRD系统的生产版本</p>
+            <a href="http://192.168.101.16:3000/prd-system.html" class="test-link" target="_blank">
+                → 访问 PRD系统生产版
+            </a>
+        </div>
+
+        <div class="test-result">
+            <h3>4. 管理端PRD系统测试</h3>
+            <p>管理端PRD系统的开发版本</p>
+            <a href="http://192.168.101.16:3000/prd-system-dev.html" class="test-link" target="_blank">
+                → 访问 管理端PRD系统
+            </a>
+        </div>
+
+        <h2>🔍 调试信息</h2>
+        
+        <div class="test-result">
+            <h3>浏览器控制台检查</h3>
+            <p>打开PRD系统页面后，按F12打开开发者工具，检查控制台输出：</p>
+            <div class="code">
+                ✅ 正确输出应该包含：<br>
+                🌐 检测到API服务器环境，使用服务器路径<br>
+                🎯 iframe路径已设置为: /prototype/index.html
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>网络请求检查</h3>
+            <p>在开发者工具的Network标签页中，检查iframe相关的请求：</p>
+            <div class="code">
+                ✅ 应该看到成功的请求：<br>
+                GET /prototype/index.html → 200 OK
+            </div>
+        </div>
+
+        <h2>📞 支持信息</h2>
+        
+        <div class="success">
+            <strong>修复内容总结：</strong><br>
+            1. 修复了API服务器中/index.html的重定向处理<br>
+            2. 更新了智能路径检测函数，支持192.168.101.16:3000<br>
+            3. 修复了所有PRD文件的iframe路径配置<br>
+            4. 创建了诊断测试页面
+        </div>
+
+        <div class="info">
+            如果仍有问题，请检查：<br>
+            • 确保API服务器正在运行<br>
+            • 清除浏览器缓存后重试<br>
+            • 检查浏览器控制台错误信息<br>
+            • 使用iframe-test.html进行详细诊断
+        </div>
+
+        <button onclick="location.reload()">🔄 刷新测试页面</button>
+        <button onclick="window.open('http://192.168.101.16:3000/api/health', '_blank')">🩺 检查API健康状态</button>
+    </div>
+
+    <script>
+        // 显示当前时间和URL
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        document.getElementById('currentUrl').textContent = window.location.href;
+        
+        // 页面加载完成提示
+        window.addEventListener('load', function() {
+            console.log('🔧 PRD系统修复测试页面已加载');
+            console.log('当前访问地址:', window.location.href);
+        });
+    </script>
+</body>
+</html>

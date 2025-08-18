@@ -317,7 +317,19 @@ function setupFileWatcher() {
 
 // 处理根目录的index.html请求 - 重定向到大屏原型
 app.get('/index.html', (req, res) => {
-    res.redirect('/prototype/index.html');
+    // 检查是否是iframe请求
+    const userAgent = req.get('User-Agent') || '';
+    const referer = req.get('Referer') || '';
+    
+    if (referer.includes('prd-system')) {
+        // 来自PRD系统的iframe请求，直接提供内容而不重定向
+        const indexPath = path.join(__dirname, '../../大屏原型/index.html');
+        console.log('🎯 iframe请求 /index.html，直接提供内容:', indexPath);
+        res.sendFile(indexPath);
+    } else {
+        // 普通浏览器访问，使用重定向
+        res.redirect('/prototype/index.html');
+    }
 });
 
 // 根路径 - 显示欢迎页面

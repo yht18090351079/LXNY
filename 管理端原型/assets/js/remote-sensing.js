@@ -12,6 +12,7 @@ let selectedRows = new Set();
 let dataList = [];
 let filteredData = [];
 let processingTasks = [];
+let currentViewMode = 'list'; // 当前视图模式：'list' 或 'grid'
 
 // ===== 页面加载完成后初始化 =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -23,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initializeRemoteSensingPage() {
     console.log('🛰️ 初始化遥感数据管理页面...');
+    
+    // 恢复视图模式设置
+    const savedViewMode = localStorage.getItem('dataTableViewMode');
+    if (savedViewMode && ['list', 'grid'].includes(savedViewMode)) {
+        currentViewMode = savedViewMode;
+    }
     
     // 初始化数据
     generateMockData();
@@ -41,6 +48,7 @@ function initializeRemoteSensingPage() {
     startRealTimeUpdate();
     
     console.log('✅ 遥感数据管理页面初始化完成');
+    console.log(`📋 当前视图模式: ${currentViewMode}`);
 }
 
 // ===== 数据生成和管理 =====
@@ -121,8 +129,31 @@ function getRandomByWeight(items, weights) {
  * 渲染数据表格
  */
 function renderDataTable() {
+    if (currentViewMode === 'grid') {
+        renderGridView();
+    } else {
+        renderListView();
+    }
+    
+    // 更新视图切换按钮状态
+    updateViewToggleButtons();
+}
+
+/**
+ * 渲染列表视图
+ */
+function renderListView() {
     const tbody = document.getElementById('tableBody');
-    if (!tbody) return;
+    const tableContainer = document.querySelector('.data-table-container');
+    
+    if (!tbody || !tableContainer) return;
+    
+    // 确保表格显示，隐藏网格容器
+    const table = tbody.closest('.table-container');
+    const gridContainer = document.getElementById('gridContainer');
+    
+    if (table) table.style.display = 'block';
+    if (gridContainer) gridContainer.style.display = 'none';
     
     // 计算当前页的数据
     const startIndex = (currentPage - 1) * pageSize;
@@ -206,6 +237,124 @@ function renderDataTable() {
                 </div>
             </td>
         </tr>
+    `).join('');
+    
+    // 更新分页信息
+    updatePaginationInfo(startIndex + 1, Math.min(endIndex, filteredData.length), filteredData.length);
+    
+    // 更新分页控件
+    updatePaginationControls();
+    
+    // 更新批量操作按钮状态
+    updateBatchActionButtons();
+}
+
+/**
+ * 渲染网格视图
+ */
+function renderGridView() {
+    // 隐藏表格，显示网格容器
+    const table = document.querySelector('.table-container');
+    let gridContainer = document.getElementById('gridContainer');
+    const tableContainer = document.querySelector('.data-table-container');
+    
+    if (table) table.style.display = 'none';
+    
+    // 如果网格容器不存在，创建它
+    if (!gridContainer && tableContainer) {
+        gridContainer = document.createElement('div');
+        gridContainer.id = 'gridContainer';
+        gridContainer.className = 'grid-container';
+        tableContainer.appendChild(gridContainer);
+    }
+    
+    if (!gridContainer) return;
+    
+    gridContainer.style.display = 'grid';
+    
+    // 计算当前页的数据
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pageData = filteredData.slice(startIndex, endIndex);
+    
+    if (pageData.length === 0) {
+        gridContainer.innerHTML = `
+            <div class="grid-empty-state">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>暂无数据</h3>
+                    <p>当前筛选条件下没有找到匹配的遥感数据</p>
+                </div>
+            </div>
+        `;
+        updatePaginationInfo(0, 0, 0);
+        return;
+    }
+    
+    // 生成网格卡片
+    gridContainer.innerHTML = pageData.map(item => `
+        <div class="grid-item ${selectedRows.has(item.id) ? 'selected' : ''}" data-id="${item.id}">
+            <div class="grid-item-header">
+                <input type="checkbox" class="grid-item-checkbox" 
+                       ${selectedRows.has(item.id) ? 'checked' : ''} 
+                       onchange="toggleRowSelection('${item.id}')">
+                <span class="data-type-badge ${item.type.toLowerCase().replace(/[^a-z0-9]/g, '')}">${item.type}</span>
+            </div>
+            
+            <div class="grid-item-preview">
+                <i class="fas fa-satellite"></i>
+                <div class="file-size-overlay">${formatFileSize(item.size * 1024 * 1024)}</div>
+            </div>
+            
+            <div class="grid-item-content">
+                <div class="grid-item-title" title="${item.filename}">${item.filename}</div>
+                
+                <div class="grid-item-meta">
+                    <div class="meta-row">
+                        <i class="fas fa-calendar"></i>
+                        <span>${item.date.toLocaleDateString('zh-CN')}</span>
+                    </div>
+                    <div class="meta-row">
+                        <i class="fas fa-clock"></i>
+                        <span>${item.date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'})}</span>
+                    </div>
+                </div>
+                
+                <div class="grid-item-status">
+                    <span class="status-badge ${item.status}">${getStatusText(item.status)}</span>
+                    <div class="quality-score mini">
+                        <div class="quality-bar">
+                            <div class="quality-fill ${getQualityLevel(item.quality)}" 
+                                 style="width: ${item.quality}%"></div>
+                        </div>
+                        <span class="quality-text">${item.quality}%</span>
+                    </div>
+                </div>
+                
+                ${item.notes ? `<div class="grid-item-notes">${item.notes}</div>` : ''}
+            </div>
+            
+            <div class="grid-item-actions">
+                <button class="action-btn view" onclick="viewDataDetails('${item.id}')" 
+                        data-tooltip="查看详情">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="action-btn download" onclick="downloadData('${item.id}')"
+                        data-tooltip="下载数据">
+                    <i class="fas fa-download"></i>
+                </button>
+                ${item.status === 'pending' ? `
+                    <button class="action-btn process" onclick="processData('${item.id}')"
+                            data-tooltip="开始处理">
+                        <i class="fas fa-play"></i>
+                    </button>
+                ` : ''}
+                <button class="action-btn delete" onclick="deleteData('${item.id}')"
+                        data-tooltip="删除数据">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
     `).join('');
     
     // 更新分页信息
@@ -1181,18 +1330,158 @@ function refreshProcessingStatus() {
 
 /**
  * 切换视图模式
+ * @param {string} viewMode - 视图模式：'grid' 或 'list'
  */
 function toggleView(viewMode) {
-    // 这里可以实现网格视图和列表视图的切换
-    showNotification(`切换到${viewMode === 'grid' ? '网格' : '列表'}视图`, 'info');
+    if (currentViewMode === viewMode) return;
+    
+    currentViewMode = viewMode;
+    
+    // 更新按钮状态
+    updateViewToggleButtons();
+    
+    // 重新渲染数据表格
+    renderDataTable();
+    
+    // 更新本地存储
+    localStorage.setItem('dataTableViewMode', viewMode);
+    
+    showNotification(`已切换到${viewMode === 'grid' ? '网格' : '列表'}视图`, 'success');
+    console.log(`📋 视图模式切换为: ${viewMode}`);
 }
 
 /**
- * 导出表格
+ * 更新视图切换按钮状态
  */
-function exportTable() {
-    showNotification('表格导出功能开发中...', 'info');
-    // 这里可以实现表格导出功能
+function updateViewToggleButtons() {
+    const gridBtn = document.querySelector('[onclick*="toggleView(\'grid\')"]');
+    const listBtn = document.querySelector('[onclick*="toggleView(\'list\')"]');
+    
+    if (gridBtn && listBtn) {
+        // 移除所有active类
+        gridBtn.classList.remove('active');
+        listBtn.classList.remove('active');
+        
+        // 添加当前active类
+        if (currentViewMode === 'grid') {
+            gridBtn.classList.add('active');
+        } else {
+            listBtn.classList.add('active');
+        }
+    }
+}
+
+/**
+ * 导出表格数据
+ * @param {string} format - 导出格式：'excel' 或 'csv'
+ */
+function exportTable(format = 'excel') {
+    try {
+        const exportData = prepareExportData();
+        
+        if (exportData.length === 0) {
+            showNotification('没有数据可以导出', 'warning');
+            return;
+        }
+        
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        const filename = `遥感数据管理_${timestamp}`;
+        
+        if (format === 'excel' || format === 'xlsx') {
+            exportToExcel(exportData, filename);
+        } else {
+            exportToCSV(exportData, filename);
+        }
+        
+        showNotification(`成功导出 ${exportData.length} 条数据`, 'success');
+        console.log(`📊 成功导出 ${exportData.length} 条记录，格式: ${format}`);
+        
+    } catch (error) {
+        console.error('导出失败:', error);
+        showNotification('导出失败，请重试', 'error');
+    }
+}
+
+/**
+ * 准备导出数据
+ */
+function prepareExportData() {
+    return filteredData.map(item => ({
+        '文件名': item.filename,
+        '数据类型': item.type,
+        '获取日期': item.date.toLocaleDateString('zh-CN'),
+        '获取时间': item.date.toLocaleTimeString('zh-CN'),
+        '文件大小': formatFileSize(item.size * 1024 * 1024),
+        '处理状态': getStatusText(item.status),
+        '数据质量': item.quality + '%',
+        '上传时间': item.uploadTime.toLocaleString('zh-CN'),
+        '处理耗时': item.processingTime ? item.processingTime + '分钟' : '-',
+        '备注': item.notes || '-'
+    }));
+}
+
+/**
+ * 导出Excel格式
+ */
+function exportToExcel(data, filename) {
+    // 创建工作表数据
+    const worksheetData = [
+        Object.keys(data[0]), // 表头
+        ...data.map(row => Object.values(row)) // 数据行
+    ];
+    
+    // 转换为CSV格式（简化版Excel兼容）
+    const csvContent = worksheetData.map(row => 
+        row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+    ).join('\n');
+    
+    // 添加BOM以支持中文
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { 
+        type: 'application/vnd.ms-excel;charset=utf-8' 
+    });
+    
+    downloadBlob(blob, filename + '.csv');
+}
+
+/**
+ * 导出CSV格式
+ */
+function exportToCSV(data, filename) {
+    const csvContent = [
+        Object.keys(data[0]).join(','), // 表头
+        ...data.map(row => 
+            Object.values(row).map(cell => 
+                `"${String(cell).replace(/"/g, '""')}"`
+            ).join(',')
+        )
+    ].join('\n');
+    
+    // 添加BOM以支持中文
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { 
+        type: 'text/csv;charset=utf-8' 
+    });
+    
+    downloadBlob(blob, filename + '.csv');
+}
+
+/**
+ * 下载Blob文件
+ */
+function downloadBlob(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // 清理URL对象
+    setTimeout(() => window.URL.revokeObjectURL(url), 100);
 }
 
 // ===== 实时更新 =====

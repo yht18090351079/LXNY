@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iframe 测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-container { border: 2px solid #ccc; margin: 10px 0; padding: 10px; }
+        .test-title { font-weight: bold; color: #333; }
+        iframe { width: 100%; height: 300px; border: 1px solid #999; }
+        .info { background: #f0f8ff; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .error { background: #ffe4e1; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        .success { background: #f0fff0; padding: 10px; margin: 5px 0; border-radius: 4px; }
+        button { margin: 5px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .log { background: #f5f5f5; padding: 10px; margin: 5px 0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 150px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 iframe 路径诊断测试</h1>
+    
+    <div class="info">
+        <strong>当前访问地址：</strong><span id="currentUrl"></span><br>
+        <strong>服务器IP：</strong>192.168.101.16:3000<br>
+        <strong>测试时间：</strong><span id="currentTime"></span>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">测试1: 直接访问 /prototype/index.html</div>
+        <iframe id="iframe1" src="/prototype/index.html"></iframe>
+        <div class="info">状态: <span id="status1">加载中...</span></div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">测试2: 访问 /index.html (会重定向)</div>
+        <iframe id="iframe2" src="/index.html"></iframe>
+        <div class="info">状态: <span id="status2">加载中...</span></div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">测试3: 动态设置路径</div>
+        <iframe id="iframe3"></iframe>
+        <button onclick="setPath3('/prototype/index.html')">设置 /prototype/index.html</button>
+        <button onclick="setPath3('/index.html')">设置 /index.html</button>
+        <button onclick="setPath3('../../大屏原型/index.html')">设置相对路径</button>
+        <div class="info">状态: <span id="status3">未设置</span></div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-title">网络请求日志</div>
+        <div id="networkLog" class="log"></div>
+        <button onclick="clearLog()">清除日志</button>
+        <button onclick="testAllPaths()">测试所有路径</button>
+    </div>
+
+    <script>
+        // 显示当前URL和时间
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('currentTime').textContent = new Date().toLocaleString();
+
+        // 日志函数
+        function log(message) {
+            const logElement = document.getElementById('networkLog');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('networkLog').innerHTML = '';
+        }
+
+        // iframe 加载状态监控
+        function setupIframeMonitoring(iframeId, statusId) {
+            const iframe = document.getElementById(iframeId);
+            const status = document.getElementById(statusId);
+            
+            iframe.onload = function() {
+                try {
+                    const src = iframe.src;
+                    status.textContent = `✅ 加载成功 - ${src}`;
+                    status.className = 'success';
+                    log(`${iframeId}: 加载成功 - ${src}`);
+                } catch (e) {
+                    status.textContent = `⚠️ 加载完成但可能有跨域问题`;
+                    status.className = 'info';
+                    log(`${iframeId}: 加载完成，跨域限制`);
+                }
+            };
+            
+            iframe.onerror = function() {
+                status.textContent = `❌ 加载失败 - ${iframe.src}`;
+                status.className = 'error';
+                log(`${iframeId}: 加载失败 - ${iframe.src}`);
+            };
+        }
+
+        // 设置第三个iframe的路径
+        function setPath3(path) {
+            const iframe = document.getElementById('iframe3');
+            const status = document.getElementById('status3');
+            iframe.src = path;
+            status.textContent = `设置路径: ${path}`;
+            log(`iframe3: 设置新路径 - ${path}`);
+        }
+
+        // 测试所有路径
+        async function testAllPaths() {
+            const paths = [
+                '/prototype/index.html',
+                '/index.html',
+                '/大屏原型/index.html',
+                '../../大屏原型/index.html'
+            ];
+
+            log('开始测试所有路径...');
+            
+            for (const path of paths) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    log(`${path}: ${response.status} ${response.statusText}`);
+                    if (response.redirected) {
+                        log(`  重定向到: ${response.url}`);
+                    }
+                } catch (error) {
+                    log(`${path}: 请求失败 - ${error.message}`);
+                }
+            }
+        }
+
+        // 初始化监控
+        setupIframeMonitoring('iframe1', 'status1');
+        setupIframeMonitoring('iframe2', 'status2');
+        setupIframeMonitoring('iframe3', 'status3');
+
+        // 页面加载完成后的测试
+        window.addEventListener('load', function() {
+            log('页面加载完成，开始监控iframe状态...');
+            setTimeout(testAllPaths, 2000); // 2秒后自动测试所有路径
+        });
+    </script>
+</body>
+</html>

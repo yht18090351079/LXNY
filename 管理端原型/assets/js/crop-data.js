@@ -10,6 +10,7 @@ let currentPage = 1;
 const itemsPerPage = 20;
 let sortColumn = '';
 let sortDirection = 'asc';
+let currentCropViewMode = 'list'; // 当前视图模式：'list', 'card', 或 'map'
 
 // 作物分布图表和生长周期图表
 let cropDistributionChart = null;
@@ -32,6 +33,12 @@ function initializePage() {
     // 初始化侧边栏
     initializeSidebar();
     
+    // 恢复视图模式设置
+    const savedViewMode = localStorage.getItem('cropDataViewMode');
+    if (savedViewMode && ['list', 'card', 'map'].includes(savedViewMode)) {
+        currentCropViewMode = savedViewMode;
+    }
+    
     // 设置当前日期
     const today = new Date().toISOString().split('T')[0];
     const plantStartDate = document.getElementById('plantStartDate');
@@ -43,6 +50,7 @@ function initializePage() {
     if (plantDate) plantDate.value = today;
     
     console.log('作物数据管理页面初始化完成');
+    console.log(`🌱 当前视图模式: ${currentCropViewMode}`);
 }
 
 /**
@@ -305,12 +313,48 @@ function updateGrowthTimelineChart() {
  * 渲染作物表格
  */
 function renderCropTable() {
+    if (currentCropViewMode === 'card') {
+        renderCropCardView();
+    } else if (currentCropViewMode === 'map') {
+        renderCropMapView();
+    } else {
+        renderCropListView();
+    }
+    
+    // 更新视图切换按钮状态
+    updateCropViewToggleButtons();
+}
+
+/**
+ * 渲染列表视图
+ */
+function renderCropListView() {
     const tbody = document.getElementById('cropTableBody');
     if (!tbody) return;
+    
+    // 确保表格显示
+    const tableContainer = document.getElementById('cropTableContainer');
+    const table = tbody.closest('table');
+    if (table) table.style.display = 'table';
     
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, filteredCropData.length);
     const pageData = filteredCropData.slice(startIndex, endIndex);
+    
+    if (pageData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="text-center">
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <h3>暂无作物数据</h3>
+                        <p>当前筛选条件下没有找到匹配的作物数据</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
     
     tbody.innerHTML = pageData.map(crop => `
         <tr>
@@ -944,15 +988,165 @@ function getLocation() {
 
 /**
  * 切换作物视图
+ * @param {string} viewType - 视图类型：'list', 'card', 或 'map'
  */
 function toggleCropView(viewType) {
-    // 更新按钮状态
-    document.querySelectorAll('.table-actions .btn-icon').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
+    if (currentCropViewMode === viewType) return;
     
-    showNotification(`已切换到${viewType === 'card' ? '卡片' : viewType === 'list' ? '列表' : '地图'}视图`, 'info');
+    currentCropViewMode = viewType;
+    
+    // 更新按钮状态
+    updateCropViewToggleButtons();
+    
+    // 重新渲染作物表格
+    renderCropTable();
+    
+    // 更新本地存储
+    localStorage.setItem('cropDataViewMode', viewType);
+    
+    const viewNames = {
+        'card': '卡片',
+        'list': '列表', 
+        'map': '地图'
+    };
+    
+    showNotification(`已切换到${viewNames[viewType]}视图`, 'success');
+    console.log(`🌱 作物数据视图模式切换为: ${viewType}`);
+}
+
+/**
+ * 更新作物视图切换按钮状态
+ */
+function updateCropViewToggleButtons() {
+    const cardBtn = document.querySelector('[onclick*="toggleCropView(\'card\')"]');
+    const listBtn = document.querySelector('[onclick*="toggleCropView(\'list\')"]');
+    const mapBtn = document.querySelector('[onclick*="toggleCropView(\'map\')"]');
+    
+    // 移除所有active类
+    [cardBtn, listBtn, mapBtn].forEach(btn => {
+        if (btn) btn.classList.remove('active');
+    });
+    
+    // 添加当前active类
+    if (currentCropViewMode === 'card' && cardBtn) {
+        cardBtn.classList.add('active');
+    } else if (currentCropViewMode === 'list' && listBtn) {
+        listBtn.classList.add('active');
+    } else if (currentCropViewMode === 'map' && mapBtn) {
+        mapBtn.classList.add('active');
+    }
+}
+
+/**
+ * 渲染卡片视图
+ */
+function renderCropCardView() {
+    const container = document.getElementById('cropTableContainer');
+    if (!container) return;
+    
+    // 计算当前页的数据
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageData = filteredCropData.slice(startIndex, endIndex);
+    
+    if (pageData.length === 0) {
+        container.innerHTML = `
+            <div class="crop-card-empty">
+                <div class="empty-state">
+                    <i class="fas fa-seedling"></i>
+                    <h3>暂无作物数据</h3>
+                    <p>当前筛选条件下没有找到匹配的作物数据</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // 生成卡片布局
+    container.innerHTML = `
+        <div class="crop-card-grid">
+            ${pageData.map(item => `
+                <div class="crop-card" data-id="${item.id}">
+                    <div class="crop-card-header">
+                        <input type="checkbox" class="crop-card-checkbox" 
+                               onchange="toggleCropSelection('${item.id}')">
+                        <span class="crop-type-badge ${item.cropType}">${getCropTypeText(item.cropType)}</span>
+                    </div>
+                    
+                    <div class="crop-card-content">
+                        <div class="crop-card-title">${item.cropName}</div>
+                        <div class="crop-card-variety">${item.variety}</div>
+                        
+                        <div class="crop-card-stats">
+                            <div class="crop-stat">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                                <span>种植面积</span>
+                                <strong>${item.plantArea} 亩</strong>
+                            </div>
+                            <div class="crop-stat">
+                                <i class="fas fa-calendar"></i>
+                                <span>种植时间</span>
+                                <strong>${new Date(item.plantDate).toLocaleDateString('zh-CN')}</strong>
+                            </div>
+                            <div class="crop-stat">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>种植区域</span>
+                                <strong>${getRegionText(item.region)}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="crop-card-status">
+                            <span class="growth-status ${item.growthStatus}">${getGrowthStatusText(item.growthStatus)}</span>
+                            <span class="expected-yield">预期产量: ${item.expectedYield} 吨</span>
+                        </div>
+                    </div>
+                    
+                    <div class="crop-card-actions">
+                        <button class="action-btn view" onclick="viewCropDetails('${item.id}')" 
+                                data-tooltip="查看详情">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit" onclick="editCrop('${item.id}')"
+                                data-tooltip="编辑作物">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn harvest" onclick="harvestCrop('${item.id}')"
+                                data-tooltip="收获记录">
+                            <i class="fas fa-tractor"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteCrop('${item.id}')"
+                                data-tooltip="删除作物">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+/**
+ * 渲染地图视图
+ */
+function renderCropMapView() {
+    const container = document.getElementById('cropTableContainer');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="crop-map-container">
+            <div class="map-placeholder">
+                <div class="map-icon">
+                    <i class="fas fa-map"></i>
+                </div>
+                <h3>地图视图开发中</h3>
+                <p>作物分布地图功能即将上线，敬请期待</p>
+                <button class="btn btn-primary" onclick="toggleCropView('list')">
+                    <i class="fas fa-list"></i>
+                    返回列表视图
+                </button>
+            </div>
+        </div>
+    `;
 }
 
 // 辅助函数
@@ -999,6 +1193,34 @@ function updateTime() {
     const timeString = now.toLocaleString('zh-CN');
     updateElementText('current-time', timeString);
     updateElementText('last-update', '刚刚');
+}
+
+/**
+ * 切换作物选择状态
+ * @param {string} cropId - 作物ID
+ */
+function toggleCropSelection(cropId) {
+    const checkbox = document.querySelector(`input[value="${cropId}"]`);
+    if (!checkbox) return;
+    
+    const isChecked = checkbox.checked;
+    
+    // 在卡片视图中同步复选框状态
+    const cardCheckbox = document.querySelector(`.crop-card[data-id="${cropId}"] .crop-card-checkbox`);
+    if (cardCheckbox) {
+        cardCheckbox.checked = isChecked;
+    }
+    
+    // 在列表视图中同步复选框状态
+    const listCheckbox = document.querySelector(`#cropTable input[value="${cropId}"]`);
+    if (listCheckbox) {
+        listCheckbox.checked = isChecked;
+    }
+    
+    // 更新批量操作按钮状态
+    updateBatchActions();
+    
+    console.log(`🌱 作物 ${cropId} 选择状态: ${isChecked ? '已选中' : '已取消'}`);
 }
  
  

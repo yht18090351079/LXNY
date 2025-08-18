@@ -14,6 +14,7 @@ let filteredData = [];
 let stationData = [];
 let currentChart = 'temperature';
 let charts = {};
+let currentViewMode = 'grid'; // 当前视图模式：'grid' 或 'list'
 
 // ===== 页面加载完成后初始化 =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -26,6 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeWeatherPage() {
     console.log('🌤️ 初始化气象数据管理页面...');
     
+    // 恢复视图模式设置
+    const savedViewMode = localStorage.getItem('weatherDataViewMode');
+    if (savedViewMode && ['list', 'grid'].includes(savedViewMode)) {
+        currentViewMode = savedViewMode;
+    }
+    
     // 生成模拟数据
     generateMockData();
     
@@ -33,9 +40,7 @@ function initializeWeatherPage() {
     initializeCharts();
     
     // 渲染页面内容
-    renderWeatherOverview();
-    renderStationStatus();
-    renderDataTable();
+    renderComprehensiveDashboard();
     renderQualityMonitor();
     
     // 绑定事件
@@ -44,7 +49,11 @@ function initializeWeatherPage() {
     // 开始实时更新
     startRealTimeUpdate();
     
+    // 更新视图切换按钮状态
+    updateViewToggleButtons();
+    
     console.log('✅ 气象数据管理页面初始化完成');
+    console.log(`🌤️ 当前视图模式: ${currentViewMode}`);
 }
 
 // ===== 数据生成和管理 =====
@@ -400,95 +409,86 @@ function updateMiniChart(chartId) {
 // ===== 页面渲染 =====
 
 /**
- * 渲染气象概览
+ * 渲染综合气象监测看板
  */
-function renderWeatherOverview() {
-    // 计算平均值
-    const recentData = weatherData.slice(0, 100); // 最近100条数据
+function renderComprehensiveDashboard() {
+    renderKeyMetrics();
+    renderStationList();
+    renderDashboardSummary();
     
-    const avgTemp = recentData.reduce((sum, item) => sum + item.temperature, 0) / recentData.length;
-    const avgHumidity = recentData.reduce((sum, item) => sum + item.humidity, 0) / recentData.length;
-    const todayRainfall = recentData
-        .filter(item => item.datetime.toDateString() === new Date().toDateString())
-        .reduce((sum, item) => sum + item.rainfall, 0);
-    const avgWindSpeed = recentData.reduce((sum, item) => sum + item.windspeed, 0) / recentData.length;
-    
-    // 更新显示值
-    document.getElementById('avgTemperature').textContent = avgTemp.toFixed(1);
-    document.getElementById('avgHumidity').textContent = Math.round(avgHumidity);
-    document.getElementById('todayRainfall').textContent = todayRainfall.toFixed(1);
-    document.getElementById('avgWindSpeed').textContent = avgWindSpeed.toFixed(1);
+    console.log('🌈 综合气象监测看板已渲染');
 }
 
 /**
- * 渲染气象站状态
+ * 渲染核心指标卡片
  */
-function renderStationStatus() {
-    const stationGrid = document.getElementById('stationGrid');
-    if (!stationGrid) return;
+function renderKeyMetrics() {
+    // 计算温度统计
+    const temperatures = stationData.map(station => station.currentData.temperature);
+    const tempMin = Math.min(...temperatures);
+    const tempMax = Math.max(...temperatures);
+    const tempAvg = temperatures.reduce((sum, temp) => sum + temp, 0) / temperatures.length;
     
-    stationGrid.innerHTML = stationData.map(station => {
-        const statusText = {
-            online: '在线',
-            offline: '离线',
-            maintenance: '维护中'
-        }[station.status];
-        
-        const data = station.currentData;
-        const timeDiff = Math.floor((Date.now() - station.lastUpdate) / 60000); // 分钟
+    // 计算湿度统计
+    const humidities = stationData.map(station => station.currentData.humidity);
+    const humidityMin = Math.min(...humidities);
+    const humidityMax = Math.max(...humidities);
+    const humidityAvg = humidities.reduce((sum, humidity) => sum + humidity, 0) / humidities.length;
+    
+    // 更新温度指标
+    const tempMinEl = document.getElementById('tempMin');
+    const tempMaxEl = document.getElementById('tempMax');
+    const tempAvgEl = document.getElementById('tempAvg');
+    
+    if (tempMinEl) tempMinEl.textContent = `${tempMin.toFixed(1)}°C`;
+    if (tempMaxEl) tempMaxEl.textContent = `${tempMax.toFixed(1)}°C`;
+    if (tempAvgEl) tempAvgEl.textContent = `${tempAvg.toFixed(1)}°C`;
+    
+    // 更新湿度指标
+    const humidityMinEl = document.getElementById('humidityMin');
+    const humidityMaxEl = document.getElementById('humidityMax');
+    const humidityAvgEl = document.getElementById('humidityAvg');
+    
+    if (humidityMinEl) humidityMinEl.textContent = `${Math.round(humidityMin)}%`;
+    if (humidityMaxEl) humidityMaxEl.textContent = `${Math.round(humidityMax)}%`;
+    if (humidityAvgEl) humidityAvgEl.textContent = `${Math.round(humidityAvg)}%`;
+    
+    // 初始化迷你图表
+    initializeMiniCharts();
+}
+
+/**
+ * 渲染气象站状态列表
+ */
+function renderStationList() {
+    const stationListEl = document.getElementById('stationList');
+    const stationStatusEl = document.getElementById('stationStatus');
+    
+    if (!stationListEl) return;
+    
+    // 更新在线状态统计
+    const onlineCount = stationData.filter(station => station.status === 'online').length;
+    if (stationStatusEl) {
+        stationStatusEl.textContent = `${onlineCount}/${stationData.length}`;
+    }
+    
+    // 渲染气象站列表
+    stationListEl.innerHTML = stationData.map(station => {
+        const timeDiff = Math.floor((Date.now() - station.lastUpdate) / 60000);
         
         return `
-            <div class="station-card">
-                <div class="station-header">
-                    <div class="station-info">
-                        <h4>${station.name}</h4>
-                        <div class="station-location">
+            <div class="station-item" onclick="viewStationDetails('${station.id}')">
+                <div class="station-status-dot ${station.status}"></div>
+                <div class="station-item-info">
+                    <div class="station-item-name">${station.name}</div>
+                    <div class="station-item-location">
                             <i class="fas fa-map-marker-alt"></i>
                             ${station.location}
                         </div>
                     </div>
-                    <div class="station-status-badge ${station.status}">
-                        <span class="status-dot"></span>
-                        ${statusText}
-                    </div>
-                </div>
-                
-                <div class="station-data">
-                    <div class="data-item">
-                        <span class="data-value temperature-value">${data.temperature.toFixed(1)}</span>
-                        <span class="data-label">温度 (°C)</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-value humidity-value">${Math.round(data.humidity)}</span>
-                        <span class="data-label">湿度 (%)</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-value rainfall-value">${data.rainfall.toFixed(1)}</span>
-                        <span class="data-label">降雨 (mm)</span>
-                    </div>
-                    <div class="data-item">
-                        <span class="data-value windspeed-value">${data.windspeed.toFixed(1)}</span>
-                        <span class="data-label">风速 (m/s)</span>
-                    </div>
-                </div>
-                
-                <div class="station-actions">
-                    <button class="station-btn view" onclick="viewStationDetails('${station.id}')" 
-                            data-tooltip="查看详情">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="station-btn config" onclick="configStation('${station.id}')"
-                            data-tooltip="配置设置">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="station-btn maintenance" onclick="maintenanceStation('${station.id}')"
-                            data-tooltip="维护管理">
-                        <i class="fas fa-tools"></i>
-                    </button>
-                </div>
-                
-                <div class="station-footer">
-                    <small class="text-muted">最后更新: ${timeDiff}分钟前</small>
+                <div class="station-item-data">
+                    <div class="station-temp">${station.currentData.temperature.toFixed(1)}°C</div>
+                    <div>${timeDiff}分钟前</div>
                 </div>
             </div>
         `;
@@ -496,103 +496,35 @@ function renderStationStatus() {
 }
 
 /**
- * 渲染数据表格
+ * 渲染看板汇总信息
  */
-function renderDataTable() {
-    const tbody = document.getElementById('tableBody');
-    if (!tbody) return;
+function renderDashboardSummary() {
+    const totalRainfall = stationData.reduce((sum, station) => sum + station.currentData.rainfall, 0);
+    const maxWindSpeed = Math.max(...stationData.map(station => station.currentData.windspeed));
+    const onlineStations = stationData.filter(station => station.status === 'online').length;
+    const dataQuality = onlineStations === stationData.length ? '优' : onlineStations > stationData.length * 0.8 ? '良' : '一般';
+    const alertCount = stationData.filter(station => station.status === 'offline').length;
     
-    // 计算当前页的数据
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const pageData = filteredData.slice(startIndex, endIndex);
+    // 更新汇总信息
+    const totalRainfallEl = document.getElementById('totalRainfall');
+    const maxWindSpeedEl = document.getElementById('maxWindSpeed');
+    const dataQualityEl = document.getElementById('dataQuality');
+    const alertCountEl = document.getElementById('alertCount');
     
-    if (pageData.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9" class="text-center">
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <h3>暂无数据</h3>
-                        <p>当前筛选条件下没有找到匹配的气象数据</p>
-                    </div>
-                </td>
-            </tr>
-        `;
-        updatePaginationInfo(0, 0, 0);
-        return;
+    if (totalRainfallEl) totalRainfallEl.textContent = `${totalRainfall.toFixed(1)}mm`;
+    if (maxWindSpeedEl) maxWindSpeedEl.textContent = `${maxWindSpeed.toFixed(1)}m/s`;
+    if (dataQualityEl) {
+        dataQualityEl.textContent = dataQuality;
+        dataQualityEl.className = `summary-value quality-${dataQuality === '优' ? 'good' : 'normal'}`;
     }
-    
-    tbody.innerHTML = pageData.map(item => `
-        <tr ${selectedRows.has(item.id) ? 'class="selected"' : ''}>
-            <td>
-                <input type="checkbox" ${selectedRows.has(item.id) ? 'checked' : ''} 
-                       onchange="toggleRowSelection('${item.id}')">
-            </td>
-            <td>
-                <div class="station-cell">
-                    <strong>${item.stationName}</strong>
-                    <small>${item.stationId}</small>
-                </div>
-            </td>
-            <td>
-                <div class="datetime-cell">
-                    <div>${item.datetime.toLocaleDateString('zh-CN')}</div>
-                    <small>${item.datetime.toLocaleTimeString('zh-CN')}</small>
-                </div>
-            </td>
-            <td>
-                <span class="temperature-value ${getTemperatureClass(item.temperature)}">
-                    ${item.temperature.toFixed(1)}
-                </span>
-            </td>
-            <td>
-                <span class="humidity-value ${getHumidityClass(item.humidity)}">
-                    ${Math.round(item.humidity)}
-                </span>
-            </td>
-            <td>
-                <span class="rainfall-value ${getRainfallClass(item.rainfall)}">
-                    ${item.rainfall.toFixed(1)}
-                </span>
-            </td>
-            <td>
-                <span class="windspeed-value ${getWindSpeedClass(item.windspeed)}">
-                    ${item.windspeed.toFixed(1)}
-                </span>
-            </td>
-            <td>
-                <div class="quality-score">
-                    <div class="quality-bar">
-                        <div class="quality-fill ${getQualityLevel(item.quality)}" 
-                             style="width: ${item.quality}%"></div>
-                    </div>
-                    <span class="quality-text">${Math.round(item.quality)}%</span>
-                </div>
-            </td>
-            <td>
-                <div class="action-buttons">
-                    <button class="action-btn view" onclick="viewDataDetails('${item.id}')" 
-                            data-tooltip="查看详情">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-btn download" onclick="exportDataRecord('${item.id}')"
-                            data-tooltip="导出记录">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    <button class="action-btn delete" onclick="deleteDataRecord('${item.id}')"
-                            data-tooltip="删除记录">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-    
-    // 更新分页信息
-    updatePaginationInfo(startIndex + 1, Math.min(endIndex, filteredData.length), filteredData.length);
-    updatePaginationControls();
+    if (alertCountEl) alertCountEl.textContent = alertCount;
 }
+
+
+
+
+
+
 
 /**
  * 渲染数据质量监控
@@ -678,58 +610,7 @@ function getQualityLevel(quality) {
     return 'poor';
 }
 
-/**
- * 更新分页信息
- */
-function updatePaginationInfo(start, end, total) {
-    const pageStartEl = document.getElementById('pageStart');
-    const pageEndEl = document.getElementById('pageEnd');
-    const totalRecordsEl = document.getElementById('totalRecords');
-    
-    if (pageStartEl) pageStartEl.textContent = start;
-    if (pageEndEl) pageEndEl.textContent = end;
-    if (totalRecordsEl) totalRecordsEl.textContent = total;
-}
 
-/**
- * 更新分页控件
- */
-function updatePaginationControls() {
-    const totalPages = Math.ceil(filteredData.length / pageSize);
-    const pageNumbersEl = document.getElementById('pageNumbers');
-    
-    if (!pageNumbersEl) return;
-    
-    // 生成页码按钮
-    let pageNumbers = '';
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-    
-    if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-        pageNumbers += `
-            <button class="page-btn ${i === currentPage ? 'active' : ''}" 
-                    onclick="changePage(${i})">${i}</button>
-        `;
-    }
-    
-    pageNumbersEl.innerHTML = pageNumbers;
-    
-    // 更新导航按钮状态
-    const firstPageBtn = document.getElementById('firstPageBtn');
-    const prevPageBtn = document.getElementById('prevPageBtn');
-    const nextPageBtn = document.getElementById('nextPageBtn');
-    const lastPageBtn = document.getElementById('lastPageBtn');
-    
-    if (firstPageBtn) firstPageBtn.disabled = currentPage === 1;
-    if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
-    if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages;
-    if (lastPageBtn) lastPageBtn.disabled = currentPage === totalPages;
-}
 
 // ===== 事件绑定 =====
 
@@ -737,29 +618,6 @@ function updatePaginationControls() {
  * 绑定事件
  */
 function bindEvents() {
-    // 表格排序
-    document.querySelectorAll('th[data-sort]').forEach(th => {
-        th.addEventListener('click', function() {
-            const field = this.getAttribute('data-sort');
-            handleSort(field);
-        });
-    });
-    
-    // 筛选器变化
-    const filters = ['stationFilter', 'dataTypeFilter', 'timeGranularity', 'startDate', 'endDate'];
-    filters.forEach(filterId => {
-        const element = document.getElementById(filterId);
-        if (element) {
-            element.addEventListener('change', debounce(applyFilters, 300));
-        }
-    });
-    
-    // 搜索框
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(handleSearch, 300));
-    }
-    
     // 窗口大小变化时重新调整图表
     window.addEventListener('resize', debounce(() => {
         Object.values(charts).forEach(chart => {
@@ -772,268 +630,15 @@ function bindEvents() {
 
 // ===== 功能函数 =====
 
-/**
- * 切换图表类型
- */
-function switchChart(chartType) {
-    currentChart = chartType;
-    
-    // 更新标签页样式
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    // 更新图表
-    updateWeatherTrendChart(chartType);
-    
-    showNotification(`已切换到${getChartTypeName(chartType)}图表`, 'success');
-}
 
-/**
- * 获取图表类型名称
- */
-function getChartTypeName(chartType) {
-    const names = {
-        temperature: '温度',
-        humidity: '湿度',
-        rainfall: '降雨量',
-        windspeed: '风速'
-    };
-    return names[chartType] || chartType;
-}
 
-/**
- * 刷新图表
- */
-function refreshChart() {
-    updateWeatherTrendChart(currentChart);
-    showNotification('图表已刷新', 'success');
-}
 
-/**
- * 导出图表
- */
-function exportChart() {
-    if (!charts.weatherTrend) {
-        showNotification('图表不存在', 'error');
-        return;
-    }
-    
-    const url = charts.weatherTrend.getDataURL({
-        type: 'png',
-        pixelRatio: 2,
-        backgroundColor: '#fff'
-    });
-    
-    const link = document.createElement('a');
-    link.download = `weather_${currentChart}_chart_${new Date().getTime()}.png`;
-    link.href = url;
-    link.click();
-    
-    showNotification('图表已导出', 'success');
-}
 
-/**
- * 全屏显示图表
- */
-function fullscreenChart() {
-    showNotification('全屏功能开发中...', 'info');
-}
 
-/**
- * 应用筛选
- */
-function applyFilters() {
-    const station = document.getElementById('stationFilter')?.value || '';
-    const dataType = document.getElementById('dataTypeFilter')?.value || '';
-    const granularity = document.getElementById('timeGranularity')?.value || 'hourly';
-    const startDate = document.getElementById('startDate')?.value || '';
-    const endDate = document.getElementById('endDate')?.value || '';
-    const searchText = document.querySelector('.search-input')?.value?.toLowerCase() || '';
-    
-    filteredData = weatherData.filter(item => {
-        // 气象站筛选
-        if (station && item.stationId !== station) {
-            return false;
-        }
-        
-        // 时间范围筛选
-        if (startDate) {
-            const start = new Date(startDate);
-            if (item.datetime < start) return false;
-        }
-        
-        if (endDate) {
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
-            if (item.datetime > end) return false;
-        }
-        
-        // 搜索文本筛选
-        if (searchText) {
-            const searchFields = [item.stationName, item.stationId].join(' ').toLowerCase();
-            if (!searchFields.includes(searchText)) {
-                return false;
-            }
-        }
-        
-        return true;
-    });
-    
-    // 重置到第一页
-    currentPage = 1;
-    selectedRows.clear();
-    
-    renderDataTable();
-    renderQualityMonitor();
-    
-    const filterCount = [station, startDate, endDate, searchText].filter(Boolean).length;
-    if (filterCount > 0) {
-        showNotification(`已应用 ${filterCount} 个筛选条件，找到 ${filteredData.length} 条记录`, 'info');
-    }
-}
 
-/**
- * 清除筛选
- */
-function clearFilters() {
-    // 清除筛选器值
-    const filterElements = [
-        'stationFilter',
-        'dataTypeFilter', 
-        'startDate',
-        'endDate'
-    ];
-    
-    filterElements.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.value = '';
-    });
-    
-    // 重置时间粒度
-    const granularityEl = document.getElementById('timeGranularity');
-    if (granularityEl) granularityEl.value = 'hourly';
-    
-    // 清除搜索框
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) searchInput.value = '';
-    
-    // 重置数据
-    filteredData = [...weatherData];
-    currentPage = 1;
-    selectedRows.clear();
-    
-    renderDataTable();
-    renderQualityMonitor();
-    
-    showNotification('已清除所有筛选条件', 'success');
-}
 
-/**
- * 处理搜索
- */
-function handleSearch() {
-    applyFilters();
-}
 
-/**
- * 切换行选择
- */
-function toggleRowSelection(id) {
-    if (selectedRows.has(id)) {
-        selectedRows.delete(id);
-    } else {
-        selectedRows.add(id);
-    }
-    
-    renderDataTable();
-}
 
-/**
- * 切换页面
- */
-function changePage(action) {
-    const totalPages = Math.ceil(filteredData.length / pageSize);
-    
-    switch(action) {
-        case 'first':
-            currentPage = 1;
-            break;
-        case 'prev':
-            currentPage = Math.max(1, currentPage - 1);
-            break;
-        case 'next':
-            currentPage = Math.min(totalPages, currentPage + 1);
-            break;
-        case 'last':
-            currentPage = totalPages;
-            break;
-        default:
-            if (typeof action === 'number') {
-                currentPage = Math.max(1, Math.min(totalPages, action));
-            }
-    }
-    
-    selectedRows.clear();
-    renderDataTable();
-}
-
-/**
- * 处理排序
- */
-function handleSort(field) {
-    if (currentSort.field === field) {
-        currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
-    } else {
-        currentSort.field = field;
-        currentSort.order = 'desc';
-    }
-    
-    // 应用排序
-    filteredData.sort((a, b) => {
-        let aVal = a[field];
-        let bVal = b[field];
-        
-        if (field === 'datetime') {
-            aVal = aVal.getTime();
-            bVal = bVal.getTime();
-        } else if (typeof aVal === 'number') {
-            aVal = parseFloat(aVal);
-            bVal = parseFloat(bVal);
-        } else if (typeof aVal === 'string') {
-            aVal = aVal.toLowerCase();
-            bVal = bVal.toLowerCase();
-        }
-        
-        if (currentSort.order === 'asc') {
-            return aVal > bVal ? 1 : -1;
-        } else {
-            return aVal < bVal ? 1 : -1;
-        }
-    });
-    
-    currentPage = 1;
-    renderDataTable();
-    
-    showNotification(`已按${getSortFieldName(field)}${currentSort.order === 'asc' ? '升序' : '降序'}排列`, 'success');
-}
-
-/**
- * 获取排序字段名称
- */
-function getSortFieldName(field) {
-    const fieldNames = {
-        station: '气象站',
-        datetime: '观测时间',
-        temperature: '温度',
-        humidity: '湿度',
-        rainfall: '降雨量',
-        windspeed: '风速',
-        quality: '数据质量'
-    };
-    return fieldNames[field] || field;
-}
 
 // ===== 气象站操作 =====
 
@@ -1047,7 +652,268 @@ function viewStationDetails(stationId) {
         return;
     }
     
-    showNotification(`查看气象站详情: ${station.name}`, 'info');
+    // 阻止事件冒泡（当点击按钮时）
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // 填充基本信息
+    document.getElementById('detailStationName').textContent = station.name;
+    document.getElementById('detailStationId').textContent = station.id;
+    document.getElementById('detailStationLocation').textContent = station.location;
+    
+    // 设置状态
+    const statusElement = document.getElementById('detailStationStatus');
+    const statusText = {
+        online: '在线',
+        offline: '离线', 
+        maintenance: '维护中'
+    }[station.status];
+    statusElement.textContent = statusText;
+    statusElement.className = `status-badge ${station.status}`;
+    
+    // 设置最后更新时间
+    const timeDiff = Math.floor((Date.now() - station.lastUpdate) / 60000);
+    document.getElementById('detailLastUpdate').textContent = `${timeDiff}分钟前`;
+    
+    // 填充实时数据
+    const data = station.currentData;
+    document.getElementById('detailTemperature').textContent = `${data.temperature.toFixed(1)}°C`;
+    document.getElementById('detailHumidity').textContent = `${Math.round(data.humidity)}%`;
+    document.getElementById('detailRainfall').textContent = `${data.rainfall.toFixed(1)}mm`;
+    document.getElementById('detailWindspeed').textContent = `${data.windspeed.toFixed(1)}m/s`;
+    document.getElementById('detailPressure').textContent = `${data.pressure.toFixed(1)}hPa`;
+    document.getElementById('detailRadiation').textContent = `${Math.round(data.radiation)}W/m²`;
+    
+    // 初始化趋势图表
+    initializeStationTrendChart(stationId);
+    
+    // 显示模态框
+    const modal = document.getElementById('stationDetailModal');
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden'; // 防止背景滚动
+    }
+    
+    console.log(`🌤️ 显示气象站详情: ${station.name}`);
+}
+
+/**
+ * 关闭气象站详情模态框
+ */
+function closeStationDetailModal() {
+    const modal = document.getElementById('stationDetailModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto'; // 恢复背景滚动
+    }
+    
+    // 销毁图表以释放资源
+    if (charts.stationTrend) {
+        charts.stationTrend.dispose();
+        delete charts.stationTrend;
+    }
+}
+
+/**
+ * 初始化气象站趋势图表
+ */
+function initializeStationTrendChart(stationId) {
+    const chartDom = document.getElementById('stationTrendChart');
+    if (!chartDom) return;
+    
+    // 如果图表已存在，先销毁
+    if (charts.stationTrend) {
+        charts.stationTrend.dispose();
+    }
+    
+    charts.stationTrend = echarts.init(chartDom);
+    
+    // 生成过去24小时的模拟数据
+    const hours = [];
+    const temperatureData = [];
+    const humidityData = [];
+    const rainfallData = [];
+    const windspeedData = [];
+    
+    for (let i = 23; i >= 0; i--) {
+        const time = new Date(Date.now() - i * 60 * 60 * 1000);
+        hours.push(time.getHours() + ':00');
+        
+        // 生成模拟数据，基于时间的变化
+        const hour = time.getHours();
+        temperatureData.push((15 + 10 * Math.sin((hour - 6) * Math.PI / 12) + Math.random() * 2).toFixed(1));
+        humidityData.push(Math.round(60 + Math.random() * 20));
+        rainfallData.push((Math.random() < 0.1 ? Math.random() * 3 : 0).toFixed(1));
+        windspeedData.push((2 + Math.random() * 4).toFixed(1));
+    }
+    
+    const option = {
+        title: {
+            show: false
+        },
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(50, 50, 50, 0.9)',
+            borderColor: '#667eea',
+            borderWidth: 1,
+            textStyle: {
+                color: '#fff',
+                fontSize: 12
+            },
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        legend: {
+            data: ['温度', '湿度', '降雨量', '风速'],
+            top: '5%',
+            textStyle: {
+                color: '#64748B',
+                fontSize: 12
+            }
+        },
+        grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '10%',
+            top: '20%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: hours,
+                axisPointer: {
+                    type: 'shadow'
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#E2E8F0'
+                    }
+                },
+                axisLabel: {
+                    color: '#64748B',
+                    fontSize: 11
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '温度(°C) / 风速(m/s)',
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        color: '#E2E8F0'
+                    }
+                },
+                axisLabel: {
+                    color: '#64748B',
+                    fontSize: 11
+                }
+            },
+            {
+                type: 'value',
+                name: '湿度(%) / 降雨(mm)',
+                position: 'right',
+                axisLine: {
+                    lineStyle: {
+                        color: '#E2E8F0'
+                    }
+                },
+                axisLabel: {
+                    color: '#64748B',
+                    fontSize: 11
+                }
+            }
+        ],
+        series: [
+            {
+                name: '温度',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 4,
+                yAxisIndex: 0,
+                lineStyle: {
+                    width: 3,
+                    color: '#FF6B6B'
+                },
+                itemStyle: {
+                    color: '#FF6B6B'
+                },
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0, y: 0, x2: 0, y2: 1,
+                        colorStops: [
+                            { offset: 0, color: 'rgba(255, 107, 107, 0.3)' },
+                            { offset: 1, color: 'rgba(255, 107, 107, 0.1)' }
+                        ]
+                    }
+                },
+                data: temperatureData
+            },
+            {
+                name: '湿度',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 4,
+                yAxisIndex: 1,
+                lineStyle: {
+                    width: 3,
+                    color: '#4ECDC4'
+                },
+                itemStyle: {
+                    color: '#4ECDC4'
+                },
+                data: humidityData
+            },
+            {
+                name: '降雨量',
+                type: 'bar',
+                yAxisIndex: 1,
+                itemStyle: {
+                    color: '#45B7D1',
+                    borderRadius: [2, 2, 0, 0]
+                },
+                data: rainfallData
+            },
+            {
+                name: '风速',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 4,
+                yAxisIndex: 0,
+                lineStyle: {
+                    width: 3,
+                    color: '#96CEB4'
+                },
+                itemStyle: {
+                    color: '#96CEB4'
+                },
+                data: windspeedData
+            }
+        ]
+    };
+    
+    charts.stationTrend.setOption(option);
+}
+
+/**
+ * 导出气象站数据
+ */
+function exportStationData() {
+    // 获取当前选中的气象站ID（可以从模态框中获取）
+    const stationName = document.getElementById('detailStationName').textContent;
+    showNotification(`导出 ${stationName} 数据功能开发中...`, 'info');
 }
 
 /**
@@ -1129,7 +995,6 @@ function deleteDataRecord(id) {
         selectedRows.delete(id);
         totalRecords = weatherData.length;
         
-        renderDataTable();
         renderQualityMonitor();
         
         showNotification('数据记录已删除', 'success');
@@ -1139,78 +1004,139 @@ function deleteDataRecord(id) {
 // ===== 其他功能 =====
 
 /**
+ * 初始化迷你图表
+ */
+function initializeMiniCharts() {
+    const tempMiniChart = document.getElementById('tempMiniChart');
+    const humidityMiniChart = document.getElementById('humidityMiniChart');
+    
+    if (tempMiniChart) {
+        tempMiniChart.textContent = '温度趋势图';
+    }
+    if (humidityMiniChart) {
+        humidityMiniChart.textContent = '湿度趋势图';
+    }
+}
+
+/**
+ * 切换趋势图表指标
+ */
+let currentTrendMetric = 'temperature';
+
+function switchTrendMetric(metric) {
+    // 更新按钮状态
+    document.querySelectorAll('.trend-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    currentTrendMetric = metric;
+    updateWeatherTrendChart(metric);
+    
+    showNotification(`已切换到${getTrendMetricName(metric)}趋势`, 'info');
+    console.log(`📊 切换趋势图表到: ${metric}`);
+}
+
+function getTrendMetricName(metric) {
+    const names = {
+        temperature: '温度',
+        humidity: '湿度', 
+        rainfall: '降雨',
+        wind: '风速'
+    };
+    return names[metric] || metric;
+}
+
+/**
+ * 切换侧边栏显示/隐藏
+ */
+let sidebarCollapsed = false;
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.dashboard-sidebar');
+    const toggleBtn = document.querySelector('.sidebar-toggle i');
+    
+    if (!sidebar || !toggleBtn) return;
+    
+    sidebarCollapsed = !sidebarCollapsed;
+    
+    if (sidebarCollapsed) {
+        sidebar.style.width = '60px';
+        sidebar.style.overflow = 'hidden';
+        toggleBtn.className = 'fas fa-chevron-left';
+        showNotification('侧边栏已折叠', 'info');
+    } else {
+        sidebar.style.width = '320px';
+        sidebar.style.overflow = 'visible';
+        toggleBtn.className = 'fas fa-chevron-right';
+        showNotification('侧边栏已展开', 'info');
+    }
+    
+    console.log(`📱 侧边栏${sidebarCollapsed ? '折叠' : '展开'}`);
+}
+
+/**
+ * 导出气象报告
+ */
+function exportWeatherReport() {
+    showNotification('正在生成气象报告...', 'info');
+    
+    // 模拟报告生成
+    setTimeout(() => {
+        const reportData = {
+            生成时间: new Date().toLocaleString('zh-CN'),
+            气象站总数: stationData.length,
+            在线气象站: stationData.filter(s => s.status === 'online').length,
+            平均温度: (stationData.reduce((sum, s) => sum + s.currentData.temperature, 0) / stationData.length).toFixed(1) + '°C',
+            平均湿度: Math.round(stationData.reduce((sum, s) => sum + s.currentData.humidity, 0) / stationData.length) + '%',
+            总降雨量: stationData.reduce((sum, s) => sum + s.currentData.rainfall, 0).toFixed(1) + 'mm',
+            最大风速: Math.max(...stationData.map(s => s.currentData.windspeed)).toFixed(1) + 'm/s'
+        };
+        
+        console.log('📄 气象报告数据:', reportData);
+        showNotification('气象报告生成成功', 'success');
+    }, 1500);
+}
+
+/**
+ * 刷新所有数据 (综合看板版本)
+ */
+function refreshAllData() {
+    showNotification('正在刷新气象数据...', 'info');
+    
+    // 重新生成模拟数据
+    generateMockData();
+    
+    // 刷新综合看板
+    renderComprehensiveDashboard();
+    renderQualityMonitor();
+    
+    // 更新图表
+    updateWeatherTrendChart(currentTrendMetric);
+    
+    showNotification('气象数据已刷新', 'success');
+    console.log('🔄 气象数据已刷新');
+}
+
+/**
+ * 向后兼容的refreshData函数
+ */
+function refreshData() {
+    refreshAllData();
+}
+
+
+
+/**
  * 显示气象站管理
  */
 function showStationManagement() {
     showNotification('气象站管理功能开发中...', 'info');
 }
 
-/**
- * 显示数据导入
- */
-function showDataImport() {
-    const modal = document.getElementById('importModal');
-    if (modal) {
-        modal.classList.add('show');
-    }
-}
 
-/**
- * 关闭导入模态框
- */
-function closeImportModal() {
-    const modal = document.getElementById('importModal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
 
-/**
- * 选择导入类型
- */
-function selectImportType(type) {
-    // 移除其他选中状态
-    document.querySelectorAll('.import-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    // 选中当前选项
-    event.currentTarget.classList.add('selected');
-    
-    const typeNames = {
-        file: '文件导入',
-        api: 'API接口导入',
-        manual: '手动录入'
-    };
-    
-    showNotification(`已选择 ${typeNames[type]}`, 'success');
-}
 
-/**
- * 导出数据
- */
-function exportData() {
-    showNotification('数据导出功能开发中...', 'info');
-}
-
-/**
- * 生成报表
- */
-function generateReport() {
-    showNotification('报表生成功能开发中...', 'info');
-}
-
-/**
- * 数据质量检查
- */
-function dataQualityCheck() {
-    showNotification('正在进行数据质量检查...', 'info');
-    
-    setTimeout(() => {
-        renderQualityMonitor();
-        showNotification('数据质量检查完成', 'success');
-    }, 2000);
-}
 
 /**
  * 刷新气象站状态
@@ -1287,12 +1213,62 @@ if (typeof debounce === 'undefined') {
         };
     }
 }
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+/**
+ * 获取温度样式类
+ */
+function getTemperatureClass(temperature) {
+    if (temperature < 0) return 'temp-freezing';
+    if (temperature < 10) return 'temp-cold';
+    if (temperature < 25) return 'temp-moderate';
+    if (temperature < 35) return 'temp-warm';
+    return 'temp-hot';
+}
+
+/**
+ * 获取湿度样式类
+ */
+function getHumidityClass(humidity) {
+    if (humidity < 30) return 'humidity-low';
+    if (humidity < 60) return 'humidity-moderate';
+    return 'humidity-high';
+}
+
+/**
+ * 获取降雨量样式类
+ */
+function getRainfallClass(rainfall) {
+    if (rainfall === 0) return 'rainfall-none';
+    if (rainfall < 5) return 'rainfall-light';
+    if (rainfall < 25) return 'rainfall-moderate';
+    return 'rainfall-heavy';
+}
+
+/**
+ * 获取质量样式类
+ */
+function getQualityClass(quality) {
+    if (quality >= 90) return 'quality-excellent';
+    if (quality >= 80) return 'quality-good';
+    if (quality >= 70) return 'quality-fair';
+    if (quality >= 60) return 'quality-poor';
+    return 'quality-bad';
+}
+
+/**
+ * 获取质量等级文本
+ */
+function getQualityText(quality) {
+    if (quality >= 90) return '优秀';
+    if (quality >= 80) return '良好';
+    if (quality >= 70) return '一般';
+    if (quality >= 60) return '较差';
+    return '差';
+}
  
