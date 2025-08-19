@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 气象数据管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入ECharts图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/data-management.css">
+    <link rel="stylesheet" href="../../assets/css/weather-data.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>数据管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>气象数据管理</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索气象数据...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="weather-data.html" class="nav-subitem active">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                    <a href="weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-cloud-sun"></i>
+                    气象数据管理
+                </h1>
+                <p class="page-description">管理和监控农业气象观测数据，包括温度、湿度、降雨量、风速等关键农业气象要素</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync"></i>
+                    刷新数据
+                </button>
+                <button class="btn btn-secondary" onclick="showStationManagement()">
+                    <i class="fas fa-map-marker-alt"></i>
+                    气象站管理
+                </button>
+
+            </div>
+        </div>
+
+        <!-- 综合气象监测看板 -->
+        <div class="comprehensive-weather-dashboard">
+            <div class="section-header">
+                <h3>
+                    <i class="fas fa-cloud-sun"></i>
+                    综合气象监测看板
+                </h3>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="refreshAllData()">
+                        <i class="fas fa-sync"></i>
+                        刷新数据
+                    </button>
+                    <button class="btn btn-secondary" onclick="showStationMap()">
+                        <i class="fas fa-map"></i>
+                        查看地图
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportWeatherReport()">
+                        <i class="fas fa-file-export"></i>
+                        导出报告
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dashboard-layout">
+                <!-- 左侧：实时数据概览和趋势 -->
+                <div class="dashboard-main">
+                    <!-- 核心指标卡片 -->
+                    <div class="key-metrics">
+                        <div class="metric-card temperature">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h4>温度监测</h4>
+                                    <div class="metric-range">
+                                        <span class="range-min" id="tempMin">18.5°C</span>
+                                        <span class="range-separator">~</span>
+                                        <span class="range-max" id="tempMax">26.8°C</span>
+                                    </div>
+                                </div>
+                                <div class="metric-average">
+                                    <span class="avg-label">平均</span>
+                                    <span class="avg-value" id="tempAvg">23.1°C</span>
+                                </div>
+                            </div>
+                            <div class="metric-chart" id="tempMiniChart"></div>
+                        </div>
+                        
+                        <div class="metric-card humidity">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="metric-info">
+                                    <h4>湿度监测</h4>
+                                    <div class="metric-range">
+                                        <span class="range-min" id="humidityMin">45%</span>
+                                        <span class="range-separator">~</span>
+                                        <span class="range-max" id="humidityMax">82%</span>
+                                    </div>
+                                </div>
+                                <div class="metric-average">
+                                    <span class="avg-label">平均</span>
+                                    <span class="avg-value" id="humidityAvg">64%</span>
+                                </div>
+                            </div>
+                            <div class="metric-chart" id="humidityMiniChart"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 天气趋势图表 -->
+                    <div class="weather-trend-section">
+                        <div class="trend-header">
+                            <h4>24小时气象数据趋势</h4>
+                            <div class="trend-controls">
+                                <button class="trend-btn active" onclick="switchTrendMetric('temperature')">温度</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('humidity')">湿度</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('rainfall')">降雨</button>
+                                <button class="trend-btn" onclick="switchTrendMetric('wind')">风速</button>
+                            </div>
+                        </div>
+                        <div class="trend-chart-container">
+                            <div id="weatherTrendChart" class="trend-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：气象站状态监控 -->
+                <div class="dashboard-sidebar">
+                    <div class="sidebar-header">
+                        <h4>
+                            <i class="fas fa-broadcast-tower"></i>
+                            气象站状态
+                            <span class="station-count" id="stationStatus">4/5</span>
+                        </h4>
+                        <button class="sidebar-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="station-list" id="stationList">
+                        <!-- 气象站状态列表将通过JavaScript生成 -->
+                    </div>
+                    
+                    <!-- 底部汇总信息 -->
+                    <div class="dashboard-summary">
+                        <h5>今日汇总</h5>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label">总降雨量</span>
+                                <span class="summary-value" id="totalRainfall">15.7mm</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">最大风速</span>
+                                <span class="summary-value" id="maxWindSpeed">12.3m/s</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">数据质量</span>
+                                <span class="summary-value quality-good" id="dataQuality">优</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">异常报警</span>
+                                <span class="summary-value" id="alertCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <!-- 数据质量监控 -->
+        <div class="quality-monitor">
+            <div class="monitor-header">
+                <h3>
+                    <i class="fas fa-shield-alt"></i>
+                    数据质量监控
+                </h3>
+                <button class="btn btn-secondary" onclick="refreshQualityStatus()">
+                    <i class="fas fa-sync"></i>
+                    刷新状态
+                </button>
+            </div>
+            
+            <div class="quality-grid">
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="quality-title">正常数据</div>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-value">92.5%</div>
+                        <div class="quality-count">1,426 条记录</div>
+                    </div>
+                </div>
+                
+                <div class="quality-card warning">
+                    <div class="quality-header">
+                        <div class="quality-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="quality-title">异常数据</div>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-value">5.2%</div>
+                        <div class="quality-count">80 条记录</div>
+                    </div>
+                </div>
+                
+                <div class="quality-card error">
+                    <div class="quality-header">
+                        <div class="quality-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="quality-title">缺失数据</div>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-value">2.3%</div>
+                        <div class="quality-count">36 条记录</div>
+                    </div>
+                </div>
+                
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="quality-title">延迟数据</div>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-value">0.8%</div>
+                        <div class="quality-count">12 条记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 气象站详情模态框 -->
+    <div class="modal-overlay" id="stationDetailModal">
+        <div class="modal-content station-detail-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-broadcast-tower"></i>
+                    气象站详情
+                </h3>
+                <button class="modal-close" onclick="closeStationDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="station-detail-content">
+                    <!-- 基本信息 -->
+                    <div class="detail-section">
+                        <h4>基本信息</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>气象站名称:</label>
+                                <span id="detailStationName">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>站点编号:</label>
+                                <span id="detailStationId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>所在位置:</label>
+                                <span id="detailStationLocation">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>运行状态:</label>
+                                <span id="detailStationStatus" class="status-badge">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>最后更新:</label>
+                                <span id="detailLastUpdate">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>安装日期:</label>
+                                <span id="detailInstallDate">2020年3月15日</span>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 实时数据 -->
+                    <div class="detail-section">
+                        <h4>实时观测数据</h4>
+                        <div class="current-data-grid">
+                            <div class="data-card temperature">
+                                <div class="data-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailTemperature">--°C</div>
+                                    <div class="data-label">当前温度</div>
+                                </div>
+                            </div>
+                            <div class="data-card humidity">
+                                <div class="data-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailHumidity">--%</div>
+                                    <div class="data-label">相对湿度</div>
+                                </div>
+                            </div>
+                            <div class="data-card rainfall">
+                                <div class="data-icon">
+                                    <i class="fas fa-cloud-rain"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailRainfall">--mm</div>
+                                    <div class="data-label">当日降雨</div>
+                                </div>
+                            </div>
+                            <div class="data-card windspeed">
+                                <div class="data-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailWindspeed">--m/s</div>
+                                    <div class="data-label">风速</div>
+                                </div>
+                            </div>
+                            <div class="data-card pressure">
+                                <div class="data-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailPressure">--hPa</div>
+                                    <div class="data-label">气压</div>
+                                </div>
+                            </div>
+                            <div class="data-card radiation">
+                                <div class="data-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <div class="data-info">
+                                    <div class="data-value" id="detailRadiation">--W/m²</div>
+                                    <div class="data-label">太阳辐射</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 24小时趋势图表 -->
+                    <div class="detail-section">
+                        <div class="trend-header">
+                            <h4>数据趋势</h4>
+                            <div class="trend-time-controls">
+                                <button class="trend-time-btn active" onclick="switchTrendTimeRange('24h')" data-range="24h">24小时</button>
+                                <button class="trend-time-btn" onclick="switchTrendTimeRange('7d')" data-range="7d">7日</button>
+                                <button class="trend-time-btn" onclick="switchTrendTimeRange('history')" data-range="history">历史</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 历史日期选择器 -->
+                        <div class="history-date-picker" id="historyDatePicker" style="display: none;">
+                            <div class="date-picker-container">
+                                <div class="date-input-group">
+                                    <label>起始日期:</label>
+                                    <input type="date" id="historyStartDate" class="form-control date-input">
+                                </div>
+                                <div class="date-input-group">
+                                    <label>结束日期:</label>
+                                    <input type="date" id="historyEndDate" class="form-control date-input">
+                                </div>
+                                <button class="btn btn-primary" onclick="applyHistoryDateRange()">
+                                    <i class="fas fa-search"></i>
+                                    查询
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="trend-chart-container">
+                            <div id="stationTrendChart" class="station-trend-chart"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 设备状态 -->
+                    <div class="detail-section">
+                        <h4>设备状态</h4>
+                        <div class="equipment-status">
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-thermometer-half"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">温度传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">湿度传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">风速传感器</div>
+                                    <div class="equipment-status-text warning">警告</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength medium">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">
+                                    <i class="fas fa-cloud-rain"></i>
+                                </div>
+                                <div class="equipment-info">
+                                    <div class="equipment-name">雨量传感器</div>
+                                    <div class="equipment-status-text normal">正常</div>
+                                </div>
+                                <div class="equipment-signal">
+                                    <div class="signal-strength strong">
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                        <div class="signal-bar"></div>
+                                    </div>
+                                </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="exportStationData()">
+                    <i class="fas fa-download"></i>
+                    导出数据
+                </button>
+                <button class="btn btn-primary" onclick="closeStationDetailModal()">
+                    <i class="fas fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/weather-data.js"></script>
+</body>
+</html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

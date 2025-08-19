@@ -1,0 +1,1102 @@
+/**
+ * 统计报表模块专用样式
+ * 包含数据质量报告、业务统计、数据导出页面的特殊样式
+ */
+
+/* ==================== 数据质量报告样式 ==================== */
+
+/* 质量概览卡片 */
+.quality-overview {
+    margin-bottom: var(--spacing-lg);
+}
+
+.overview-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.quality-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-all);
+    position: relative;
+    overflow: hidden;
+}
+
+.quality-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    transition: var(--transition-all);
+}
+
+.quality-card.excellent::before {
+    background: linear-gradient(90deg, #52c41a, #73d13d);
+}
+
+.quality-card.good::before {
+    background: linear-gradient(90deg, #1890ff, #40a9ff);
+}
+
+.quality-card.warning::before {
+    background: linear-gradient(90deg, #faad14, #ffc53d);
+}
+
+.quality-card.error::before {
+    background: linear-gradient(90deg, #ff4d4f, #ff7875);
+}
+
+.quality-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.quality-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.quality-card .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    margin-bottom: var(--spacing-sm);
+}
+
+.quality-card.excellent .card-icon {
+    background: linear-gradient(135deg, #52c41a, #73d13d);
+}
+
+.quality-card.good .card-icon {
+    background: linear-gradient(135deg, #1890ff, #40a9ff);
+}
+
+.quality-card.warning .card-icon {
+    background: linear-gradient(135deg, #faad14, #ffc53d);
+}
+
+.quality-card.error .card-icon {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875);
+}
+
+.quality-card .card-info h3 {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-xs) 0;
+    font-weight: 500;
+}
+
+.quality-card .card-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1;
+}
+
+.quality-card .card-percentage {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: var(--spacing-xs) 0 0 0;
+}
+
+.quality-card .card-trend {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.trend-up {
+    color: var(--success-color);
+}
+
+.trend-down {
+    color: var(--error-color);
+}
+
+/* 完整性统计 */
+.completeness-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    min-width: 120px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transition: width 0.8s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* 异常数据表格样式 */
+.anomaly-type {
+    padding: 4px 8px;
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.anomaly-type.outlier {
+    background: rgba(255, 77, 79, 0.1);
+    color: var(--error-color);
+}
+
+.anomaly-type.missing {
+    background: rgba(250, 173, 20, 0.1);
+    color: var(--warning-color);
+}
+
+.anomaly-type.duplicate {
+    background: rgba(24, 144, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.anomaly-type.format {
+    background: rgba(114, 46, 209, 0.1);
+    color: var(--purple-color);
+}
+
+.severity-badge {
+    padding: 4px 8px;
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.severity-badge.high {
+    background: rgba(255, 77, 79, 0.1);
+    color: var(--error-color);
+}
+
+.severity-badge.medium {
+    background: rgba(250, 173, 20, 0.1);
+    color: var(--warning-color);
+}
+
+.severity-badge.low {
+    background: rgba(82, 196, 26, 0.1);
+    color: var(--success-color);
+}
+
+.description-cell {
+    max-width: 200px;
+}
+
+.description-cell span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==================== 业务统计报表样式 ==================== */
+
+/* 业务概览卡片 */
+.business-overview {
+    margin-bottom: var(--spacing-lg);
+}
+
+.business-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-all);
+    position: relative;
+    overflow: hidden;
+}
+
+.business-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    transition: var(--transition-all);
+}
+
+.business-card.primary::before {
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+}
+
+.business-card.success::before {
+    background: linear-gradient(90deg, var(--success-color), #73d13d);
+}
+
+.business-card.warning::before {
+    background: linear-gradient(90deg, var(--warning-color), #ffc53d);
+}
+
+.business-card.info::before {
+    background: linear-gradient(90deg, #13c2c2, #36cfc9);
+}
+
+.business-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.business-card .card-unit {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: var(--spacing-xs) 0 0 0;
+}
+
+/* 图表控制按钮 */
+.chart-controls {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.chart-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition-all);
+}
+
+.chart-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.chart-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* 效率统计 */
+.efficiency-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.efficiency-stats .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.efficiency-stats .stat-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.efficiency-stats .stat-label i {
+    width: 16px;
+    color: var(--primary-color);
+}
+
+.efficiency-stats .stat-value {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.efficiency-stats .value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 60px;
+}
+
+/* 排行榜样式 */
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    transition: var(--transition-all);
+}
+
+.ranking-item:hover {
+    background: var(--bg-secondary);
+}
+
+.ranking-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.ranking-number.top-three {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+.ranking-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ranking-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.ranking-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.ranking-bar {
+    width: 80px;
+    height: 6px;
+    background: var(--bg-secondary);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transition: width 0.8s ease;
+}
+
+/* 业务类型图标 */
+.business-type {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.business-type i {
+    width: 16px;
+    color: var(--primary-color);
+}
+
+/* 作物标签 */
+.crop-tag {
+    padding: 4px 8px;
+    background: rgba(82, 196, 26, 0.1);
+    color: var(--success-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* 精度显示 */
+.accuracy-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.accuracy-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.accuracy-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--bg-secondary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.accuracy-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success-color), #73d13d);
+    transition: width 0.5s ease;
+}
+
+/* ==================== 数据导出样式 ==================== */
+
+/* 数据源选择 */
+.data-sources {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.source-group {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.source-category {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition-all);
+}
+
+.source-category:hover {
+    background: var(--bg-hover);
+}
+
+.source-category input[type="checkbox"] {
+    margin: 0;
+}
+
+.source-category i {
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.source-items {
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.source-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition-all);
+}
+
+.source-item:hover {
+    background: var(--bg-secondary);
+}
+
+.source-item input[type="checkbox"] {
+    margin: 0 var(--spacing-sm) 0 0;
+}
+
+.source-item span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.source-item small {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* 导出格式选择 */
+.format-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+.format-option {
+    cursor: pointer;
+}
+
+.format-option input[type="radio"] {
+    display: none;
+}
+
+.format-card {
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    transition: var(--transition-all);
+    background: var(--card-bg);
+}
+
+.format-card:hover {
+    border-color: var(--primary-light);
+    background: var(--bg-secondary);
+}
+
+.format-option input[type="radio"]:checked + .format-card {
+    border-color: var(--primary-color);
+    background: rgba(24, 144, 255, 0.05);
+}
+
+.format-card i {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.format-card span {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.format-card small {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* 质量筛选 */
+.quality-filters {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.quality-filter {
+    cursor: pointer;
+}
+
+.quality-filter input[type="checkbox"] {
+    display: none;
+}
+
+.quality-filter .quality-badge {
+    padding: 6px 12px;
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    border: 2px solid transparent;
+    transition: var(--transition-all);
+    opacity: 0.6;
+}
+
+.quality-filter input[type="checkbox"]:checked + .quality-badge {
+    opacity: 1;
+    border-color: currentColor;
+}
+
+.quality-badge.excellent {
+    background: rgba(82, 196, 26, 0.1);
+    color: var(--success-color);
+}
+
+.quality-badge.good {
+    background: rgba(24, 144, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.quality-badge.warning {
+    background: rgba(250, 173, 20, 0.1);
+    color: var(--warning-color);
+}
+
+.quality-badge.error {
+    background: rgba(255, 77, 79, 0.1);
+    color: var(--error-color);
+}
+
+/* 预览容器 */
+.preview-container {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.preview-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.preview-tab {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-all);
+    border-bottom: 2px solid transparent;
+}
+
+.preview-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.preview-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: var(--card-bg);
+}
+
+.preview-content {
+    position: relative;
+    min-height: 300px;
+}
+
+.preview-pane {
+    display: none;
+    padding: var(--spacing-lg);
+}
+
+.preview-pane.active {
+    display: block;
+}
+
+/* 预览表格 */
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.preview-table th,
+.preview-table td {
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preview-table th {
+    background: var(--bg-secondary);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* 数据结构树 */
+.structure-tree {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.tree-node,
+.tree-leaf {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) 0;
+}
+
+.tree-icon {
+    width: 16px;
+    color: var(--primary-color);
+}
+
+.tree-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.tree-value {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-left: auto;
+}
+
+/* 统计信息网格 */
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.stat-card .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-md);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card .stat-info {
+    flex: 1;
+}
+
+.stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-card .stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 导出任务列表 */
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    transition: var(--transition-all);
+}
+
+.task-item:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.task-item.running {
+    border-left: 4px solid var(--primary-color);
+}
+
+.task-item.completed {
+    border-left: 4px solid var(--success-color);
+}
+
+.task-item.failed {
+    border-left: 4px solid var(--error-color);
+}
+
+.task-item.paused {
+    border-left: 4px solid var(--warning-color);
+}
+
+.task-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.task-details {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+
+.task-format,
+.task-sources,
+.task-records,
+.task-time {
+    white-space: nowrap;
+}
+
+.task-progress {
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.task-progress .progress-bar {
+    height: 6px;
+}
+
+.task-progress .progress-text {
+    font-size: 12px;
+    text-align: center;
+}
+
+.task-status {
+    width: 80px;
+    text-align: center;
+}
+
+.error-message {
+    font-size: 11px;
+    color: var(--error-color);
+    margin-top: var(--spacing-xs);
+}
+
+.task-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+/* 导出操作区域 */
+.export-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.export-summary {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 14px;
+}
+
+.summary-label {
+    color: var(--text-secondary);
+}
+
+.summary-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.export-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+/* 导出进度模态框 */
+.export-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.progress-info {
+    text-align: center;
+}
+
+.progress-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.progress-details {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.progress-bar-container .progress-bar {
+    flex: 1;
+    height: 12px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar-container .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transition: width 0.3s ease;
+}
+
+.progress-bar-container .progress-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 50px;
+    text-align: right;
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+}
+
+.progress-stats .stat-item {
+    text-align: center;
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+}
+
+.progress-stats .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.progress-stats .stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .overview-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .format-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .quality-filters {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .export-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+    }
+    
+    .export-summary {
+        justify-content: center;
+    }
+    
+    .export-buttons {
+        justify-content: center;
+    }
+    
+    .task-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-sm);
+    }
+    
+    .task-progress {
+        width: 100%;
+    }
+    
+    .task-actions {
+        justify-content: center;
+    }
+    
+    .progress-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .export-actions,
+    .task-actions,
+    .card-actions,
+    .page-actions {
+        display: none !important;
+    }
+    
+    .content-card {
+        break-inside: avoid;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .chart-container {
+        height: 300px !important;
+    }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

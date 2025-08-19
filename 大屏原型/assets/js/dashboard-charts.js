@@ -4,9 +4,17 @@
  */
 
 // 全局图表实例
-let cropAreaPieChart = null;
-let plantingComparisonChart = null;
-let cropSankeyChart = null;
+let townCropChart = null;
+let trendComparisonChart = null;
+
+// 当前选择的作物类型
+let currentSelectedCrop = 'wheat';
+
+// 当前选中的乡镇（默认为红台镇）
+let currentSelectedTown = '红台镇';
+
+// 当前显示模式：固定为长势比例模式
+let currentChartMode = 'growth';
 
 /**
  * 初始化所有数据看板图表
@@ -20,489 +28,666 @@ function initDashboardCharts() {
 
     console.log('📊 初始化数据看板图表...');
 
-    // 初始化各个图表
-    initCropAreaPieChart();
-    initPlantingComparisonChart();
-    initCropSankeyChart();
+    // 根据页面类型初始化相应图表
+    // 只在index.html页面初始化这些图表
+    if (document.getElementById('town-crop-chart')) {
+        initTownCropChart();
+    }
+
+    if (document.getElementById('growth-trend-comparison')) {
+        initTrendComparisonChart();
+    }
 
     console.log('✅ 数据看板图表初始化完成');
 }
 
 /**
- * 1. 初始化作物面积环形图
+ * 1. 初始化单作物按乡镇长势分布图表
  */
-function initCropAreaPieChart() {
-    const container = document.getElementById('crop-area-pie');
+function initTownCropChart() {
+    const container = document.getElementById('town-crop-chart');
     if (!container) {
-        console.warn('⚠️ 作物面积环形图容器未找到');
+        console.warn('⚠️ 单作物按乡镇长势分布图表容器未找到');
         return;
     }
 
     // 创建图表实例
-    cropAreaPieChart = echarts.init(container);
+    townCropChart = echarts.init(container);
 
-    // 配置选项
-    const option = {
-        backgroundColor: 'transparent',
-        tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} 亩 ({d}%)',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            borderColor: 'rgba(0, 212, 255, 0.5)',
-            textStyle: {
-                color: '#ffffff',
-                fontSize: 12
-            }
-        },
-        legend: {
-            show: false
-        },
-        series: [
-            {
-                name: '作物面积分布',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                center: ['50%', '50%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 5,
-                    borderColor: 'rgba(0, 0, 0, 0.3)',
-                    borderWidth: 2
-                },
-                label: {
-                    show: false
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#ffffff'
-                    },
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 212, 255, 0.5)'
-                    }
-                },
-                labelLine: {
-                    show: false
-                },
-                data: [
-                    { 
-                        value: 1256, 
-                        name: '小麦',
-                        itemStyle: { color: '#4CAF50' }
-                    },
-                    { 
-                        value: 986, 
-                        name: '玉米',
-                        itemStyle: { color: '#FFC107' }
-                    },
-                    { 
-                        value: 453, 
-                        name: '辣椒',
-                        itemStyle: { color: '#FF5722' }
-                    },
-                    { 
-                        value: 275, 
-                        name: '其他',
-                        itemStyle: { color: '#00BCD4' }
-                    }
-                ],
-                animationType: 'scale',
-                animationEasing: 'elasticOut',
-                animationDelay: function (idx) {
-                    return Math.random() * 200;
-                }
-            }
-        ]
-    };
+    // 初始化显示小麦数据
+    window.updateTownCropChart('wheat');
 
-    // 设置配置项并渲染图表
-    cropAreaPieChart.setOption(option);
-
-    // 添加点击事件
-    cropAreaPieChart.on('click', function (params) {
-        console.log('点击了作物:', params.name, '面积:', params.value, '亩');
-        // 这里可以添加筛选功能
+    // 窗口大小改变时重新调整图表
+    window.addEventListener('resize', function () {
+        if (townCropChart) {
+            townCropChart.resize();
+        }
     });
+
+    // 绑定切换按钮事件
+    initTownCropSwitchButtons();
+
+    // 添加图表点击事件
+    townCropChart.on('click', function(params) {
+        if (params.name) {
+            const townName = params.name;
+            console.log(`🖱️ 点击了乡镇: ${townName}`);
+            
+            // 更新长势趋势对比图表
+            if (window.updateTrendComparisonChart) {
+                window.updateTrendComparisonChart(townName);
+            }
+        }
+    });
+
+    console.log('✅ 单作物按乡镇长势分布图表初始化完成');
 }
 
 /**
- * 2. 初始化种植结构对比柱状图
+ * 更新单作物按乡镇长势分布图表
+ * 全局函数，供main.js调用
  */
-function initPlantingComparisonChart() {
-    const container = document.getElementById('planting-comparison-chart');
-    if (!container) {
-        console.warn('⚠️ 种植结构对比图容器未找到');
-        return;
-    }
-
-    // 创建图表实例
-    plantingComparisonChart = echarts.init(container);
+window.updateTownCropChart = function(cropType) {
+    console.log(`🔄 updateTownCropChart 被调用，作物类型: ${cropType}`);
     
-    // 初始化为柱状图
-    updatePlantingChart('bar');
-
-    // 图表切换事件监听
-    initChartSwitchEvents();
-}
-
-/**
- * 3. 初始化作物轮作桑基图
- */
-function initCropSankeyChart() {
-    const container = document.getElementById('crop-sankey-chart');
-    if (!container) {
-        console.warn('⚠️ 作物轮作桑基图容器未找到');
+    if (!townCropChart) {
+        console.warn('⚠️ townCropChart 图表实例不存在');
         return;
     }
 
-    // 创建图表实例
-    cropSankeyChart = echarts.init(container);
+    currentSelectedCrop = cropType;
+    console.log(`📝 当前选择的作物已更新为: ${cropType}`);
 
-    // 配置选项
-    const option = {
-        backgroundColor: 'transparent',
-        tooltip: {
-            trigger: 'item',
-            triggerOn: 'mousemove',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            borderColor: 'rgba(0, 212, 255, 0.5)',
-            textStyle: {
-                color: '#ffffff',
-                fontSize: 12
+    // 临夏县各乡镇各作物数据
+    const townCropData = {
+        wheat: {
+            name: '🌾 小麦',
+            icon: '🌾',
+            color: '#4CAF50',
+            data: [456, 398, 268, 134, 312, 289, 198, 167],
+            total: 2222,
+            // 长势比例数据（优、良、中、差的比例，按乡镇）
+            growth: {
+                excellent: [182, 159, 107, 54, 125, 116, 79, 67], // 优：40%
+                good: [137, 119, 80, 40, 94, 87, 59, 50],         // 良：30%
+                fair: [91, 80, 54, 27, 62, 58, 40, 33],           // 中：20%
+                poor: [46, 40, 27, 13, 31, 29, 20, 17]            // 差：10%
             }
         },
-        series: [
-            {
-                type: 'sankey',
-                layout: 'none',
-                emphasis: {
-                    focus: 'adjacency'
-                },
-                nodeAlign: 'left',
-                nodeGap: 15,
-                nodeWidth: 18,
-                layoutIterations: 32,
-                data: [
-                    {
-                        name: '油菜',
-                        x: 50,
-                        y: 40,
-                        itemStyle: { color: '#FFEB3B' }
-                    },
-                    {
-                        name: '小麦',
-                        x: 50,
-                        y: 80,
-                        itemStyle: { color: '#4CAF50' }
-                    },
-                    {
-                        name: '辣椒',
-                        x: 50,
-                        y: 120,
-                        itemStyle: { color: '#FF5722' }
-                    },
-                    {
-                        name: '娃娃菜',
-                        x: 250,
-                        y: 40,
-                        itemStyle: { color: '#8BC34A' }
-                    },
-                    {
-                        name: '玉米',
-                        x: 250,
-                        y: 80,
-                        itemStyle: { color: '#FFC107' }
-                    },
-                    {
-                        name: '小麦_2',
-                        x: 250,
-                        y: 120,
-                        itemStyle: { color: '#4CAF50' }
-                    }
-                ],
-                links: [
-                    {
-                        source: '油菜',
-                        target: '娃娃菜',
-                        value: 45,
-                        lineStyle: {
-                            color: 'rgba(255, 235, 59, 0.8)',
-                            curveness: 0.5
-                        }
-                    },
-                    {
-                        source: '小麦',
-                        target: '玉米',
-                        value: 38,
-                        lineStyle: {
-                            color: 'rgba(76, 175, 80, 0.8)',
-                            curveness: 0.5
-                        }
-                    },
-                    {
-                        source: '辣椒',
-                        target: '小麦_2',
-                        value: 28,
-                        lineStyle: {
-                            color: 'rgba(255, 87, 34, 0.8)',
-                            curveness: 0.5
-                        }
-                    }
-                ],
-                edgeLabel: {
-                    show: true,
-                    fontSize: 11,
-                    color: '#ffffff',
-                    fontWeight: 'bold',
-                    formatter: function(params) {
-                        return params.value + '%';
-                    }
-                },
-                label: {
-                    show: true,
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    fontSize: 11,
-                    fontWeight: 'bold'
-                },
-                lineStyle: {
-                    color: 'gradient',
-                    curveness: 0.5
-                }
+        corn: {
+            name: '🌽 玉米',
+            icon: '🌽',
+            color: '#FFC107',
+            data: [378, 298, 198, 112, 245, 189, 156, 123],
+            total: 1699,
+            growth: {
+                excellent: [151, 119, 79, 45, 98, 76, 62, 49],   // 优：40%
+                good: [113, 89, 59, 34, 74, 57, 47, 37],         // 良：30%
+                fair: [76, 60, 40, 22, 49, 38, 31, 25],          // 中：20%
+                poor: [38, 30, 20, 11, 25, 19, 16, 12]           // 差：10%
             }
-        ],
-        animationDuration: 1500,
-        animationEasing: 'cubicInOut'
+        },
+        pepper: {
+            name: '🌶️ 辣椒',
+            icon: '🌶️',
+            color: '#FF5722',
+            data: [156, 134, 98, 65, 89, 76, 54, 43],
+            total: 715,
+            growth: {
+                excellent: [62, 54, 39, 26, 36, 30, 22, 17],     // 优：40%
+                good: [47, 40, 29, 20, 27, 23, 16, 13],          // 良：30%
+                fair: [31, 27, 20, 13, 18, 15, 11, 9],           // 中：20%
+                poor: [16, 13, 10, 6, 9, 8, 5, 4]               // 差：10%
+            }
+        },
+        vegetables: {
+            name: '🥬 蔬菜',
+            icon: '🥬',
+            color: '#4CAF50',
+            data: [89, 78, 67, 41, 56, 48, 34, 29],
+            total: 442,
+            growth: {
+                excellent: [36, 31, 27, 16, 22, 19, 14, 12],     // 优：40%
+                good: [27, 23, 20, 12, 17, 14, 10, 9],           // 良：30%
+                fair: [18, 16, 13, 8, 11, 10, 7, 6],             // 中：20%
+                poor: [8, 8, 7, 5, 6, 5, 3, 2]                  // 差：10%
+            }
+        },
+        greenhouse: {
+            name: '🏠 大棚',
+            icon: '🏠',
+            color: '#9E9E9E',
+            data: [45, 38, 28, 15, 23, 19, 14, 12],
+            total: 194,
+            growth: {
+                excellent: [18, 15, 11, 6, 9, 8, 6, 5],          // 优：40%
+                good: [14, 11, 8, 5, 7, 6, 4, 4],               // 良：30%
+                fair: [9, 8, 6, 3, 5, 4, 3, 2],                 // 中：20%
+                poor: [4, 4, 3, 1, 2, 2, 1, 1]                  // 差：10%
+            }
+        }
     };
 
-    // 设置配置项并渲染图表
-    cropSankeyChart.setOption(option);
+    const categories = ['红台镇', '土桥镇', '漫路镇', '北塬镇', '关滩镇', '新集镇', '麻尼寺沟镇', '韩集镇'];
+    const currentCrop = townCropData[cropType] || townCropData.wheat;
+
+    // 直接生成长势分布图表配置
+    const option = generateGrowthChartOption(currentCrop, categories);
+
+    // 设置配置项和数据
+    townCropChart.setOption(option, true); // true 表示合并配置
+
+    // 更新标题
+    const titleElement = document.getElementById('current-crop-title');
+    if (titleElement) {
+        titleElement.textContent = `${currentCrop.icon} ${currentCrop.name.replace(currentCrop.icon + ' ', '')}按乡镇长势分布`;
+    }
+
+    // 更新表格
+    updateTownCropTable(cropType, currentCrop);
+
+    console.log(`✅ 已更新为${currentCrop.name}的乡镇长势分布数据`);
 }
 
-/**
- * 响应式调整图表大小
- */
-function resizeDashboardCharts() {
-    if (cropAreaPieChart) {
-        cropAreaPieChart.resize();
-    }
-    if (plantingComparisonChart) {
-        plantingComparisonChart.resize();
-    }
-    if (cropSankeyChart) {
-        cropSankeyChart.resize();
-    }
-}
+// 已移除面积分布图表配置函数，现在只使用长势分布模式
 
 /**
- * 销毁所有图表实例
+ * 生成长势比例堆叠图表配置
  */
-function disposeDashboardCharts() {
-    if (cropAreaPieChart) {
-        cropAreaPieChart.dispose();
-        cropAreaPieChart = null;
-    }
-    if (plantingComparisonChart) {
-        plantingComparisonChart.dispose();
-        plantingComparisonChart = null;
-    }
-    if (cropSankeyChart) {
-        cropSankeyChart.dispose();
-        cropSankeyChart = null;
-    }
-}
+function generateGrowthChartOption(currentCrop, categories) {
+    const growthColors = {
+        excellent: '#4CAF50', // 绿色 - 优
+        good: '#8BC34A',      // 浅绿 - 良
+        fair: '#FFC107',      // 黄色 - 中
+        poor: '#FF5722'       // 红色 - 差
+    };
 
-// 窗口大小改变时重新调整图表大小
-window.addEventListener('resize', function() {
-    setTimeout(resizeDashboardCharts, 100);
-});
+    // 计算各分类总值
+    const totalExcellent = currentCrop.growth.excellent.reduce((a, b) => a + b, 0);
+    const totalGood = currentCrop.growth.good.reduce((a, b) => a + b, 0);
+    const totalFair = currentCrop.growth.fair.reduce((a, b) => a + b, 0);
+    const totalPoor = currentCrop.growth.poor.reduce((a, b) => a + b, 0);
 
-// 页面卸载时清理图表
-window.addEventListener('beforeunload', function() {
-    disposeDashboardCharts();
-});
-
-/**
- * 种植结构数据
- */
-const plantingData = {
-    categories: ['玉米', '小麦', '辣椒', '其他'],
-    data2022: [1200, 980, 650, 285],
-    data2023: [1280, 1020, 640, 270],
-    data2024: [1344, 1058, 631, 275],
-    colors: ['#FFC107', '#4CAF50', '#FF5722', '#9E9E9E']
-};
-
-/**
- * 更新种植结构图表
- */
-function updatePlantingChart(type) {
-    if (!plantingComparisonChart) return;
-    
-    const chartContainer = document.getElementById('planting-comparison-chart');
-    const tableContainer = document.getElementById('planting-comparison-table');
-    
-    if (type === 'table') {
-        // 显示表格，隐藏图表
-        chartContainer.style.display = 'none';
-        tableContainer.style.display = 'block';
-        return;
-    } else {
-        // 显示图表，隐藏表格
-        chartContainer.style.display = 'block';
-        tableContainer.style.display = 'none';
-    }
-    
-    let option;
-    
-    if (type === 'bar') {
-        option = getBarChartOption();
-    } else if (type === 'line') {
-        option = getLineChartOption();
-    }
-    
-    plantingComparisonChart.setOption(option, true);
-}
-
-/**
- * 获取柱状图配置
- */
-function getBarChartOption() {
     return {
         backgroundColor: 'transparent',
         tooltip: {
             trigger: 'axis',
-            axisPointer: { type: 'shadow' },
+            axisPointer: {
+                type: 'shadow'
+            },
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             borderColor: 'rgba(0, 212, 255, 0.5)',
-            textStyle: { color: '#ffffff', fontSize: 12 },
-            formatter: function(params) {
-                let result = params[0].name + '<br/>';
-                params.forEach(function(item) {
-                    result += item.seriesName + ': ' + item.value + ' 亩<br/>';
+            textStyle: {
+                color: '#ffffff',
+                fontSize: 12
+            },
+            appendToBody: true,
+            className: 'chart-tooltip-popup',
+            formatter: function (params) {
+                let result = `${params[0].axisValue}<br/>`;
+                let total = 0;
+                params.forEach(item => {
+                    total += item.value;
                 });
+                params.forEach(item => {
+                    const percent = ((item.value / total) * 100).toFixed(1);
+                    result += `${item.marker} ${item.seriesName}: ${item.value} 亩 (${percent}%)<br/>`;
+                });
+                result += `总计: ${total} 亩`;
                 return result;
             }
         },
         legend: {
-            data: ['2022年', '2023年', '2024年'],
-            textStyle: { color: '#ffffff', fontSize: 11 },
-            top: 10
+            data: ['优', '良', '中', '差'],
+            formatter: function(name) {
+                const valueMap = {
+                    '优': totalExcellent,
+                    '良': totalGood,
+                    '中': totalFair,
+                    '差': totalPoor
+                };
+                return `${name} (${valueMap[name]})`;
+            },
+            textStyle: {
+                color: 'rgba(255, 255, 255, 0.9)',
+                fontSize: 9
+            },
+            top: 5,
+            itemGap: 8,
+            itemWidth: 12,
+            itemHeight: 8
         },
         grid: {
-            left: '15%', right: '10%', bottom: '15%', top: '25%',
+            left: '5%',
+            right: '5%',
+            bottom: '8%',
+            top: '20%',
             containLabel: true
         },
         xAxis: {
-            type: 'value',
-            axisLabel: { color: 'rgba(255, 255, 255, 0.7)', fontSize: 10 },
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
-            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+            type: 'category',
+            data: categories,
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 7,
+                rotate: 30,
+                interval: 0
+            },
+            axisLine: {
+                lineStyle: {
+                    color: 'rgba(255, 255, 255, 0.3)'
+                }
+            },
+            axisTick: {
+                show: false
+            }
         },
         yAxis: {
-            type: 'category',
-            data: plantingData.categories.slice().reverse(),
-            axisLabel: { color: 'rgba(255, 255, 255, 0.9)', fontSize: 11 },
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } }
+            type: 'value',
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 10,
+                formatter: '{value}亩'
+            },
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(255, 255, 255, 0.1)',
+                    type: 'dashed'
+                }
+            }
         },
         series: [
             {
-                name: '2022年', type: 'bar',
-                data: plantingData.data2022.slice().reverse(),
-                itemStyle: { color: 'rgba(255, 255, 255, 0.4)', borderRadius: [0, 3, 3, 0] }
+                name: '优',
+                type: 'bar',
+                stack: 'growth',
+                data: currentCrop.growth.excellent,
+                itemStyle: {
+                    color: growthColors.excellent
+                },
+                barWidth: '50%'
             },
             {
-                name: '2023年', type: 'bar',
-                data: plantingData.data2023.slice().reverse(),
-                itemStyle: { color: 'rgba(0, 212, 255, 0.6)', borderRadius: [0, 3, 3, 0] }
+                name: '良',
+                type: 'bar',
+                stack: 'growth',
+                data: currentCrop.growth.good,
+                itemStyle: {
+                    color: growthColors.good
+                }
             },
             {
-                name: '2024年', type: 'bar',
-                data: plantingData.data2024.slice().reverse(),
-                itemStyle: { color: '#00d4ff', borderRadius: [0, 3, 3, 0] }
+                name: '中',
+                type: 'bar',
+                stack: 'growth',
+                data: currentCrop.growth.fair,
+                itemStyle: {
+                    color: growthColors.fair
+                }
+            },
+            {
+                name: '差',
+                type: 'bar',
+                stack: 'growth',
+                data: currentCrop.growth.poor,
+                itemStyle: {
+                    color: growthColors.poor
+                }
             }
-        ],
-        animationDuration: 1000,
-        animationEasing: 'cubicOut'
+        ]
     };
 }
 
 /**
- * 获取折线图配置
+ * 更新单作物按乡镇长势分布表格
  */
-function getLineChartOption() {
-    return {
-        backgroundColor: 'transparent',
-        tooltip: {
-            trigger: 'axis',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            borderColor: 'rgba(0, 212, 255, 0.5)',
-            textStyle: { color: '#ffffff', fontSize: 12 }
-        },
-        legend: {
-            data: plantingData.categories,
-            textStyle: { color: '#ffffff', fontSize: 11 },
-            top: 10
-        },
-        grid: {
-            left: '10%', right: '10%', bottom: '15%', top: '25%',
-            containLabel: true
-        },
-        xAxis: {
-            type: 'category',
-            data: ['2022年', '2023年', '2024年'],
-            axisLabel: { color: 'rgba(255, 255, 255, 0.9)', fontSize: 11 },
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } }
-        },
-        yAxis: {
-            type: 'value',
-            axisLabel: { color: 'rgba(255, 255, 255, 0.7)', fontSize: 10 },
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
-            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
-        },
-        series: plantingData.categories.map((crop, index) => ({
-            name: crop,
-            type: 'line',
-            smooth: true,
-            symbol: 'circle',
-            symbolSize: 6,
-            data: [
-                plantingData.data2022[index],
-                plantingData.data2023[index],
-                plantingData.data2024[index]
-            ],
-            itemStyle: { color: plantingData.colors[index] },
-            lineStyle: { color: plantingData.colors[index], width: 2 }
-        })),
-        animationDuration: 1000,
-        animationEasing: 'cubicOut'
-    };
-}
+function updateTownCropTable(cropType, cropData) {
+    const columnHeader = document.getElementById('crop-column-header');
+    const tbody = document.getElementById('town-crop-tbody');
+    const totalElement = document.getElementById('crop-total');
 
-/**
- * 初始化图表切换事件
- */
-function initChartSwitchEvents() {
-    const switchButtons = document.querySelectorAll('.switch-btn');
+    if (!columnHeader || !tbody || !totalElement) return;
+
+    const categories = ['红台镇', '土桥镇', '漫路镇', '北塬镇', '关滩镇', '新集镇', '麻尼寺沟镇', '韩集镇'];
+
+    // 计算合计数据
+    const totalExcellent = cropData.growth.excellent.reduce((a, b) => a + b, 0);
+    const totalGood = cropData.growth.good.reduce((a, b) => a + b, 0);
+    const totalFair = cropData.growth.fair.reduce((a, b) => a + b, 0);
+    const totalPoor = cropData.growth.poor.reduce((a, b) => a + b, 0);
     
-    switchButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // 移除所有按钮的active类
-            switchButtons.forEach(btn => btn.classList.remove('active'));
-            // 添加当前按钮的active类
+    // 更新固定的合计行
+    const stickyTotalRow = document.querySelector('.sticky-total');
+    if (stickyTotalRow) {
+        stickyTotalRow.innerHTML = `
+            <td><strong>合计</strong></td>
+            <td><strong>${totalExcellent}</strong></td>
+            <td><strong>${totalGood}</strong></td>
+            <td><strong>${totalFair}</strong></td>
+            <td><strong>${totalPoor}</strong></td>
+            <td><strong>${cropData.total}</strong></td>
+        `;
+    }
+
+    // 生成乡镇数据行
+    let tableHTML = '';
+    categories.forEach((town, index) => {
+        const excellent = cropData.growth.excellent[index];
+        const good = cropData.growth.good[index];
+        const fair = cropData.growth.fair[index];
+        const poor = cropData.growth.poor[index];
+        const townTotal = excellent + good + fair + poor;
+        
+        tableHTML += `
+            <tr>
+                <td>${town}</td>
+                <td>${excellent}</td>
+                <td>${good}</td>
+                <td>${fair}</td>
+                <td>${poor}</td>
+                <td>${townTotal}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = tableHTML;
+}
+
+/**
+ * 初始化按乡镇作物长势分布切换按钮事件
+ */
+function initTownCropSwitchButtons() {
+    // 精确选择包含按乡镇长势分布的卡片
+    const cards = document.querySelectorAll('.stat-card');
+    let townCropCard = null;
+    
+    // 查找包含"按乡镇长势分布"标题的卡片
+    cards.forEach(card => {
+        const header = card.querySelector('.stat-header');
+        if (header && header.textContent.includes('按乡镇长势分布')) {
+            townCropCard = card;
+        }
+    });
+    
+    if (!townCropCard) return;
+
+    const switchButtons = townCropCard.querySelectorAll('.chart-switch-buttons .switch-btn');
+    const chartContainer = document.getElementById('town-crop-chart');
+    const tableContainer = document.getElementById('town-crop-table');
+
+    if (!switchButtons.length || !chartContainer || !tableContainer) return;
+
+    switchButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 移除所有active状态
+            switchButtons.forEach(b => b.classList.remove('active'));
+            // 设置当前按钮为active
             this.classList.add('active');
+
+            const type = this.dataset.type;
             
-            // 获取图表类型并更新
-            const chartType = this.getAttribute('data-type');
-            updatePlantingChart(chartType);
+            if (type === 'bar') {
+                // 显示柱状图，隐藏表格
+                chartContainer.style.display = 'block';
+                tableContainer.style.display = 'none';
+                console.log('🏘️ 切换到柱状图视图');
+            } else if (type === 'table') {
+                // 显示表格，隐藏柱状图
+                chartContainer.style.display = 'none';
+                tableContainer.style.display = 'block';
+                console.log('🏘️ 切换到表格视图');
+            }
         });
     });
 }
 
+// 移除了图表模式切换功能，现在固定为长势分布模式
+
 // 如果页面已经加载完成，立即初始化图表
+/**
+ * 长势指数变化趋势图（从growth-analysis.js移植）
+ */
+function initTrendComparisonChart() {
+    const chartElement = document.getElementById('growth-trend-comparison');
+    if (!chartElement) {
+        console.warn('⚠️ 长势趋势对比图容器未找到');
+        return;
+    }
+    
+    const chart = echarts.init(chartElement);
+    trendComparisonChart = chart;
+    
+    // 生成30天数据
+    const dates = [];
+    const currentYear = [];
+    const historicalAverage = [];
+    
+    for (let i = 0; i < 30; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - 29 + i);
+        dates.push(date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' }));
+        
+        // 当前年份数据（有季节性变化）
+        const baseValue = 0.65 + Math.sin(i / 30 * Math.PI) * 0.15;
+        currentYear.push((baseValue + Math.random() * 0.1 - 0.05).toFixed(3));
+        
+        // 选中乡镇的长势指数（基于当前选择的乡镇，默认为红台镇）
+        const townBase = 0.62 + Math.sin(i / 30 * Math.PI) * 0.13;
+        historicalAverage.push((townBase + Math.random() * 0.08 - 0.04).toFixed(3));
+    }
+    
+    const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 20, 40, 0.9)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#FFFFFF' },
+            appendToBody: true,
+            formatter: function(params) {
+                let result = `${params[0].name}<br/>`;
+                params.forEach(param => {
+                    result += `${param.seriesName}: ${param.value}<br/>`;
+                });
+                const diff = (parseFloat(params[0].value) - parseFloat(params[1].value)).toFixed(3);
+                const diffPercent = ((diff / parseFloat(params[1].value)) * 100).toFixed(1);
+                result += `差值: ${diff} (${diffPercent}%)`;
+                return result;
+            }
+        },
+        legend: {
+            data: ['2025年长势指数', `${currentSelectedTown}长势指数`],
+            top: '3%',
+            textStyle: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            }
+        },
+        grid: {
+            left: '15%',
+            right: '10%',
+            top: '25%',
+            bottom: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: dates,
+            axisLine: {
+                lineStyle: { color: 'rgba(0, 212, 255, 0.5)' }
+            },
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 10,
+                interval: 4
+            }
+        },
+        yAxis: {
+            type: 'value',
+            min: 0.4,
+            max: 0.9,
+            axisLine: {
+                lineStyle: { color: 'rgba(0, 212, 255, 0.5)' }
+            },
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(0, 212, 255, 0.2)',
+                    type: 'dashed'
+                }
+            }
+        },
+        series: [
+            {
+                name: '2025年长势指数',
+                type: 'line',
+                data: currentYear,
+                smooth: true,
+                lineStyle: {
+                    color: '#00FF88',
+                    width: 3
+                },
+                itemStyle: {
+                    color: '#00FF88'
+                },
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0, y: 0, x2: 0, y2: 1,
+                        colorStops: [
+                            { offset: 0, color: 'rgba(0, 255, 136, 0.3)' },
+                            { offset: 1, color: 'rgba(0, 255, 136, 0.1)' }
+                        ]
+                    }
+                },
+                markLine: {
+                    data: [
+                        {
+                            name: '抽穗期',
+                            xAxis: dates[15],
+                            lineStyle: {
+                                color: '#FFD700',
+                                type: 'dashed'
+                            },
+                            label: {
+                                color: '#FFD700',
+                                fontSize: 10
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                name: `${currentSelectedTown}长势指数`,
+                type: 'line',
+                data: historicalAverage,
+                smooth: true,
+                lineStyle: {
+                    color: '#00D4FF',
+                    width: 2,
+                    type: 'dashed'
+                },
+                itemStyle: {
+                    color: '#00D4FF'
+                }
+            }
+        ]
+    };
+    
+    chart.setOption(option);
+    
+    // 窗口大小改变时重新调整图表
+    window.addEventListener('resize', function() {
+        if (chart) {
+            chart.resize();
+        }
+    });
+    
+    console.log('✅ 长势指数变化趋势图初始化完成');
+}
+
+/**
+ * 更新长势趋势对比图表
+ * @param {string} townName - 选中的乡镇名称
+ */
+function updateTrendComparisonChart(townName) {
+    if (!trendComparisonChart) {
+        console.warn('⚠️ 长势趋势对比图表未初始化');
+        return;
+    }
+    
+    currentSelectedTown = townName;
+    
+    // 生成30天数据
+    const dates = [];
+    const currentYear = [];
+    const selectedTownData = [];
+    
+    // 不同乡镇的基础长势系数
+    const townBaseValues = {
+        '红台镇': 0.62,
+        '土桥镇': 0.58,
+        '漫路镇': 0.55,
+        '北塬镇': 0.52,
+        '关滩镇': 0.60,
+        '新集镇': 0.59,
+        '麻尼寺沟镇': 0.56,
+        '韩集镇': 0.54
+    };
+    
+    const townBase = townBaseValues[townName] || 0.58;
+    
+    for (let i = 0; i < 30; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - 29 + i);
+        dates.push(date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' }));
+        
+        // 当前年份数据（有季节性变化）
+        const baseValue = 0.65 + Math.sin(i / 30 * Math.PI) * 0.15;
+        currentYear.push((baseValue + Math.random() * 0.1 - 0.05).toFixed(3));
+        
+        // 选中乡镇的长势指数
+        const townValue = townBase + Math.sin(i / 30 * Math.PI) * 0.13;
+        selectedTownData.push((townValue + Math.random() * 0.08 - 0.04).toFixed(3));
+    }
+    
+    const option = {
+        legend: {
+            data: ['2025年长势指数', `${townName}长势指数`],
+            top: '5%',
+            textStyle: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            }
+        },
+        series: [
+            {
+                name: '2025年长势指数',
+                data: currentYear
+            },
+            {
+                name: `${townName}长势指数`,
+                data: selectedTownData
+            }
+        ]
+    };
+    
+    trendComparisonChart.setOption(option);
+    console.log(`✅ 长势趋势图已更新为: ${townName}`);
+}
+
+// 将更新函数暴露到全局
+window.updateTrendComparisonChart = updateTrendComparisonChart;
+
+// ===== 页面加载后自动初始化 =====
 if (document.readyState === 'complete') {
     // 延迟一下确保DOM完全准备好
     setTimeout(initDashboardCharts, 500);

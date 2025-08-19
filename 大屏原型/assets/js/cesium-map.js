@@ -568,17 +568,10 @@ function bindMapEvents() {
 // ===== 地图控制功能 =====
 
 /**
- * 创建地图控制按钮
+ * 创建地图UI元素（移除控制按钮，重置视图已移至左侧面板）
  */
 function createMapControls() {
     const controlsHtml = `
-        <div class="map-controls">
-            <div class="map-control-btn" title="放大" onclick="mapZoomIn()">+</div>
-            <div class="map-control-btn" title="缩小" onclick="mapZoomOut()">-</div>
-            <div class="map-control-btn" title="标准地图" onclick="toggleMapLayer()" id="layer-btn">🗺️</div>
-            <div class="map-control-btn" title="重置视图" onclick="resetMapView()">🎯</div>
-        </div>
-        
         <div class="map-layer-indicator" id="layer-indicator">
             <div class="layer-name" id="layer-name">卫星影像</div>
         </div>
@@ -596,9 +589,10 @@ function createMapControls() {
     console.log('🎮 地图控制按钮创建完成');
 }
 
-/**
- * 地图放大
- */
+// 已移除：地图缩放功能按钮已从界面中移除，重置视图移至左侧面板
+
+/*
+// 地图放大功能（已禁用）
 function mapZoomIn() {
     if (!cesiumViewer) return;
     
@@ -610,9 +604,7 @@ function mapZoomIn() {
     console.log('🔍 地图放大，当前高度:', newHeight.toFixed(0), '米');
 }
 
-/**
- * 地图缩小
- */
+// 地图缩小功能（已禁用）
 function mapZoomOut() {
     if (!cesiumViewer) return;
     
@@ -623,10 +615,10 @@ function mapZoomOut() {
     camera.zoomOut(newHeight - currentHeight);
     console.log('🔍 地图缩小，当前高度:', newHeight.toFixed(0), '米');
 }
+*/
 
-/**
- * 切换地图图层
- */
+/*
+// 地图图层切换功能（已禁用 - 标准地图/卫星图切换按钮已移除）
 function toggleMapLayer(targetType) {
     if (!cesiumViewer) return;
     
@@ -694,6 +686,7 @@ function toggleMapLayer(targetType) {
         showMapError('图层切换失败');
     }
 }
+*/
 
 /**
  * 重置地图视图
@@ -781,9 +774,9 @@ function destroyCesiumMap() {
 
 // ===== 导出函数 =====
 window.initCesiumMap = initCesiumMap;
-window.mapZoomIn = mapZoomIn;
-window.mapZoomOut = mapZoomOut;
-window.toggleMapLayer = toggleMapLayer;
+// window.mapZoomIn = mapZoomIn; // 已移除
+// window.mapZoomOut = mapZoomOut; // 已移除  
+// window.toggleMapLayer = toggleMapLayer; // 已移除
 window.resetMapView = resetMapView;
 window.destroyCesiumMap = destroyCesiumMap;
 
@@ -791,9 +784,9 @@ window.destroyCesiumMap = destroyCesiumMap;
 /*
 export {
     initCesiumMap,
-    mapZoomIn,
-    mapZoomOut,
-    toggleMapLayer,
+    // mapZoomIn,     // 已移除
+    // mapZoomOut,    // 已移除
+    // toggleMapLayer, // 已移除
     resetMapView,
     destroyCesiumMap,
     cesiumViewer

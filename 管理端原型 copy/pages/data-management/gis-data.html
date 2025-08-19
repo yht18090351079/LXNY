@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 地理数据管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/data-management.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>数据管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>地理数据管理</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索地理数据...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="gis-data.html" class="nav-subitem active">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                    <a href="weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-map"></i>
+                    地理数据管理
+                </h1>
+                <p class="page-description">管理农情遥感系统中的地理信息数据，包括行政区划、地块边界、地形地貌等空间数据</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshGisData()">
+                    <i class="fas fa-sync"></i>
+                    刷新数据
+                </button>
+                <button class="btn btn-secondary" onclick="importGisData()">
+                    <i class="fas fa-file-import"></i>
+                    导入数据
+                </button>
+                <button class="btn btn-primary" onclick="showAddGisModal()">
+                    <i class="fas fa-plus"></i>
+                    添加图层
+                </button>
+            </div>
+        </div>
+
+        <!-- 地理数据概览 -->
+        <div class="gis-overview">
+            <div class="gis-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalLayers">47</div>
+                    <div class="stat-label">数据图层</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-plus"></i>
+                        +3 本月新增
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gis-stat-card">
+                <div class="stat-icon area">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalFeatures">12,456</div>
+                    <div class="stat-label">地理要素</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-chart-line"></i>
+                        覆盖完整
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gis-stat-card">
+                <div class="stat-icon storage">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="dataSize">2.8GB</div>
+                    <div class="stat-label">数据容量</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-hdd"></i>
+                        空间充足
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gis-stat-card">
+                <div class="stat-icon accuracy">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="dataAccuracy">98.7%</div>
+                    <div class="stat-label">数据精度</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-check-circle"></i>
+                        质量优秀
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地图视图和图层管理 -->
+        <div class="gis-workspace">
+            <div class="map-container">
+                <div class="map-header">
+                    <h3>
+                        <i class="fas fa-globe-asia"></i>
+                        地理数据可视化
+                    </h3>
+                    <div class="map-controls">
+                        <button class="btn-icon" onclick="zoomToExtent()" data-tooltip="缩放到全图">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button class="btn-icon" onclick="toggleMeasure()" data-tooltip="测量工具">
+                            <i class="fas fa-ruler"></i>
+                        </button>
+                        <button class="btn-icon" onclick="toggleDraw()" data-tooltip="绘制工具">
+                            <i class="fas fa-draw-polygon"></i>
+                        </button>
+                        <button class="btn-icon" onclick="exportMap()" data-tooltip="导出地图">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="map-view" id="mapView">
+                    <!-- 地图将通过JavaScript初始化 -->
+                    <div class="map-placeholder">
+                        <i class="fas fa-map"></i>
+                        <h4>地图加载中...</h4>
+                        <p>正在初始化地理数据视图</p>
+                    </div>
+                </div>
+                <div class="map-status">
+                    <div class="coordinates">
+                        坐标: <span id="mouseCoordinates">--, --</span>
+                    </div>
+                    <div class="scale">
+                        比例尺: <span id="mapScale">1:10000</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer-panel">
+                <div class="panel-header">
+                    <h3>
+                        <i class="fas fa-layers"></i>
+                        图层管理
+                    </h3>
+                    <div class="panel-actions">
+                        <button class="btn-icon" onclick="refreshLayers()" data-tooltip="刷新图层">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn-icon" onclick="expandAllLayers()" data-tooltip="展开全部">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="btn-icon" onclick="collapseAllLayers()" data-tooltip="收起全部">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="layer-tree" id="layerTree">
+                    <!-- 图层树将通过JavaScript生成 -->
+                </div>
+                
+                <div class="layer-tools">
+                    <button class="btn btn-secondary btn-sm" onclick="addLayerGroup()">
+                        <i class="fas fa-folder-plus"></i>
+                        添加分组
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="importLayer()">
+                        <i class="fas fa-file-upload"></i>
+                        导入图层
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据类型分析 -->
+        <div class="gis-analytics">
+            <div class="data-type-distribution">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        数据类型分布
+                    </h3>
+                    <div class="analytics-actions">
+                        <button class="btn-icon" onclick="refreshTypeDistribution()" data-tooltip="刷新图表">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn-icon" onclick="exportChart('typeDistribution')" data-tooltip="导出图表">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="dataTypeChart" class="chart"></div>
+                </div>
+            </div>
+            
+            <div class="spatial-coverage">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-area"></i>
+                        空间覆盖分析
+                    </h3>
+                    <div class="coverage-legend">
+                        <div class="legend-item">
+                            <span class="legend-color high"></span>
+                            <span>高覆盖</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color medium"></span>
+                            <span>中覆盖</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color low"></span>
+                            <span>低覆盖</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="spatialCoverageChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据质量监控 -->
+        <div class="data-quality-section">
+            <div class="section-header">
+                <h3>
+                    <i class="fas fa-shield-alt"></i>
+                    数据质量监控
+                </h3>
+                <div class="quality-actions">
+                    <button class="btn btn-secondary" onclick="runQualityCheck()">
+                        <i class="fas fa-check-double"></i>
+                        质量检查
+                    </button>
+                    <button class="btn btn-secondary" onclick="generateQualityReport()">
+                        <i class="fas fa-file-alt"></i>
+                        质量报告
+                    </button>
+                </div>
+            </div>
+            
+            <div class="quality-metrics">
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon complete">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4>完整性检查</h4>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-score">98.5%</div>
+                        <div class="quality-details">
+                            <div class="detail-item">
+                                <span>完整记录:</span>
+                                <span>12,278</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>缺失记录:</span>
+                                <span>178</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon accuracy">
+                            <i class="fas fa-crosshairs"></i>
+                        </div>
+                        <h4>精度验证</h4>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-score">97.2%</div>
+                        <div class="quality-details">
+                            <div class="detail-item">
+                                <span>精确要素:</span>
+                                <span>12,112</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>偏差要素:</span>
+                                <span>344</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon consistency">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h4>一致性检查</h4>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-score">99.1%</div>
+                        <div class="quality-details">
+                            <div class="detail-item">
+                                <span>一致记录:</span>
+                                <span>12,344</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>冲突记录:</span>
+                                <span>112</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quality-card">
+                    <div class="quality-header">
+                        <div class="quality-icon timeliness">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>时效性检查</h4>
+                    </div>
+                    <div class="quality-content">
+                        <div class="quality-score">95.8%</div>
+                        <div class="quality-details">
+                            <div class="detail-item">
+                                <span>最新数据:</span>
+                                <span>11,934</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>过期数据:</span>
+                                <span>522</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地理数据列表 -->
+        <div class="gis-data-table">
+            <div class="table-header">
+                <h3>地理数据集管理</h3>
+                <div class="table-controls">
+                    <div class="filter-group">
+                        <select class="form-control" id="dataTypeFilter">
+                            <option value="">全部类型</option>
+                            <option value="boundary">行政边界</option>
+                            <option value="landuse">土地利用</option>
+                            <option value="terrain">地形地貌</option>
+                            <option value="water">水系分布</option>
+                            <option value="transport">交通网络</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select class="form-control" id="statusFilter">
+                            <option value="">全部状态</option>
+                            <option value="active">活跃</option>
+                            <option value="inactive">非活跃</option>
+                            <option value="processing">处理中</option>
+                            <option value="error">错误</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" class="form-control" id="datasetSearch" placeholder="搜索数据集...">
+                        <button class="btn btn-secondary" onclick="searchDatasets()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="table" id="gisDataTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllGisData" onchange="toggleSelectAllGisData()">
+                            </th>
+                            <th data-sort="name">
+                                数据集名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="type">
+                                数据类型
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="format">
+                                数据格式
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="size">
+                                文件大小
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="features">
+                                要素数量
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="lastUpdate">
+                                最后更新
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="status">
+                                状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gisDataTableBody">
+                        <!-- 地理数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页控件 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span id="gisPageStart">1</span> - <span id="gisPageEnd">20</span> 条，
+                    共 <span id="totalGisRecords">47</span> 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-secondary" onclick="changeGisPage('first')" id="firstGisPageBtn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeGisPage('prev')" id="prevGisPageBtn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    
+                    <div class="page-numbers" id="gisPageNumbers">
+                        <!-- 页码按钮将通过JavaScript生成 -->
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="changeGisPage('next')" id="nextGisPageBtn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeGisPage('last')" id="lastGisPageBtn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 添加图层模态框 -->
+    <div class="modal-overlay" id="addGisModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">添加地理数据图层</h3>
+                <button class="modal-close" onclick="closeAddGisModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addGisForm" class="gis-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">图层名称:</label>
+                            <input type="text" class="form-control" id="layerName" placeholder="请输入图层名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">数据类型:</label>
+                            <select class="form-control" id="dataType" required>
+                                <option value="">请选择数据类型</option>
+                                <option value="boundary">行政边界</option>
+                                <option value="landuse">土地利用</option>
+                                <option value="terrain">地形地貌</option>
+                                <option value="water">水系分布</option>
+                                <option value="transport">交通网络</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">数据格式:</label>
+                            <select class="form-control" id="dataFormat" required>
+                                <option value="">请选择数据格式</option>
+                                <option value="shapefile">Shapefile (.shp)</option>
+                                <option value="geojson">GeoJSON (.json)</option>
+                                <option value="kml">KML (.kml)</option>
+                                <option value="gml">GML (.gml)</option>
+                                <option value="gpx">GPX (.gpx)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">坐标系统:</label>
+                            <select class="form-control" id="coordinateSystem">
+                                <option value="EPSG:4326">WGS84 (EPSG:4326)</option>
+                                <option value="EPSG:3857">Web Mercator (EPSG:3857)</option>
+                                <option value="EPSG:2000">CGCS2000 (EPSG:2000)</option>
+                                <option value="EPSG:4490">CGCS2000 / 3-degree Gauss-Kruger (EPSG:4490)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">数据文件:</label>
+                        <div class="file-upload-area" onclick="document.getElementById('gisFileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>点击选择文件或拖拽文件到此区域</p>
+                            <p class="file-hint">支持 .shp, .json, .kml, .gml, .gpx 格式</p>
+                        </div>
+                        <input type="file" id="gisFileInput" accept=".shp,.json,.kml,.gml,.gpx" style="display: none;" onchange="handleFileSelect(event)">
+                        <div class="selected-files" id="selectedFiles"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">图层分组:</label>
+                            <select class="form-control" id="layerGroup">
+                                <option value="">根目录</option>
+                                <option value="base">基础地理</option>
+                                <option value="agriculture">农业专题</option>
+                                <option value="environment">环境监测</option>
+                                <option value="infrastructure">基础设施</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">显示顺序:</label>
+                            <input type="number" class="form-control" id="displayOrder" value="0" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">图层描述:</label>
+                        <textarea class="form-control" id="layerDescription" rows="3" placeholder="请输入图层描述信息..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">样式配置:</label>
+                        <div class="style-config">
+                            <div class="style-row">
+                                <label>填充颜色:</label>
+                                <input type="color" class="color-picker" id="fillColor" value="#2E7D32">
+                            </div>
+                            <div class="style-row">
+                                <label>边框颜色:</label>
+                                <input type="color" class="color-picker" id="strokeColor" value="#1B5E20">
+                            </div>
+                            <div class="style-row">
+                                <label>透明度:</label>
+                                <input type="range" class="form-control" id="opacity" min="0" max="100" value="70">
+                                <span class="opacity-value">70%</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddGisModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveGisLayer()">保存图层</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据详情模态框 -->
+    <div class="modal-overlay" id="gisDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">地理数据详情</h3>
+                <button class="modal-close" onclick="closeGisDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="gis-detail-content" id="gisDetailContent">
+                    <!-- 地理数据详情内容将通过JavaScript生成 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="editGisData()">编辑数据</button>
+                <button class="btn btn-secondary" onclick="downloadGisData()">下载数据</button>
+                <button class="btn btn-primary" onclick="closeGisDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/gis-data.js"></script>
+    
+    <!-- 页面加载检查和修复脚本 -->
+    <script>
+    // GIS数据管理页面加载检查
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🗺️ GIS数据管理页面加载检查...');
+        
+        // 确保基础功能正常
+        setTimeout(() => {
+            // 检查并修复时间显示
+            const currentTimeEl = document.getElementById('current-time');
+            if (currentTimeEl && currentTimeEl.textContent === '2024-01-15 14:30:25') {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString('zh-CN');
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 确保导航功能
+            if (typeof initializeSidebar === 'function') {
+                initializeSidebar();
+            }
+            
+            console.log('✅ GIS数据页面修复完成');
+        }, 500);
+    });
+    </script>
+</body>
+</html>
+

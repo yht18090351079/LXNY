@@ -289,6 +289,9 @@ function updateMapControlsPosition() {
 
 // ===== 作物图层选择器 =====
 
+// 全局变量，存储事件监听器函数以便移除
+let cropSelectorClickHandler = null;
+
 /**
  * 切换作物图层选择器
  */
@@ -329,35 +332,35 @@ function createCropLayerSelector() {
     selector.innerHTML = `
         <div class="selector-content">
             <div class="crop-option" data-crop="wheat">
-                <input type="checkbox" id="crop-wheat" checked>
+                <input type="radio" name="crop-selection" id="crop-wheat" checked>
                 <label for="crop-wheat">
                     <span class="crop-icon">🌾</span>
                     <span class="crop-name">小麦</span>
                 </label>
             </div>
             <div class="crop-option" data-crop="corn">
-                <input type="checkbox" id="crop-corn" checked>
+                <input type="radio" name="crop-selection" id="crop-corn">
                 <label for="crop-corn">
                     <span class="crop-icon">🌽</span>
                     <span class="crop-name">玉米</span>
                 </label>
             </div>
             <div class="crop-option" data-crop="pepper">
-                <input type="checkbox" id="crop-pepper" checked>
+                <input type="radio" name="crop-selection" id="crop-pepper">
                 <label for="crop-pepper">
                     <span class="crop-icon">🌶️</span>
                     <span class="crop-name">辣椒</span>
                 </label>
             </div>
             <div class="crop-option" data-crop="vegetables">
-                <input type="checkbox" id="crop-vegetables">
+                <input type="radio" name="crop-selection" id="crop-vegetables">
                 <label for="crop-vegetables">
                     <span class="crop-icon">🥬</span>
                     <span class="crop-name">蔬菜</span>
                 </label>
             </div>
             <div class="crop-option" data-crop="greenhouse">
-                <input type="checkbox" id="crop-greenhouse">
+                <input type="radio" name="crop-selection" id="crop-greenhouse">
                 <label for="crop-greenhouse">
                     <span class="crop-icon">🏠</span>
                     <span class="crop-name">大棚</span>
@@ -366,17 +369,35 @@ function createCropLayerSelector() {
         </div>
     `;
     
-    // 绑定图层切换事件
+    // 绑定图层切换事件（单选模式）
     selector.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox') {
+        if (e.target.type === 'radio') {
             const cropType = e.target.closest('.crop-option').dataset.crop;
-            const isChecked = e.target.checked;
-            toggleCropLayer(cropType, isChecked);
+            // 单选模式：隐藏所有作物图层，然后显示选中的作物图层
+            hideAllCropLayers();
+            toggleCropLayer(cropType, true);
+            console.log(`🌾 已切换到: ${e.target.closest('.crop-option').querySelector('.crop-name').textContent}`);
         }
     });
+
+    // 初始化时触发默认选中项（小麦）的联动
+    setTimeout(() => {
+        const defaultSelected = selector.querySelector('input[type="radio"]:checked');
+        if (defaultSelected) {
+            const cropType = defaultSelected.closest('.crop-option').dataset.crop;
+            hideAllCropLayers();
+            toggleCropLayer(cropType, true);
+            console.log(`🌾 初始化默认选择: ${defaultSelected.closest('.crop-option').querySelector('.crop-name').textContent}`);
+        }
+    }, 100);
     
-    // 点击外部关闭选择器
-    document.addEventListener('click', function(e) {
+    // 移除旧的事件监听器（如果存在）
+    if (cropSelectorClickHandler) {
+        document.removeEventListener('click', cropSelectorClickHandler);
+    }
+    
+    // 创建新的事件监听器函数
+    cropSelectorClickHandler = function(e) {
         if (!selector.contains(e.target) && !e.target.closest('[data-function="crop-selection"]')) {
             const cropButton = document.querySelector('[data-function="crop-selection"]');
             if (cropButton && cropButton.classList.contains('active')) {
@@ -384,7 +405,10 @@ function createCropLayerSelector() {
                 toggleCropLayerSelector(false);
             }
         }
-    });
+    };
+    
+    // 绑定新的事件监听器
+    document.addEventListener('click', cropSelectorClickHandler);
     
     return selector;
 }
@@ -409,8 +433,33 @@ function toggleCropLayer(cropType, show) {
             layerItem.classList.remove('active');
         }
     }
+
+    // 如果显示某个作物图层，更新右侧面板的单作物分布图表
+    if (show && typeof window.updateTownCropChart === 'function') {
+        window.updateTownCropChart(cropType);
+        console.log(`🏘️ 已联动更新${cropType}的乡镇分布图表`);
+    }
 }
 
+/**
+ * 隐藏所有作物图层
+ */
+function hideAllCropLayers() {
+    const cropTypes = ['wheat', 'corn', 'pepper', 'vegetables', 'greenhouse'];
+    cropTypes.forEach(cropType => {
+        toggleCropLayer(cropType, false);
+    });
+}
+
+/**
+ * 显示所有作物图层
+ */
+function showAllCropLayers() {
+    const cropTypes = ['wheat', 'corn', 'pepper', 'vegetables', 'greenhouse'];
+    cropTypes.forEach(cropType => {
+        toggleCropLayer(cropType, true);
+    });
+}
 
 
 // ===== 系统初始化 =====

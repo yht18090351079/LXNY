@@ -1,0 +1,891 @@
+/* ===============================
+   农情遥感系统管理端 - 设备管理样式
+   =============================== */
+
+/* 设备状态概览 */
+.device-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.device-stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.device-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+    transition: width var(--transition-normal);
+}
+
+.device-stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.device-stat-card:hover::before {
+    width: 8px;
+}
+
+.device-stat-card .stat-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-size: var(--font-size-2xl);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.device-stat-card .stat-icon.online {
+    background: linear-gradient(135deg, var(--success-color), #66BB6A);
+}
+
+.device-stat-card .stat-icon.warning {
+    background: linear-gradient(135deg, var(--warning-color), #FFB74D);
+}
+
+.device-stat-card .stat-icon.maintenance {
+    background: linear-gradient(135deg, var(--accent-color), #42A5F5);
+}
+
+.device-stat-card .stat-icon::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-xl);
+    background: inherit;
+    filter: blur(6px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.device-stat-card .stat-content {
+    flex: 1;
+}
+
+.device-stat-card .stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.device-stat-card .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+}
+
+.device-stat-card .stat-change {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.device-stat-card .stat-change.positive {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.device-stat-card .stat-change.warning {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.device-stat-card .stat-change.neutral {
+    background-color: rgba(158, 158, 158, 0.1);
+    color: var(--text-tertiary);
+}
+
+/* 传感器类型分布 */
+.sensor-distribution {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.chart-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.chart-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.02));
+}
+
+.chart-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.chart-header h3 i {
+    color: var(--primary-color);
+}
+
+.chart-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.chart-content {
+    padding: var(--spacing-lg);
+}
+
+.chart {
+    width: 100%;
+    height: 300px;
+}
+
+.sensor-legend {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+}
+
+.sensor-legend h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.legend-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.legend-item:hover {
+    background-color: var(--divider-color);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.legend-content {
+    flex: 1;
+}
+
+.legend-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.legend-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+/* 设备监控面板 */
+.device-monitor {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.monitor-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.02), rgba(33, 150, 243, 0.01));
+}
+
+.monitor-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.monitor-header h3 i {
+    color: var(--accent-color);
+}
+
+.monitor-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.view-toggle {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.toggle-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    background: var(--background-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.toggle-btn:hover {
+    background: var(--divider-color);
+    color: var(--text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+}
+
+.monitor-content {
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.device-card {
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.02), rgba(76, 175, 80, 0.01));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.device-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transition: width var(--transition-normal);
+}
+
+.device-card.online::before {
+    background: var(--success-color);
+}
+
+.device-card.offline::before {
+    background: var(--error-color);
+}
+
+.device-card.alert::before {
+    background: var(--warning-color);
+}
+
+.device-card.maintenance::before {
+    background: var(--accent-color);
+}
+
+.device-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.device-card:hover::before {
+    width: 8px;
+}
+
+.device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+}
+
+.device-info h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.device-id {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    font-family: monospace;
+}
+
+.device-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.device-status.online {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.device-status.offline {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.device-status.alert {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.device-status.maintenance {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.device-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.metric-item {
+    text-align: center;
+}
+
+.metric-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    display: block;
+}
+
+.metric-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.device-location {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.device-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: center;
+}
+
+.device-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+}
+
+.device-btn.view {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.device-btn.view:hover {
+    background: rgba(33, 150, 243, 0.2);
+}
+
+.device-btn.config {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+}
+
+.device-btn.config:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.device-btn.maintenance {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.device-btn.maintenance:hover {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+.device-btn.restart {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+}
+
+.device-btn.restart:hover {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+/* 设备控制区域 */
+.device-controls {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--spacing-xl);
+}
+
+.filter-section {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-end;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 140px;
+}
+
+.filter-group label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.filter-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.batch-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* 设备表格容器 */
+.device-table-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* 设备表格专用样式 */
+.device-table-container .table td.device-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.device-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.device-type-badge.temperature {
+    background: rgba(255, 107, 53, 0.1);
+    color: #FF6B35;
+}
+
+.device-type-badge.humidity {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent-color);
+}
+
+.device-type-badge.soil {
+    background: rgba(121, 85, 72, 0.1);
+    color: #795548;
+}
+
+.device-type-badge.light {
+    background: rgba(255, 193, 7, 0.1);
+    color: #FFC107;
+}
+
+.device-type-badge.ph {
+    background: rgba(156, 39, 176, 0.1);
+    color: #9C27B0;
+}
+
+.device-type-badge.co2 {
+    background: rgba(96, 125, 139, 0.1);
+    color: #607D8B;
+}
+
+.location-cell {
+    font-size: var(--font-size-sm);
+}
+
+.location-area {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.location-detail {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.value-cell {
+    text-align: center;
+}
+
+.current-value {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+}
+
+.value-unit {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+.update-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.battery-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.battery-bar {
+    width: 40px;
+    height: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--background-color);
+}
+
+.battery-fill {
+    height: 100%;
+    border-radius: var(--radius-sm);
+    transition: width var(--transition-normal);
+}
+
+.battery-fill.high {
+    background: var(--success-color);
+}
+
+.battery-fill.medium {
+    background: var(--warning-color);
+}
+
+.battery-fill.low {
+    background: var(--error-color);
+}
+
+.battery-percent {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    min-width: 35px;
+}
+
+/* 设备表单 */
+.device-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* 设备详情模态框 */
+.modal-content.large {
+    min-width: 800px;
+    max-width: 90vw;
+}
+
+.device-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+}
+
+.detail-section {
+    background: var(--background-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.detail-section h4 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.detail-grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item label {
+    font-weight: 500;
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+.detail-item span {
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.data-chart {
+    width: 100%;
+    height: 200px;
+    margin-top: var(--spacing-md);
+}
+
+/* 设备地图视图 */
+.device-map {
+    width: 100%;
+    height: 500px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-lg);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .sensor-distribution {
+        grid-template-columns: 1fr;
+    }
+    
+    .device-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .device-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-lg);
+    }
+    
+    .filter-section {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .filter-group {
+        min-width: 120px;
+    }
+    
+    .device-detail-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content.large {
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .device-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .device-stat-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .device-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .batch-actions {
+        flex-direction: column;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content.large {
+        min-width: auto;
+        width: 95vw;
+    }
+    
+    .monitor-controls {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .device-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .device-stat-card .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: var(--font-size-xl);
+    }
+    
+    .device-card {
+        padding: var(--spacing-md);
+    }
+    
+    .device-metrics {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .chart {
+        height: 250px;
+    }
+    
+    .legend-list {
+        gap: var(--spacing-sm);
+    }
+    
+    .legend-item {
+        padding: var(--spacing-xs);
+    }
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

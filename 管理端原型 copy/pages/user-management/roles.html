@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 角色权限</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/user-management.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>用户管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>角色权限</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索角色...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                    <a href="../data-management/weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="roles.html" class="nav-subitem active">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-user-tag"></i>
+                    角色权限管理
+                </h1>
+                <p class="page-description">配置系统角色和权限，控制用户功能访问范围，确保系统安全运行</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync"></i>
+                    刷新数据
+                </button>
+                <button class="btn btn-secondary" onclick="exportRoles()">
+                    <i class="fas fa-file-export"></i>
+                    导出配置
+                </button>
+                <button class="btn btn-primary" onclick="showAddRoleModal()">
+                    <i class="fas fa-plus"></i>
+                    添加角色
+                </button>
+            </div>
+        </div>
+
+        <!-- 角色统计概览 -->
+        <div class="role-overview">
+            <div class="role-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalRoles">6</div>
+                    <div class="stat-label">系统角色</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-shield-alt"></i>
+                        权限完整
+                    </div>
+                </div>
+            </div>
+            
+            <div class="role-stat-card">
+                <div class="stat-icon admin">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="adminRoles">2</div>
+                    <div class="stat-label">管理员角色</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-key"></i>
+                        全权限
+                    </div>
+                </div>
+            </div>
+            
+            <div class="role-stat-card">
+                <div class="stat-icon active">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activeRoles">4</div>
+                    <div class="stat-label">启用角色</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-check"></i>
+                        正常使用
+                    </div>
+                </div>
+            </div>
+            
+            <div class="role-stat-card">
+                <div class="stat-icon permissions">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalPermissions">15</div>
+                    <div class="stat-label">系统权限</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-cogs"></i>
+                        已配置
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 权限管理区域 -->
+        <div class="permission-management">
+            <div class="permission-matrix">
+                <div class="matrix-header">
+                    <h3>
+                        <i class="fas fa-table"></i>
+                        权限矩阵
+                    </h3>
+                    <div class="matrix-actions">
+                        <button class="btn btn-secondary" onclick="expandAllPermissions()">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                            展开全部
+                        </button>
+                        <button class="btn btn-secondary" onclick="collapseAllPermissions()">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                            收起全部
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="matrix-content">
+                    <div class="permission-table-container">
+                        <table class="permission-table" id="permissionMatrix">
+                            <thead>
+                                <tr>
+                                    <th class="permission-name">权限功能</th>
+                                    <th class="role-column" data-role="admin">系统管理员</th>
+                                    <th class="role-column" data-role="manager">业务管理员</th>
+                                    <th class="role-column" data-role="operator">系统操作员</th>
+                                    <th class="role-column" data-role="viewer">数据查看员</th>
+                                    <th class="role-column" data-role="analyst">数据分析员</th>
+                                    <th class="role-column" data-role="guest">访客</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permissionMatrixBody">
+                                <!-- 权限矩阵内容将通过JavaScript动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 角色列表 -->
+        <div class="role-list-container">
+            <div class="role-list-header">
+                <h3>
+                    <i class="fas fa-list"></i>
+                    角色列表
+                </h3>
+                <div class="role-list-actions">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="搜索角色名称或描述..." id="roleSearchInput">
+                    </div>
+                    <button class="btn btn-secondary" onclick="toggleRoleView('card')">
+                        <i class="fas fa-th-large"></i>
+                        卡片视图
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleRoleView('list')">
+                        <i class="fas fa-list"></i>
+                        列表视图
+                    </button>
+                </div>
+            </div>
+            
+            <div class="role-cards-container" id="roleCardsContainer">
+                <!-- 角色卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 添加角色模态框 -->
+    <div class="modal-overlay" id="addRoleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加角色</h3>
+                <button class="modal-close" onclick="closeAddRoleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addRoleForm" class="role-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">角色标识:</label>
+                            <input type="text" class="form-control" id="roleId" placeholder="请输入角色英文标识" required>
+                            <small class="form-hint">角色标识用于系统内部识别，建议使用英文</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">角色名称:</label>
+                            <input type="text" class="form-control" id="roleName" placeholder="请输入角色中文名称" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">角色描述:</label>
+                        <textarea class="form-control" id="roleDescription" rows="3" placeholder="请输入角色详细描述..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">权限配置:</label>
+                        <div class="permission-checkboxes" id="permissionCheckboxes">
+                            <!-- 权限复选框将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="roleEnabled" checked>
+                            <span class="checkmark"></span>
+                            启用此角色
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddRoleModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveRole()">保存角色</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑角色模态框 -->
+    <div class="modal-overlay" id="editRoleModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑角色</h3>
+                <button class="modal-close" onclick="closeEditRoleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="role-edit-content" id="roleEditContent">
+                    <!-- 角色编辑内容将通过JavaScript生成 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEditRoleModal()">取消</button>
+                <button class="btn btn-primary" onclick="updateRole()">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/roles.js"></script>
+</body>
+</html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

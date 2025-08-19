@@ -495,44 +495,49 @@ body {
     100% { transform: translate(50px, 50px); }
 }
 
-/* ===== 功能切换模块 ===== */
+/* ===== 功能切换模块 - 左侧垂直居中浮动覆盖层 ===== */
 .function-switch-bar {
     position: fixed;
-    top: 80px; /* 紧贴横幅下方 */
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    width: 90px;
     z-index: 1500;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 25px;
-    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 20px;
+    padding: 15px 8px;
     display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* 主功能按钮组 (5个) */
-.main-switch-buttons {
-    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+/* 主功能按钮组 (5个) - 垂直布局 */
+.main-switch-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
 }
 
 .main-switch-btn {
-    width: 80px;
-    height: 40px;
+    width: 70px;
+    height: 45px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
+    border-radius: 18px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 3px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.8);
     position: relative;
@@ -559,35 +564,49 @@ body {
 }
 
 .main-switch-btn .btn-text {
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 500;
+    text-align: center;
+    line-height: 1;
 }
 
-/* 分隔线 */
+/* 分隔线 - 水平 */
 .switch-divider {
-    width: 1px;
-    height: 30px;
-    background: linear-gradient(180deg, 
+    width: 45px;
+    height: 1px;
+    background: linear-gradient(90deg, 
         transparent 0%, 
         rgba(0, 212, 255, 0.5) 50%, 
         transparent 100%);
-    margin: 0 8px;
+    margin: 6px 0;
 }
 
 /* 叠加功能按钮 (2个) - 基础样式 */
 .overlay-switch-btn {
-    width: 100px;
+    width: 70px;
     height: 40px;
-    border-radius: 20px;
+    border-radius: 18px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 2px;
     font-size: 12px;
     position: relative;
-    margin: 0 4px;
+    margin: 4px 0;
+}
+
+.overlay-switch-btn .btn-icon {
+    font-size: 12px;
+}
+
+.overlay-switch-btn .btn-text {
+    font-size: 8px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
 }
 
 /* 设备监控按钮 - 橙色主题 */
@@ -632,6 +651,44 @@ body {
     border: 1px solid rgba(156, 39, 176, 0.5);
     transform: translateY(-1px);
     color: #9C27B0;
+}
+
+/* 地图重置按钮 - 绿色主题 */
+.map-reset-btn {
+    width: 70px;
+    height: 40px;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 12px;
+    position: relative;
+    margin: 4px 0;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: rgba(76, 175, 80, 0.9);
+}
+
+.map-reset-btn:hover {
+    background: rgba(76, 175, 80, 0.15);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    transform: translateY(-1px);
+    color: #4CAF50;
+}
+
+.map-reset-btn .btn-icon {
+    font-size: 12px;
+}
+
+.map-reset-btn .btn-text {
+    font-size: 8px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
 }
 
 /* ===== 左侧面板样式 ===== */
@@ -1019,7 +1076,7 @@ body {
 
 /* ===== 图表容器样式 ===== */
 .chart-container {
-    height: 120px;
+    height: 180px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
     margin: 10px 0;
@@ -1819,7 +1876,7 @@ body {
     background: rgba(255, 255, 255, 0.08);
 }
 
-.crop-option input[type="checkbox"] {
+.crop-option input[type="radio"] {
     margin-right: 8px;
     width: 14px;
     height: 14px;
@@ -2003,4 +2060,152 @@ body {
     font-weight: bold;
     color: #4CAF50;
     text-align: right;
+}
+
+/* ===== 按乡镇作物面积分布表格样式 ===== */
+.town-crop-table {
+    width: 100%;
+    margin-top: 10px;
+    height: 280px;
+    overflow-y: auto;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 滚动条样式优化 */
+.town-crop-table::-webkit-scrollbar {
+    width: 6px;
+}
+
+.town-crop-table::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.town-crop-table::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.6);
+    border-radius: 3px;
+}
+
+.town-crop-table::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.8);
+}
+
+.town-crop-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+.town-crop-table th,
+.town-crop-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.town-crop-table th {
+    background: rgba(0, 212, 255, 0.2);
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* 固定合计行样式 */
+.town-crop-table .sticky-total {
+    position: sticky;
+    top: 34px; /* 表头高度之后 */
+    z-index: 9;
+    background: rgba(0, 212, 255, 0.3);
+    border-bottom: 2px solid rgba(0, 212, 255, 0.8);
+    border-top: 1px solid rgba(0, 212, 255, 0.4);
+}
+
+.town-crop-table .sticky-total td {
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 11px;
+    padding: 10px 6px;
+    background: rgba(0, 212, 255, 0.15);
+}
+
+.town-crop-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.town-crop-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* 移除原有的底部合计行样式，因为现在合计行在顶部 */
+
+/* 原合计行样式已移至顶部固定样式 */
+
+/* 图表切换按钮组布局（简化版）*/
+.chart-switch-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+/* 长势分布表格样式（优化6列布局）*/
+.town-crop-table th:nth-child(2) { /* 优 */
+    background: rgba(76, 175, 80, 0.3);
+}
+
+.town-crop-table th:nth-child(3) { /* 良 */
+    background: rgba(139, 195, 74, 0.3);
+}
+
+.town-crop-table th:nth-child(4) { /* 中 */
+    background: rgba(255, 193, 7, 0.3);
+}
+
+.town-crop-table th:nth-child(5) { /* 差 */
+    background: rgba(255, 87, 34, 0.3);
+}
+
+.town-crop-table td:nth-child(2) { /* 优 */
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.town-crop-table td:nth-child(3) { /* 良 */
+    color: #8BC34A;
+    font-weight: 500;
+}
+
+.town-crop-table td:nth-child(4) { /* 中 */
+    color: #FFC107;
+    font-weight: 500;
+}
+
+.town-crop-table td:nth-child(5) { /* 差 */
+    color: #FF5722;
+    font-weight: 500;
+}
+
+/* ===== 长势分析组件样式 ===== */
+.section-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.phenology-marker {
+    margin-left: auto;
+    font-size: 11px;
+    color: #FFD700;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.trend-comparison-container {
+    height: 180px;
+    margin-top: 10px;
 }

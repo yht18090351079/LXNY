@@ -42,7 +42,7 @@
 /* ===== 地图控制按钮样式 ===== */
 .map-controls {
     position: absolute;
-    top: 140px; /* 为功能切换栏留出空间 */
+    top: 100px; /* 功能切换栏现在在左侧，可以向上移动 */
     right: calc(var(--right-panel-width) + var(--panel-margin) + var(--panel-gap)); /* 面板宽度 + 面板边距 + 控制按钮间距 */
     z-index: 1001;
     display: flex;

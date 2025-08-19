@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据导出 - 农情遥感系统管理端</title>
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/reports.css">
+    <link rel="stylesheet" href="../../assets/css/export.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 导航修复样式 -->
+    <style>
+    .nav-group .nav-item {
+        cursor: pointer !important;
+        user-select: none;
+    }
+    
+    .nav-submenu {
+        overflow: hidden !important;
+        transition: max-height 0.3s ease !important;
+        display: block !important;
+    }
+    
+    .nav-group.expanded .nav-submenu {
+        max-height: 300px !important;
+    }
+    
+    .nav-group:not(.expanded) .nav-submenu {
+        max-height: 0 !important;
+    }
+    
+    .nav-subitem.active {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #4CAF50 !important;
+    }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>统计报表</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>数据导出</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索报表...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../data-management/remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="../data-management/weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="../data-management/crop-data.html" class="nav-subitem">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="../data-management/gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                    <a href="../data-management/weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="data-quality.html" class="nav-subitem">
+                        <i class="fas fa-chart-bar"></i>
+                        数据质量报告
+                    </a>
+                    <a href="business.html" class="nav-subitem">
+                        <i class="fas fa-chart-pie"></i>
+                        业务统计
+                    </a>
+                    <a href="export.html" class="nav-subitem active">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </aside>
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面内容 -->
+        <div class="content-wrapper">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </h1>
+                    <p class="page-description">灵活配置数据导出参数，支持多种格式和自定义筛选条件</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" id="templateBtn">
+                        <i class="fas fa-file-alt"></i>
+                        导出模板
+                    </button>
+                    <button class="btn btn-primary" id="quickExportBtn">
+                        <i class="fas fa-bolt"></i>
+                        快速导出
+                    </button>
+                </div>
+            </div>
+            <!-- 导出配置 -->
+            <div class="content-grid">
+                <!-- 数据源选择 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-database"></i>
+                            数据源选择
+                        </h3>
+                        <div class="card-actions">
+                            <button class="btn btn-ghost btn-sm" id="selectAllSources">
+                                <i class="fas fa-check-square"></i>
+                                全选
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="data-sources">
+                            <div class="source-group">
+                                <label class="source-category">
+                                    <input type="checkbox" id="remoteSensingCategory" checked>
+                                    <i class="fas fa-satellite"></i>
+                                    <span>遥感数据</span>
+                                </label>
+                                <div class="source-items">
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="landsat" checked>
+                                        <span>Landsat影像数据</span>
+                                        <small>1,247条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="sentinel">
+                                        <span>Sentinel-2数据</span>
+                                        <small>892条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="modis">
+                                        <span>MODIS数据</span>
+                                        <small>1,567条记录</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="source-group">
+                                <label class="source-category">
+                                    <input type="checkbox" id="weatherCategory">
+                                    <i class="fas fa-cloud-sun"></i>
+                                    <span>气象数据</span>
+                                </label>
+                                <div class="source-items">
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="temperature">
+                                        <span>温度数据</span>
+                                        <small>2,156条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="precipitation">
+                                        <span>降水数据</span>
+                                        <small>1,890条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="humidity">
+                                        <span>湿度数据</span>
+                                        <small>1,678条记录</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="source-group">
+                                <label class="source-category">
+                                    <input type="checkbox" id="sensorCategory">
+                                    <i class="fas fa-microchip"></i>
+                                    <span>传感器数据</span>
+                                </label>
+                                <div class="source-items">
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="soil">
+                                        <span>土壤传感器</span>
+                                        <small>3,245条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="camera">
+                                        <span>监控摄像头</span>
+                                        <small>1,234条记录</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="source-group">
+                                <label class="source-category">
+                                    <input type="checkbox" id="cropCategory">
+                                    <i class="fas fa-seedling"></i>
+                                    <span>作物数据</span>
+                                </label>
+                                <div class="source-items">
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="growth">
+                                        <span>生长监测数据</span>
+                                        <small>1,567条记录</small>
+                                    </label>
+                                    <label class="source-item">
+                                        <input type="checkbox" name="dataSource" value="yield">
+                                        <span>产量预估数据</span>
+                                        <small>892条记录</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 导出配置 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-cog"></i>
+                            导出配置
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="config-form">
+                            <div class="form-group">
+                                <label>导出格式</label>
+                                <div class="format-options">
+                                    <label class="format-option">
+                                        <input type="radio" name="exportFormat" value="excel" checked>
+                                        <div class="format-card">
+                                            <i class="fas fa-file-excel"></i>
+                                            <span>Excel (.xlsx)</span>
+                                            <small>适合数据分析</small>
+                                        </div>
+                                    </label>
+                                    <label class="format-option">
+                                        <input type="radio" name="exportFormat" value="csv">
+                                        <div class="format-card">
+                                            <i class="fas fa-file-csv"></i>
+                                            <span>CSV (.csv)</span>
+                                            <small>通用数据格式</small>
+                                        </div>
+                                    </label>
+                                    <label class="format-option">
+                                        <input type="radio" name="exportFormat" value="json">
+                                        <div class="format-card">
+                                            <i class="fas fa-file-code"></i>
+                                            <span>JSON (.json)</span>
+                                            <small>程序接口格式</small>
+                                        </div>
+                                    </label>
+                                    <label class="format-option">
+                                        <input type="radio" name="exportFormat" value="pdf">
+                                        <div class="format-card">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>PDF (.pdf)</span>
+                                            <small>报表文档格式</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="exportName">文件名称</label>
+                                <input type="text" id="exportName" class="form-input" 
+                                       value="农情遥感数据导出" placeholder="请输入文件名称">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="startDate">开始日期</label>
+                                    <input type="date" id="startDate" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label for="endDate">结束日期</label>
+                                    <input type="date" id="endDate" class="form-input">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="regionFilter">区域筛选</label>
+                                <select id="regionFilter" class="form-select">
+                                    <option value="all">全部区域</option>
+                                    <option value="north">北部地区</option>
+                                    <option value="south">南部地区</option>
+                                    <option value="east">东部地区</option>
+                                    <option value="west">西部地区</option>
+                                    <option value="center">中部地区</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>数据质量</label>
+                                <div class="quality-filters">
+                                    <label class="quality-filter">
+                                        <input type="checkbox" value="excellent" checked>
+                                        <span class="quality-badge excellent">优秀</span>
+                                    </label>
+                                    <label class="quality-filter">
+                                        <input type="checkbox" value="good" checked>
+                                        <span class="quality-badge good">良好</span>
+                                    </label>
+                                    <label class="quality-filter">
+                                        <input type="checkbox" value="warning">
+                                        <span class="quality-badge warning">警告</span>
+                                    </label>
+                                    <label class="quality-filter">
+                                        <input type="checkbox" value="error">
+                                        <span class="quality-badge error">异常</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="includeMetadata" checked>
+                                    <span>包含元数据信息</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="compressFile">
+                                    <span>压缩文件 (ZIP格式)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 导出预览 -->
+                <div class="content-card full-width">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-eye"></i>
+                            导出预览
+                        </h3>
+                        <div class="card-actions">
+                            <span class="preview-count">预计导出 <strong id="previewCount">1,247</strong> 条记录</span>
+                            <button class="btn btn-ghost btn-sm" id="refreshPreview">
+                                <i class="fas fa-sync-alt"></i>
+                                刷新预览
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="preview-container">
+                            <div class="preview-tabs">
+                                <button class="preview-tab active" data-tab="table">表格预览</button>
+                                <button class="preview-tab" data-tab="structure">数据结构</button>
+                                <button class="preview-tab" data-tab="statistics">统计信息</button>
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-pane active" id="tablePreview">
+                                    <div class="table-container">
+                                        <table class="preview-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>数据源</th>
+                                                    <th>时间</th>
+                                                    <th>区域</th>
+                                                    <th>数值</th>
+                                                    <th>质量等级</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="previewTableBody">
+                                                <!-- 预览数据将通过JavaScript动态加载 -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="preview-pane" id="structurePreview">
+                                    <div class="structure-tree" id="structureTree">
+                                        <!-- 数据结构将通过JavaScript动态加载 -->
+                                    </div>
+                                </div>
+                                <div class="preview-pane" id="statisticsPreview">
+                                    <div class="statistics-grid" id="statisticsGrid">
+                                        <!-- 统计信息将通过JavaScript动态加载 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 导出任务列表 -->
+                <div class="content-card full-width">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-tasks"></i>
+                            导出任务列表
+                        </h3>
+                        <div class="card-actions">
+                            <button class="btn btn-ghost btn-sm" id="clearCompletedTasks">
+                                <i class="fas fa-trash"></i>
+                                清理已完成
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="tasks-container" id="tasksContainer">
+                            <!-- 导出任务将通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 导出操作区域 -->
+            <div class="export-actions">
+                <div class="export-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">选中数据源：</span>
+                        <span class="summary-value" id="selectedSources">1个</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">预计记录数：</span>
+                        <span class="summary-value" id="estimatedRecords">1,247条</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">预计文件大小：</span>
+                        <span class="summary-value" id="estimatedSize">2.5MB</span>
+                    </div>
+                </div>
+                <div class="export-buttons">
+                    <button class="btn btn-secondary" id="saveTemplateBtn">
+                        <i class="fas fa-save"></i>
+                        保存模板
+                    </button>
+                    <button class="btn btn-warning" id="previewExportBtn">
+                        <i class="fas fa-eye"></i>
+                        预览导出
+                    </button>
+                    <button class="btn btn-primary" id="startExportBtn">
+                        <i class="fas fa-download"></i>
+                        开始导出
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- 导出进度模态框 -->
+    <div class="modal-overlay" id="exportProgressModal">
+        <div class="modal-content medium">
+            <div class="modal-header">
+                <h3>数据导出进度</h3>
+                <button class="modal-close" id="closeProgressModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="export-progress">
+                    <div class="progress-info">
+                        <div class="progress-title" id="progressTitle">正在准备导出...</div>
+                        <div class="progress-details" id="progressDetails">正在初始化导出任务</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">已处理：</span>
+                            <span class="stat-value" id="processedCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">总计：</span>
+                            <span class="stat-value" id="totalCount">1,247</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">剩余时间：</span>
+                            <span class="stat-value" id="remainingTime">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="pauseExportBtn">
+                    <i class="fas fa-pause"></i>
+                    暂停
+                </button>
+                <button class="btn btn-danger" id="cancelExportBtn">
+                    <i class="fas fa-stop"></i>
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- 模板保存模态框 -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>保存导出模板</h3>
+                <button class="modal-close" id="closeTemplateModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="templateName">模板名称</label>
+                    <input type="text" id="templateName" class="form-input" 
+                           placeholder="请输入模板名称">
+                </div>
+                <div class="form-group">
+                    <label for="templateDescription">模板描述</label>
+                    <textarea id="templateDescription" class="form-textarea" 
+                              placeholder="请输入模板描述（可选）"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelTemplateBtn">取消</button>
+                <button class="btn btn-primary" id="saveTemplateConfirmBtn">保存</button>
+            </div>
+        </div>
+    </div>
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+    <!-- JavaScript文件 -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/data-export.js"></script>
+    
+    <!-- 导航修复脚本 - 数据导出页面 -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('📤 数据导出页面 - 简化导航修复');
+        
+        // 简单直接的导航修复
+        setTimeout(() => {
+            // 1. 修复时间显示
+            const currentTimeEl = document.getElementById('current-time');
+            if (currentTimeEl) {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString('zh-CN');
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 2. 强制导航修复 - 直接操作
+            const navGroups = document.querySelectorAll('.nav-group');
+            console.log(`找到 ${navGroups.length} 个导航组`);
+            
+            navGroups.forEach((group, index) => {
+                const navItem = group.querySelector('.nav-item');
+                const submenu = group.querySelector('.nav-submenu');
+                const navText = group.querySelector('.nav-text')?.textContent || `组${index+1}`;
+                
+                if (navItem && submenu) {
+                    console.log(`处理导航组: ${navText}`);
+                    
+                    // 强制设置样式
+                    submenu.style.overflow = 'hidden';
+                    submenu.style.transition = 'max-height 0.3s ease';
+                    submenu.style.display = 'block';
+                    navItem.style.cursor = 'pointer';
+                    navItem.style.userSelect = 'none';
+                    
+                    // 设置初始状态
+                    if (group.classList.contains('expanded')) {
+                        submenu.style.maxHeight = '500px';
+                        console.log(`✓ ${navText} 初始展开`);
+                    } else {
+                        submenu.style.maxHeight = '0px';
+                        console.log(`- ${navText} 初始收起`);
+                    }
+                    
+                    // 移除旧事件，添加新事件
+                    navItem.onclick = null;
+                    navItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log(`🖱️ 点击导航组: ${navText}`);
+                        
+                        const isCurrentlyExpanded = group.classList.contains('expanded');
+                        
+                        if (isCurrentlyExpanded) {
+                            group.classList.remove('expanded');
+                            submenu.style.maxHeight = '0px';
+                            console.log(`📁 ${navText} 已收起`);
+                        } else {
+                            group.classList.add('expanded');
+                            submenu.style.maxHeight = '500px';
+                            console.log(`📂 ${navText} 已展开`);
+                        }
+                    });
+                    
+                    console.log(`✅ 导航组 "${navText}" 事件绑定完成`);
+                }
+            });
+            
+            // 3. 高亮当前页面
+            const currentItem = document.querySelector('a[href="export.html"]');
+            if (currentItem) {
+                currentItem.classList.add('active');
+                console.log('✓ 数据导出页面已高亮');
+            }
+            
+            console.log('✅ 数据导出页面导航修复完成');
+        }, 100);
+    });
+    </script>
+</body>
+</html>

@@ -1082,8 +1082,9 @@ function initPageFunctionSwitchBar() {
 }
 
 // 页面加载完成后初始化功能切换
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPageFunctionSwitchBar);
-} else {
-    initPageFunctionSwitchBar();
-}
+// 注意：main.js 中已经有统一的初始化，这里不需要重复初始化
+// if (document.readyState === 'loading') {
+//     document.addEventListener('DOMContentLoaded', initPageFunctionSwitchBar);
+// } else {
+//     initPageFunctionSwitchBar();
+// }

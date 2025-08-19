@@ -118,6 +118,15 @@
             <span class="btn-icon">🌾</span>
             <span class="btn-text">作物选择</span>
         </div>
+        
+        <!-- 第二个分隔线 -->
+        <div class="switch-divider"></div>
+        
+        <!-- 地图控制按钮 -->
+        <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
+            <span class="btn-icon">🎯</span>
+            <span class="btn-text">重置视图</span>
+        </div>
     </div>
 
 
@@ -132,126 +141,7 @@
         <!-- 地图覆盖层 -->
         <div class="map-overlay"></div>
 
-        <!-- 左侧数据分析面板 -->
-        <div class="glass-panel left-panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    📈 种植结构分析
-                </div>
-                <button class="collapse-btn">◀</button>
-            </div>
 
-            <!-- 4. 种植结构对比柱状图 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    📊 种植结构对比 (近三年)
-                    <div class="chart-switch-buttons">
-                        <button class="switch-btn active" data-type="bar">柱状图</button>
-                        <button class="switch-btn" data-type="line">折线图</button>
-                        <button class="switch-btn" data-type="table">表格</button>
-                    </div>
-                </div>
-                <div id="planting-comparison-chart" style="height: 210px;"></div>
-                <div id="planting-comparison-table" class="comparison-table" style="display: none;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>作物类型</th>
-                                <th>2022年 (亩)</th>
-                                <th>2023年 (亩)</th>
-                                <th>2024年 (亩)</th>
-                                <th>变化率</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="crop-icon">🌽</span> 玉米</td>
-                                <td>1200</td>
-                                <td>1280</td>
-                                <td>1344</td>
-                                <td class="positive">+12%</td>
-                            </tr>
-                            <tr>
-                                <td><span class="crop-icon">🌾</span> 小麦</td>
-                                <td>980</td>
-                                <td>1020</td>
-                                <td>1058</td>
-                                <td class="positive">+8%</td>
-                            </tr>
-                            <tr>
-                                <td><span class="crop-icon">🌶️</span> 辣椒</td>
-                                <td>650</td>
-                                <td>640</td>
-                                <td>631</td>
-                                <td class="negative">-3%</td>
-                            </tr>
-                            <tr>
-                                <td><span class="crop-icon">🥬</span> 其他</td>
-                                <td>285</td>
-                                <td>270</td>
-                                <td>275</td>
-                                <td class="neutral">+2%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="comparison-summary horizontal">
-                    <div class="comparison-item">
-                        <span class="crop-icon">🌽</span>
-                        <span class="crop-change positive">玉米 +12%</span>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="crop-icon">🌾</span>
-                        <span class="crop-change positive">小麦 +8%</span>
-                    </div>
-                    <div class="comparison-item">
-                        <span class="crop-icon">🌶️</span>
-                        <span class="crop-change negative">辣椒 -3%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. 作物类型分布桑基图 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    🔄 作物轮作流转分析
-                </div>
-                <div id="crop-sankey-chart" style="height: 160px;"></div>
-            </div>
-
-            <!-- 6. 数据更新状态面板 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    📊 数据质量状态
-                </div>
-                <div class="data-status">
-                    <div class="status-item">
-                        <div class="status-indicator online"></div>
-                        <div class="status-info">
-                            <div class="status-title">遥感数据更新</div>
-                            <div class="status-time">2024-01-12 10:30</div>
-                        </div>
-                        <div class="status-badge success">正常</div>
-                    </div>
-
-                    <div class="status-logs">
-                        <div class="log-header">📋 更新日志</div>
-                        <div class="log-item">
-                            <span class="log-time">14:30</span>
-                            <span class="log-msg">作物分布图层已更新</span>
-                        </div>
-                        <div class="log-item">
-                            <span class="log-time">10:30</span>
-                            <span class="log-msg">遥感影像数据同步完成</span>
-                        </div>
-                        <div class="log-item">
-                            <span class="log-time">09:15</span>
-                            <span class="log-msg">开始处理新批次数据</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- 右侧作物分布数据看板 -->
         <div class="glass-panel right-panel">
@@ -262,105 +152,135 @@
                 <button class="collapse-btn">▶</button>
             </div>
 
-            <!-- 1. 作物面积环形图 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    📊 作物面积占比
-                </div>
-                <div id="crop-area-pie" style="height: 160px;"></div>
-                <div class="crop-area-details">
-                    <div class="area-item">
-                        <span class="crop-icon">🌾</span>
-                        <div class="crop-info">
-                            <span class="crop-name">小麦</span>
-                            <span class="crop-area">1,256 亩</span>
-                            <span class="crop-percent">42.3%</span>
-                        </div>
-                    </div>
-                    <div class="area-item">
-                        <span class="crop-icon">🌽</span>
-                        <div class="crop-info">
-                            <span class="crop-name">玉米</span>
-                            <span class="crop-area">986 亩</span>
-                            <span class="crop-percent">33.2%</span>
-                        </div>
-                    </div>
-                    <div class="area-item">
-                        <span class="crop-icon">🌶️</span>
-                        <div class="crop-info">
-                            <span class="crop-name">辣椒</span>
-                            <span class="crop-area">453 亩</span>
-                            <span class="crop-percent">15.3%</span>
-                        </div>
-                    </div>
-                    <div class="area-item">
-                        <span class="crop-icon">🥬</span>
-                        <div class="crop-info">
-                            <span class="crop-name">其他</span>
-                            <span class="crop-area">275 亩</span>
-                            <span class="crop-percent">9.2%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. 大棚专项统计卡 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    🏠 大棚专项统计
-                </div>
-                <div class="greenhouse-stats">
-                    <div class="stat-row">
-                        <div class="stat-item">
-                            <div class="stat-value">186</div>
-                            <div class="stat-label">大棚总面积 (亩)</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">6.3%</div>
-                            <div class="stat-label">占总监测面积</div>
-                        </div>
-                    </div>
-                    <div class="greenhouse-crops">
-                        <div class="greenhouse-crop-item">
-                            <span class="crop-dot" style="background: #FF5722;"></span>
-                            <span>辣椒</span>
-                            <span class="crop-greenhouse-percent">35%</span>
-                        </div>
-                        <div class="greenhouse-crop-item">
-                            <span class="crop-dot" style="background: #4CAF50;"></span>
-                            <span>黄瓜</span>
-                            <span class="crop-greenhouse-percent">28%</span>
-                        </div>
-                        <div class="greenhouse-crop-item">
-                            <span class="crop-dot" style="background: #2196F3;"></span>
-                            <span>西红柿</span>
-                            <span class="crop-greenhouse-percent">37%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. 区域面积汇总看板 -->
+            <!-- 1. 区域面积汇总看板 -->
             <div class="stat-card">
                 <div class="stat-header">
                     📋 区域面积汇总
                 </div>
                 <div class="area-summary">
                     <div class="summary-item large">
-                        <div class="summary-value">2,970</div>
+                        <div class="summary-value">5,272</div>
                         <div class="summary-label">总监测面积 (亩)</div>
-                        <div class="summary-subtitle">覆盖12个行政村</div>
+                        <div class="summary-subtitle">覆盖8个乡镇</div>
                     </div>
                     <div class="summary-row">
                         <div class="summary-item">
-                            <div class="summary-value">8</div>
-                            <div class="summary-label">作物种类数</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-value">324</div>
-                            <div class="summary-label">地块总数</div>
+                            <div class="summary-value">0.8</div>
+                            <div class="summary-label">平均长势指数</div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- 2. 单作物按乡镇面积分布 -->
+            <div class="stat-card chart-data-panel" style="height: 260px !important; min-height: 260px !important; max-height: 260px !important; display: flex !important; flex-direction: column !important; overflow: hidden !important;">
+                <div class="stat-header" style="flex-shrink: 0 !important; flex-grow: 0 !important;">
+                    <span id="current-crop-title">🌾 小麦按乡镇长势分布</span>
+                    <div class="chart-switch-buttons">
+                        <button class="switch-btn active" data-type="bar">柱状图</button>
+                        <button class="switch-btn" data-type="table">表格</button>
+                    </div>
+                </div>
+                <div id="town-crop-chart" style="height: 220px; flex-shrink: 0 !important; flex-grow: 0 !important; margin: 0 !important;"></div>
+                <div id="town-crop-table" class="town-crop-table" style="display: none; flex: 1 !important; margin-top: 0 !important; height: auto !important; overflow-y: auto !important;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>乡镇</th>
+                                <th>优 (亩)</th>
+                                <th>良 (亩)</th>
+                                <th>中 (亩)</th>
+                                <th>差 (亩)</th>
+                                <th>合计 (亩)</th>
+                            </tr>
+                            <tr class="total-row sticky-total">
+                                <td><strong>合计</strong></td>
+                                <td><strong>889</strong></td>
+                                <td><strong>667</strong></td>
+                                <td><strong>444</strong></td>
+                                <td><strong>222</strong></td>
+                                <td><strong id="crop-total">2,222</strong></td>
+                            </tr>
+                        </thead>
+                        <tbody id="town-crop-tbody">
+                            <tr>
+                                <td>红台镇</td>
+                                <td>182</td>
+                                <td>137</td>
+                                <td>91</td>
+                                <td>46</td>
+                                <td>456</td>
+                            </tr>
+                            <tr>
+                                <td>土桥镇</td>
+                                <td>159</td>
+                                <td>119</td>
+                                <td>80</td>
+                                <td>40</td>
+                                <td>398</td>
+                            </tr>
+                            <tr>
+                                <td>漫路镇</td>
+                                <td>107</td>
+                                <td>80</td>
+                                <td>54</td>
+                                <td>27</td>
+                                <td>268</td>
+                            </tr>
+                            <tr>
+                                <td>北塬镇</td>
+                                <td>54</td>
+                                <td>40</td>
+                                <td>27</td>
+                                <td>13</td>
+                                <td>134</td>
+                            </tr>
+                            <tr>
+                                <td>关滩镇</td>
+                                <td>125</td>
+                                <td>94</td>
+                                <td>62</td>
+                                <td>31</td>
+                                <td>312</td>
+                            </tr>
+                            <tr>
+                                <td>新集镇</td>
+                                <td>116</td>
+                                <td>87</td>
+                                <td>58</td>
+                                <td>29</td>
+                                <td>289</td>
+                            </tr>
+                            <tr>
+                                <td>麻尼寺沟镇</td>
+                                <td>79</td>
+                                <td>59</td>
+                                <td>40</td>
+                                <td>20</td>
+                                <td>198</td>
+                            </tr>
+                            <tr>
+                                <td>韩集镇</td>
+                                <td>67</td>
+                                <td>50</td>
+                                <td>33</td>
+                                <td>17</td>
+                                <td>167</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. 长势指数变化趋势图 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="section-icon">📈</span>
+                    长势指数变化趋势图
+                    <span class="phenology-marker">关键期: 抽穗期</span>
+                </div>
+                <div class="trend-comparison-container">
+                    <div id="growth-trend-comparison" class="chart-container"></div>
                 </div>
             </div>
 

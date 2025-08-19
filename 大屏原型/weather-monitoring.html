@@ -150,277 +150,6 @@
         <!-- 地图覆盖层 -->
         <div class="map-overlay"></div>
 
-        <!-- 左侧气象数据控制面板 -->
-        <div class="glass-panel left-panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    🌤️ 气象数据
-                </div>
-                <button class="collapse-btn">◀</button>
-            </div>
-
-            <!-- 气象图层控制卡片 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    🗺️ 气象图层选择
-                    <!-- 透明度控制 - 同一行 -->
-                    <div class="layer-opacity-control" style="float: right; margin-top: -2px; border: none; background: none; padding: 0;">
-                        <label style="font-size: 11px; margin-right: 5px; border: none;">透明度：</label>
-                        <input type="range" id="layer-opacity-slider" class="opacity-slider" min="0" max="100" value="90" style="width: 60px; height: 15px; border: none; outline: none;">
-                        <span id="opacity-value" style="font-size: 11px; margin-left: 3px; border: none;">90%</span>
-                    </div>
-                </div>
-                
-                <div class="weather-layer-tabs">
-                    <div class="weather-tab" data-layer="precipitation">
-                        <div class="tab-icon">🌧️</div>
-                        <div class="tab-name">降雨数据</div>
-                    </div>
-                    
-                    <div class="weather-tab" data-layer="soil-temperature">
-                        <div class="tab-icon">🌡️</div>
-                        <div class="tab-name">地温数据</div>
-                    </div>
-                    
-                    <div class="weather-tab" data-layer="temperature">
-                        <div class="tab-icon">🌡️</div>
-                        <div class="tab-name">气温数据</div>
-                    </div>
-                    
-                    <div class="weather-tab" data-layer="accumulated-temperature">
-                        <div class="tab-icon">🔥</div>
-                        <div class="tab-name">积温</div>
-                    </div>
-                    
-                    <div class="weather-tab" data-layer="accumulated-precipitation">
-                        <div class="tab-icon">🌊</div>
-                        <div class="tab-name">积雨</div>
-                    </div>
-                    
-                    <div class="weather-tab" data-layer="humidity">
-                        <div class="tab-icon">💧</div>
-                        <div class="tab-name">空气相对湿度</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 时间控制卡片 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    ⏰ 时间控制
-                    <!-- 时间模式选择 -->
-                    <div class="time-mode-selector">
-                        <div class="mode-tabs">
-                            <button class="mode-tab" data-mode="historical">历史数据</button>
-                            <button class="mode-tab active" data-mode="forecast">预报数据</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="time-controls">
-                    
-                    <!-- 历史数据选择器 -->
-                    <div class="time-selector" id="historical-selector" style="min-height: 60px;">
-                        <div class="date-time-picker" style="margin-bottom: 6px;">
-                            <input type="date" id="historical-date" max="" value="" style="height: 28px; font-size: 11px;">
-                            <input type="time" id="historical-time" value="12:00" style="height: 28px; font-size: 11px;">
-                        </div>
-                        <div class="quick-history" style="gap: 4px;">
-                            <button class="quick-btn" data-days="1" style="height: 24px; font-size: 10px; padding: 2px 6px;">昨天</button>
-                            <button class="quick-btn" data-days="7" style="height: 24px; font-size: 10px; padding: 2px 6px;">7天前</button>
-                            <button class="quick-btn" data-days="30" style="height: 24px; font-size: 10px; padding: 2px 6px;">30天前</button>
-                        </div>
-                    </div>
-                    
-                    <!-- 预报数据选择器 -->
-                    <div class="time-selector" id="forecast-selector" style="display: none; min-height: 60px;">
-                        <label style="margin-bottom: 4px; font-size: 12px;">预报时间：</label>
-                        <select id="forecast-time" style="margin-top: 4px; height: 28px; font-size: 11px;">
-                            <option value="current">当前</option>
-                            <option value="1h">1小时后</option>
-                            <option value="3h">3小时后</option>
-                            <option value="6h">6小时后</option>
-                            <option value="12h">12小时后</option>
-                            <option value="24h">24小时后</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 时间轴滑块 -->
-                    <div class="time-range-slider">
-                        <label id="time-range-label">历史时间轴：</label>
-                        <input type="range" id="time-slider" min="-168" max="168" value="0" step="1">
-                        <div class="time-labels">
-                            <span id="time-start-label">7天前</span>
-                            <span id="time-center-label">现在</span>
-                            <span id="time-end-label">7天后</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 当前选择的时间显示 -->
-                    <div class="current-time-display">
-                        <label>当前查看时间：</label>
-                        <span id="current-time-text">实时数据</span>
-                    </div>
-                    
-                    <!-- 动画控制 -->
-                    <div class="animation-controls">
-                        <button class="control-btn" id="play-btn">▶️ 播放</button>
-                        <button class="control-btn" id="pause-btn">⏸️ 暂停</button>
-                        <button class="control-btn" id="reset-btn">🔄 重置</button>
-                        <button class="control-btn" id="speed-btn">⏩ 速度: 1x</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 气象预警卡片 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    ⚠️ 气象预警
-                </div>
-                <div class="weather-alerts" style="height: 150px; overflow: hidden; position: relative;">
-                    <div class="alerts-marquee">
-                        <div class="alert-item warning">
-                            <div class="alert-icon">🌧️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">暴雨黄色预警</div>
-                                <div class="alert-time">发布时间：14:20</div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert-item info">
-                            <div class="alert-icon">🌡️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">低温蓝色预警</div>
-                                <div class="alert-time">发布时间：08:00</div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert-item warning">
-                            <div class="alert-icon">⚡</div>
-                            <div class="alert-content">
-                                <div class="alert-title">雷电黄色预警</div>
-                                <div class="alert-time">发布时间：16:30</div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert-item danger">
-                            <div class="alert-icon">🌪️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">大风橙色预警</div>
-                                <div class="alert-time">发布时间：12:15</div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert-item warning">
-                            <div class="alert-icon">🌨️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">暴雪蓝色预警</div>
-                                <div class="alert-time">发布时间：09:45</div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert-item info">
-                            <div class="alert-icon">🌫️</div>
-                            <div class="alert-content">
-                                <div class="alert-title">大雾黄色预警</div>
-                                <div class="alert-time">发布时间：06:30</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 添加自动滚动CSS动画 -->
-                <style>
-                .alert-item {
-                    min-height: 45px;
-                    display: flex;
-                    align-items: center;
-                    padding: 6px 8px;
-                    margin-bottom: 3px;
-                    border-radius: 4px;
-                    background: rgba(255, 255, 255, 0.03);
-                    flex-shrink: 0;
-                }
-                
-                .alerts-marquee {
-                    animation: marqueeScroll 20s linear infinite;
-                }
-                
-                @keyframes marqueeScroll {
-                    0% { transform: translateY(0); }
-                    100% { transform: translateY(-50%); }
-                }
-                
-                .weather-alerts:hover .alerts-marquee {
-                    animation-play-state: paused;
-                }
-                
-                .alert-item.danger .alert-title {
-                    color: #F5222D;
-                }
-                
-                .alert-icon {
-                    font-size: 16px;
-                    margin-right: 8px;
-                    flex-shrink: 0;
-                }
-                
-                .alert-content {
-                    flex: 1;
-                }
-                
-                .alert-title {
-                    font-size: 12px;
-                    font-weight: bold;
-                    margin-bottom: 2px;
-                }
-                
-                .alert-time {
-                    font-size: 10px;
-                    opacity: 0.7;
-                }
-                </style>
-            </div>
-
-            <!-- 农业气象指数 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    🌾 农业气象指数
-                </div>
-                <div class="agri-weather-index" style="display: flex !important; flex-direction: row !important; gap: 8px;">
-                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
-                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">作物适宜度</div>
-                        <div class="index-value good" style="font-size: 11px; margin-bottom: 4px;">适宜</div>
-                        <div class="index-progress">
-                            <div class="progress-bar" style="height: 6px;">
-                                <div class="progress-fill good" style="width: 75%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
-                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">病虫害风险</div>
-                        <div class="index-value warning" style="font-size: 11px; margin-bottom: 4px;">中等</div>
-                        <div class="index-progress">
-                            <div class="progress-bar" style="height: 6px;">
-                                <div class="progress-fill warning" style="width: 45%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="index-item" style="flex: 1 !important; text-align: center; display: flex !important; flex-direction: column !important; justify-content: center;">
-                        <div class="index-label" style="font-size: 10px; margin-bottom: 4px;">灌溉建议</div>
-                        <div class="index-value info" style="font-size: 11px; margin-bottom: 4px;">不需要</div>
-                        <div class="index-progress">
-                            <div class="progress-bar" style="height: 6px;">
-                                <div class="progress-fill info" style="width: 20%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 右侧气象监测数据看板 -->
         <div class="glass-panel right-panel">
             <div class="panel-header">
@@ -428,6 +157,71 @@
                     🌤️ 气象监测
                 </div>
                 <button class="collapse-btn">▶</button>
+            </div>
+
+            <!-- 气象数据控制面板 -->
+            <div class="stat-card" style="height: auto; max-height: 320px;">
+                <div class="stat-header" style="display: flex; justify-content: space-between; align-items: center; height: 28px; line-height: 28px;">
+                    <span style="font-size: 15px;">🗺️ 气象数据控制</span>
+                    <span style="display: flex; align-items: center; gap: 5px; font-size: 10px;">
+                        透明度
+                        <input type="range" id="layer-opacity-slider" min="0" max="100" value="90" style="width: 40px; height: 8px; margin: 0; padding: 0; border: none; outline: none;">
+                        <span id="opacity-value">90%</span>
+                    </span>
+                </div>
+
+                <!-- 图层选择 - 单行布局 -->
+                <div class="weather-layer-tabs" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-bottom: 10px;">
+                    <div class="weather-tab compact" data-layer="precipitation" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">🌧️</div>
+                        <div class="tab-name" style="font-size: 9px;">降雨</div>
+                    </div>
+                    <div class="weather-tab compact" data-layer="temperature" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">🌡️</div>
+                        <div class="tab-name" style="font-size: 9px;">气温</div>
+                    </div>
+                    <div class="weather-tab compact" data-layer="humidity" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">💧</div>
+                        <div class="tab-name" style="font-size: 9px;">湿度</div>
+                    </div>
+                    <div class="weather-tab compact" data-layer="soil-temperature" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">🌡️</div>
+                        <div class="tab-name" style="font-size: 9px;">地温</div>
+                    </div>
+                    <div class="weather-tab compact" data-layer="accumulated-temperature" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">🔥</div>
+                        <div class="tab-name" style="font-size: 9px;">积温</div>
+                    </div>
+                    <div class="weather-tab compact" data-layer="accumulated-precipitation" style="padding: 5px 2px; min-height: 36px;">
+                        <div class="tab-icon" style="font-size: 12px;">🌊</div>
+                        <div class="tab-name" style="font-size: 9px;">积雨</div>
+                    </div>
+                </div>
+
+                <!-- 时间控制 - 适中布局 -->
+                <div class="time-controls-compact">
+                    <div class="time-row" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+                        <label style="font-size: 11px; color: rgba(255,255,255,0.8); min-width: 40px;">时间:</label>
+                        <input type="date" id="selected-date" value="" style="height: 26px; font-size: 11px; flex: 1;">
+                        <input type="time" id="selected-time" value="" style="height: 26px; font-size: 11px; flex: 1;">
+                    </div>
+
+                    <div class="time-slider-row" style="margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                            <span style="font-size: 10px; color: rgba(255,255,255,0.6);">7天前</span>
+                            <span style="font-size: 10px; color: rgba(255,255,255,0.8);">时间轴</span>
+                            <span style="font-size: 10px; color: rgba(255,255,255,0.6);">现在</span>
+                        </div>
+                        <input type="range" id="time-slider" min="-168" max="0" value="0" step="1" style="width: 100%; height: 18px;">
+                    </div>
+
+                    <div class="animation-controls-compact" style="display: flex; gap: 4px;">
+                        <button class="control-btn compact" id="play-btn" style="flex: 1; height: 24px; font-size: 10px; padding: 2px 4px;">▶️</button>
+                        <button class="control-btn compact" id="pause-btn" style="flex: 1; height: 24px; font-size: 10px; padding: 2px 4px;">⏸️</button>
+                        <button class="control-btn compact" id="reset-btn" style="flex: 1; height: 24px; font-size: 10px; padding: 2px 4px;">🔄</button>
+                        <button class="control-btn compact" id="speed-btn" style="flex: 1; height: 24px; font-size: 10px; padding: 2px 4px;">1x</button>
+                    </div>
+                </div>
             </div>
 
             <!-- 当前天气状况卡片 -->
@@ -473,25 +267,97 @@
                 </div>
             </div>
 
-            <!-- 24小时温度趋势 -->
+            <!-- 七天气象数据可视化面板 -->
             <div class="stat-card">
                 <div class="stat-header">
-                    📈 24小时温度趋势
+                    📊 七天气象数据分析
+                    <span style="font-size: 9px; color: rgba(255,255,255,0.6); margin-left: 8px;">预测/历史数据</span>
                 </div>
-                <div id="temperature-trend-chart" style="height: 180px;"></div>
-            </div>
 
-            <!-- 7天天气预报 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    📅 7天天气预报
+                <!-- 数据类型选择器 -->
+                <div class="weather-data-selector" style="margin-bottom: 12px;">
+                    <div class="data-type-tabs" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 8px;">
+                        <div class="data-tab active" data-type="weather" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.5);">
+                            <div style="font-size: 10px; color: #00D4FF;">🌤️</div>
+                            <div style="font-size: 8px;">天气预测</div>
+                        </div>
+                        <div class="data-tab" data-type="precipitation" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">🌧️</div>
+                            <div style="font-size: 8px;">降雨数据</div>
+                        </div>
+                        <div class="data-tab" data-type="temperature" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">🌡️</div>
+                            <div style="font-size: 8px;">气温数据</div>
+                        </div>
+                        <div class="data-tab" data-type="soil-temp" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">🌡️</div>
+                            <div style="font-size: 8px;">地温数据</div>
+                        </div>
+                    </div>
+                    <div class="data-type-tabs-row2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;">
+                        <div class="data-tab" data-type="accumulated-temp" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">🔥</div>
+                            <div style="font-size: 8px;">积温</div>
+                        </div>
+                        <div class="data-tab" data-type="accumulated-rain" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">🌊</div>
+                            <div style="font-size: 8px;">积雨</div>
+                        </div>
+                        <div class="data-tab" data-type="humidity" style="padding: 4px 2px; min-height: 28px; text-align: center; cursor: pointer; border-radius: 4px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px;">💧</div>
+                            <div style="font-size: 8px;">相对湿度</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- 7天天气预报ECharts图表 -->
-                <div id="seven-day-weather-chart" style="height: 200px;"></div>
+
+                <!-- 数据可视化图表区域 -->
+                <div class="weather-chart-container" style="height: 180px; position: relative;">
+                    <!-- 七天天气预测 -->
+                    <div id="weather-forecast-chart" class="chart-panel active" style="height: 100%; display: block;">
+                        <div id="seven-day-weather-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 降雨数据图表 -->
+                    <div id="precipitation-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-precipitation-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 气温数据图表 -->
+                    <div id="temperature-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-temperature-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 地温数据图表 -->
+                    <div id="soil-temp-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-soil-temp-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 积温数据图表 -->
+                    <div id="accumulated-temp-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-accumulated-temp-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 积雨数据图表 -->
+                    <div id="accumulated-rain-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-accumulated-rain-chart" style="height: 100%;"></div>
+                    </div>
+
+                    <!-- 相对湿度数据图表 -->
+                    <div id="humidity-chart" class="chart-panel" style="height: 100%; display: none;">
+                        <div id="seven-day-humidity-chart" style="height: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- 数据统计信息 -->
+                <div class="data-statistics" style="margin-top: 8px; padding: 6px; background: rgba(255, 255, 255, 0.03); border-radius: 4px;">
+                    <div class="stats-row" style="display: flex; justify-content: space-between; font-size: 9px;">
+                        <span id="stat-avg" style="color: rgba(255, 255, 255, 0.7);">平均值: --</span>
+                        <span id="stat-max" style="color: #FF6B6B;">最高: --</span>
+                        <span id="stat-min" style="color: #4ECDC4;">最低: --</span>
+                        <span id="stat-trend" style="color: #00D4FF;">趋势: --</span>
+                    </div>
+                </div>
             </div>
-
-
 
             <div class="update-time">
                 🔄 数据更新: 2024-01-15 14:30 | 气象数据: 中央气象台
@@ -499,13 +365,132 @@
         </div>
     </div>
 
+    <!-- 设置默认时间 -->
+    <script>
+        // 页面加载完成后设置默认时间
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+
+            // 设置为当前时间的整点往前推（上一个整点）
+            const currentHour = now.getHours();
+            const previousHour = currentHour === 0 ? 23 : currentHour - 1;
+
+            // 如果是0点，需要设置为昨天的23点
+            if (currentHour === 0) {
+                now.setDate(now.getDate() - 1);
+            }
+            now.setHours(previousHour, 0, 0, 0); // 设置为整点，分秒清零
+
+            // 格式化日期和时间
+            const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+            const timeStr = now.toTimeString().slice(0, 5); // HH:MM
+
+            // 设置输入框的值
+            const dateInput = document.getElementById('selected-date');
+            const timeInput = document.getElementById('selected-time');
+
+            if (dateInput) dateInput.value = dateStr;
+            if (timeInput) timeInput.value = timeStr;
+
+            // 初始化七天气象数据面板
+            initSevenDayWeatherPanel();
+        });
+
+        // 七天气象数据面板功能
+        function initSevenDayWeatherPanel() {
+            // 数据类型切换功能
+            const dataTabs = document.querySelectorAll('.data-tab');
+            const chartPanels = document.querySelectorAll('.chart-panel');
+
+            dataTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const dataType = this.getAttribute('data-type');
+
+                    // 更新选中状态
+                    dataTabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.style.background = 'rgba(255, 255, 255, 0.05)';
+                        t.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+                    });
+
+                    this.classList.add('active');
+                    this.style.background = 'rgba(0, 212, 255, 0.2)';
+                    this.style.border = '1px solid rgba(0, 212, 255, 0.5)';
+
+                    // 切换图表显示
+                    chartPanels.forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+
+                    // 显示对应的图表
+                    const targetChart = getChartPanelId(dataType);
+                    const targetPanel = document.getElementById(targetChart);
+                    if (targetPanel) {
+                        targetPanel.style.display = 'block';
+                        // 初始化对应的图表
+                        initChart(dataType);
+                    }
+
+                    // 更新统计信息
+                    updateStatistics(dataType);
+                });
+            });
+
+            // 初始化默认图表（天气预测）
+            initChart('weather');
+            updateStatistics('weather');
+        }
+
+        function getChartPanelId(dataType) {
+            const mapping = {
+                'weather': 'weather-forecast-chart',
+                'precipitation': 'precipitation-chart',
+                'temperature': 'temperature-chart',
+                'soil-temp': 'soil-temp-chart',
+                'accumulated-temp': 'accumulated-temp-chart',
+                'accumulated-rain': 'accumulated-rain-chart',
+                'humidity': 'humidity-chart'
+            };
+            return mapping[dataType] || 'weather-forecast-chart';
+        }
+
+        function initChart(dataType) {
+            // 调用weather-monitoring.js中的图表初始化函数
+            if (typeof initSevenDayDataChart === 'function') {
+                initSevenDayDataChart(dataType);
+            } else {
+                console.log('初始化图表:', dataType);
+            }
+        }
+
+        function updateStatistics(dataType) {
+            // 根据数据类型生成统计信息
+            const mockStats = {
+                'weather': { avg: '多云', max: '晴天', min: '阴天', trend: '转晴' },
+                'precipitation': { avg: '11.9mm', max: '25.0mm', min: '0.0mm', trend: '波动' },
+                'temperature': { avg: '19.1°C', max: '28.0°C', min: '6.0°C', trend: '回升' },
+                'soil-temp': { avg: '16.6°C', max: '20.0°C', min: '12.0°C', trend: '稳定' },
+                'accumulated-temp': { avg: '2232°C·日', max: '2292°C·日', min: '2156°C·日', trend: '持续累积' },
+                'accumulated-rain': { avg: '81.7mm', max: '113mm', min: '45mm', trend: '逐步增加' },
+                'humidity': { avg: '66.4%', max: '82%', min: '45%', trend: '波动上升' }
+            };
+
+            const stats = mockStats[dataType] || mockStats['weather'];
+
+            document.getElementById('stat-avg').textContent = `平均值: ${stats.avg}`;
+            document.getElementById('stat-max').textContent = `最高: ${stats.max}`;
+            document.getElementById('stat-min').textContent = `最低: ${stats.min}`;
+            document.getElementById('stat-trend').textContent = `趋势: ${stats.trend}`;
+        }
+    </script>
+
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
     <script src="assets/js/crop-layers.js"></script>
     <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/main.js"></script>
     <script src="assets/js/dashboard-charts.js"></script>
     <script src="assets/js/weather-monitoring.js"></script>
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

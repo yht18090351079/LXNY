@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 作物数据管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入管理端样式 -->
+    <link rel="stylesheet" href="../../assets/css/common.css">
+    <link rel="stylesheet" href="../../assets/css/data-management.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span class="logo-text">农情遥感管理系统</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="breadcrumb">
+                <i class="fas fa-home"></i>
+                <span>数据管理</span>
+                <i class="fas fa-chevron-right"></i>
+                <span>作物数据管理</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索作物数据...">
+            </div>
+            
+            <div class="header-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">2024-01-15 14:30:25</span>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                    <span class="user-name">管理员</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#" onclick="showUserProfile()">
+                        <i class="fas fa-user-circle"></i>
+                        个人信息
+                    </a>
+                    <a href="#" onclick="showSystemSettings()">
+                        <i class="fas fa-cog"></i>
+                        系统设置
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        退出登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav-menu">
+            <!-- 仪表板 -->
+            <div class="nav-item" onclick="window.location.href='../../index.html'">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <span class="nav-text">仪表板</span>
+            </div>
+            
+            <!-- 数据管理 -->
+            <div class="nav-group expanded">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-database"></i>
+                    <span class="nav-text">数据管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="remote-sensing.html" class="nav-subitem">
+                        <i class="fas fa-satellite"></i>
+                        遥感数据管理
+                    </a>
+                    <a href="weather-data.html" class="nav-subitem">
+                        <i class="fas fa-cloud-sun"></i>
+                        气象数据管理
+                    </a>
+                    <a href="crop-data.html" class="nav-subitem active">
+                        <i class="fas fa-seedling"></i>
+                        作物数据管理
+                    </a>
+                    <a href="gis-data.html" class="nav-subitem">
+                        <i class="fas fa-map"></i>
+                        地理数据管理
+                    </a>
+                    <a href="weather-alert-logs.html" class="nav-subitem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        预警信息留痕
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-microchip"></i>
+                    <span class="nav-text">设备管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../device-management/sensors.html" class="nav-subitem">
+                        <i class="fas fa-thermometer-half"></i>
+                        传感器管理
+                    </a>
+                    <a href="../device-management/device-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-video"></i>
+                        监控设备
+                    </a>
+                    <a href="../device-management/maintenance.html" class="nav-subitem">
+                        <i class="fas fa-tools"></i>
+                        设备维护
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 用户管理 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span class="nav-text">用户管理</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../user-management/users.html" class="nav-subitem">
+                        <i class="fas fa-user"></i>
+                        用户账户
+                    </a>
+                    <a href="../user-management/roles.html" class="nav-subitem">
+                        <i class="fas fa-user-tag"></i>
+                        角色权限
+                    </a>
+                    <a href="../user-management/logs.html" class="nav-subitem">
+                        <i class="fas fa-history"></i>
+                        操作日志
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <span class="nav-text">系统设置</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../system-settings/display.html" class="nav-subitem">
+                        <i class="fas fa-desktop"></i>
+                        大屏配置
+                    </a>
+                    <a href="../system-settings/algorithms.html" class="nav-subitem">
+                        <i class="fas fa-brain"></i>
+                        算法参数
+                    </a>
+                    <a href="../system-settings/system-monitoring.html" class="nav-subitem">
+                        <i class="fas fa-heartbeat"></i>
+                        系统监控
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 统计报表 -->
+            <div class="nav-group">
+                <div class="nav-item">
+                    <i class="nav-icon fas fa-chart-bar"></i>
+                    <span class="nav-text">统计报表</span>
+                    <i class="nav-arrow fas fa-chevron-right"></i>
+                </div>
+                <div class="nav-submenu">
+                    <a href="../reports/data-quality.html" class="nav-subitem">
+                        <i class="fas fa-check-circle"></i>
+                        数据质量报告
+                    </a>
+                    <a href="../reports/business.html" class="nav-subitem">
+                        <i class="fas fa-chart-line"></i>
+                        业务统计
+                    </a>
+                    <a href="../reports/export.html" class="nav-subitem">
+                        <i class="fas fa-download"></i>
+                        数据导出
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 侧边栏底部 -->
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">系统运行正常</span>
+                </div>
+                <div class="status-time">
+                    <small>最后更新: <span id="last-update">刚刚</span></small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 页面标题和操作 -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>
+                    <i class="fas fa-seedling"></i>
+                    作物数据管理
+                </h1>
+                <p class="page-description">管理农情遥感系统中的作物种植、生长、产量等相关数据信息</p>
+            </div>
+            
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="refreshCropData()">
+                    <i class="fas fa-sync"></i>
+                    刷新数据
+                </button>
+                <button class="btn btn-secondary" onclick="importCropData()">
+                    <i class="fas fa-file-import"></i>
+                    导入数据
+                </button>
+                <button class="btn btn-primary" onclick="showAddCropModal()">
+                    <i class="fas fa-plus"></i>
+                    添加作物
+                </button>
+            </div>
+        </div>
+
+        <!-- 作物数据概览 -->
+        <div class="crop-overview">
+            <div class="crop-stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalCrops">1,247</div>
+                    <div class="stat-label">作物记录</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-plus"></i>
+                        +89 本月新增
+                    </div>
+                </div>
+            </div>
+            
+            <div class="crop-stat-card">
+                <div class="stat-icon active">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activeCrops">1,156</div>
+                    <div class="stat-label">生长中</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-chart-line"></i>
+                        92.7% 健康率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="crop-stat-card">
+                <div class="stat-icon harvest">
+                    <i class="fas fa-tractor"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="harvestedCrops">89</div>
+                    <div class="stat-label">已收获</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-warehouse"></i>
+                        7.1% 完成率
+                    </div>
+                </div>
+            </div>
+            
+            <div class="crop-stat-card">
+                <div class="stat-icon area">
+                    <i class="fas fa-map"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalArea">15,680</div>
+                    <div class="stat-label">种植面积(亩)</div>
+                    <div class="stat-change neutral">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        覆盖完整
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 作物分析图表 -->
+        <div class="crop-analytics">
+            <div class="crop-distribution">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        作物种类分布
+                    </h3>
+                    <div class="analytics-actions">
+                        <button class="btn-icon" onclick="refreshCropDistribution()" data-tooltip="刷新图表">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button class="btn-icon" onclick="exportCropChart('distribution')" data-tooltip="导出图表">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="cropDistributionChart" class="chart"></div>
+                </div>
+            </div>
+            
+            <div class="growth-timeline">
+                <div class="analytics-header">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        生长周期分析
+                    </h3>
+                    <div class="time-range-selector">
+                        <button class="time-btn active" onclick="setCropTimeRange('month')">本月</button>
+                        <button class="time-btn" onclick="setCropTimeRange('season')">本季</button>
+                        <button class="time-btn" onclick="setCropTimeRange('year')">本年</button>
+                    </div>
+                </div>
+                <div class="chart-content">
+                    <div id="growthTimelineChart" class="chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 作物筛选和操作 -->
+        <div class="crop-controls">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>作物类型:</label>
+                    <select class="form-control" id="cropTypeFilter">
+                        <option value="">全部类型</option>
+                        <option value="grains">粮食作物</option>
+                        <option value="cash">经济作物</option>
+                        <option value="vegetables">蔬菜作物</option>
+                        <option value="fruits">果树作物</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>生长状态:</label>
+                    <select class="form-control" id="growthStatusFilter">
+                        <option value="">全部状态</option>
+                        <option value="seeding">播种期</option>
+                        <option value="growing">生长期</option>
+                        <option value="flowering">开花期</option>
+                        <option value="fruiting">结果期</option>
+                        <option value="mature">成熟期</option>
+                        <option value="harvested">已收获</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>种植地块:</label>
+                    <select class="form-control" id="areaFilter">
+                        <option value="">全部区域</option>
+                        <option value="north">北部片区</option>
+                        <option value="south">南部片区</option>
+                        <option value="east">东部片区</option>
+                        <option value="west">西部片区</option>
+                        <option value="center">中部片区</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group date-range-simple">
+                    <label>种植时间:</label>
+                    <div class="date-inputs-inline">
+                        <input type="date" class="form-control" id="plantStartDate">
+                        <span>至</span>
+                        <input type="date" class="form-control" id="plantEndDate">
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" onclick="applyCropFilters()">
+                        <i class="fas fa-filter"></i>
+                        应用筛选
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearCropFilters()">
+                        <i class="fas fa-times"></i>
+                        清除筛选
+                    </button>
+                </div>
+            </div>
+            
+            <div class="batch-actions">
+                <button class="btn btn-secondary" onclick="batchUpdateStatus()" disabled id="batchUpdateBtn">
+                    <i class="fas fa-edit"></i>
+                    批量更新状态
+                </button>
+                <button class="btn btn-secondary" onclick="batchExportData()" disabled id="batchExportBtn">
+                    <i class="fas fa-file-export"></i>
+                    批量导出
+                </button>
+                <button class="btn btn-secondary" onclick="batchHarvest()" disabled id="batchHarvestBtn">
+                    <i class="fas fa-tractor"></i>
+                    批量收获
+                </button>
+            </div>
+        </div>
+
+        <!-- 作物列表 -->
+        <div class="crop-table-container">
+            <div class="table-header">
+                <h3>作物数据列表</h3>
+                <div class="table-actions">
+                    <button class="btn-icon" onclick="toggleCropView('card')" data-tooltip="卡片视图">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleCropView('list')" data-tooltip="列表视图">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleCropView('map')" data-tooltip="地图视图">
+                        <i class="fas fa-map"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container" id="cropTableContainer">
+                <table class="table" id="cropTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllCrops" onchange="toggleSelectAllCrops()">
+                            </th>
+                            <th data-sort="cropName">
+                                作物名称
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="cropType">
+                                作物类型
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="variety">
+                                品种
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="plantArea">
+                                种植面积(亩)
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="plantDate">
+                                种植时间
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="growthStatus">
+                                生长状态
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="region">
+                                种植地块
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th data-sort="expectedYield">
+                                预期产量
+                                <i class="fas fa-sort sort-icon"></i>
+                            </th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cropTableBody">
+                        <!-- 作物数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页控件 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span id="cropPageStart">1</span> - <span id="cropPageEnd">20</span> 条，
+                    共 <span id="totalCropRecords">1247</span> 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-secondary" onclick="changeCropPage('first')" id="firstCropPageBtn">
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeCropPage('prev')" id="prevCropPageBtn">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+                    
+                    <div class="page-numbers" id="cropPageNumbers">
+                        <!-- 页码按钮将通过JavaScript生成 -->
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="changeCropPage('next')" id="nextCropPageBtn">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="changeCropPage('last')" id="lastCropPageBtn">
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 侧边栏切换按钮 -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- 添加作物模态框 -->
+    <div class="modal-overlay" id="addCropModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">添加作物信息</h3>
+                <button class="modal-close" onclick="closeAddCropModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addCropForm" class="crop-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">作物名称:</label>
+                            <input type="text" class="form-control" id="cropName" placeholder="请输入作物名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">作物类型:</label>
+                            <select class="form-control" id="cropType" required>
+                                <option value="">请选择作物类型</option>
+                                <option value="grains">粮食作物</option>
+                                <option value="cash">经济作物</option>
+                                <option value="vegetables">蔬菜作物</option>
+                                <option value="fruits">果树作物</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">品种:</label>
+                            <input type="text" class="form-control" id="variety" placeholder="请输入作物品种">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">种植面积(亩):</label>
+                            <input type="number" class="form-control" id="plantArea" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">种植时间:</label>
+                            <input type="date" class="form-control" id="plantDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">预期收获时间:</label>
+                            <input type="date" class="form-control" id="expectedHarvestDate">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">种植地块:</label>
+                            <select class="form-control" id="region" required>
+                                <option value="">请选择种植地块</option>
+                                <option value="north">北部片区</option>
+                                <option value="south">南部片区</option>
+                                <option value="east">东部片区</option>
+                                <option value="west">西部片区</option>
+                                <option value="center">中部片区</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">预期产量(吨):</label>
+                            <input type="number" class="form-control" id="expectedYield" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">生长状态:</label>
+                            <select class="form-control" id="growthStatus">
+                                <option value="seeding">播种期</option>
+                                <option value="growing" selected>生长期</option>
+                                <option value="flowering">开花期</option>
+                                <option value="fruiting">结果期</option>
+                                <option value="mature">成熟期</option>
+                                <option value="harvested">已收获</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">种植密度(株/亩):</label>
+                            <input type="number" class="form-control" id="plantDensity" placeholder="0" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">地块坐标:</label>
+                        <div class="coordinate-inputs">
+                            <input type="number" class="form-control" id="latitude" placeholder="纬度" step="0.000001">
+                            <input type="number" class="form-control" id="longitude" placeholder="经度" step="0.000001">
+                            <button type="button" class="btn btn-secondary" onclick="getLocation()">
+                                <i class="fas fa-map-marker-alt"></i>
+                                获取位置
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">备注信息:</label>
+                        <textarea class="form-control" id="remarks" rows="3" placeholder="请输入备注信息..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeAddCropModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveCrop()">保存作物</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 作物详情模态框 -->
+    <div class="modal-overlay" id="cropDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title">作物详细信息</h3>
+                <button class="modal-close" onclick="closeCropDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="crop-detail-content" id="cropDetailContent">
+                    <!-- 作物详情内容将通过JavaScript生成 -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="editCropInfo()">编辑信息</button>
+                <button class="btn btn-secondary" onclick="updateGrowthStatus()">更新状态</button>
+                <button class="btn btn-primary" onclick="closeCropDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/crop-data.js"></script>
+    
+    <!-- 页面调试和修复脚本 -->
+    <script>
+    // 页面加载检查和修复
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🌾 作物数据管理页面加载检查...');
+        
+        // 确保基础功能正常
+        setTimeout(() => {
+            // 检查并修复时间显示
+            const currentTimeEl = document.getElementById('current-time');
+            if (currentTimeEl && currentTimeEl.textContent === '2024-01-15 14:30:25') {
+                const updateTime = () => {
+                    const now = new Date();
+                    currentTimeEl.textContent = now.toLocaleString('zh-CN');
+                };
+                updateTime();
+                setInterval(updateTime, 1000);
+            }
+            
+            // 确保导航功能
+            if (typeof initializeSidebar === 'function') {
+                initializeSidebar();
+            }
+            
+            console.log('✅ 作物数据页面修复完成');
+        }, 500);
+    });
+    </script>
+</body>
+</html>
+ 
+ 
+ 

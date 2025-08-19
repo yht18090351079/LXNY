@@ -118,7 +118,12 @@ function initWeatherMonitoring() {
     
     // 初始化图表
     initWeatherCharts();
-    
+
+    // 初始化七天气象数据面板的默认图表
+    setTimeout(() => {
+        initSevenDayDataChart('weather');
+    }, 1000);
+
     // 启动数据更新
     startWeatherDataUpdate();
     
@@ -1150,7 +1155,7 @@ function initWeatherCharts() {
 function initTemperatureTrendChart() {
     const container = document.getElementById('temperature-trend-chart');
     if (!container) {
-        console.warn('⚠️ 温度趋势图容器未找到');
+        // 24小时温度趋势图已被移除，不再显示警告
         return;
     }
     
@@ -1334,7 +1339,7 @@ function initTemperatureTrendChart() {
 function initForecastTemperatureChart() {
     const canvas = document.getElementById('forecast-temperature-chart');
     if (!canvas) {
-        console.warn('⚠️ 7天预报温度图容器未找到');
+        // 7天预报温度图已移动到新的数据分析面板中
         return;
     }
     
@@ -1519,7 +1524,7 @@ function drawForecastTemperatureChart(ctx, canvas, data) {
 function initSevenDayWeatherEChart() {
     const container = document.getElementById('seven-day-weather-chart');
     if (!container) {
-        console.warn('⚠️ 7天天气预报图容器未找到');
+        // 7天天气预报图表已移动到新的数据分析面板中
         return;
     }
     
@@ -2659,4 +2664,255 @@ function cycleAnimationSpeed() {
     }
     
     console.log(`⚡ 动画速度设置为: ${animationSpeed}x`);
+}
+
+// ===== 七天气象数据面板模块 =====
+
+/**
+ * 初始化七天气象数据面板的图表
+ */
+function initSevenDayDataChart(dataType) {
+    const chartId = getSevenDayChartId(dataType);
+    const container = document.getElementById(chartId);
+
+    if (!container) {
+        console.warn(`⚠️ 图表容器未找到: ${chartId}`);
+        return;
+    }
+
+    // 初始化ECharts实例
+    const chart = echarts.init(container);
+
+    // 根据数据类型生成不同的图表配置
+    const option = generateChartOption(dataType);
+
+    // 设置图表配置
+    chart.setOption(option);
+
+    // 存储图表实例以便后续更新
+    window[`${dataType}Chart`] = chart;
+
+    console.log(`📊 ${dataType} 图表初始化完成`);
+}
+
+/**
+ * 获取七天数据图表的容器ID
+ */
+function getSevenDayChartId(dataType) {
+    const mapping = {
+        'weather': 'seven-day-weather-chart',
+        'precipitation': 'seven-day-precipitation-chart',
+        'temperature': 'seven-day-temperature-chart',
+        'soil-temp': 'seven-day-soil-temp-chart',
+        'accumulated-temp': 'seven-day-accumulated-temp-chart',
+        'accumulated-rain': 'seven-day-accumulated-rain-chart',
+        'humidity': 'seven-day-humidity-chart'
+    };
+    return mapping[dataType] || 'seven-day-weather-chart';
+}
+
+/**
+ * 生成不同数据类型的图表配置
+ */
+function generateChartOption(dataType) {
+    // 根据数据类型生成不同的横坐标
+    let days;
+    if (dataType === 'weather') {
+        // 天气预报显示未来7天
+        days = ['今天', '明天', '后天', '周四', '周五', '周六', '周日'];
+    } else {
+        // 其他数据显示历史7天
+        const today = new Date();
+        days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            if (i === 0) {
+                days.push('今天');
+            } else if (i === 1) {
+                days.push('昨天');
+            } else {
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                days.push(`${month}/${day}`);
+            }
+        }
+    }
+
+    const baseOption = {
+        backgroundColor: 'transparent',
+        textStyle: {
+            color: '#FFFFFF',
+            fontSize: 10
+        },
+        grid: {
+            left: '10%',
+            right: '10%',
+            top: '15%',
+            bottom: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: days,
+            axisLine: {
+                lineStyle: { color: 'rgba(255, 255, 255, 0.3)' }
+            },
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 9
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                lineStyle: { color: 'rgba(255, 255, 255, 0.3)' }
+            },
+            axisLabel: {
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 9
+            },
+            splitLine: {
+                lineStyle: { color: 'rgba(255, 255, 255, 0.1)' }
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#FFFFFF', fontSize: 10 }
+        }
+    };
+
+    // 根据数据类型定制图表
+    switch (dataType) {
+        case 'weather':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '天气状况',
+                    type: 'line',
+                    data: [22, 25, 18, 16, 20, 24, 26],
+                    lineStyle: { color: '#00D4FF', width: 2 },
+                    itemStyle: { color: '#00D4FF' },
+                    areaStyle: { color: 'rgba(0, 212, 255, 0.1)' }
+                }]
+            };
+
+        case 'precipitation':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '历史降雨量',
+                    type: 'bar',
+                    data: [8, 15, 0, 25, 12, 5, 18], // 历史7天的降雨数据
+                    itemStyle: { color: '#4ECDC4' }
+                }],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: 'mm',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        case 'temperature':
+            return {
+                ...baseOption,
+                series: [
+                    {
+                        name: '历史最高温度',
+                        type: 'line',
+                        data: [20, 22, 18, 25, 28, 24, 26], // 历史7天最高温度
+                        lineStyle: { color: '#FF6B6B', width: 2 },
+                        itemStyle: { color: '#FF6B6B' }
+                    },
+                    {
+                        name: '历史最低温度',
+                        type: 'line',
+                        data: [8, 10, 6, 12, 15, 11, 14], // 历史7天最低温度
+                        lineStyle: { color: '#4ECDC4', width: 2 },
+                        itemStyle: { color: '#4ECDC4' }
+                    }
+                ],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: '°C',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        case 'soil-temp':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '历史地温',
+                    type: 'line',
+                    data: [14, 16, 12, 18, 20, 17, 19], // 历史7天地温数据
+                    lineStyle: { color: '#FFA726', width: 2 },
+                    itemStyle: { color: '#FFA726' },
+                    areaStyle: { color: 'rgba(255, 167, 38, 0.1)' }
+                }],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: '°C',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        case 'accumulated-temp':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '历史积温',
+                    type: 'line',
+                    data: [2156, 2180, 2205, 2225, 2241, 2265, 2292], // 历史7天累积积温
+                    lineStyle: { color: '#FF5722', width: 2 },
+                    itemStyle: { color: '#FF5722' },
+                    areaStyle: { color: 'rgba(255, 87, 34, 0.1)' }
+                }],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: '°C·日',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        case 'accumulated-rain':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '历史积雨',
+                    type: 'line',
+                    data: [45, 53, 53, 78, 90, 95, 113], // 历史7天累积降雨量
+                    lineStyle: { color: '#2196F3', width: 2 },
+                    itemStyle: { color: '#2196F3' },
+                    areaStyle: { color: 'rgba(33, 150, 243, 0.1)' }
+                }],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: 'mm',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        case 'humidity':
+            return {
+                ...baseOption,
+                series: [{
+                    name: '历史相对湿度',
+                    type: 'line',
+                    data: [58, 65, 45, 72, 68, 75, 82], // 历史7天相对湿度
+                    lineStyle: { color: '#9C27B0', width: 2 },
+                    itemStyle: { color: '#9C27B0' },
+                    areaStyle: { color: 'rgba(156, 39, 176, 0.1)' }
+                }],
+                yAxis: {
+                    ...baseOption.yAxis,
+                    name: '%',
+                    nameTextStyle: { color: 'rgba(255, 255, 255, 0.8)', fontSize: 9 }
+                }
+            };
+
+        default:
+            return baseOption;
+    }
 }
