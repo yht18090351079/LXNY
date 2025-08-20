@@ -1,0 +1,325 @@
+/**
+ * 时间节点条样式文件
+ * 用于显示月份时间轴和数据切换功能
+ */
+
+/* 时间轴容器 */
+.timeline-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 450px; /* 为右侧面板留出空间 */
+    background: linear-gradient(180deg, transparent 0%, rgba(40, 40, 40, 0.7) 30%, rgba(30, 30, 30, 0.85) 100%);
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 20px 8px;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 时间轴标题 */
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.timeline-title {
+    color: #E0E0E0;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeline-year {
+    color: #B0B0B0;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 时间轴主体 */
+.timeline-track {
+    position: relative;
+    height: 40px;
+    background: transparent;
+    border-radius: 20px;
+    border: none;
+    overflow: hidden;
+    margin-right: 20px; /* 为右侧面板留出空间 */
+}
+
+/* 时间轴背景线 */
+.timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.1) 100%);
+    transform: translateY(-50%);
+}
+
+/* 月份节点容器 */
+.timeline-months {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+    position: relative;
+}
+
+/* 单个月份节点 */
+.month-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.month-node:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.month-node.active {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* 月份圆点 */
+.month-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.month-node:hover .month-dot {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: #FFFFFF;
+    transform: scale(1.2);
+}
+
+.month-node.active .month-dot {
+    background: #FFFFFF;
+    border-color: #E0E0E0;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    animation: pulse 2s infinite;
+}
+
+/* 月份标签 */
+.month-label {
+    color: #B0B0B0;
+    font-size: 10px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.month-node:hover .month-label {
+    color: #FFFFFF;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.month-node.active .month-label {
+    color: #FFFFFF;
+    font-weight: bold;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* 数据指示器 */
+.month-indicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #FF4500;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.month-node.has-data .month-indicator {
+    opacity: 1;
+    animation: blink 1.5s infinite;
+}
+
+/* 进度条 */
+.timeline-progress {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, #FFFFFF 0%, #E0E0E0 100%);
+    border-radius: 2px;
+    transform: translateY(-50%);
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    max-width: calc(100% - 40px); /* 限制最大宽度 */
+}
+
+/* 当前时间指示器 */
+.current-time-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #FFFFFF 0%, rgba(255, 255, 255, 0.3) 70%);
+    border: 2px solid #E0E0E0;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    transition: left 0.5s ease;
+    animation: glow 2s infinite alternate;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
+    100% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.3); }
+}
+
+/* 响应式设计 */
+@media (max-width: 1366px) {
+    .timeline-container {
+        padding: 10px 16px 6px;
+        right: 250px; /* 调整右侧边距 */
+    }
+
+    .timeline-track {
+        margin-right: 200px; /* 调整轨道右边距 */
+    }
+
+    .month-node {
+        min-width: 50px;
+        padding: 2px 6px;
+    }
+
+    .month-dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    .month-label {
+        font-size: 9px;
+    }
+
+    .timeline-title {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .timeline-container {
+        padding: 8px 12px 4px;
+        right: 200px; /* 进一步调整右侧边距 */
+    }
+
+    .timeline-track {
+        height: 35px;
+        margin-right: 150px; /* 调整轨道右边距 */
+    }
+
+    .month-node {
+        min-width: 45px;
+        padding: 2px 4px;
+    }
+
+    .month-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .month-label {
+        font-size: 8px;
+    }
+
+    .timeline-title {
+        font-size: 11px;
+    }
+}
+
+/* 数据变化提示 */
+.data-change-indicator {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(60, 60, 60, 0.9);
+    backdrop-filter: blur(10px);
+    color: #FFFFFF;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.month-node:hover .data-change-indicator {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+/* 时间轴控制区域 */
+.timeline-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 通知动画 */
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

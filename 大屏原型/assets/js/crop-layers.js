@@ -38,16 +38,16 @@ function initCropLayers() {
             cropDataSources[type] = dataSource;
         });
         
-        // 生成模拟地块数据
-        generateMockCropData();
-        
+        // 注释掉地块生成 - 不再显示地块
+        // generateMockCropData();
+
         // 创建图层控制UI
         createLayerControlUI();
+
+        // 注释掉地块点击事件 - 不再需要地块交互
+        // bindPlotClickEvents();
         
-        // 绑定地块点击事件
-        bindPlotClickEvents();
-        
-        console.log('✅ 作物分布图层系统初始化完成');
+        console.log('✅ 作物分布图层系统初始化完成（已移除地块显示）');
         
         // 额外的场景刷新，确保所有图层都能正确显示
         setTimeout(() => {

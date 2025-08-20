@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/cesium-map.css">
     <link rel="stylesheet" href="assets/css/disaster-monitoring.css">
+    <link rel="stylesheet" href="assets/css/township-blocks.css">
+    <link rel="stylesheet" href="assets/css/timeline.css">
 </head>
 <body>
     <!-- 顶部系统横幅 -->
@@ -40,7 +42,65 @@
                 <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
                 <div class="date-display" id="current-date">星期一</div>
             </div>
-            
+
+            <!-- 区域选择 -->
+            <div class="region-selector">
+                <div class="region-display" onclick="toggleRegionDropdown()">
+                    <span class="region-icon">📍</span>
+                    <span class="region-name" id="selected-region">全县</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+
+                <!-- 区域下拉菜单 -->
+                <div class="region-dropdown" id="region-dropdown">
+                    <div class="dropdown-item active" data-region="all" onclick="selectRegion('all', '全县')">
+                        <span>🏛️</span>
+                        <span>全县</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" data-region="chengguan" onclick="selectRegion('chengguan', '城关镇')">
+                        <span>🏢</span>
+                        <span>城关镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="tuchang" onclick="selectRegion('tuchang', '土场镇')">
+                        <span>🏘️</span>
+                        <span>土场镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="beita" onclick="selectRegion('beita', '北塔镇')">
+                        <span>🏘️</span>
+                        <span>北塔镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="hongguang" onclick="selectRegion('hongguang', '红光镇')">
+                        <span>🏘️</span>
+                        <span>红光镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="jishishan" onclick="selectRegion('jishishan', '积石山镇')">
+                        <span>🏘️</span>
+                        <span>积石山镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="hanjiaji" onclick="selectRegion('hanjiaji', '韩家集镇')">
+                        <span>🏘️</span>
+                        <span>韩家集镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="xinji" onclick="selectRegion('xinji', '新集镇')">
+                        <span>🏘️</span>
+                        <span>新集镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="liujiaxia" onclick="selectRegion('liujiaxia', '刘家峡镇')">
+                        <span>🏘️</span>
+                        <span>刘家峡镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="taiping" onclick="selectRegion('taiping', '太平镇')">
+                        <span>🏘️</span>
+                        <span>太平镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="minfeng" onclick="selectRegion('minfeng', '民丰镇')">
+                        <span>🏘️</span>
+                        <span>民丰镇</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- 用户信息区域 -->
             <div class="user-info">
                 <div class="user-avatar">
@@ -118,6 +178,15 @@
             <span class="btn-icon">🌾</span>
             <span class="btn-text">作物选择</span>
         </div>
+
+        <!-- 第二个分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 地图控制按钮 -->
+        <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
+            <span class="btn-icon">🎯</span>
+            <span class="btn-text">重置视图</span>
+        </div>
     </div>
 
     <!-- 主地图容器 -->
@@ -149,82 +218,43 @@
         <!-- 地图覆盖层 -->
         <div class="map-overlay"></div>
 
-        <!-- 灾害监测控制面板 -->
-        <div class="disaster-control-panel collapsed">
-            <div class="control-header">
-                <div class="control-title">⚠️ 灾害监测</div>
-                <button class="control-collapse-btn">▶</button>
+        <!-- 乡镇地块控制面板 -->
+        <div class="township-control-panel" id="township-control-panel">
+            <div class="panel-title">🏘️ 乡镇地块</div>
+
+            <div class="control-item">
+                <div class="control-switch">
+                    <div class="switch-input active" id="township-visibility-switch" onclick="toggleTownshipVisibility()"></div>
+                    <span class="switch-label">显示乡镇</span>
+                </div>
             </div>
-            <div class="control-content" style="display: none;">
-                <!-- 监测类型选择 -->
-                <div class="monitoring-type-selector">
-                    <div class="selector-label">监测类型</div>
-                    <div class="type-buttons">
-                        <button class="type-btn" data-type="temperature">
-                            🌡️ 高温/冻害
-                            <span class="layer-status">●</span>
-                        </button>
-                        <button class="type-btn" data-type="drought">
-                            💧 干旱监测
-                            <span class="layer-status">●</span>
-                        </button>
-                        <button class="type-btn" data-type="comprehensive">
-                            📊 综合评估
-                            <span class="layer-status">●</span>
-                        </button>
-                    </div>
-                </div>
 
-                <!-- 作物选择 -->
-                <div class="crop-selector">
-                    <div class="selector-label">监测作物</div>
-                    <div class="crop-buttons">
-                        <button class="crop-btn active" data-crop="wheat">
-                            🌾 小麦
-                        </button>
-                        <button class="crop-btn" data-crop="corn">
-                            🌽 玉米
-                        </button>
-                        <button class="crop-btn" data-crop="vegetables">
-                            🥬 蔬菜
-                        </button>
-                        <button class="crop-btn" data-crop="potato">
-                            🥔 土豆
-                        </button>
-                        <button class="crop-btn" data-crop="rapeseed">
-                            🌻 油菜
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 时间选择 -->
-                <div class="time-selector">
-                    <div class="selector-label">监测时间</div>
-                    <select class="time-select" id="monitoring-time">
-                        <option value="current">当前实时</option>
-                        <option value="week">近一周</option>
-                        <option value="month">近一月</option>
-                        <option value="season">本季度</option>
-                        <option value="year">本年度</option>
-                    </select>
-                </div>
-
-                <!-- 图层透明度控制 -->
-                <div class="opacity-control">
-                    <div class="selector-label">图层透明度</div>
-                    <input type="range" class="opacity-slider" min="0" max="100" value="85" id="layer-opacity">
-                    <span class="opacity-value">85%</span>
+            <div class="control-item">
+                <label class="control-label">乡镇列表</label>
+                <div class="township-list" id="township-list">
+                    <!-- 乡镇列表将通过JavaScript动态生成 -->
                 </div>
             </div>
         </div>
 
-        <!-- 左侧灾害统计面板 -->
-        <div class="glass-panel left-panel">
-            <div class="panel-header">
+        <!-- 右侧灾害统计分析面板 -->
+        <div class="glass-panel right-panel">
+            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="panel-title">
                     📊 灾害统计分析
                 </div>
-                <button class="collapse-btn">◀</button>
+                <!-- 监测类型选择按钮 -->
+                <div class="header-controls" style="display: flex; gap: 6px; align-items: center;">
+                    <button class="type-btn compact" data-type="temperature" style="padding: 3px 6px; font-size: 10px; height: 24px; border-radius: 4px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; cursor: pointer; transition: all 0.3s ease;">
+                        🌡️ 高温/冻害
+                        <span class="layer-status" style="color: #666;">●</span>
+                    </button>
+                    <button class="type-btn compact active" data-type="drought" style="padding: 3px 6px; font-size: 10px; height: 24px; border-radius: 4px; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.6); color: #00D4FF; cursor: pointer; transition: all 0.3s ease;">
+                        💧 干旱监测
+                        <span class="layer-status active" style="color: #00FF00;">●</span>
+                    </button>
+                </div>
+                <button class="collapse-btn">▶</button>
             </div>
 
             <!-- 灾害概览统计 -->
@@ -307,94 +337,6 @@
                 </div>
             </div>
 
-            <!-- 历史灾害对比 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    📈 历史灾害对比
-                    <div class="historical-summary">
-                        <div class="comparison-item">
-                            <span class="comparison-label">同比去年</span>
-                            <span class="comparison-value increase">+12.3%</span>
-                        </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">环比上月</span>
-                            <span class="comparison-value decrease">-5.8%</span>
-                        </div>
-                    </div>
-                </div>
-                <div id="historical-disaster-chart" style="height: 160px;"></div>
-            </div>
-        </div>
-
-        <!-- 右侧预警信息面板 -->
-        <div class="glass-panel right-panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    🚨 灾害预警信息
-                </div>
-                <button class="collapse-btn">▶</button>
-            </div>
-
-            <!-- 实时预警列表 -->
-            <div class="stat-card alert-card">
-                <div class="stat-header">
-                    ⚡ 实时预警
-                    <div class="alert-count">
-                        <span class="alert-badge critical">4</span>
-                    </div>
-                </div>
-                <div class="alert-list">
-                    <div class="alert-item critical">
-                        <div class="alert-icon">🔴</div>
-                        <div class="alert-content">
-                            <div class="alert-title">小麦冻害红色预警</div>
-                            <div class="alert-details">
-                                <div class="alert-location">📍 康乐县北部地区</div>
-                                <div class="alert-time">⏰ 2024-01-15 13:45</div>
-                                <div class="alert-desc">预计未来48小时最低温度将降至-15°C</div>
-                            </div>
-                        </div>
-                        <div class="alert-status">紧急</div>
-                    </div>
-                    <div class="alert-item severe">
-                        <div class="alert-icon">🟠</div>
-                        <div class="alert-content">
-                            <div class="alert-title">玉米干旱橙色预警</div>
-                            <div class="alert-details">
-                                <div class="alert-location">📍 临夏县中南部</div>
-                                <div class="alert-time">⏰ 2024-01-15 11:20</div>
-                                <div class="alert-desc">土壤含水量低于30%，需紧急灌溉</div>
-                            </div>
-                        </div>
-                        <div class="alert-status">严重</div>
-                    </div>
-                    <div class="alert-item moderate">
-                        <div class="alert-icon">🟡</div>
-                        <div class="alert-content">
-                            <div class="alert-title">高温胁迫黄色预警</div>
-                            <div class="alert-details">
-                                <div class="alert-location">📍 和政县东部</div>
-                                <div class="alert-time">⏰ 2024-01-15 09:30</div>
-                                <div class="alert-desc">连续3天气温超过35°C</div>
-                            </div>
-                        </div>
-                        <div class="alert-status">中等</div>
-                    </div>
-                    <div class="alert-item severe">
-                        <div class="alert-icon">🟠</div>
-                        <div class="alert-content">
-                            <div class="alert-title">病虫害橙色预警</div>
-                            <div class="alert-details">
-                                <div class="alert-location">📍 广河县西南部</div>
-                                <div class="alert-time">⏰ 2024-01-15 08:15</div>
-                                <div class="alert-desc">玉米粘虫密度超过防治阈值，需紧急防治</div>
-                            </div>
-                        </div>
-                        <div class="alert-status">严重</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 灾害分布统计 -->
             <div class="stat-card">
                 <div class="stat-header">
@@ -403,46 +345,702 @@
                 <div id="disaster-distribution-chart" style="height: 180px;"></div>
             </div>
 
-            <!-- 应急响应建议 -->
-            <div class="stat-card">
-                <div class="stat-header">
-                    🛡️ 应急响应建议
-                </div>
-                <div class="response-suggestions">
-                    <div class="suggestion-item urgent">
-                        <div class="suggestion-priority">紧急</div>
-                        <div class="suggestion-content">
-                            <div class="suggestion-title">立即启动防冻措施</div>
-                            <div class="suggestion-desc">对康乐县北部小麦田进行覆盖保温</div>
-                        </div>
-                    </div>
-                    <div class="suggestion-item important">
-                        <div class="suggestion-priority">重要</div>
-                        <div class="suggestion-content">
-                            <div class="suggestion-title">紧急灌溉调度</div>
-                            <div class="suggestion-desc">临夏县中南部玉米田需立即补充灌溉</div>
-                        </div>
-                    </div>
-                    <div class="suggestion-item normal">
-                        <div class="suggestion-priority">建议</div>
-                        <div class="suggestion-content">
-                            <div class="suggestion-title">加强监测频率</div>
-                            <div class="suggestion-desc">增加高风险区域的监测频次至每6小时</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="update-time">
-                🔄 数据更新: 2024-01-15 14:30 | 预警更新: 2024-01-15 13:45
-            </div>
         </div>
     </div>
+
+    <!-- 监测类型按钮切换脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 监测类型按钮切换功能 - 处理标题栏按钮
+            const headerButtons = document.querySelectorAll('.header-controls .type-btn.compact');
+
+            // 为标题栏按钮添加事件监听
+            headerButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const dataType = this.getAttribute('data-type');
+                    switchMonitoringType(dataType);
+                });
+            });
+
+            // 统一的监测类型切换函数
+            function switchMonitoringType(dataType) {
+                // 更新标题栏按钮状态
+                updateHeaderButtons(dataType);
+
+                // 切换地图图层显示
+                switchDisasterLayer(dataType);
+
+                // 更新统计数据
+                updateDisasterStatistics(dataType);
+
+                console.log(`切换到监测类型: ${dataType}`);
+            }
+
+            // 更新标题栏按钮状态
+            function updateHeaderButtons(activeType) {
+                headerButtons.forEach(btn => {
+                    const btnType = btn.getAttribute('data-type');
+                    const statusDot = btn.querySelector('.layer-status');
+
+                    if (btnType === activeType) {
+                        // 激活状态
+                        btn.classList.add('active');
+                        btn.style.background = 'rgba(0, 212, 255, 0.2)';
+                        btn.style.border = '1px solid rgba(0, 212, 255, 0.6)';
+                        btn.style.color = '#00D4FF';
+                        if (statusDot) {
+                            statusDot.classList.add('active');
+                            statusDot.style.color = '#00FF00';
+                        }
+                    } else {
+                        // 未激活状态
+                        btn.classList.remove('active');
+                        btn.style.background = 'rgba(255, 255, 255, 0.1)';
+                        btn.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                        btn.style.color = 'white';
+                        if (statusDot) {
+                            statusDot.classList.remove('active');
+                            statusDot.style.color = '#666';
+                        }
+                    }
+                });
+            }
+
+
+
+            // 页面加载时设置默认状态（温度监测激活）
+            // 延迟执行，等待Cesium初始化完成
+            setTimeout(() => {
+                waitForCesiumAndSwitch('temperature');
+
+                // 初始化乡镇地块
+                if (window.TownshipBlocks && typeof window.TownshipBlocks.init === 'function') {
+                    setTimeout(() => {
+                        window.TownshipBlocks.init();
+                        console.log('🏘️ 乡镇地块模块初始化完成');
+
+                        // 生成乡镇列表
+                        setTimeout(() => {
+                            generateTownshipList();
+                        }, 500);
+                    }, 1000);
+                } else {
+                    console.warn('⚠️ 乡镇地块模块未加载');
+                }
+            }, 2000);
+        });
+
+        // 等待Cesium初始化完成后切换监测类型
+        function waitForCesiumAndSwitch(dataType, maxAttempts = 10, currentAttempt = 0) {
+            if (window.viewer && window.viewer.scene) {
+                // Cesium已初始化，执行切换
+                switchMonitoringType(dataType);
+                console.log('🗺️ Cesium已就绪，执行监测类型切换');
+            } else if (currentAttempt < maxAttempts) {
+                // 继续等待
+                console.log(`⏳ 等待Cesium初始化... (${currentAttempt + 1}/${maxAttempts})`);
+                setTimeout(() => {
+                    waitForCesiumAndSwitch(dataType, maxAttempts, currentAttempt + 1);
+                }, 1000);
+            } else {
+                // 超时，只更新按钮状态和统计数据，不操作地图
+                console.warn('⚠️ Cesium初始化超时，仅更新界面状态');
+                updateHeaderButtons(dataType);
+                updateDisasterStatistics(dataType);
+            }
+        }
+
+        // 检查Cesium是否可用
+        function isCesiumReady() {
+            return window.viewer &&
+                   window.viewer.scene &&
+                   window.viewer.dataSources &&
+                   window.viewer.imageryLayers;
+        }
+
+        // 灾害图层切换函数
+        function switchDisasterLayer(dataType) {
+            // 检查Cesium是否已初始化
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过图层操作');
+                return;
+            }
+
+            // 隐藏所有灾害图层
+            hideAllDisasterLayers();
+
+            // 根据类型显示对应图层
+            switch(dataType) {
+                case 'temperature':
+                    showTemperatureDisasterLayer();
+                    break;
+                case 'drought':
+                    showDroughtDisasterLayer();
+                    break;
+                case 'comprehensive':
+                    showComprehensiveDisasterLayer();
+                    break;
+                default:
+                    console.warn('未知的灾害类型:', dataType);
+            }
+        }
+
+        // 隐藏所有灾害图层
+        function hideAllDisasterLayers() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过隐藏图层操作');
+                return;
+            }
+
+            try {
+                // 隐藏所有栅格图层
+                hideAllRasterLayers();
+
+                // 隐藏所有矢量图层
+                if (window.viewer.dataSources) {
+                    // 隐藏温度灾害图层
+                    const tempLayer = window.viewer.dataSources.getByName('temperature-disaster');
+                    if (tempLayer.length > 0) {
+                        tempLayer[0].show = false;
+                    }
+
+                    // 隐藏干旱灾害图层
+                    const droughtLayer = window.viewer.dataSources.getByName('drought-disaster');
+                    if (droughtLayer.length > 0) {
+                        droughtLayer[0].show = false;
+                    }
+
+                    // 隐藏综合评估图层
+                    const comprehensiveLayer = window.viewer.dataSources.getByName('comprehensive-disaster');
+                    if (comprehensiveLayer.length > 0) {
+                        comprehensiveLayer[0].show = false;
+                    }
+                }
+            } catch (error) {
+                console.error('❌ 隐藏图层时发生错误:', error);
+            }
+        }
+
+        // 隐藏所有栅格图层
+        function hideAllRasterLayers() {
+            if (!window.viewer || !window.viewer.imageryLayers) {
+                return;
+            }
+
+            try {
+                // 隐藏温度栅格图层
+                if (window.temperatureRasterLayerIndex !== undefined) {
+                    const tempRasterLayer = window.viewer.imageryLayers.get(window.temperatureRasterLayerIndex);
+                    if (tempRasterLayer) {
+                        tempRasterLayer.show = false;
+                    }
+                }
+
+                // 隐藏干旱栅格图层
+                if (window.droughtRasterLayerIndex !== undefined) {
+                    const droughtRasterLayer = window.viewer.imageryLayers.get(window.droughtRasterLayerIndex);
+                    if (droughtRasterLayer) {
+                        droughtRasterLayer.show = false;
+                    }
+                }
+            } catch (error) {
+                console.error('❌ 隐藏栅格图层时发生错误:', error);
+            }
+        }
+
+        // 添加温度像素级栅格图层
+        function addTemperatureRasterLayer() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过温度栅格图层添加');
+                return;
+            }
+
+            try {
+                // 如果已存在温度栅格图层，直接显示
+                if (window.temperatureRasterLayerIndex !== undefined) {
+                    const existingLayer = window.viewer.imageryLayers.get(window.temperatureRasterLayerIndex);
+                    if (existingLayer) {
+                        existingLayer.show = true;
+                        console.log('🌡️ 温度栅格图层已显示');
+                        return;
+                    }
+                }
+
+                // 创建温度热力图图层
+                let temperatureProvider;
+
+                try {
+                    // 尝试使用WMS服务
+                    temperatureProvider = new Cesium.WebMapServiceImageryProvider({
+                        url: 'https://your-gis-server.com/wms',
+                        layers: 'temperature_layer',
+                        parameters: {
+                            service: 'WMS',
+                            version: '1.1.1',
+                            request: 'GetMap',
+                            styles: '',
+                            format: 'image/png',
+                            transparent: true
+                        },
+                        credit: '温度监测数据'
+                    });
+                } catch (error) {
+                    // 备用方案：使用单张图片覆盖指定区域
+                    temperatureProvider = new Cesium.SingleTileImageryProvider({
+                        url: 'assets/images/temperature-heatmap.png', // 温度热力图图片
+                        rectangle: Cesium.Rectangle.fromDegrees(103.0, 35.1, 103.5, 35.6), // 临夏州区域
+                        credit: '温度监测数据'
+                    });
+                }
+
+                // 添加到影像图层集合
+                const temperatureLayer = window.viewer.imageryLayers.addImageryProvider(temperatureProvider);
+                temperatureLayer.alpha = 0.7; // 设置透明度
+                temperatureLayer.brightness = 1.0;
+                temperatureLayer.contrast = 1.0;
+                temperatureLayer.show = true;
+
+                // 保存图层索引以便后续控制
+                window.temperatureRasterLayerIndex = window.viewer.imageryLayers.indexOf(temperatureLayer);
+
+                console.log('🌡️ 温度栅格图层已添加');
+            } catch (error) {
+                console.error('❌ 添加温度栅格图层时发生错误:', error);
+            }
+        }
+
+        // 添加干旱像素级栅格图层
+        function addDroughtRasterLayer() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过干旱栅格图层添加');
+                return;
+            }
+
+            try {
+                // 如果已存在干旱栅格图层，直接显示
+                if (window.droughtRasterLayerIndex !== undefined) {
+                    const existingLayer = window.viewer.imageryLayers.get(window.droughtRasterLayerIndex);
+                    if (existingLayer) {
+                        existingLayer.show = true;
+                        console.log('💧 干旱栅格图层已显示');
+                        return;
+                    }
+                }
+
+                // 创建干旱监测图层
+                let droughtProvider;
+
+                try {
+                    // 尝试使用WMS服务
+                    droughtProvider = new Cesium.WebMapServiceImageryProvider({
+                        url: 'https://your-gis-server.com/wms',
+                        layers: 'drought_layer',
+                        parameters: {
+                            service: 'WMS',
+                            version: '1.1.1',
+                            request: 'GetMap',
+                            styles: '',
+                            format: 'image/png',
+                            transparent: true
+                        },
+                        credit: '干旱监测数据'
+                    });
+                } catch (error) {
+                    // 备用方案：使用单张图片覆盖指定区域
+                    droughtProvider = new Cesium.SingleTileImageryProvider({
+                        url: 'assets/images/drought-heatmap.png', // 干旱监测图片
+                        rectangle: Cesium.Rectangle.fromDegrees(103.0, 35.1, 103.5, 35.6), // 临夏州区域
+                        credit: '干旱监测数据'
+                    });
+                }
+
+                // 添加到影像图层集合
+                const droughtLayer = window.viewer.imageryLayers.addImageryProvider(droughtProvider);
+                droughtLayer.alpha = 0.7; // 设置透明度
+                droughtLayer.brightness = 1.0;
+                droughtLayer.contrast = 1.0;
+                droughtLayer.show = true;
+
+                // 保存图层索引以便后续控制
+                window.droughtRasterLayerIndex = window.viewer.imageryLayers.indexOf(droughtLayer);
+
+                console.log('💧 干旱栅格图层已添加');
+            } catch (error) {
+                console.error('❌ 添加干旱栅格图层时发生错误:', error);
+            }
+        }
+
+        // 显示温度灾害图层
+        function showTemperatureDisasterLayer() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过温度灾害图层显示');
+                return;
+            }
+
+            try {
+                // 1. 添加温度像素级图层（栅格图层）
+                addTemperatureRasterLayer();
+
+                // 2. 添加矢量灾害区域
+                let tempLayer = window.viewer.dataSources.getByName('temperature-disaster');
+
+                if (tempLayer.length === 0) {
+                    // 创建温度灾害图层
+                    tempLayer = new Cesium.CustomDataSource('temperature-disaster');
+                    window.viewer.dataSources.add(tempLayer);
+
+                    // 添加温度灾害区域（示例数据）
+                    const temperatureAreas = [
+                        { name: '康乐县北部高温区', coordinates: [103.2, 35.4, 103.3, 35.5], type: 'high-temp', severity: 'severe' },
+                        { name: '临夏县冻害区', coordinates: [103.1, 35.3, 103.2, 35.4], type: 'freeze', severity: 'critical' },
+                        { name: '和政县东部高温区', coordinates: [103.3, 35.2, 103.4, 35.3], type: 'high-temp', severity: 'moderate' }
+                    ];
+
+                    temperatureAreas.forEach(area => {
+                        const color = getDisasterColor(area.severity);
+                        tempLayer.entities.add({
+                            name: area.name,
+                            rectangle: {
+                                coordinates: Cesium.Rectangle.fromDegrees(
+                                    area.coordinates[0], area.coordinates[1],
+                                    area.coordinates[2], area.coordinates[3]
+                                ),
+                                material: color.withAlpha(0.6),
+                                outline: true,
+                                outlineColor: color,
+                                height: 0
+                            },
+                            properties: {
+                                type: area.type,
+                                severity: area.severity,
+                                description: `${area.name} - ${area.type === 'high-temp' ? '高温灾害' : '冻害'}`
+                            }
+                        });
+                    });
+                } else {
+                    tempLayer[0].show = true;
+                }
+
+                console.log('🌡️ 温度灾害图层已激活');
+            } catch (error) {
+                console.error('❌ 显示温度灾害图层时发生错误:', error);
+            }
+        }
+
+        // 显示干旱灾害图层
+        function showDroughtDisasterLayer() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过干旱灾害图层显示');
+                return;
+            }
+
+            try {
+                // 1. 添加干旱像素级图层（栅格图层）
+                addDroughtRasterLayer();
+
+                // 2. 添加矢量灾害区域
+                let droughtLayer = window.viewer.dataSources.getByName('drought-disaster');
+
+                if (droughtLayer.length === 0) {
+                    // 创建干旱灾害图层
+                    droughtLayer = new Cesium.CustomDataSource('drought-disaster');
+                    window.viewer.dataSources.add(droughtLayer);
+
+                    // 添加干旱灾害区域（示例数据）
+                    const droughtAreas = [
+                        { name: '临夏县中南部干旱区', coordinates: [103.15, 35.25, 103.25, 35.35], severity: 'severe' },
+                        { name: '广河县西南部干旱区', coordinates: [103.05, 35.15, 103.15, 35.25], severity: 'critical' },
+                        { name: '康乐县南部轻旱区', coordinates: [103.25, 35.35, 103.35, 35.45], severity: 'moderate' }
+                    ];
+
+                    droughtAreas.forEach(area => {
+                        const color = getDisasterColor(area.severity);
+                        droughtLayer.entities.add({
+                            name: area.name,
+                            rectangle: {
+                                coordinates: Cesium.Rectangle.fromDegrees(
+                                    area.coordinates[0], area.coordinates[1],
+                                    area.coordinates[2], area.coordinates[3]
+                                ),
+                                material: color.withAlpha(0.6),
+                                outline: true,
+                                outlineColor: color,
+                                height: 0
+                            },
+                            properties: {
+                                type: 'drought',
+                                severity: area.severity,
+                                description: `${area.name} - 干旱灾害`
+                            }
+                        });
+                    });
+                } else {
+                    droughtLayer[0].show = true;
+                }
+
+                console.log('💧 干旱灾害图层已激活');
+            } catch (error) {
+                console.error('❌ 显示干旱灾害图层时发生错误:', error);
+            }
+        }
+
+        // 显示综合评估图层
+        function showComprehensiveDisasterLayer() {
+            if (!isCesiumReady()) {
+                console.warn('⚠️ Cesium未初始化，跳过综合评估图层显示');
+                return;
+            }
+
+            try {
+                let comprehensiveLayer = window.viewer.dataSources.getByName('comprehensive-disaster');
+
+                if (comprehensiveLayer.length === 0) {
+                    // 创建综合评估图层
+                    comprehensiveLayer = new Cesium.CustomDataSource('comprehensive-disaster');
+                    window.viewer.dataSources.add(comprehensiveLayer);
+
+                    // 添加综合评估区域（包含多种灾害类型）
+                    const comprehensiveAreas = [
+                        { name: '康乐县北部综合风险区', coordinates: [103.2, 35.4, 103.3, 35.5], types: ['high-temp', 'drought'], severity: 'critical' },
+                        { name: '临夏县中部复合灾害区', coordinates: [103.1, 35.3, 103.2, 35.4], types: ['freeze', 'drought'], severity: 'severe' },
+                        { name: '和政县东部风险区', coordinates: [103.3, 35.2, 103.4, 35.3], types: ['high-temp'], severity: 'moderate' },
+                        { name: '广河县西南部干旱区', coordinates: [103.05, 35.15, 103.15, 35.25], types: ['drought'], severity: 'severe' },
+                        { name: '康乐县南部轻度风险区', coordinates: [103.25, 35.35, 103.35, 35.45], types: ['drought'], severity: 'low' }
+                    ];
+
+                    comprehensiveAreas.forEach(area => {
+                        const color = getDisasterColor(area.severity);
+                        comprehensiveLayer.entities.add({
+                            name: area.name,
+                            rectangle: {
+                                coordinates: Cesium.Rectangle.fromDegrees(
+                                    area.coordinates[0], area.coordinates[1],
+                                    area.coordinates[2], area.coordinates[3]
+                                ),
+                                material: color.withAlpha(0.6),
+                                outline: true,
+                                outlineColor: color,
+                                height: 0
+                            },
+                            properties: {
+                                types: area.types,
+                                severity: area.severity,
+                                description: `${area.name} - 综合评估 (${area.types.map(t =>
+                                    t === 'high-temp' ? '高温' :
+                                    t === 'freeze' ? '冻害' :
+                                    t === 'drought' ? '干旱' : t
+                                ).join('、')})`
+                            }
+                        });
+                    });
+                } else {
+                    comprehensiveLayer[0].show = true;
+                }
+
+                console.log('📊 综合评估图层已激活');
+            } catch (error) {
+                console.error('❌ 显示综合评估图层时发生错误:', error);
+            }
+        }
+
+        // 获取灾害严重程度对应的颜色
+        function getDisasterColor(severity) {
+            switch(severity) {
+                case 'critical':
+                    return Cesium.Color.RED;           // 红色 - 极严重
+                case 'severe':
+                    return Cesium.Color.ORANGE;        // 橙色 - 严重
+                case 'moderate':
+                    return Cesium.Color.YELLOW;        // 黄色 - 中等
+                case 'low':
+                    return Cesium.Color.GREEN;         // 绿色 - 轻微
+                default:
+                    return Cesium.Color.GRAY;          // 灰色 - 未知
+            }
+        }
+
+        // 更新灾害统计数据
+        function updateDisasterStatistics(dataType) {
+            // 根据选择的灾害类型更新右侧面板的统计数据
+            const mockData = {
+                'temperature': {
+                    critical: { value: '89 亩', percent: '3.0%' },
+                    severe: { value: '234 亩', percent: '7.9%' },
+                    moderate: { value: '456 亩', percent: '15.4%' },
+                    low: { value: '678 亩', percent: '22.9%' }
+                },
+                'drought': {
+                    critical: { value: '156 亩', percent: '5.2%' },
+                    severe: { value: '324 亩', percent: '10.9%' },
+                    moderate: { value: '567 亩', percent: '19.1%' },
+                    low: { value: '892 亩', percent: '30.0%' }
+                },
+                'comprehensive': {
+                    critical: { value: '245 亩', percent: '8.2%' },
+                    severe: { value: '558 亩', percent: '18.8%' },
+                    moderate: { value: '1023 亩', percent: '34.5%' },
+                    low: { value: '1570 亩', percent: '52.9%' }
+                }
+            };
+
+            const data = mockData[dataType] || mockData['drought'];
+
+            // 更新概览统计数据
+            const overviewItems = document.querySelectorAll('.overview-item');
+            if (overviewItems.length >= 4) {
+                // 极严重
+                const criticalValue = overviewItems[0].querySelector('.overview-value');
+                const criticalPercent = overviewItems[0].querySelector('.overview-percent');
+                if (criticalValue) criticalValue.textContent = data.critical.value;
+                if (criticalPercent) criticalPercent.textContent = data.critical.percent;
+
+                // 严重
+                const severeValue = overviewItems[1].querySelector('.overview-value');
+                const severePercent = overviewItems[1].querySelector('.overview-percent');
+                if (severeValue) severeValue.textContent = data.severe.value;
+                if (severePercent) severePercent.textContent = data.severe.percent;
+
+                // 中等
+                const moderateValue = overviewItems[2].querySelector('.overview-value');
+                const moderatePercent = overviewItems[2].querySelector('.overview-percent');
+                if (moderateValue) moderateValue.textContent = data.moderate.value;
+                if (moderatePercent) moderatePercent.textContent = data.moderate.percent;
+
+                // 轻微
+                const lowValue = overviewItems[3].querySelector('.overview-value');
+                const lowPercent = overviewItems[3].querySelector('.overview-percent');
+                if (lowValue) lowValue.textContent = data.low.value;
+                if (lowPercent) lowPercent.textContent = data.low.percent;
+            }
+
+            const typeNames = {
+                'temperature': '温度',
+                'drought': '干旱',
+                'comprehensive': '综合评估'
+            };
+            console.log(`📊 ${typeNames[dataType] || dataType}灾害统计数据已更新`);
+        }
+
+        // ===== 乡镇地块控制函数 =====
+
+        /**
+         * 切换乡镇地块可见性
+         */
+        function toggleTownshipVisibility() {
+            const switchElement = document.getElementById('township-visibility-switch');
+            const isActive = switchElement.classList.contains('active');
+
+            if (isActive) {
+                switchElement.classList.remove('active');
+                if (window.TownshipBlocks) {
+                    window.TownshipBlocks.setVisibility(false);
+                }
+                console.log('👁️ 隐藏乡镇地块');
+            } else {
+                switchElement.classList.add('active');
+                if (window.TownshipBlocks) {
+                    window.TownshipBlocks.setVisibility(true);
+                }
+                console.log('👁️ 显示乡镇地块');
+            }
+        }
+
+        /**
+         * 高亮指定乡镇
+         */
+        function highlightTownship(townshipName) {
+            if (window.TownshipBlocks) {
+                window.TownshipBlocks.highlight(townshipName);
+            }
+        }
+
+        /**
+         * 生成乡镇列表
+         */
+        function generateTownshipList() {
+            const listContainer = document.getElementById('township-list');
+            if (!listContainer || !window.TownshipBlocks) return;
+
+            const townships = window.TownshipBlocks.data;
+            let listHtml = '';
+
+            Object.keys(townships).forEach(townshipName => {
+                const township = townships[townshipName];
+                listHtml += `
+                    <div class="township-item" onclick="selectRegion('${township.id}', '${township.name}')">
+                        <div class="township-color" style="background-color: ${township.color}"></div>
+                        <span class="township-name">${township.name}</span>
+                        <span class="township-area">${township.area}km²</span>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = listHtml;
+            console.log('📋 乡镇列表生成完成');
+        }
+
+        // ===== 区域选择器联动功能 =====
+
+        /**
+         * 切换区域下拉菜单显示状态
+         */
+        function toggleRegionDropdown() {
+            const regionSelector = document.querySelector('.region-selector');
+            const dropdown = document.getElementById('region-dropdown');
+
+            if (regionSelector && dropdown) {
+                regionSelector.classList.toggle('active');
+
+                if (regionSelector.classList.contains('active')) {
+                    console.log('📍 区域下拉菜单已打开');
+                } else {
+                    console.log('📍 区域下拉菜单已关闭');
+                }
+            }
+        }
+
+        /**
+         * 选择区域（与乡镇地块联动）
+         */
+        function selectRegion(regionId, regionName) {
+            console.log(`📍 选择区域: ${regionName} (${regionId})`);
+
+            // 更新显示的区域名称
+            const regionNameEl = document.getElementById('selected-region');
+            if (regionNameEl) {
+                regionNameEl.textContent = regionName;
+            }
+
+            // 更新下拉菜单中的激活状态
+            const dropdownItems = document.querySelectorAll('.region-dropdown .dropdown-item');
+            dropdownItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-region') === regionId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 关闭下拉菜单
+            const regionSelector = document.querySelector('.region-selector');
+            if (regionSelector) {
+                regionSelector.classList.remove('active');
+            }
+
+            // 联动乡镇地块显示
+            if (window.TownshipBlocks && typeof window.TownshipBlocks.filterByRegion === 'function') {
+                window.TownshipBlocks.filterByRegion(regionId);
+                console.log(`🏘️ 乡镇地块已联动到区域: ${regionName}`);
+            }
+
+            console.log(`📍 区域已切换到: ${regionName} (${regionId})`);
+        }
+    </script>
 
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
     <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/township-blocks.js"></script>
     <script src="assets/js/device-monitoring.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/disaster-monitoring.js"></script>

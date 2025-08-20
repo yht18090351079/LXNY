@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/cesium-map.css">
     <link rel="stylesheet" href="assets/css/growth-analysis.css">
+    <link rel="stylesheet" href="assets/css/township-blocks.css">
 </head>
 <body>
     <!-- 顶部系统横幅 -->
@@ -40,7 +41,65 @@
                 <div class="time-display" id="current-time">2025-08-11 14:30:25</div>
                 <div class="date-display" id="current-date">星期一</div>
             </div>
-            
+
+            <!-- 区域选择 -->
+            <div class="region-selector">
+                <div class="region-display" onclick="toggleRegionDropdown()">
+                    <span class="region-icon">📍</span>
+                    <span class="region-name" id="selected-region">全县</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+
+                <!-- 区域下拉菜单 -->
+                <div class="region-dropdown" id="region-dropdown">
+                    <div class="dropdown-item active" data-region="all" onclick="selectRegion('all', '全县')">
+                        <span>🏛️</span>
+                        <span>全县</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" data-region="chengguan" onclick="selectRegion('chengguan', '城关镇')">
+                        <span>🏢</span>
+                        <span>城关镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="tuchang" onclick="selectRegion('tuchang', '土场镇')">
+                        <span>🏘️</span>
+                        <span>土场镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="beita" onclick="selectRegion('beita', '北塔镇')">
+                        <span>🏘️</span>
+                        <span>北塔镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="hongguang" onclick="selectRegion('hongguang', '红光镇')">
+                        <span>🏘️</span>
+                        <span>红光镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="jishishan" onclick="selectRegion('jishishan', '积石山镇')">
+                        <span>🏘️</span>
+                        <span>积石山镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="hanjiaji" onclick="selectRegion('hanjiaji', '韩家集镇')">
+                        <span>🏘️</span>
+                        <span>韩家集镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="xinji" onclick="selectRegion('xinji', '新集镇')">
+                        <span>🏘️</span>
+                        <span>新集镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="liujiaxia" onclick="selectRegion('liujiaxia', '刘家峡镇')">
+                        <span>🏘️</span>
+                        <span>刘家峡镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="taiping" onclick="selectRegion('taiping', '太平镇')">
+                        <span>🏘️</span>
+                        <span>太平镇</span>
+                    </div>
+                    <div class="dropdown-item" data-region="minfeng" onclick="selectRegion('minfeng', '民丰镇')">
+                        <span>🏘️</span>
+                        <span>民丰镇</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- 用户信息区域 -->
             <div class="user-info">
                 <div class="user-avatar">
@@ -93,6 +152,15 @@
         <div class="overlay-switch-btn" data-function="crop-selection">
             <span class="btn-icon">🌾</span>
             <span class="btn-text">作物选择</span>
+        </div>
+
+        <!-- 第二个分隔线 -->
+        <div class="switch-divider"></div>
+
+        <!-- 地图控制按钮 -->
+        <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
+            <span class="btn-icon">🎯</span>
+            <span class="btn-text">重置视图</span>
         </div>
     </div>
 
@@ -477,6 +545,7 @@
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
     <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/township-blocks.js"></script>
     <script src="assets/js/device-monitoring.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/dashboard-charts.js"></script>

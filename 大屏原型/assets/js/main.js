@@ -3,6 +3,10 @@
  * 功能：系统初始化、用户交互、功能切换、时间更新等
  */
 
+// ===== 全局变量 =====
+let currentSelectedRegion = 'all';
+let currentChartType = 'bar';
+
 // ===== 用户功能模块 =====
 
 /**
@@ -23,7 +27,7 @@ function showSystemSettings() {
  * 显示操作日志
  */
 function showOperationLog() {
-    alert('操作日志功能\n\n最近操作记录：\n• 14:30 切换到作物分布视图\n• 14:25 调整图层透明度\n• 14:20 查看地块详情\n• 14:15 系统登录');
+    alert('操作日志功能\n\n最近操作记录：\n• 14:30 切换到作物分布视图\n• 14:25 调整图层透明度\n• 14:20 查看数据统计\n• 14:15 系统登录');
 }
 
 /**
@@ -41,6 +45,458 @@ function logout() {
         alert('正在退出系统...\n感谢使用临夏县卫星遥感平台！');
         // 这里可以添加实际的登出逻辑
     }
+}
+
+// ===== 区域选择模块 =====
+
+/**
+ * 区域配置数据
+ */
+const regionConfig = {
+    'all': {
+        name: '全县',
+        icon: '🏛️',
+        center: { longitude: 103.2, latitude: 35.4, height: 50000 },
+        bounds: { west: 102.8, south: 35.0, east: 103.6, north: 35.8 }
+    },
+    'chengguan': {
+        name: '城关镇',
+        icon: '🏢',
+        center: { longitude: 103.21, latitude: 35.42, height: 20000 },
+        bounds: { west: 103.15, south: 35.38, east: 103.27, north: 35.46 },
+        stats: {
+            totalArea: 892,
+            coverage: '县政府所在地',
+            growthIndex: 0.85,
+            wheatArea: 356,
+            cornArea: 298,
+            vegetableArea: 156,
+            potatoArea: 52,
+            rapeseedArea: 30
+        }
+    },
+    'tuchang': {
+        name: '土场镇',
+        icon: '🏘️',
+        center: { longitude: 103.18, latitude: 35.38, height: 20000 },
+        bounds: { west: 103.12, south: 35.34, east: 103.24, north: 35.42 },
+        stats: {
+            totalArea: 1156,
+            coverage: '农业重镇',
+            growthIndex: 0.82,
+            wheatArea: 478,
+            cornArea: 389,
+            vegetableArea: 198,
+            potatoArea: 56,
+            rapeseedArea: 35
+        }
+    },
+    'beita': {
+        name: '北塔镇',
+        icon: '🏘️',
+        center: { longitude: 103.25, latitude: 35.45, height: 20000 },
+        bounds: { west: 103.19, south: 35.41, east: 103.31, north: 35.49 },
+        stats: {
+            totalArea: 734,
+            coverage: '北部区域',
+            growthIndex: 0.78,
+            wheatArea: 298,
+            cornArea: 245,
+            vegetableArea: 123,
+            potatoArea: 42,
+            rapeseedArea: 26
+        }
+    },
+    'hongguang': {
+        name: '红光镇',
+        icon: '🏘️',
+        center: { longitude: 103.15, latitude: 35.35, height: 20000 },
+        bounds: { west: 103.09, south: 35.31, east: 103.21, north: 35.39 },
+        stats: {
+            totalArea: 623,
+            coverage: '西南区域',
+            growthIndex: 0.76,
+            wheatArea: 245,
+            cornArea: 198,
+            vegetableArea: 112,
+            potatoArea: 38,
+            rapeseedArea: 30
+        }
+    },
+    'jishishan': {
+        name: '积石山镇',
+        icon: '🏘️',
+        center: { longitude: 103.28, latitude: 35.48, height: 20000 },
+        bounds: { west: 103.22, south: 35.44, east: 103.34, north: 35.52 },
+        stats: {
+            totalArea: 567,
+            coverage: '东北区域',
+            growthIndex: 0.81,
+            wheatArea: 234,
+            cornArea: 189,
+            vegetableArea: 89,
+            potatoArea: 32,
+            rapeseedArea: 23
+        }
+    },
+    'hanjiaji': {
+        name: '韩家集镇',
+        icon: '🏘️',
+        center: { longitude: 103.12, latitude: 35.32, height: 20000 },
+        bounds: { west: 103.06, south: 35.28, east: 103.18, north: 35.36 },
+        stats: {
+            totalArea: 445,
+            coverage: '西部区域',
+            growthIndex: 0.79,
+            wheatArea: 178,
+            cornArea: 145,
+            vegetableArea: 78,
+            potatoArea: 26,
+            rapeseedArea: 18
+        }
+    },
+    'xinji': {
+        name: '新集镇',
+        icon: '🏘️',
+        center: { longitude: 103.31, latitude: 35.51, height: 20000 },
+        bounds: { west: 103.25, south: 35.47, east: 103.37, north: 35.55 },
+        stats: {
+            totalArea: 389,
+            coverage: '东部区域',
+            growthIndex: 0.83,
+            wheatArea: 156,
+            cornArea: 123,
+            vegetableArea: 67,
+            potatoArea: 24,
+            rapeseedArea: 19
+        }
+    },
+    'liujiaxia': {
+        name: '刘家峡镇',
+        icon: '🏘️',
+        center: { longitude: 103.08, latitude: 35.28, height: 20000 },
+        bounds: { west: 103.02, south: 35.24, east: 103.14, north: 35.32 },
+        stats: {
+            totalArea: 298,
+            coverage: '西南角',
+            growthIndex: 0.74,
+            wheatArea: 118,
+            cornArea: 89,
+            vegetableArea: 56,
+            potatoArea: 21,
+            rapeseedArea: 14
+        }
+    },
+    'taiping': {
+        name: '太平镇',
+        icon: '🏘️',
+        center: { longitude: 103.34, latitude: 35.54, height: 20000 },
+        bounds: { west: 103.28, south: 35.50, east: 103.40, north: 35.58 },
+        stats: {
+            totalArea: 234,
+            coverage: '东北角',
+            growthIndex: 0.77,
+            wheatArea: 89,
+            cornArea: 78,
+            vegetableArea: 42,
+            potatoArea: 15,
+            rapeseedArea: 10
+        }
+    },
+    'minfeng': {
+        name: '民丰镇',
+        icon: '🏘️',
+        center: { longitude: 103.05, latitude: 35.25, height: 20000 },
+        bounds: { west: 102.99, south: 35.21, east: 103.11, north: 35.29 },
+        stats: {
+            totalArea: 189,
+            coverage: '西南角',
+            growthIndex: 0.72,
+            wheatArea: 72,
+            cornArea: 56,
+            vegetableArea: 34,
+            potatoArea: 16,
+            rapeseedArea: 11
+        }
+    }
+};
+
+/**
+ * 切换区域下拉菜单显示状态
+ */
+function toggleRegionDropdown() {
+    const regionSelector = document.querySelector('.region-selector');
+    const dropdown = document.getElementById('region-dropdown');
+
+    if (regionSelector && dropdown) {
+        regionSelector.classList.toggle('active');
+
+        // 点击外部关闭下拉菜单
+        if (regionSelector.classList.contains('active')) {
+            document.addEventListener('click', closeRegionDropdownOnClickOutside);
+        } else {
+            document.removeEventListener('click', closeRegionDropdownOnClickOutside);
+        }
+    }
+}
+
+/**
+ * 点击外部关闭区域下拉菜单
+ */
+function closeRegionDropdownOnClickOutside(event) {
+    const regionSelector = document.querySelector('.region-selector');
+
+    if (regionSelector && !regionSelector.contains(event.target)) {
+        regionSelector.classList.remove('active');
+        document.removeEventListener('click', closeRegionDropdownOnClickOutside);
+    }
+}
+
+/**
+ * 选择区域
+ */
+function selectRegion(regionId, regionName, isInitialization = false) {
+    // 更新当前选中区域
+    currentSelectedRegion = regionId;
+
+    // 更新显示的区域名称
+    const regionNameEl = document.getElementById('selected-region');
+    if (regionNameEl) {
+        regionNameEl.textContent = regionName;
+    }
+
+    // 更新下拉菜单中的激活状态
+    const dropdownItems = document.querySelectorAll('.region-dropdown .dropdown-item');
+    dropdownItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-region') === regionId) {
+            item.classList.add('active');
+        }
+    });
+
+    // 关闭下拉菜单
+    const regionSelector = document.querySelector('.region-selector');
+    if (regionSelector) {
+        regionSelector.classList.remove('active');
+    }
+
+    // 移动地图视图到选中区域（初始化时不移动）
+    if (!isInitialization) {
+        moveToRegion(regionId);
+    }
+
+    // 触发区域变更事件
+    onRegionChanged(regionId, regionName);
+
+    // 联动乡镇地块显示
+    if (window.TownshipBlocks && typeof window.TownshipBlocks.filterByRegion === 'function') {
+        window.TownshipBlocks.filterByRegion(regionId);
+        console.log(`🏘️ 乡镇地块已联动到区域: ${regionName}`);
+    }
+
+    // 更新乡镇长势图表
+    if (typeof updateTownCropChart === 'function') {
+        updateTownCropChart(regionId, currentChartType || 'bar');
+        console.log(`📊 长势图表已联动到区域: ${regionName}`);
+    }
+
+    // 如果当前显示的是表格，也需要更新
+    if (typeof updateTownCropTable === 'function' && (currentChartType === 'table' || document.getElementById('town-crop-table').style.display !== 'none')) {
+        updateTownCropTable(regionId);
+        console.log(`📋 长势表格已联动到区域: ${regionName}`);
+    }
+
+    console.log(`📍 区域已切换到: ${regionName} (${regionId})`);
+}
+
+/**
+ * 移动地图视图到指定区域
+ */
+function moveToRegion(regionId) {
+    const region = regionConfig[regionId];
+    if (!region || !window.viewer) {
+        return;
+    }
+
+    // 使用Cesium相机移动到指定区域
+    if (window.viewer.camera) {
+        window.viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(
+                region.center.longitude,
+                region.center.latitude,
+                region.center.height
+            ),
+            orientation: {
+                heading: 0,
+                pitch: Cesium.Math.toRadians(-90),
+                roll: 0
+            }
+        });
+
+        // 显示区域切换提示
+        if (typeof showLayerIndicator === 'function') {
+            showLayerIndicator(`已切换到 ${region.name}`, 2000);
+        }
+    }
+}
+
+/**
+ * 区域变更事件处理
+ */
+function onRegionChanged(regionId, regionName) {
+    // 更新统计数据显示
+    updateRegionStatistics(regionId);
+
+    // 更新作物分布数据
+    updateCropDistributionData(regionId);
+
+    // 触发自定义事件
+    const event = new CustomEvent('regionChanged', {
+        detail: {
+            regionId: regionId,
+            regionName: regionName,
+            regionConfig: regionConfig[regionId]
+        }
+    });
+    document.dispatchEvent(event);
+}
+
+/**
+ * 更新区域统计数据
+ */
+function updateRegionStatistics(regionId) {
+    const region = regionConfig[regionId];
+    if (!region || !region.stats) {
+        console.warn(`区域 ${regionId} 的统计数据不存在`);
+        return;
+    }
+
+    const stats = region.stats;
+
+    // 更新区域面积汇总
+    const totalAreaEl = document.querySelector('.summary-item.large .summary-value');
+    const coverageEl = document.querySelector('.summary-item.large .summary-subtitle');
+    const growthIndexEl = document.querySelector('.summary-row .summary-value');
+
+    if (totalAreaEl) {
+        // 添加数字动画效果
+        animateNumber(totalAreaEl, parseInt(totalAreaEl.textContent.replace(/,/g, '')), stats.totalArea);
+    }
+
+    if (coverageEl) {
+        coverageEl.textContent = stats.coverage;
+    }
+
+    if (growthIndexEl) {
+        animateNumber(growthIndexEl, parseFloat(growthIndexEl.textContent), stats.growthIndex, 2);
+    }
+
+    console.log(`📊 已更新 ${region.name} 的统计数据`);
+}
+
+/**
+ * 更新作物分布数据
+ */
+function updateCropDistributionData(regionId) {
+    const region = regionConfig[regionId];
+    if (!region || !region.stats) {
+        return;
+    }
+
+    const stats = region.stats;
+
+    // 更新作物分布卡片中的数据
+    const cropCards = document.querySelectorAll('.crop-card');
+
+    cropCards.forEach(card => {
+        const cropType = card.querySelector('.crop-name')?.textContent;
+        let area = 0;
+
+        switch(cropType) {
+            case '小麦':
+                area = stats.wheatArea;
+                break;
+            case '玉米':
+                area = stats.cornArea;
+                break;
+            case '蔬菜':
+                area = stats.vegetableArea;
+                break;
+            case '土豆':
+                area = stats.potatoArea;
+                break;
+            case '油菜':
+                area = stats.rapeseedArea;
+                break;
+        }
+
+        const areaEl = card.querySelector('.crop-area');
+        if (areaEl && area > 0) {
+            const currentArea = parseInt(areaEl.textContent.replace(/[^\d]/g, ''));
+            animateNumber(areaEl, currentArea, area, 0, ' 亩');
+        }
+    });
+
+    console.log(`🌾 已更新 ${region.name} 的作物分布数据`);
+}
+
+/**
+ * 数字动画效果
+ */
+function animateNumber(element, startValue, endValue, decimals = 0, suffix = '') {
+    const duration = 1000; // 动画持续时间
+    const startTime = performance.now();
+
+    function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // 使用缓动函数
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        const currentValue = startValue + (endValue - startValue) * easeProgress;
+
+        if (decimals > 0) {
+            element.textContent = currentValue.toFixed(decimals) + suffix;
+        } else {
+            element.textContent = Math.round(currentValue).toLocaleString() + suffix;
+        }
+
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        }
+    }
+
+    requestAnimationFrame(updateNumber);
+}
+
+/**
+ * 获取当前选中的区域
+ */
+function getCurrentRegion() {
+    return {
+        id: currentSelectedRegion,
+        name: regionConfig[currentSelectedRegion]?.name || '全县',
+        config: regionConfig[currentSelectedRegion]
+    };
+}
+
+/**
+ * 初始化区域选择器
+ */
+function initRegionSelector() {
+    // 设置默认区域（初始化时不触发地图移动）
+    selectRegion('all', '全县', true);
+
+    // 监听键盘快捷键
+    document.addEventListener('keydown', function(event) {
+        // Ctrl + R 快速切换区域
+        if (event.ctrlKey && event.key === 'r') {
+            event.preventDefault();
+            toggleRegionDropdown();
+        }
+    });
+
+    console.log('📍 区域选择器初始化完成');
 }
 
 // ===== 功能切换模块 =====
@@ -518,21 +974,28 @@ function initializeSystem() {
                     window.CropLayers.init();
                     console.log('🌾 作物图层模块初始化完成');
                     
-                    // 额外的渲染触发，确保地块立即显示（不移动相机）
+                    // 额外的渲染触发，确保场景正常显示（不移动相机）
                     setTimeout(() => {
                         if (window.cesiumViewer) {
                             try {
-                                // 多次强制渲染，确保地块显示
+                                // 强制渲染场景
                                 window.cesiumViewer.scene.requestRender();
-                                console.log('🎯 已强制触发地块显示');
+                                console.log('🎯 已强制触发场景渲染');
                             } catch (error) {
-                                console.warn('⚠️ 地块显示触发失败:', error);
+                                console.warn('⚠️ 场景渲染触发失败:', error);
                             }
                         }
                     }, 1000);
                     
                 } else {
                     console.warn('⚠️ 作物图层模块未加载');
+                }
+
+                // 初始化乡镇地块 - 使用通用初始化函数
+                if (window.TownshipBlocks && typeof window.TownshipBlocks.initForPage === 'function') {
+                    window.TownshipBlocks.initForPage();
+                } else {
+                    console.warn('⚠️ 乡镇地块模块未加载');
                 }
             }, 3000); // 等待地图完全初始化后再加载作物图层
             
