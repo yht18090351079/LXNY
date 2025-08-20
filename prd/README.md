@@ -81,7 +81,9 @@ npm start
 ```bash
 # 进入管理端目录
 cd prd/pcguanli
-
+cd 大屏
+prd/README.md
+cd /Volumes/ORICO/公司/临夏农业/prd/README.md
 # 安装依赖
 npm install
 

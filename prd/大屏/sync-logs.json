@@ -590,5 +590,69 @@
       "name": "长势等级比例堆叠图",
       "elementId": "precise-span-noid-excellence-rate-8-1-1-优良率726"
     }
+  },
+  {
+    "timestamp": "2025-08-20T09:03:42.048Z",
+    "action": "create",
+    "annotation": {
+      "name": "数据看板切换栏+工具栏",
+      "elementId": "precise-div-noid-function-switch-bar-3-1-36"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:32:14.953Z",
+    "action": "create",
+    "annotation": {
+      "name": "进度条",
+      "elementId": "precise-div-timeline-months-timeline-months-5-3-3"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:32:54.252Z",
+    "action": "create",
+    "annotation": {
+      "name": "总面积",
+      "elementId": "precise-div-noid-summary-item-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:33:11.030Z",
+    "action": "create",
+    "annotation": {
+      "name": "长势指数",
+      "elementId": "precise-div-noid-summary-item-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:35:58.475Z",
+    "action": "create",
+    "annotation": {
+      "name": "长势分布可视化",
+      "elementId": "precise-canvas-noid-noclass-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:37:09.655Z",
+    "action": "create",
+    "annotation": {
+      "name": "长势变化趋势图",
+      "elementId": "precise-canvas-noid-noclass-9-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:39:15.831Z",
+    "action": "create",
+    "annotation": {
+      "name": "理想产量",
+      "elementId": "precise-div-noid-metric-card-9-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T09:41:42.350Z",
+    "action": "create",
+    "annotation": {
+      "name": "实际预估产量",
+      "elementId": "precise-div-noid-metric-card-9-1-6"
+    }
   }
 ]

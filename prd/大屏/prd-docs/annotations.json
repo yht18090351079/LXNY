@@ -1,1102 +1,224 @@
 {
   "index.html-crop-distribution": {
-    "precise-div-noid-main-switch-btn-5-0-0": {
-      "name": "页面切换",
-      "content": "- **主功能按钮**: 5个单选按钮，切换不同页面功能\n  - 🌾 作物分布 (当前页面)\n  - 📊 长势分析 (growth-analysis.html)\n  - 📈 产量预估 (yield-estimation.html)\n  - 🌤️ 气象监测 (weather-monitoring.html)\n  - ⚠️ 灾害定损 (disaster-monitoring.html)",
-      "timestamp": "2025/8/14 15:41:56",
-      "elementId": "precise-div-noid-main-switch-btn-5-0-0",
+    "precise-div-noid-function-switch-bar-3-1-36": {
+      "name": "数据看板切换栏+工具栏",
+      "content": "注：长势分布取消不要\n点击切换数据看板到对应的内容\n功能区\n设备监控 点击打开设备在地图上的显示\n作物选择 选择显示的作物数据 选择后 所有的影像、数据都跟着变\n重置视图 回到默认视角",
+      "timestamp": "2025/8/20 17:03:41",
+      "elementId": "precise-div-noid-function-switch-bar-3-1-36",
       "targetInfo": {
-        "smartSelector": "html > body > div.function-switch-bar > div.main-switch-buttons > div.main-switch-btn.active[data-function=\"crop-distribution\"]",
+        "smartSelector": "html > body > div.function-switch-bar",
         "elementFingerprint": {
           "tagName": "DIV",
-          "className": "main-switch-btn active",
-          "textContent": "🌾\n                作物分布",
-          "attributes": {
-            "data-function": "crop-distribution"
-          },
-          "position": {
-            "offsetLeft": 20,
-            "offsetTop": 12,
-            "offsetWidth": 80,
-            "offsetHeight": 40
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.main-switch-btn.active",
-        "textContent": "🌾\n                作物分布",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:41:56.030Z"
-      },
-      "lastModified": "2025-08-14T07:41:56.036Z"
-    },
-    "precise-div-noid-overlay-switch-btn-4-2-7-设备监控": {
-      "name": "叠加功能",
-      "content": "- **叠加功能按钮**: 2个多选按钮，开启附加功能\n  - 📱 设备监控 (覆盖设备位置信息)\n  - 🌾 作物选择 (作物图层筛选器)",
-      "timestamp": "2025/8/14 15:43:57",
-      "elementId": "precise-div-noid-overlay-switch-btn-4-2-7-设备监控",
-      "targetInfo": {
-        "smartSelector": "html > body > div.function-switch-bar > div.overlay-switch-btn[data-function=\"device-monitoring\"]:nth-of-type(1)",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "overlay-switch-btn",
-          "textContent": "📱\n            设备监控",
-          "attributes": {
-            "data-function": "device-monitoring"
-          },
-          "position": {
-            "offsetLeft": 519,
-            "offsetTop": 12,
-            "offsetWidth": 100,
-            "offsetHeight": 40
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.overlay-switch-btn",
-        "textContent": "📱\n            设备监控",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:43:57.440Z"
-      },
-      "lastModified": "2025-08-14T07:43:57.447Z"
-    },
-    "precise-div-noid-chart-switch-buttons-7-0-0": {
-      "name": "种植结构对比区域",
-      "content": "##### (1) 种植结构对比柱状图\n**功能**: 显示近三年(2022-2024)各作物种植面积变化趋势\n**三图表切换**: 可以切换柱状 折线 表格\n显示的是近三年的分作物的种植面积数据（按年统计）",
-      "timestamp": "2025/8/14 15:49:22",
-      "elementId": "precise-div-noid-chart-switch-buttons-7-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(1) > div.stat-header > div.chart-switch-buttons",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "chart-switch-buttons",
-          "textContent": "柱状图\n                        折线图\n                        表格",
+          "className": "function-switch-bar",
+          "textContent": "🌾\n                作物分布\n            \n            \n                📊\n                长势分析\n            \n            \n                📈\n                产量预估\n            \n            \n                🌤️\n                气象监测\n            \n            \n                ⚠️\n                灾害定损\n            \n        \n\n        \n        \n\n        \n        \n            📱\n            设备监控\n        \n        \n        \n            🌾\n            作物选择\n        \n        \n        \n        \n        \n        \n        \n            🎯\n            重置视图",
           "attributes": {},
           "position": {
-            "offsetLeft": 212,
-            "offsetTop": 12,
-            "offsetWidth": 142,
-            "offsetHeight": 24
+            "offsetLeft": 20,
+            "offsetTop": 540,
+            "offsetWidth": 90,
+            "offsetHeight": 519
           },
           "chartType": null
         },
-        "fallbackSelector": "div.chart-switch-buttons",
-        "textContent": "柱状图\n                        折线图\n                        表格",
+        "fallbackSelector": "div.function-switch-bar",
+        "textContent": "🌾\n                作物分布\n            \n            \n                📊\n                长势分析\n            \n            \n                📈\n                产量预估\n            \n            \n                🌤️\n                气象监测\n            \n            \n                ⚠️\n                灾害定损\n            \n        \n\n        \n        \n\n        \n        \n            📱\n            设备监控\n        \n        \n        \n            🌾\n            作物选择\n        \n        \n        \n        \n        \n        \n        \n            🎯\n            重置视图",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:49:22.113Z"
+        "timestamp": "2025-08-20T09:03:41.964Z"
       },
-      "lastModified": "2025-08-14T07:49:22.132Z"
+      "lastModified": "2025-08-20T09:03:42.041Z"
     },
-    "precise-div-noid-comparison-item-7-0-0": {
-      "name": "增长率数字看板",
-      "content": "同比增长率",
-      "timestamp": "2025/8/14 15:46:32",
-      "elementId": "precise-div-noid-comparison-item-7-0-0",
+    "precise-div-timeline-months-timeline-months-5-3-3": {
+      "name": "进度条",
+      "content": "点击切换指数影像 以及数据看板数据",
+      "timestamp": "2025/8/20 17:32:14",
+      "elementId": "precise-div-timeline-months-timeline-months-5-3-3",
       "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(1) > div.comparison-summary.horizontal > div.comparison-item:nth-of-type(1)",
+        "smartSelector": "div#timeline-months",
         "elementFingerprint": {
           "tagName": "DIV",
-          "className": "comparison-item",
-          "textContent": "🌽\n                        玉米 +12%",
+          "className": "timeline-months",
+          "textContent": "1月\n                点击查看1月数据\n            \n        \n            \n                \n                2月\n                点击查看2月数据\n            \n        \n            \n                \n                3月\n                点击查看3月数据\n            \n        \n            \n                \n                4月\n                点击查看4月数据\n            \n        \n            \n                \n                5月\n                点击查看5月数据\n            \n        \n            \n                \n                6月\n                点击查看6月数据\n            \n        \n            \n                \n                7月\n                点击查看7月数据\n            \n        \n            \n                \n                8月\n                点击查看8月数据\n            \n        \n            \n                \n                9月\n                点击查看9月数据\n            \n        \n            \n                \n                10月\n                点击查看10月数据\n            \n        \n            \n                \n                11月\n                点击查看11月数据\n            \n        \n            \n                \n                12月\n                点击查看12月数据",
+          "attributes": {
+            "id": "timeline-months"
+          },
+          "position": {
+            "offsetLeft": 0,
+            "offsetTop": 0,
+            "offsetWidth": 1410,
+            "offsetHeight": 40
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.timeline-months",
+        "textContent": "1月\n                点击查看1月数据\n            \n        \n            \n                \n                2月\n                点击查看2月数据\n            \n        \n            \n                \n                3月\n                点击查看3月数据\n            \n        \n            \n                \n                4月\n                点击查看4月数据\n            \n        \n            \n                \n                5月\n                点击查看5月数据\n            \n        \n            \n                \n                6月\n                点击查看6月数据\n            \n        \n            \n                \n                7月\n                点击查看7月数据\n            \n        \n            \n                \n                8月\n                点击查看8月数据\n            \n        \n            \n                \n                9月\n                点击查看9月数据\n            \n        \n            \n                \n                10月\n                点击查看10月数据\n            \n        \n            \n                \n                11月\n                点击查看11月数据\n            \n        \n            \n                \n                12月\n                点击查看12月数据",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T09:32:14.896Z"
+      },
+      "lastModified": "2025-08-20T09:32:14.940Z"
+    },
+    "precise-div-noid-summary-item-7-0-0": {
+      "name": "总面积",
+      "content": "和选择的乡镇有关系\n没选择就是整个临夏\n选择了就是该乡镇的",
+      "timestamp": "2025/8/20 17:32:54",
+      "elementId": "precise-div-noid-summary-item-7-0-0",
+      "targetInfo": {
+        "smartSelector": "div#region-summary-card > div.area-summary > div.summary-item.large",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "summary-item large",
+          "textContent": "5,272\n                        总监测面积 (亩)\n                        覆盖8个乡镇",
           "attributes": {},
           "position": {
             "offsetLeft": 12,
-            "offsetTop": 268,
-            "offsetWidth": 109,
+            "offsetTop": 48,
+            "offsetWidth": 342,
+            "offsetHeight": 84
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.summary-item.large",
+        "textContent": "5,272\n                        总监测面积 (亩)\n                        覆盖8个乡镇",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T09:32:54.218Z"
+      },
+      "lastModified": "2025-08-20T09:32:54.237Z"
+    },
+    "precise-div-noid-summary-item-8-0-0": {
+      "name": "长势指数",
+      "content": "和选择的乡镇有关系\n没选择就是整个临夏平均的\n选择了就是该乡镇的",
+      "timestamp": "2025/8/20 17:33:11",
+      "elementId": "precise-div-noid-summary-item-8-0-0",
+      "targetInfo": {
+        "smartSelector": "div#region-summary-card > div.area-summary > div.summary-row > div.summary-item",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "summary-item",
+          "textContent": "0.8\n                            平均长势指数",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 12,
+            "offsetTop": 142,
+            "offsetWidth": 342,
             "offsetHeight": 70
           },
           "chartType": null
         },
-        "fallbackSelector": "div.comparison-item",
-        "textContent": "🌽\n                        玉米 +12%",
+        "fallbackSelector": "div.summary-item",
+        "textContent": "0.8\n                            平均长势指数",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:46:32.795Z"
+        "timestamp": "2025-08-20T09:33:11.017Z"
       },
-      "lastModified": "2025-08-14T07:46:32.814Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-作物轮作流转分析": {
-      "name": "作物轮作流转分析",
-      "content": "多少平方千米的作物A变成了多少平方千米的作物B\n同一块地 不同作物期的数据对比\n图表无交互",
-      "timestamp": "2025/8/14 15:47:52",
-      "elementId": "precise-div-noid-stat-header-6-0-0-作物轮作流转分析",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card[data-text-content*=\"🔄 作物轮作流转分析\"]:nth-of-type(2) > div.stat-header[data-text-content*=\"🔄 作物轮作流转分析\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🔄 作物轮作流转分析",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🔄 作物轮作流转分析",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:47:52.697Z"
-      },
-      "lastModified": "2025-08-14T07:47:52.704Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-数据质量状态": {
-      "name": "数据质量状态",
-      "content": "系统数据状态显示",
-      "timestamp": "2025/8/14 15:48:20",
-      "elementId": "precise-div-noid-stat-header-6-0-0-数据质量状态",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(3) > div.stat-header[data-text-content*=\"📊 数据质量状态\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "📊 数据质量状态",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "📊 数据质量状态",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:48:20.071Z"
-      },
-      "lastModified": "2025-08-14T07:48:20.077Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-作物面积占比": {
-      "name": "作物面积占比",
-      "content": "如图所示\n同一时期存在的作物的面积的对比",
-      "timestamp": "2025/8/14 15:48:58",
-      "elementId": "precise-div-noid-stat-header-6-0-0-作物面积占比",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(1) > div.stat-header[data-text-content*=\"📊 作物面积占比\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "📊 作物面积占比",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "📊 作物面积占比",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:48:58.330Z"
-      },
-      "lastModified": "2025-08-14T07:48:58.334Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-大棚专项统计": {
-      "name": "大棚专项统计",
-      "content": "如果有数据 则显示\n如果有接口 直接对接\n没有接口 通过管理端手动维护\n",
-      "timestamp": "2025/8/14 15:50:03",
-      "elementId": "precise-div-noid-stat-header-6-0-0-大棚专项统计",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(2) > div.stat-header[data-text-content*=\"🏠 大棚专项统计\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🏠 大棚专项统计",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🏠 大棚专项统计",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:50:03.475Z"
-      },
-      "lastModified": "2025-08-14T07:50:03.484Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-区域面积汇总": {
-      "name": "区域面积汇总",
-      "content": "临夏县 总数据展示\n以甲方给的数据为准 原型只是示意",
-      "timestamp": "2025/8/14 15:51:32",
-      "elementId": "precise-div-noid-stat-header-6-0-0-区域面积汇总",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(3) > div.stat-header[data-text-content*=\"📋 区域面积汇总\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "📋 区域面积汇总",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "📋 区域面积汇总",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:51:32.460Z"
-      },
-      "lastModified": "2025-08-14T07:51:32.470Z"
+      "lastModified": "2025-08-20T09:33:11.022Z"
     },
     "precise-canvas-noid-noclass-8-0-0": {
-      "name": "Cesium 3D地图",
-      "content": "点击地块有弹窗",
-      "timestamp": "2025/8/14 15:51:55",
+      "name": "长势分布可视化",
+      "content": "没选择乡镇时 如图 \n选择了乡镇，就只有柱状图\n柱状图：横坐标- NDVI分级 纵坐标-种植面积",
+      "timestamp": "2025/8/20 17:35:58",
       "elementId": "precise-canvas-noid-noclass-8-0-0",
       "targetInfo": {
-        "smartSelector": "div#cesium-container > div.cesium-viewer[data-text-content*=\"Data provided by:×高德\"] > div.cesium-viewer-cesiumWidgetContainer[data-text-content*=\"Data provided by:×高德\"] > div.cesium-widget[data-text-content*=\"Data provided by:×高德\"] > canvas",
+        "smartSelector": "div#town-crop-chart > div > canvas",
         "elementFingerprint": {
           "tagName": "CANVAS",
           "className": "",
-          "textContent": "Cesium 3D地图",
+          "textContent": "长势分布可视化",
           "attributes": {},
           "position": {
             "offsetLeft": 0,
             "offsetTop": 0,
-            "offsetWidth": 1920,
-            "offsetHeight": 1080
+            "offsetWidth": 342,
+            "offsetHeight": 220
           },
           "chartType": null
         },
         "fallbackSelector": "canvas",
-        "textContent": "Cesium 3D地图",
+        "textContent": "长势分布可视化",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:51:55.678Z"
+        "timestamp": "2025-08-20T09:35:58.451Z"
       },
-      "lastModified": "2025-08-14T07:51:55.687Z"
+      "lastModified": "2025-08-20T09:35:58.461Z"
     },
-    "precise-div-noid-popup-header-5-0-0": {
-      "name": "地块信息     ...",
-      "content": "这是地图地块的弹窗的\n如图\n地块编号由系统生成\n仅作为唯一索引",
-      "timestamp": "2025/8/14 16:11:06",
-      "elementId": "precise-div-noid-popup-header-5-0-0",
+    "precise-canvas-noid-noclass-9-0-0": {
+      "name": "长势变化趋势图",
+      "content": "按月的\n如果没有选择乡镇 只有一根曲线 整个临夏的平均指数\n选择了 两根曲线 整个临夏的平均指数和目标乡镇的指数",
+      "timestamp": "2025/8/20 17:37:09",
+      "elementId": "precise-canvas-noid-noclass-9-0-0",
       "targetInfo": {
-        "smartSelector": "div#plot-popup > div.popup-header",
+        "smartSelector": "div#growth-trend-comparison > div > canvas",
         "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "popup-header",
-          "textContent": "🌾 小麦地块信息\n                \n                ×",
+          "tagName": "CANVAS",
+          "className": "",
+          "textContent": "长势变化趋势图",
           "attributes": {},
           "position": {
             "offsetLeft": 0,
             "offsetTop": 0,
-            "offsetWidth": 298,
-            "offsetHeight": 61
+            "offsetWidth": 340,
+            "offsetHeight": 178
           },
           "chartType": null
         },
-        "fallbackSelector": "div.popup-header",
-        "textContent": "🌾 小麦地块信息\n                \n                ×",
+        "fallbackSelector": "canvas",
+        "textContent": "长势变化趋势图",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T08:11:06.664Z"
+        "timestamp": "2025-08-20T09:37:09.638Z"
       },
-      "lastModified": "2025-08-14T08:11:06.678Z"
-    },
-    "precise-div-noid-user-info-5-1-3": {
-      "name": "div: 张",
-      "content": "只需要保留\n个人信息 退出登陆 其他可以先不做",
-      "timestamp": "2025/8/14 15:52:54",
-      "elementId": "precise-div-noid-user-info-5-1-3",
-      "targetInfo": {
-        "smartSelector": "html > body > div.system-header > div.header-right > div.user-info",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "user-info",
-          "textContent": "张\n                    \n                \n                \n                    张三\n                    系统管理员\n                \n                \n                \n                \n                    \n                        👤\n                        个人信息\n                    \n                    \n                        ⚙️\n                        系统设置\n                    \n                    \n                        📊\n                        操作日志\n                    \n                    \n                        ❓\n                        帮助中心\n                    \n                    \n                        🚪\n                        退出登录",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 1765,
-            "offsetTop": 5,
-            "offsetWidth": 125,
-            "offsetHeight": 50
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.user-info",
-        "textContent": "张\n                    \n                \n                \n                    张三\n                    系统管理员\n                \n                \n                \n                \n                    \n                        👤\n                        个人信息\n                    \n                    \n                        ⚙️\n                        系统设置\n                    \n                    \n                        📊\n                        操作日志\n                    \n                    \n                        ❓\n                        帮助中心\n                    \n                    \n                        🚪\n                        退出登录",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:52:54.843Z"
-      },
-      "lastModified": "2025-08-14T07:52:54.852Z"
-    },
-    "precise-div-layer-btn-map-control-btn-5-2-2-": {
-      "name": "切换影像",
-      "content": "根据卫星遥感影像 和 街道影像（根据实际情况 可以不要）",
-      "timestamp": "2025/8/14 15:53:59",
-      "elementId": "precise-div-layer-btn-map-control-btn-5-2-2-",
-      "targetInfo": {
-        "smartSelector": "div#layer-btn",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "map-control-btn",
-          "textContent": "🗺️",
-          "attributes": {
-            "id": "layer-btn"
-          },
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 96,
-            "offsetWidth": 40,
-            "offsetHeight": 40
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.map-control-btn",
-        "textContent": "🗺️",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:53:59.157Z"
-      },
-      "lastModified": "2025-08-14T07:53:59.170Z"
-    },
-    "precise-div-noid-map-control-btn-5-3-3-": {
-      "name": "回到默认视角",
-      "content": "以甘肃 临夏自治州 临夏市 临夏县 的几何中心为准",
-      "timestamp": "2025/8/14 15:54:39",
-      "elementId": "precise-div-noid-map-control-btn-5-3-3-",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.map-controls > div.map-control-btn[data-text-content*=\"🎯\"]:nth-of-type(4)",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "map-control-btn",
-          "textContent": "🎯",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 144,
-            "offsetWidth": 40,
-            "offsetHeight": 40
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.map-control-btn",
-        "textContent": "🎯",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T07:54:39.091Z"
-      },
-      "lastModified": "2025-08-14T07:54:39.098Z"
-    }
-  },
-  "index.html-growth-analysis": {
-    "precise-div-noid-main-switch-btn-5-1-1": {
-      "name": "页面切换",
-      "content": "#### 功能说明\n- **主功能按钮**: 5个单选按钮，切换不同页面功能\n  - 🌾 作物分布 (当前页面)\n  - 📊 长势分析 (growth-analysis.html)\n  - 📈 产量预估 (yield-estimation.html)\n  - 🌤️ 气象监测 (weather-monitoring.html)\n  - ⚠️ 灾害定损 (disaster-monitoring.html)",
-      "timestamp": "2025/8/14 16:37:12",
-      "elementId": "precise-div-noid-main-switch-btn-5-1-1",
-      "targetInfo": {
-        "smartSelector": "html > body > div.function-switch-bar > div.main-switch-buttons > div.main-switch-btn.active[data-function=\"growth-analysis\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "main-switch-btn active",
-          "textContent": "📊\n                长势分析",
-          "attributes": {
-            "data-function": "growth-analysis"
-          },
-          "position": {
-            "offsetLeft": 112,
-            "offsetTop": 12,
-            "offsetWidth": 80,
-            "offsetHeight": 40
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.main-switch-btn.active",
-        "textContent": "📊\n                长势分析",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T08:37:12.445Z"
-      },
-      "lastModified": "2025-08-14T08:37:12.449Z"
-    },
-    "precise-span-noid-excellence-rate-8-1-1-优良率726": {
-      "name": "长势等级比例堆叠图",
-      "content": "基于NDVI(归一化植被指数)和作物生长状况的综合评估，系统将作物长势划分为四个等级：\n备注：如果没有这些数据 则简单处理 参考全流程那边怎么计算的\n\n- **优秀等级**: NDVI值大于0.7，植被覆盖度高，生长旺盛，无明显病虫害。显示为绿色，建议维持现状，适当减少施肥。\n\n- **良好等级**: NDVI值在0.5-0.7之间，植被覆盖度中等，生长良好，偶有轻微问题。显示为蓝色，建议正常管理，定期监测。\n\n- **一般等级**: NDVI值在0.3-0.5之间，植被覆盖度较低，生长一般，需要关注。显示为黄色，建议加强水肥管理，增加监测频次。\n\n- **较差等级**: NDVI值小于0.3，植被覆盖度差，生长不良，存在严重问题。显示为红色，建议立即采取补救措施，进行病虫害防治。\n\n#### NDVI指数计算原理\nNDVI(归一化植被指数)是评估植被长势的核心指标，其计算公式为：\n\n**NDVI = (NIR - Red) / (NIR + Red)**\n\n其中NIR为近红外波段反射率，Red为红光波段反射率。计算原理基于健康植被在近红外波段有很高反射率，而在红光波段因叶绿素吸收呈现较低反射率的光谱特征。\n\n**数值范围与含义**：\n- NDVI理论范围为-1到+1\n- NDVI > 0.7表示茂密植被，生长旺盛\n- NDVI 0.5-0.7表示中等密度植被，生长良好  \n- NDVI 0.3-0.5表示稀疏植被，生长一般\n- NDVI < 0.3表示极稀疏植被或非植被区域\n\n**数据获取与处理**：\n系统主要使用Landsat、Sentinel-2等卫星遥感数据，经过辐射定标、大气校正、几何校正等预处理后计算NDVI。数据处理中需要考虑太阳高度角、大气条件、土壤背景、观测角度等环境因素，以及叶面积指数、叶片含水量、物候期等植被因素的影响。\n\n#### 数据计算逻辑\n系统首先收集各等级的原始面积数据，例如优秀等级2847亩、良好等级2436亩、一般等级962亩、较差等级485亩。然后自动计算总面积，并将各等级面积转换为百分比显示。优良率是优秀和良好等级面积之和占总面积的百分比，当前显示为78.5%。\n\n#### 图表展示方式\n图表采用水平堆叠柱状图的形式，一个完整的柱条代表100%的监测面积。柱条从左到右依次显示优秀、良好、一般、较差四个等级的比例。每个区段用不同颜色区分，并在区段内显示具体的百分比数值。图表上方显示当前的优良率指标。\n\n#### 交互功能\n当用户鼠标悬浮在图表上时，会显示详细的工具提示，包含各等级的具体面积和百分比信息，以及总的优良率。用户可以点击特定的等级区段，系统会在地图上高亮显示对应等级的区域。支持数据钻取功能，点击可以查看该等级的详细空间分布情况。\n\n#### 数据更新机制\n系统支持实时数据更新，当监测数据发生变化时，会自动重新计算各等级的面积和百分比，并平滑更新图表显示。更新过程包括数据验证、百分比重算、优良率更新、图表重绘等步骤，确保显示的准确性和一致性。\n\n",
-      "timestamp": "2025/8/18 16:24:13",
-      "elementId": "precise-span-noid-excellence-rate-8-1-1-优良率726",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.analysis-section:nth-of-type(1) > div.section-title > span.excellence-rate[data-text-content*=\"优良率: 72.6%\"]",
-        "elementFingerprint": {
-          "tagName": "SPAN",
-          "className": "excellence-rate",
-          "textContent": "优良率: 72.6%",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 274,
-            "offsetTop": 19,
-            "offsetWidth": 77,
-            "offsetHeight": 17
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "span.excellence-rate",
-        "textContent": "优良率: 72.6%",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T08:24:13.926Z"
-      },
-      "lastModified": "2025-08-18T08:24:13.937Z"
-    },
-    "precise-div-noid-anomaly-table-container-7-1-1": {
-      "name": "异常区域统计表",
-      "content": "#### 功能概述\n异常区域统计表是长势分析系统的风险预警组件，专门用于识别、统计和展示需要重点关注的异常长势区域。该表格通过结构化的方式展示各作物类型的异常面积分布和对应的病虫害预警信息，为农业管理者提供精准的风险管控依据。\n#### 详细功能说明\n- **表格类型**: 静态数据表格，采用HTML表格结构\n- **显示内容**: 作物类型、异常面积、占比统计、病虫害预警信息\n- **数据来源**: 基于NDVI异常检测算法和病虫害监测系统\n- **更新频率**: 每日更新，紧急情况下实时更新\n\n#### 异常区域识别标准\n系统通过多种方式识别异常区域：\n\n**NDVI异常检测**：\n- 与历史同期数据对比，NDVI值下降超过20%的区域\n- 与周边正常区域对比，NDVI值明显偏低的区域\n- 连续监测中NDVI值持续下降的区域\n\n**病虫害监测**：\n- 结合气象数据预测病虫害高发区域\n- 基于历史病虫害发生规律进行风险评估\n- 结合实地调查和农户反馈信息\n\n**环境异常**：\n- 干旱、洪涝等极端天气影响区域\n- 土壤盐碱化、污染等环境问题区域\n- 营养缺乏、施肥不当等管理问题区域\n\n#### 表格数据结构\n表格包含四个核心字段，每个字段都有特定的业务含义：\n\n**作物类型**：标识异常区域的主要作物种类，如玉米、小麦、辣椒等。系统根据作物分布图层自动识别，确保统计的准确性。\n\n**面积(亩)**：异常区域的实际面积统计，通过像素计数和空间分析计算得出。当前显示玉米异常区域285亩、小麦156亩、辣椒44亩。\n\n**占比**：异常面积占该作物总种植面积的百分比。玉米异常占比4.2%，小麦占比2.3%，辣椒占比0.7%。这个指标反映了异常程度的相对严重性。\n\n**病虫害预警**：基于专家知识库和监测数据，提供具体的病虫害风险预警。包括预警等级和具体的病虫害类型，如\"玉米螟高发\"、\"条纹花叶病\"、\"蚜虫轻发\"等。\n\n#### 预警等级分类体系\n系统采用三级预警等级，通过颜色编码进行视觉区分：\n\n**高风险预警**：\n- 显示颜色：红色标签\n- 风险特征：病虫害发生面积大，危害程度严重，传播速度快\n- 处理要求：需要立即采取防治措施，24小时内响应\n- 典型案例：玉米螟大面积爆发，可能造成严重减产\n\n**中风险预警**：\n- 显示颜色：橙色标签  \n- 风险特征：病虫害处于发展阶段，有扩散趋势，需要密切关注\n- 处理要求：加强监测频次，准备防治方案，一周内处理\n- 典型案例：小麦条纹花叶病局部发生，需要及时控制\n\n**低风险预警**：\n- 显示颜色：黄色标签\n- 风险特征：病虫害刚开始发生，危害程度较轻，可控性强\n- 处理要求：采取预防性措施，定期监测，适时处理\n- 典型案例：辣椒蚜虫轻度发生，可通过生物防治控制",
-      "timestamp": "2025/8/14 17:09:41",
-      "elementId": "precise-div-noid-anomaly-table-container-7-1-1",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.analysis-section:nth-of-type(2) > div.anomaly-table-container",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "anomaly-table-container",
-          "textContent": "作物类型\n                                    面积(亩)\n                                    占比\n                                    病虫害预警\n                                \n                            \n                            \n                                \n                                    玉米\n                                    285\n                                    4.2%\n                                    玉米螟高发\n                                \n                                \n                                    小麦\n                                    156\n                                    2.3%\n                                    条纹花叶病\n                                \n                                \n                                    辣椒\n                                    44\n                                    0.7%\n                                    蚜虫轻发",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 15,
-            "offsetTop": 56,
-            "offsetWidth": 336,
-            "offsetHeight": 150
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.anomaly-table-container",
-        "textContent": "作物类型\n                                    面积(亩)\n                                    占比\n                                    病虫害预警\n                                \n                            \n                            \n                                \n                                    玉米\n                                    285\n                                    4.2%\n                                    玉米螟高发\n                                \n                                \n                                    小麦\n                                    156\n                                    2.3%\n                                    条纹花叶病\n                                \n                                \n                                    辣椒\n                                    44\n                                    0.7%\n                                    蚜虫轻发",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T09:09:41.132Z"
-      },
-      "lastModified": "2025-08-14T09:09:41.139Z"
-    },
-    "precise-div-noid-progress-item-8-0-0": {
-      "name": "物候阶段进度条",
-      "content": "#### 功能概述\n物候阶段进度条是长势分析系统的作物生长监测组件，通过直观的进度条形式展示各类作物当前所处的物候阶段及其完成进度。该组件结合环境条件评估，为农业管理者提供作物生长状态的实时监控和科学管理指导。\n\n#### 详细功能说明\n- **显示内容**: 作物名称、物候阶段、完成进度、环境条件评估\n- **交互功能**: 鼠标悬浮显示详细的环境条件工具提示\n- **数据来源**: 基于气象数据、土壤监测、作物模型的综合分析\n\n\n#### 物候学基础概念\n物候学是研究生物的生命活动与季节变化关系的科学。在农业应用中，物候期是指作物在一年中随季节变化而发生的各种生长发育现象的时期，如播种期、出苗期、分蘖期、抽穗期、成熟期等。\n\n**物候期的重要意义**：\n- 指导农事活动的最佳时机选择\n- 评估作物生长发育的正常性\n- 预测产量形成的关键节点\n- 制定田间管理措施的时间安排\n\n#### 主要作物物候期划分\n\n**小麦物候期**：\n播种期 → 出苗期 → 分蘖期 → 越冬期 → 返青期 → 起身期 → 拔节期 → 孕穗期 → 抽穗期 → 开花期 → 灌浆期 → 成熟期\n\n**玉米物候期**：\n播种期 → 出苗期 → 三叶期 → 七叶期 → 拔节期 → 大喇叭口期 → 抽雄期 → 吐丝期 → 灌浆期 → 成熟期\n\n**辣椒物候期**：\n播种期 → 出苗期 → 幼苗期 → 定植期 → 缓苗期 → 开花期 → 结果期 → 盛果期 → 衰老期\n\n**马铃薯物候期**：\n播种期 → 出苗期 → 幼苗期 → 发棵期 → 块茎形成期 → 块茎膨大期 → 成熟期\n\n#### 进度条数据结构与计算\n系统当前监测四种主要作物的物候进度：\n\n**小麦 - 抽穗期(85%)**：\n小麦正处于抽穗期的后期阶段，85%的进度表示抽穗过程基本完成，即将进入开花期。这是小麦产量形成的关键时期，需要充足的水分和养分供应。\n\n**玉米 - 拔节期(72%)**：\n玉米处于拔节期的中后期，72%的进度显示茎秆正在快速伸长。这是玉米营养生长的旺盛阶段，对水肥需求量大，是决定穗大粒多的关键时期。\n\n**辣椒 - 开花期(60%)**：\n辣椒进入开花期的中期，60%的进度表示部分花朵已经开放。这个阶段对温度和光照条件敏感，需要适宜的环境条件确保正常授粉和坐果。\n\n**马铃薯 - 块茎形成期(45%)**：\n马铃薯处于块茎形成期的前期，45%的进度显示块茎刚开始形成。这是决定块茎数量的关键时期，需要适宜的温度和充足的钾肥供应。\n\n#### 环境条件评估体系\n系统对每种作物的生长环境进行四个维度的评估：\n\n**温度条件评估**：\n- 优秀(excellent)：温度完全适宜，在最适温度范围内\n- 良好(good)：温度基本适宜，略有偏差但不影响生长\n- 正常(normal)：温度可接受，对生长有一定影响\n- 不足(poor)：温度不适宜，需要采取调控措施\n\n**土壤湿度评估**：\n- 充足(excellent)：土壤水分充足，满足作物需求\n- 适宜(good)：土壤水分基本满足需求\n- 正常(normal)：土壤水分略显不足，需要关注\n- 缺乏(poor)：土壤水分严重不足，需要及时灌溉\n\n**光照强度评估**：\n- 充足(excellent)：光照强度和时长完全满足需求\n- 适宜(good)：光照条件基本满足生长需要\n- 一般(normal)：光照略有不足，对生长有轻微影响\n- 不足(poor)：光照严重不足，影响光合作用\n\n**养分水平评估**：\n- 充足(excellent)：土壤养分丰富，完全满足需求\n- 良好(good)：养分水平基本满足生长需要\n- 适宜(normal)：养分略显不足，建议适量补充\n- 不足(poor)：养分严重缺乏，需要及时施肥\n\n#### 进度条展示设计\n**视觉设计**：每个作物占用一行，包含作物名称、物候阶段、进度百分比和进度条。进度条采用渐变色填充，从左到右显示完成进度，未完成部分显示为灰色背景。\n\n**颜色编码**：进度条颜色根据完成度变化，绿色表示进展良好，黄色表示需要关注，红色表示存在问题。\n\n**交互体验**：鼠标悬浮在进度条上时，显示详细的环境条件工具提示，包含四个维度的具体评估结果和相应的管理建议。\n\n#### 数据计算逻辑\n**物候期判定**：系统结合积温模型、日照时数、降水量等气象数据，以及作物品种特性，自动判定当前物候期。\n\n**进度计算**：基于物候期的典型持续时间和当前已经历的时间，计算完成进度百分比。\n\n**环境评估**：实时采集气象站、土壤传感器、遥感数据，与作物需求标准对比，生成环境条件评估结果。\n\n#### 农业指导价值\n**精准管理**：根据不同作物的物候期和环境条件，制定精准的田间管理措施，如施肥、灌溉、病虫害防治等。\n\n**时机把握**：帮助农民准确把握农事操作的最佳时机，避免错过关键管理节点。\n\n**风险预警**：当环境条件不适宜时，及时提醒采取相应措施，降低生产风险。\n\n**产量预测**：通过物候进度和环境条件的综合分析，为产量预测提供重要参考依据。\n",
-      "timestamp": "2025/8/14 17:14:39",
-      "elementId": "precise-div-noid-progress-item-8-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.analysis-section:nth-of-type(3) > div.phenology-progress-container > div.progress-item:nth-of-type(1)",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "progress-item",
-          "textContent": "小麦\n                                抽穗期\n                                85%\n                            \n                            \n                                \n                            \n                            \n                                \n                                    🌾\n                                    小麦 - 抽穗期\n                                \n                                \n                                    \n                                        温度条件\n                                        优秀\n                                    \n                                    \n                                        土壤湿度\n                                        良好\n                                    \n                                    \n                                        光照强度\n                                        充足\n                                    \n                                    \n                                        养分水平\n                                        适宜\n                                    \n                                \n                                \n                                    小麦抽穗期是产量形成的关键时期，需要充足的水分和养分供应",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 15,
-            "offsetTop": 56,
-            "offsetWidth": 336,
-            "offsetHeight": 53
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.progress-item",
-        "textContent": "小麦\n                                抽穗期\n                                85%\n                            \n                            \n                                \n                            \n                            \n                                \n                                    🌾\n                                    小麦 - 抽穗期\n                                \n                                \n                                    \n                                        温度条件\n                                        优秀\n                                    \n                                    \n                                        土壤湿度\n                                        良好\n                                    \n                                    \n                                        光照强度\n                                        充足\n                                    \n                                    \n                                        养分水平\n                                        适宜\n                                    \n                                \n                                \n                                    小麦抽穗期是产量形成的关键时期，需要充足的水分和养分供应",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T09:14:39.419Z"
-      },
-      "lastModified": "2025-08-14T09:14:39.426Z"
-    },
-    "precise-span-noid-phenology-marker-8-1-1-关键期抽穗期": {
-      "name": "长势指数变化趋势图",
-      "content": "#### 功能概述\n长势指数变化趋势图是长势分析系统的时序分析核心组件，通过折线图形式展示作物长势指数在整个生长季内的动态变化过程。该图表结合物候期标注，为农业管理者提供长势发展规律的可视化分析和关键管理节点的精准识别。\n\n#### 详细功能说明\n- **显示内容**: 月度长势指数变化曲线、关键物候期标注、趋势预测线\n- **特殊标注**: 关键期垂直标线和文字说明 (如：抽穗期、灌浆期)\n- **数据来源**: 基于NDVI时序数据和作物生长模型的综合分析\n\n#### 长势指数定义与计算\n长势指数是一个综合性的作物生长状况评价指标，取值范围为0-100，数值越高表示长势越好。\n\n**计算公式**：\n长势指数 = (NDVI标准化值 × 0.4) + (环境适宜度 × 0.3) + (物候期正常度 × 0.2) + (病虫害风险倒数 × 0.1) × 100\n\n**各组成部分说明**：\n- **NDVI标准化值**: 将当前NDVI值与历史同期最优值比较，得到0-1的标准化数值\n- **环境适宜度**: 综合温度、湿度、光照、养分四个维度的适宜程度评分\n- **物候期正常度**: 当前物候期进展与正常年份对比的符合程度\n- **病虫害风险倒数**: 1减去当前病虫害发生风险，风险越低指数贡献越大\n\n#### 时序数据分析\n系统当前展示8个月的长势指数变化趋势：\n\n**1月份(65分)**：\n冬季休眠期，小麦处于越冬状态，长势指数相对较低。此时主要关注冬季保温和防冻措施，为来年生长积蓄能量。\n\n**2月份(68分)**：\n立春后气温开始回升，但作物仍处于缓慢恢复阶段。长势指数略有上升，反映了生理活动的逐步激活。\n\n**3月份(72分)**：\n春季返青期开始，小麦等冬性作物开始恢复生长，玉米等春播作物开始播种准备。长势指数稳步上升。\n\n**4月份(75分)**：\n春季生长旺盛期，温度和光照条件改善，多数作物进入快速生长阶段。长势指数持续提升。\n\n**5月份(78分)**：\n关键生长期，小麦进入拔节孕穗期，玉米进入苗期。环境条件适宜，长势指数继续上升。\n\n**6月份(82分)**：\n生长高峰期，小麦抽穗开花，玉米拔节期。光热水条件充足，长势指数达到较高水平。\n\n**7月份(85分)**：\n生长季高峰，多数作物处于关键发育期。长势指数达到全年最高点，反映了最佳生长状态。\n\n**8月份(78分)**：\n生长后期，部分作物进入成熟期，长势指数开始回落。这是正常的生长规律，反映了作物从营养生长转向生殖生长。\n\n#### 多作物生育期处理机制\n由于不同作物具有不同的生育期和物候特点，系统采用智能化的多作物适配机制：\n\n**作物分类管理**：\n系统根据作物类型自动调整时序分析的基准和标注：\n\n- **冬性作物**(如小麦)：10月播种-次年6月收获，关注越冬期管理\n- **春播作物**(如玉米、大豆)：3-4月播种-9-10月收获，关注春夏生长期\n- **设施作物**(如辣椒、番茄)：可多季种植，关注设施环境调控\n- **多年生作物**(如果树)：关注年度生长周期和休眠期\n\n**动态时间轴调整**：\n系统根据主导作物类型动态调整时间轴显示：\n\n- **以小麦为主**: 时间轴从10月开始，重点关注越冬-春季-夏收阶段\n- **以玉米为主**: 时间轴从3月开始，重点关注春播-夏长-秋收阶段  \n- **多作物混合**: 采用12个月完整时间轴，同时标注不同作物的关键期\n\n**关键期标注系统**\n图表采用多层标注机制，同时显示不同作物的关键物候期：\n\n**小麦关键期标注**：\n- 播种期(10月)：蓝色标注，播种质量决定基础\n- 越冬期(12-2月)：紫色标注，抗寒能力关键期\n- 返青期(3月)：绿色标注，春季生长恢复点\n- 拔节期(4月)：黄色标注，茎秆伸长关键期\n- 抽穗期(5月)：红色标注，产量形成关键期\n- 灌浆期(6月)：橙色标注，籽粒充实决定期\n\n**玉米关键期标注**：\n- 播种期(4月)：蓝色标注，适期播种保全苗\n- 苗期(5月)：绿色标注，苗齐苗壮基础期\n- 拔节期(6月)：黄色标注，快速生长关键期\n- 抽雄期(7月)：红色标注，授粉受精关键期\n- 灌浆期(8月)：橙色标注，籽粒形成决定期\n- 成熟期(9月)：褐色标注，适时收获保产量\n\n**辣椒关键期标注**：\n- 育苗期(2-3月)：蓝色标注，壮苗培育基础\n- 定植期(4月)：绿色标注，成活率关键期\n- 开花期(5-6月)：红色标注，坐果率决定期\n- 结果期(7-9月)：橙色标注，产量形成期\n\n#### 趋势分析功能\n**季节性变化规律**：\n图表清晰展现了作物长势的季节性变化规律，从冬季的低谷到夏季的高峰，再到后期的回落，符合作物自然生长规律。\n\n**异常识别能力**：\n通过对比历史同期数据，系统可以识别异常的长势变化。如果某个月份的长势指数显著偏离正常范围，会自动标注为异常点。\n\n**趋势预测功能**：\n基于历史数据和当前趋势，系统可以预测未来1-2个月的长势发展趋势，为提前制定管理措施提供依据。\n\n#### 多作物长势指数计算策略\n**分作物计算模式**：\n系统为不同作物类型采用专门的长势指数计算参数：\n\n- **小麦长势指数**: 更注重越冬抗性和春季恢复能力，NDVI权重40%，抗寒性20%，返青速度20%，病害抗性20%\n- **玉米长势指数**: 更注重生长速度和热量利用，NDVI权重45%，株高增长25%，叶面积指数20%，水分利用10%\n- **辣椒长势指数**: 更注重开花坐果和连续结果能力，NDVI权重35%，开花率25%，坐果率25%，病虫害抗性15%\n\n**混合作物区域处理**：\n当监测区域包含多种作物时，系统采用加权平均方法：\n\n- 按作物种植面积比例计算权重\n- 分别计算各作物的长势指数\n- 加权合成综合长势指数\n- 同时保留各作物的独立曲线显示\n\n**作物轮作模式适配**：\n系统识别并适配不同的作物轮作模式：\n\n- **冬小麦-夏玉米轮作**: 时间轴连续显示，10月-次年9月完整周期\n- **春玉米-冬休闲模式**: 重点关注3-10月生长季，冬季显示土壤保护状态\n- **设施多茬种植**: 按茬次分段显示，每茬独立计算长势指数\n\n#### 图表交互功能\n**作物选择器**：\n图表顶部提供作物类型选择器，用户可以选择查看：\n- 综合长势指数(默认)\n- 单一作物长势指数\n- 多作物对比显示\n- 主导作物长势指数\n\n**数据点悬浮**：\n鼠标悬浮在数据点上时，显示详细信息包括具体日期、长势指数值、当前物候期、主导作物类型、主要影响因素、环境条件评估等。\n\n**关键期筛选**：\n用户可以选择显示特定作物的关键期标注，避免图表过于复杂：\n- 显示所有作物关键期\n- 仅显示主导作物关键期  \n- 仅显示用户选择的作物关键期\n- 隐藏关键期标注\n\n**时间范围缩放**：\n支持用户选择不同的时间范围查看，可以放大查看某个特定时期的详细变化，也可以缩小查看更长时间的整体趋势。针对不同作物可以快速跳转到其生长季。\n\n**多年对比**：\n可以叠加显示多年的长势指数曲线，进行年际间的对比分析，识别长期变化趋势和周期性规律。支持按作物类型分别对比。\n\n#### 数据质量控制\n**数据平滑处理**：\n原始NDVI数据可能受到云层、大气条件等因素影响，系统采用移动平均和异常值检测算法对数据进行平滑处理。\n\n**缺失数据插值**：\n当某些时期的遥感数据缺失时，系统采用线性插值和样条插值方法填补空缺，确保趋势线的连续性。\n\n**质量标识**：\n对于数据质量较低的时期，图表上会显示相应的质量标识，提醒用户注意数据的可靠性。\n\n#### 农业决策支持\n**管理时机指导**：\n通过分析长势指数的变化趋势和关键期标注，帮助农民确定最佳的施肥、灌溉、病虫害防治时机。\n\n**产量预测支持**：\n长势指数在关键生育期的表现与最终产量密切相关，为产量预测模型提供重要输入参数。\n\n**风险预警功能**：\n当长势指数出现异常下降或偏离正常范围时，系统会自动发出预警，提醒采取相应的补救措施。\n\n**历史对比分析**：\n通过与历史同期数据对比，评估当前年份的长势表现，为农业保险、政策制定提供科学依据。\n\n#### 智能作物识别与自适应\n**自动作物识别**：\n系统通过多种技术手段自动识别监测区域的作物类型：\n\n- **遥感光谱识别**: 基于不同作物的光谱特征差异进行自动分类\n- **物候期模式识别**: 通过NDVI时序曲线特征识别作物类型\n- **空间分布分析**: 结合地块形状、大小、分布模式进行作物识别\n- **农户申报数据**: 整合农业部门的种植结构申报数据\n\n**动态权重调整**：\n系统根据实时监测的作物分布情况动态调整长势指数计算权重：\n\n- 春季以小麦为主时，小麦权重70%，其他作物30%\n- 夏季玉米生长旺盛时，玉米权重60%，小麦权重30%，其他10%\n- 设施农业区域，设施作物权重可达80%以上\n\n**区域差异适配**：\n系统支持不同农业区域的作物结构差异：\n\n- **华北平原**: 主要适配冬小麦-夏玉米轮作模式\n- **东北地区**: 主要适配春玉米-大豆轮作模式  \n- **南方地区**: 适配水稻-油菜、水稻-小麦等模式\n- **设施集中区**: 适配蔬菜多茬种植模式\n\n#### 实际应用案例\n**案例1：冬小麦-夏玉米轮作区**\n- 10-12月：关注小麦播种出苗，长势指数60-70分\n- 1-2月：越冬期管理，长势指数维持65分左右\n- 3-4月：返青拔节期，长势指数快速上升至75分\n- 5-6月：抽穗灌浆期，长势指数达到峰值85分\n- 7月：小麦收获，玉米生长，长势指数80分\n- 8-9月：玉米生长旺盛期，长势指数保持80分以上\n\n**案例2：设施蔬菜种植区**\n- 全年多茬种植，每茬2-3个月周期\n- 育苗期：长势指数50-60分\n- 定植缓苗期：长势指数60-70分\n- 生长旺盛期：长势指数80-90分\n- 采收期：长势指数逐步下降至60分",
-      "timestamp": "2025/8/14 17:35:58",
-      "elementId": "precise-span-noid-phenology-marker-8-1-1-关键期抽穗期",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(1) > div.section-title > span.phenology-marker[data-text-content*=\"关键期: 抽穗期\"]",
-        "elementFingerprint": {
-          "tagName": "SPAN",
-          "className": "phenology-marker",
-          "textContent": "关键期: 抽穗期",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 264,
-            "offsetTop": 16,
-            "offsetWidth": 87,
-            "offsetHeight": 21
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "span.phenology-marker",
-        "textContent": "关键期: 抽穗期",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T09:35:58.650Z"
-      },
-      "lastModified": "2025-08-14T09:35:58.656Z"
-    },
-    "precise-div-noid-radar-chart-container-7-1-1": {
-      "name": "多维度长势雷达图",
-      "content": "\n#### 功能概述\n多维度长势雷达图是长势分析系统的综合评估核心组件，通过雷达图形式同时展示作物长势的多个关键维度指标。该图表采用多边形面积表示综合长势水平，各顶点距离中心的远近反映单项指标的优劣程度，为农业管理者提供全方位、立体化的作物生长状况评估。\n\n#### 详细功能说明\n- **显示内容**: 四个核心维度的环境条件评估指标，形成四边形综合评估图\n- **数据来源**: 气象监测、土壤传感器、遥感数据、模型计算的综合分析结果\n- **更新频率**: 每日更新，关键生长期实时更新\n\n#### 四大评估维度详解\n\n**1. 温度条件 (当前值: 85分)**\n- **定义**: 作物生长环境的温度适宜程度评估\n- **数据来源**: 气象站实时监测和农田小气候传感器数据\n- **评估标准**: \n  - 90-100分: 温度完全适宜，在作物最适温度范围内\n  - 80-89分: 温度基本适宜，略有偏差但不影响生长\n  - 70-79分: 温度可接受，对生长有轻微影响\n  - 60-69分: 温度偏离适宜范围，需要关注\n  - <60分: 温度严重不适宜，需要采取调控措施\n- **农业意义**: 直接影响作物的生理代谢和发育进程\n\n**2. 土壤湿度 (当前值: 78分)**\n- **定义**: 土壤水分含量对作物需求的满足程度\n- **数据来源**: 土壤湿度传感器和遥感土壤水分反演数据\n- **评估标准**:\n  - 90-100分: 土壤水分充足，完全满足作物需求\n  - 80-89分: 土壤水分基本满足需求，供水良好\n  - 70-79分: 土壤水分中等，基本能满足需求\n  - 60-69分: 土壤水分略显不足，需要关注\n  - <60分: 土壤水分严重不足，需要及时灌溉\n- **农业意义**: 决定作物水分利用效率和抗旱能力\n\n**3. 光照强度 (当前值: 82分)**\n- **定义**: 光照条件对作物光合作用需求的满足程度\n- **数据来源**: 光照强度传感器和气象站日照时数数据\n- **评估标准**:\n  - 90-100分: 光照强度和时长完全满足需求\n  - 80-89分: 光照条件基本满足生长需要\n  - 70-79分: 光照条件中等，能基本满足需求\n  - 60-69分: 光照略有不足，对生长有轻微影响\n  - <60分: 光照严重不足，影响光合作用效率\n- **农业意义**: 影响光合作用强度和干物质积累\n\n**4. 养分水平 (当前值: 75分)**\n- **定义**: 土壤养分供应对作物营养需求的满足程度\n- **数据来源**: 土壤养分检测和叶片营养诊断数据\n- **评估标准**:\n  - 90-100分: 土壤养分丰富，完全满足作物需求\n  - 80-89分: 养分水平良好，基本满足生长需要\n  - 70-79分: 养分水平中等，能基本满足需求\n  - 60-69分: 养分略显不足，建议适量补充\n  - <60分: 养分严重缺乏，需要及时施肥\n- **农业意义**: 决定作物营养状况和产量潜力发挥\n\n#### 雷达图解读方法\n**图形特征解读**:\n- **四边形面积**: 面积越大表示环境条件越好，越有利于作物生长\n- **形状规整度**: 越接近正方形表示各环境因子越均衡协调\n- **顶点突出**: 某个顶点特别突出表示该环境条件表现优异\n- **凹陷明显**: 某个方向凹陷明显表示该环境条件存在短板\n\n**当前环境条件分析**:\n基于当前数值(温度条件:85, 土壤湿度:78, 光照强度:82, 养分水平:75)，形成的雷达图显示：\n\n- **优势条件**: 温度条件(85分)表现优秀，说明当前温度非常适宜作物生长\n- **良好条件**: 光照强度(82分)表现良好，说明光照条件能够满足光合作用需求\n- **中等条件**: 土壤湿度(78分)和养分水平(75分)处于中等水平，有改善空间\n- **管理建议**: 可考虑适当增加灌溉频次提高土壤湿度，适量补充肥料提升养分水平\n\n#### 综合环境适宜度算法\n**综合得分计算**:\n环境适宜度 = (温度条件 × 0.30) + (土壤湿度 × 0.25) + (光照强度 × 0.25) + (养分水平 × 0.20)\n\n当前环境适宜度 = (85×0.30) + (78×0.25) + (82×0.25) + (75×0.20) = 25.5 + 19.5 + 20.5 + 15 = 80.5分\n\n**等级划分**:\n- 90-100分: 优秀等级，环境条件极佳，非常适宜作物生长\n- 80-89分: 良好等级，环境条件良好，适宜作物生长  \n- 70-79分: 中等等级，环境条件基本满足需求\n- 60-69分: 较差等级，环境条件存在不足，需要改善\n- <60分: 差等级，环境条件严重不适宜，急需改善\n\n#### 雷达图交互功能\n**数据点悬浮**: 鼠标悬浮在雷达图的各个顶点时，显示该维度的详细信息，包括具体数值、评估等级、改进建议等。\n\n**多时期对比**: 支持叠加显示不同时期的雷达图，通过不同颜色的四边形对比环境条件变化趋势。\n\n**多作物对比**: 可以同时显示不同作物的环境需求雷达图，进行横向对比分析各作物对环境条件的适应性。\n\n**维度筛选**: 用户可以选择显示特定的环境因子组合，如只显示气候因子(温度+光照)或土壤因子(湿度+养分)。\n\n#### 农业指导价值\n**环境诊断**: 通过四维度分析，精准识别环境条件的优势和短板，为环境改善提供依据。\n\n**因子平衡**: 帮助农业管理者识别环境因子的不平衡状况，制定针对性的调控措施。\n\n**效果评估**: 通过历史对比，评估环境调控措施的效果和环境条件的改善程度。\n\n**精准决策**: 为灌溉调度、施肥计划、温室调控等环境管理决策提供科学依据，实现精准环境调控。\n",
-      "timestamp": "2025/8/14 17:42:54",
-      "elementId": "precise-div-noid-radar-chart-container-7-1-1",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(2) > div.radar-chart-container[data-text-content*=\"小麦长势85覆盖度88健康度82产量90\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "radar-chart-container",
-          "textContent": "小麦长势85覆盖度88健康度82产量90",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 15,
-            "offsetTop": 56,
-            "offsetWidth": 336,
-            "offsetHeight": 260
-          },
-          "chartType": "echarts"
-        },
-        "fallbackSelector": "div.radar-chart-container",
-        "textContent": "小麦长势85覆盖度88健康度82产量90",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T09:42:54.649Z"
-      },
-      "lastModified": "2025-08-14T09:42:54.659Z"
-    },
-    "precise-div-noid-historical-comparison-cards-7-2-10": {
-      "name": "历史优良率对比卡",
-      "content": "#### 功能概述\n历史优良率对比卡是长势分析系统中的历史数据对比组件，通过卡片式布局展示多年度优良率数据的纵向对比。该组件帮助用户快速了解作物长势的年际变化趋势，评估农业管理效果的持续改善情况，为制定长期农业发展策略提供历史数据支撑。\n\n#### 详细功能说明\n- **组件类型**: 多卡片组合布局，包含汇总信息区和历史对比卡片区\n- **显示内容**: 近三年优良率数据对比，增长趋势分析，最佳表现年份标识\n- **数据来源**: 历史长势监测数据库，年度优良率统计档案\n\n#### 组件结构详解\n\n**1. 汇总信息区**\n- **三年平均增长**: 显示近三年优良率的平均增长幅度\n  - 计算方法: (当前年优良率 - 三年前优良率) / 三年前优良率 × 100%\n  - 颜色标识: 绿色表示正增长，红色表示负增长\n- **最佳表现年份**: 标识历史最高优良率年份(2025年当前)\n  - 自动识别: 系统自动比较历史数据确定最佳年份\n  - 当前标识: 如果当年是最佳年份，显示\"当前\"标签\n\n**2. 历史对比卡片区**\n包含三张年度对比卡片，每张卡片结构相同：\n\n**2025年卡片(当前年)**\n- **年份标识**: \"2025年\"\n- **特殊标识**: \"当前\"徽章，突出显示当前年份\n- **优良率数值**: 78.5%\n- **标签说明**: \"优良率\"\n\n**2024年卡片(上一年)**\n- **年份标识**: \"2024年\"\n- **变化指示器**: \"↑4.3%\"，表示相比2023年的变化\n- **优良率数值**: 75.2%\n- **标签说明**: \"同期优良率\"\n\n**2023年卡片(前年)**\n- **年份标识**: \"2023年\"\n- **变化指示器**: \"↑17.0%\"，表示相比2022年的变化\n- **优良率数值**: 67.0%\n- **标签说明**: \"同期优良率\"\n\n#### 优良率计算标准\n**定义**: 优良率是指长势等级为\"优秀\"和\"良好\"的农田面积占总监测面积的百分比\n\n**计算公式**:\n```\n优良率 = (优秀等级面积 + 良好等级面积) / 总监测面积 × 100%\n```\n\n**等级划分标准**:\n- **优秀**: NDVI > 0.8，长势指数 > 90分\n- **良好**: NDVI 0.7-0.8，长势指数 80-90分\n- **一般**: NDVI 0.6-0.7，长势指数 70-80分\n- **较差**: NDVI < 0.6，长势指数 < 70分\n\n#### 数据统计逻辑\n**时间节点**: 每年同一物候期进行统计对比，确保数据可比性\n**统计范围**: 覆盖全县域农田监测区域\n**数据质量**: 剔除云雾遮挡、数据缺失的区域\n**标准化处理**: 统一监测标准和评估方法，保证历史数据一致性\n\n#### 变化趋势分析\n**增长指示器逻辑**:\n- **↑**: 绿色向上箭头，表示相比前一年有所提升\n- **↓**: 红色向下箭头，表示相比前一年有所下降\n- **→**: 灰色平行箭头，表示相比前一年基本持平(变化<1%)\n\n**变化幅度计算**:\n```\n变化幅度 = (本年优良率 - 前年优良率) / 前年优良率 × 100%\n```\n\n#### 历史数据价值分析\n**趋势评估**: 从67.0% → 75.2% → 78.5%的上升趋势，显示农业管理效果显著\n**增长稳定性**: 连续两年保持正增长，说明改善措施具有持续性\n**管理效果验证**: 三年平均增长15.5%，证明农业技术推广和管理优化取得实效\n**目标达成情况**: 当前78.5%的优良率可能已达到或超过预设目标\n\n#### 业务应用价值\n**政策制定**: 为农业政策调整和资源配置提供历史数据支撑\n**效果评估**: 评估农业技术推广、基础设施建设等措施的长期效果\n**目标设定**: 基于历史趋势制定下一年度的优良率目标\n**经验总结**: 分析优良率提升的关键因素，推广成功经验\n**预警预判**: 识别可能影响优良率的风险因素，提前制定应对措施\n\n#### 交互功能特点\n**卡片悬浮**: 鼠标悬浮显示更详细的统计信息和分析说明\n**数据钻取**: 点击卡片可查看该年度的详细长势分布图和分析报告\n**对比模式**: 支持选择不同年份进行重点对比分析\n**导出功能**: 支持导出历史优良率统计表格和趋势分析报告",
-      "timestamp": "2025/8/14 17:47:23",
-      "elementId": "precise-div-noid-historical-comparison-cards-7-2-10",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(3) > div.historical-comparison-cards",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "historical-comparison-cards",
-          "textContent": "2025年\n                                当前\n                            \n                            \n                                78.5%\n                                优良率\n                            \n                        \n                        \n                            \n                                2024年\n                                ↑4.3%\n                            \n                            \n                                75.2%\n                                同期优良率\n                            \n                        \n                        \n                            \n                                2023年\n                                ↑17.0%\n                            \n                            \n                                67.0%\n                                同期优良率",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 15,
-            "offsetTop": 103,
-            "offsetWidth": 336,
-            "offsetHeight": 102
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.historical-comparison-cards",
-        "textContent": "2025年\n                                当前\n                            \n                            \n                                78.5%\n                                优良率\n                            \n                        \n                        \n                            \n                                2024年\n                                ↑4.3%\n                            \n                            \n                                75.2%\n                                同期优良率\n                            \n                        \n                        \n                            \n                                2023年\n                                ↑17.0%\n                            \n                            \n                                67.0%\n                                同期优良率",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-14T09:47:23.681Z"
-      },
-      "lastModified": "2025-08-14T09:47:23.687Z"
+      "lastModified": "2025-08-20T09:37:09.646Z"
     }
   },
   "index.html-yield-estimation": {
-    "precise-div-noid-section-title-7-0-0": {
-      "name": "作物产量预估详情",
-      "content": "#### 功能概述\n作物产量预估详情是产量预估系统的核心展示组件，通过列表形式展示六种主要作物的产量预估结果。该组件为农业管理者提供直观的产量数据对比和置信度评估，支持作物选择和详情查看功能。\n\n#### 详细功能说明\n- **组件类型**: 交互式作物选择列表，支持点击切换和详情查看\n- **显示内容**: 作物图标、名称、预估产量、置信度范围\n- **交互功能**: 作物选择器，点击可查看对应作物的详细产量信息\n- **数据来源**: 基于遥感数据、气象条件、历史产量的综合预估模型\n\n\n#### 作物产量数据结构\n系统当前监测六种主要作物的产量预估：\n\n**小麦 (当前选中)**:\n- **预估产量**: 485kg/亩\n- **置信度范围**: ±8.2%\n- **产量区间**: 445-525kg/亩\n- **作物图标**: 🌾\n- **选择状态**: active (当前选中状态)\n\n**玉米**:\n- **预估产量**: 628kg/亩\n- **置信度范围**: ±6.5%\n- **产量区间**: 587-669kg/亩\n- **作物图标**: 🌽\n\n**油菜**:\n- **预估产量**: 199kg/亩\n- **置信度范围**: ±11.8%\n- **产量区间**: 176-222kg/亩\n- **作物图标**: 🌻\n\n**蔬菜**:\n- **预估产量**: 1820kg/亩\n- **置信度范围**: ±10.5%\n- **产量区间**: 1629-2011kg/亩\n- **作物图标**: 🥬\n\n**马铃薯**:\n- **预估产量**: 1650kg/亩\n- **置信度范围**: ±9.8%\n- **产量区间**: 1488-1812kg/亩\n- **作物图标**: 🥔\n\n**其他作物**:\n- **预估产量**: 950kg/亩\n- **置信度范围**: ±15.3%\n- **产量区间**: 805-1095kg/亩\n- **作物图标**: 🌱\n\n#### 产量预估方法学\n**基础预估模型**:\n系统采用多因子综合预估模型，结合以下四个核心要素：\n\n1. **遥感长势数据 (权重40%)**:\n   - NDVI植被指数时序分析\n   - LAI叶面积指数监测\n   - 地表温度和水分状况\n   - 作物物候期进展评估\n\n2. **历史产量数据 (权重30%)**:\n   - 近5年同期产量统计\n   - 年际变化趋势分析\n   - 异常年份识别和修正\n   - 品种改良影响评估\n\n3. **气象条件 (权重20%)**:\n   - 积温累积和有效温度\n   - 降水量和分布模式\n   - 日照时数和光照强度\n   - 极端天气事件影响\n\n4. **田间管理 (权重10%)**:\n   - 施肥水平和时机\n   - 灌溉管理状况\n   - 病虫害防治效果\n   - 种植密度和品种选择\n\n#### 置信度计算原理\n**置信度评估方法**:\n置信度范围反映预估结果的可靠程度，计算考虑以下因素：\n\n- **数据质量**: 遥感数据的云层覆盖率、时间连续性\n- **模型精度**: 历史验证的预测准确率\n- **环境稳定性**: 气象条件的变异程度\n- **管理一致性**: 田间管理措施的标准化程度\n\n**置信度等级分类**:\n- **高置信度**: ±5-8%，数据完整，环境稳定\n- **中等置信度**: ±8-12%，数据基本完整，环境正常\n- **低置信度**: ±12-20%，数据缺失较多，环境变异大\n\n#### 作物选择器交互功能\n**选择状态管理**:\n- **active状态**: 当前选中的作物显示高亮样式\n- **hover效果**: 鼠标悬浮显示详细的产量信息工具提示\n- **点击切换**: 点击不同作物可切换查看对应的详细信息\n- **数据联动**: 选择不同作物会更新地图图层和相关图表\n\n**工具提示内容**:\n鼠标悬浮在作物项上时，显示详细信息包括：\n- 作物名称和种植面积\n- 详细的产量预估方法\n- 主要影响因素分析\n- 与历史同期的对比\n- 管理建议和注意事项\n\n#### 产量数据的农业意义\n**小麦产量分析**:\n485kg/亩的预估产量处于中等偏上水平，±8.2%的置信度表明预估较为可靠。当前正值小麦灌浆期，NDVI指数良好，预计正常收获。\n\n**玉米产量分析**:\n628kg/亩的预估产量表现优秀，±6.5%的高置信度反映了玉米生长的稳定性。夏季充足的光热条件有利于玉米高产。\n\n**蔬菜产量分析**:\n1820kg/亩的高产量体现了蔬菜作物的集约化特点，但±10.5%的置信度提醒需要关注病虫害和市场波动风险。\n\n\n**数据质量控制**:\n- **异常值检测**: 自动识别和标记异常的预估结果\n- **专家审核**: 重要时期的预估结果需要专家审核确认\n- **历史验证**: 定期与实际产量对比，优化预估模型\n- **不确定性量化**: 提供预估结果的不确定性评估\n",
-      "timestamp": "2025/8/15 17:44:45",
-      "elementId": "precise-div-noid-section-title-7-0-0",
+    "precise-div-noid-metric-card-9-0-0": {
+      "name": "理想产量",
+      "content": "理想状态的产量",
+      "timestamp": "2025/8/20 17:39:15",
+      "elementId": "precise-div-noid-metric-card-9-0-0",
       "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.data-section:nth-of-type(1) > div.section-title",
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(1) > div.metric-card.ideal",
         "elementFingerprint": {
           "tagName": "DIV",
-          "className": "section-title",
-          "textContent": "🎯\n                        作物产量预估详情",
+          "className": "metric-card ideal",
+          "textContent": "🌾\n                                \n                                    理想产量\n                                    1,660吨\n                                    无灾害条件",
           "attributes": {},
           "position": {
             "offsetLeft": 32,
-            "offsetTop": 100,
-            "offsetWidth": 334,
-            "offsetHeight": 30
+            "offsetTop": 149,
+            "offsetWidth": 162,
+            "offsetHeight": 71
           },
           "chartType": null
         },
-        "fallbackSelector": "div.section-title",
-        "textContent": "🎯\n                        作物产量预估详情",
+        "fallbackSelector": "div.metric-card.ideal",
+        "textContent": "🌾\n                                \n                                    理想产量\n                                    1,660吨\n                                    无灾害条件",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:44:45.443Z"
+        "timestamp": "2025-08-20T09:39:15.801Z"
       },
-      "lastModified": "2025-08-15T09:44:45.449Z"
+      "lastModified": "2025-08-20T09:39:15.818Z"
     },
-    "precise-div-noid-model-parameters-7-1-1": {
-      "name": "估产模型参数看板",
-      "content": "\n#### 功能概述\n估产模型参数看板是产量预估系统的核心算法展示组件，通过参数卡片的形式展示影响产量预估的关键环境和生长指标。该看板为农业专家和管理者提供模型运行状态的透明化展示，帮助理解产量预估的科学依据。\n\n#### 详细功能说明\n- **组件类型**: 参数监控卡片组，实时显示模型关键参数\n- **显示内容**: 三个核心参数指标和一个动态修正系数\n- **数据来源**: 气象监测站、遥感数据处理、作物生长模型计算\n\n\n#### 核心参数详解\n\n**1. 积温达标率 (当前值: 92.5%)**\n- **定义**: 作物生长期内累积有效温度达到理论需求的百分比\n- **计算方法**: (实际积温 / 理论需求积温) × 100%\n- **评估等级**: excellent (优秀等级)\n- **变化趋势**: ↑2.3% (较上期上升)\n- **农业意义**: 反映温度条件对作物发育的满足程度，直接影响作物成熟度和产量形成\n\n**积温计算原理**:\n```\n日有效积温 = max(0, 日平均温度 - 作物基础温度)\n累积积温 = Σ(日有效积温)\n积温达标率 = (累积积温 / 品种需求积温) × 100%\n```\n\n**不同作物的积温需求**:\n- 小麦: 2200-2800°C·d\n- 玉米: 2500-3200°C·d\n- 油菜: 2000-2600°C·d\n- 蔬菜: 1500-2500°C·d (因品种而异)\n\n**2. 降水偏差值 (当前值: -15.2mm)**\n- **定义**: 当前降水量与历史同期平均值的偏差\n- **计算方法**: 当期降水量 - 历史同期平均降水量\n- **评估等级**: good (良好等级)\n- **变化趋势**: ↓8.1mm (较上期减少)\n- **农业意义**: 负值表示降水偏少，需要关注干旱风险和灌溉需求\n\n**降水评估标准**:\n- 偏差 > +50mm: 过多，关注涝害风险\n- 偏差 +20mm ~ +50mm: 充足，有利于作物生长\n- 偏差 -20mm ~ +20mm: 正常，基本满足需求\n- 偏差 -50mm ~ -20mm: 偏少，需要适当补充灌溉\n- 偏差 < -50mm: 严重不足，需要大量灌溉\n\n**3. 长势评分 (当前值: 87.8分)**\n- **定义**: 基于NDVI等遥感指标的作物长势综合评分\n- **评分范围**: 0-100分，分数越高表示长势越好\n- **评估等级**: excellent (优秀等级)\n- **变化趋势**: ↑5.2分 (较上期提升)\n- **农业意义**: 直观反映作物当前的生长状况和健康水平\n\n**长势评分构成**:\n- NDVI指数权重: 40%\n- 叶面积指数: 25%\n- 地表温度: 20%\n- 土壤湿度: 15%\n\n**评分等级划分**:\n- 90-100分: 优秀，长势旺盛\n- 80-89分: 良好，长势正常\n- 70-79分: 中等，需要关注\n- 60-69分: 较差，需要改善\n- <60分: 差，需要紧急处理\n\n#### 产量修正系数\n\n**动态修正系数 (当前值: 1.08)**\n- **定义**: 基于当前环境条件对基础产量预估的动态调整系数\n- **计算方式**: 综合考虑三个核心参数的影响程度\n- **系数含义**: >1.0表示有利于增产，<1.0表示可能减产\n- **动态特性**: 随着生长季进展和环境条件变化实时调整\n\n**修正系数计算公式**:\n```\n修正系数 = 基础系数 × 积温影响因子 × 降水影响因子 × 长势影响因子\n\n其中:\n积温影响因子 = 0.5 + (积温达标率 / 100) × 0.5\n降水影响因子 = 1.0 + (降水偏差值 / 标准偏差) × 0.1\n长势影响因子 = 0.7 + (长势评分 / 100) × 0.3\n```\n\n#### 参数卡片设计特点\n\n**视觉设计**:\n- **等级颜色编码**: excellent(绿色)、good(蓝色)、normal(黄色)、poor(红色)\n- **趋势指示器**: 上升(↑绿色)、下降(↓红色)、持平(→灰色)\n- **数值突出显示**: 大字体显示关键数值，小字体显示标签和趋势\n\n**交互功能**:\n- **悬浮详情**: 鼠标悬浮显示参数的详细计算方法和历史变化\n- **点击展开**: 点击参数卡可展开显示更详细的分析图表\n- **历史对比**: 支持查看参数的历史变化趋势\n\n#### 模型参数的农业指导价值\n\n**生产管理指导**:\n- **积温管理**: 根据积温达标率调整播种时间和品种选择\n- **水分管理**: 根据降水偏差制定灌溉计划\n- **长势监控**: 根据长势评分及时调整田间管理措施\n\n**风险预警功能**:\n- **温度风险**: 积温不足时预警延迟成熟风险\n- **水分风险**: 降水偏差过大时预警干旱或涝害风险\n- **长势风险**: 长势评分下降时预警病虫害或营养不良\n\n**决策支持**:\n- **收获时机**: 综合参数判断最佳收获时间\n- **产量调整**: 根据修正系数调整产量预期和销售计划\n- **投入优化**: 根据参数变化优化肥料、农药等投入",
-      "timestamp": "2025/8/15 17:45:39",
-      "elementId": "precise-div-noid-model-parameters-7-1-1",
+    "precise-div-noid-metric-card-9-1-6": {
+      "name": "实际预估产量",
+      "content": "根据实际情况的产量预估\n因为高温 低温 干旱 损失",
+      "timestamp": "2025/8/20 17:41:42",
+      "elementId": "precise-div-noid-metric-card-9-1-6",
       "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.data-section:nth-of-type(2) > div.model-parameters",
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(1) > div.metric-card.actual",
         "elementFingerprint": {
           "tagName": "DIV",
-          "className": "model-parameters",
-          "textContent": "积温达标率\n                                92.5%\n                                ↑2.3%\n                            \n                            \n                                降水偏差值\n                                -15.2mm\n                                ↓8.1mm\n                            \n                            \n                                长势评分\n                                87.8分\n                                ↑5.2分\n                            \n                        \n                        \n                            产量修正系数:\n                            1.08\n                            (动态计算)",
+          "className": "metric-card actual",
+          "textContent": "⚠️\n                                \n                                    实际产量\n                                    1,257吨\n                                    高温冻害影响",
           "attributes": {},
           "position": {
-            "offsetLeft": 32,
-            "offsetTop": 421,
-            "offsetWidth": 334,
-            "offsetHeight": 168
+            "offsetLeft": 204,
+            "offsetTop": 149,
+            "offsetWidth": 162,
+            "offsetHeight": 71
           },
           "chartType": null
         },
-        "fallbackSelector": "div.model-parameters",
-        "textContent": "积温达标率\n                                92.5%\n                                ↑2.3%\n                            \n                            \n                                降水偏差值\n                                -15.2mm\n                                ↓8.1mm\n                            \n                            \n                                长势评分\n                                87.8分\n                                ↑5.2分\n                            \n                        \n                        \n                            产量修正系数:\n                            1.08\n                            (动态计算)",
+        "fallbackSelector": "div.metric-card.actual",
+        "textContent": "⚠️\n                                \n                                    实际产量\n                                    1,257吨\n                                    高温冻害影响",
         "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:45:39.136Z"
+        "timestamp": "2025-08-20T09:41:42.322Z"
       },
-      "lastModified": "2025-08-15T09:45:39.158Z"
-    },
-    "precise-div-noid-disaster-correction-7-1-1": {
-      "name": "灾害损失修正模块",
-      "content": "\n#### 功能概述\n灾害损失修正模块是产量预估系统的风险调整组件，通过交互式滑块控制器允许用户手动调整灾害损失参数，实时计算灾害对产量的影响。该模块为农业管理者提供灾害损失评估和产量修正的工具，帮助制定更准确的产量预期。\n\n#### 详细功能说明\n- **组件类型**: 交互式滑块控制器 + 实时计算结果显示\n- **显示内容**: 灾害损失率调整、修正前后产量对比、总损失率统计\n- **交互功能**: 滑块拖拽调整、实时数值更新、结果动态计算\n- **数据来源**: 基础产量预估 + 用户设定的灾害损失参数\n- **更新频率**: 实时更新，滑块变化时立即重新计算\n\n#### 灾害损失参数控制\n\n**1. 干旱损失率控制**\n- **控制范围**: 0-20%，步长0.5%\n- **当前设定**: 5.0%\n- **控制元素**: `input[type=\"range\"]` 滑块控制器\n- **实时显示**: 滑块旁边显示当前数值\n- **农业意义**: 反映干旱对作物产量的负面影响程度\n\n**干旱损失评估标准**:\n- 0-3%: 轻度干旱，对产量影响较小\n- 3-8%: 中度干旱，产量有明显下降\n- 8-15%: 重度干旱，产量大幅减少\n- 15-20%: 极度干旱，产量严重受损\n\n**2. 高温损失率控制**\n- **控制范围**: 0-15%，步长0.5%\n- **当前设定**: 3.0%\n- **控制元素**: `input[type=\"range\"]` 滑块控制器\n- **实时显示**: 滑块旁边显示当前数值\n- **农业意义**: 反映高温热害对作物产量的负面影响\n\n**高温损失评估标准**:\n- 0-2%: 轻微高温，基本不影响产量\n- 2-5%: 中等高温，产量略有下降\n- 5-10%: 严重高温，产量明显减少\n- 10-15%: 极端高温，产量严重受损\n\n#### 修正结果计算与显示\n\n**修正前产量 (基础预估)**:\n- **数值**: 1,485吨\n- **来源**: 基于遥感数据、气象条件、历史产量的综合预估\n- **标识**: original 类样式，表示原始预估值\n- **计算基础**: 未考虑灾害损失的理想产量\n\n**修正后产量 (灾害调整)**:\n- **数值**: 1,366吨\n- **计算方法**: 修正前产量 × (1 - 总损失率)\n- **标识**: corrected 类样式，表示修正后的实际预估\n- **实用价值**: 考虑灾害风险的更现实的产量预期\n\n**总损失率**:\n- **数值**: 8.0%\n- **计算公式**: 干旱损失率 + 高温损失率 + 其他损失因子\n- **当前构成**: 5.0%(干旱) + 3.0%(高温) = 8.0%\n- **标识**: loss 类样式，突出显示损失程度\n\n\n\n\n#### 交互功能设计\n\n**滑块控制器特性**:\n- **平滑拖拽**: 支持鼠标拖拽和键盘控制\n- **实时反馈**: 拖拽过程中实时更新数值显示\n- **精确控制**: 0.5%的精细步长控制\n- **视觉反馈**: 滑块位置直观反映损失程度\n\n**数值联动更新**:\n- **即时计算**: 滑块变化时立即重新计算修正结果\n- **动画过渡**: 数值变化时的平滑过渡动画\n- **颜色变化**: 损失率增加时，相关数值颜色变化提示风险\n- **图表联动**: 修正结果同步更新到相关图表和地图\n\n#### 农业应用价值\n\n**风险评估**:\n- **灾害影响量化**: 将抽象的灾害风险转化为具体的产量损失数值\n- **情景分析**: 通过调整参数模拟不同灾害情景下的产量表现\n- **决策支持**: 为灾害应对措施的制定提供量化依据\n\n**保险与补偿**:\n- **损失评估**: 为农业保险理赔提供损失率参考\n- **补偿标准**: 为政府灾害补偿政策制定提供数据支撑\n- **风险定价**: 为农业保险产品的风险定价提供基础数据\n\n**生产规划**:\n- **保守预估**: 基于灾害风险制定更保守的生产计划\n- **资源配置**: 根据修正后产量调整资源配置和投入计划\n- **市场策略**: 基于实际预期产量制定销售和采购策略",
-      "timestamp": "2025/8/15 17:48:21",
-      "elementId": "precise-div-noid-disaster-correction-7-1-1",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.panel-content > div.data-section:nth-of-type(3) > div.disaster-correction",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "disaster-correction",
-          "textContent": "干旱损失率\n                                \n                                    \n                                    5.0%\n                                \n                            \n                            \n                                高温损失率\n                                \n                                    \n                                    3.0%\n                                \n                            \n                        \n                        \n                            \n                                修正前产量\n                                1,485吨\n                            \n                            \n                                修正后产量\n                                1366吨\n                            \n                            \n                                总损失率\n                                8.0%",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 32,
-            "offsetTop": 677,
-            "offsetWidth": 334,
-            "offsetHeight": 193
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.disaster-correction",
-        "textContent": "干旱损失率\n                                \n                                    \n                                    5.0%\n                                \n                            \n                            \n                                高温损失率\n                                \n                                    \n                                    3.0%\n                                \n                            \n                        \n                        \n                            \n                                修正前产量\n                                1,485吨\n                            \n                            \n                                修正后产量\n                                1366吨\n                            \n                            \n                                总损失率\n                                8.0%",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:48:21.611Z"
-      },
-      "lastModified": "2025-08-15T09:48:21.620Z"
-    },
-    "precise-div-noid-achievement-progress-8-0-0": {
-      "name": "区域估产达成度仪表盘",
-      "content": "\n#### 功能概述\n区域估产达成度仪表盘是产量预估系统的目标完成度监控组件，通过进度条和关键指标展示当前产量预估相对于年度目标的完成情况。该组件为农业管理部门提供目标达成度的直观评估，帮助及时调整生产策略和政策措施。\n\n#### 详细功能说明\n- **组件类型**: 进度条仪表盘 + 关键指标卡片\n- **显示内容**: 达成进度百分比、预估总产量、年度目标对比\n- **视觉设计**: 水平进度条 + 数值标签 + 详情卡片\n- **数据来源**: 当前产量预估数据 + 年度目标设定\n- **更新频率**: 随产量预估更新而实时更新\n\n#### 达成度进度显示\n\n**进度条设计**:\n- **当前进度**: 82.3%\n- **进度条宽度**: CSS样式设定为 `width: 82.3%`\n- **颜色编码**: 根据达成度使用不同颜色\n  - 90%以上: 绿色 (优秀)\n  - 80-90%: 蓝色 (良好)\n  - 70-80%: 黄色 (一般)\n  - 70%以下: 红色 (需要关注)\n\n**进度标签**:\n- **标签文本**: \"达成进度\"\n- **数值显示**: \"82.3%\"\n- **位置**: 进度条上方，左右对齐显示\n\n#### 关键指标详情\n\n**预估总产量**:\n- **数值**: 1,366吨\n- **标签**: \"预估总产量\"\n- **数据来源**: 基于当前预估模型计算的总产量\n- **包含修正**: 已考虑灾害损失修正的最终预估值\n\n**年度目标**:\n- **数值**: 1,660吨\n- **标签**: \"年度目标\"\n- **数据来源**: 年初制定的产量目标或政府下达的生产任务\n- **基准作用**: 作为达成度计算的基准值\n\n\n**达成度评估标准**:\n- **超额完成**: ≥100%，超出预期，表现优秀\n- **基本完成**: 90-99%，接近目标，表现良好\n- **部分完成**: 80-89%，有一定差距，需要努力\n- **完成困难**: 70-79%，差距较大，需要重点关注\n- **完成风险**: <70%，差距很大，需要紧急措施\n\n#### 目标差距分析\n\n**产量缺口**:\n- **缺口数量**: 1,660 - 1,366 = 294吨\n- **缺口比例**: 294 / 1,660 = 17.7%\n- **缺口原因**: 主要由灾害损失(8.0%)和基础产能不足造成\n\n**弥补策略**:\n- **技术改进**: 通过改良品种、优化管理提升单产\n- **面积扩大**: 在适宜区域适当扩大种植面积\n- **损失减少**: 加强灾害防控，减少灾害损失\n- **政策支持**: 通过政策激励提高农民生产积极性\n\n#### 动态更新机制\n\n**实时联动**:\n- **产量变化**: 当产量预估发生变化时，达成度自动重新计算\n- **目标调整**: 支持年度目标的动态调整和更新\n- **进度动画**: 数值变化时的平滑动画过渡效果\n- **颜色变化**: 根据达成度变化自动调整进度条颜色\n\n**历史追踪**:\n- **趋势记录**: 记录达成度的历史变化趋势\n- **关键节点**: 标记重要时间节点的达成度情况\n- **预警机制**: 当达成度持续下降时发出预警提示",
-      "timestamp": "2025/8/15 17:52:13",
-      "elementId": "precise-div-noid-achievement-progress-8-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(1) > div.achievement-gauge-container > div.achievement-progress",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "achievement-progress",
-          "textContent": "达成进度\n                                75.7%",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 32,
-            "offsetTop": 141,
-            "offsetWidth": 334,
-            "offsetHeight": 73
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.achievement-progress",
-        "textContent": "达成进度\n                                75.7%",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:52:13.263Z"
-      },
-      "lastModified": "2025-08-15T09:52:13.271Z"
-    },
-    "precise-div-noid-five-year-comparison-container-7-1-2": {
-      "name": "五年产量对比",
-      "content": "\n#### 功能概述\n五年产量对比是产量预估系统的历史趋势分析组件，通过多种图表形式展示近五年的产量变化趋势和对比分析。该组件支持柱状图、折线图、表格三种展示方式的切换，为农业管理者提供历史产量数据的全面分析和趋势预测。\n\n#### 详细功能说明\n- **组件类型**: 多模式图表容器，支持图表类型切换\n- **显示内容**: 近五年产量数据对比、趋势分析、增长率计算\n- **切换功能**: 柱状图、折线图、表格三种展示模式\n- **容器ID**: `five-year-comparison` (图表) + `five-year-table` (表格)\n- **数据来源**: 历史产量统计数据库 + 当前年度预估数据\n- **更新频率**: 年度更新，当年数据随预估更新\n\n#### 图表切换控制\n\n**切换按钮组**:\n- **柱状图按钮**: `data-type=\"bar\"`, 当前激活状态 (active)\n- **折线图按钮**: `data-type=\"line\"`, 显示趋势变化\n- **表格按钮**: `data-type=\"table\"`, 详细数据展示\n\n\n\n#### 五年产量数据结构\n\n**数据分析**:\n- **2021年**: 基准年，总产量1120吨，平均单产378kg/亩\n- **2022年**: 增长年，总产量1256吨，同比增长12.1%\n- **2023年**: 下降年，总产量1180吨，同比下降6.0%\n- **2024年**: 恢复年，总产量1320吨，同比增长11.9%\n- **2025年**: 预估年，总产量1366吨，预计增长3.5%\n\n#### 柱状图展示模式\n\n**图表配置**:\n- **图表类型**: ECharts柱状图\n- **X轴**: 年份 (2021-2025)\n- **Y轴**: 产量 (吨)\n- **柱状样式**: 渐变色填充，突出显示预估年份\n- **数据标签**: 柱状顶部显示具体数值\n\n**视觉特点**:\n- **历史数据**: 蓝色系渐变，表示已确定的历史数据\n- **预估数据**: 橙色系渐变，表示预估的未来数据\n- **增长标识**: 柱状上方显示同比增长率\n- **交互提示**: 鼠标悬浮显示详细信息\n\n#### 折线图展示模式\n\n**图表配置**:\n- **图表类型**: ECharts折线图\n- **趋势线**: 平滑曲线连接各年度数据点\n- **数据点**: 圆形标记，大小反映数据重要性\n- **预测线**: 虚线表示预估部分\n- **趋势分析**: 添加趋势线和置信区间\n\n**分析功能**:\n- **波动分析**: 识别产量的周期性波动\n- **趋势预测**: 基于历史趋势预测未来走向\n- **异常检测**: 标识异常年份和原因分析\n- **相关性分析**: 分析产量与气象因子的关系\n\n\n\n**表格特点**:\n- **详细数据**: 显示完整的数值信息\n- **计算字段**: 自动计算增长率和变化量\n- **状态标识**: 用颜色标识增长/下降状态\n- **排序功能**: 支持按不同字段排序\n- **导出功能**: 支持数据导出为Excel格式\n\n",
-      "timestamp": "2025/8/15 17:53:04",
-      "elementId": "precise-div-noid-five-year-comparison-container-7-1-2",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(2) > div.five-year-comparison-container[data-text-content*=\"2022小麦实际: 425kg/亩小麦预\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "five-year-comparison-container",
-          "textContent": "2022小麦实际: 425kg/亩小麦预估: 408kg/亩",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 32,
-            "offsetTop": 386,
-            "offsetWidth": 334,
-            "offsetHeight": 200
-          },
-          "chartType": "echarts"
-        },
-        "fallbackSelector": "div.five-year-comparison-container",
-        "textContent": "2022小麦实际: 425kg/亩小麦预估: 408kg/亩",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:53:04.431Z"
-      },
-      "lastModified": "2025-08-15T09:53:04.438Z"
-    },
-    "precise-span-noid-breakdown-label-10-0-0-小麦优质种植收益": {
-      "name": "经济价值分析卡",
-      "content": "\n#### 功能概述\n经济价值分析卡是产量预估系统的经济效益评估组件，通过经济指标卡片和收益分解展示产量预估对应的经济价值。该组件为农业管理者和政策制定者提供产量的经济意义分析，帮助评估农业生产的经济效益和投资回报。\n\n#### 详细功能说明\n- **组件类型**: 经济指标卡片组 + 收益分解列表\n- **显示内容**: 三个核心经济指标 + 主要作物收益分解\n- **数据来源**: 产量预估数据 + 市场价格 + 成本核算\n- **更新频率**: 随产量预估和市场价格变化而更新\n\n#### 核心经济指标\n\n**1. 预估总产值 (428.5万元)**\n- **定义**: 基于预估产量和当前市场价格计算的总产值\n- **计算方法**: Σ(各作物预估产量 × 对应市场价格)\n- **变化趋势**: ↑12.8% (较去年同期上升)\n- **经济意义**: 反映农业生产的总体经济规模和价值创造能力\n\n\n**2. 亩均收益 (1,445元/亩)**\n- **定义**: 平均每亩农田产生的净收益\n- **计算方法**: (总产值 - 总成本) / 总种植面积\n- **变化趋势**: ↑8.5% (较去年同期上升)\n- **经济意义**: 反映农业生产的单位面积经济效益\n\n**亩均收益构成**:\n- 总产值: 1,445元/亩\n- 生产成本: 850元/亩\n- 净收益: 595元/亩\n- 收益率: 41.2%\n\n**3. 成本收益率 (2.38)**\n- **定义**: 总收益与总成本的比值\n- **计算方法**: 总收益 / 总成本\n- **变化趋势**: ↓3.2% (较去年同期下降)\n- **经济意义**: 反映投入产出效率，数值越高表示效益越好\n\n**成本收益分析**:\n- 比率 > 3.0: 高效益，投资回报优秀\n- 比率 2.0-3.0: 良好效益，投资回报良好\n- 比率 1.5-2.0: 一般效益，投资回报一般\n- 比率 < 1.5: 低效益，需要改善\n\n#### 收益分解分析\n\n**小麦收益 (156.2万元, 36.4%)**\n- **产量贡献**: 485kg/亩 × 种植面积\n- **价格水平**: 当前市场价格约2.8元/kg\n- **收益占比**: 在总收益中占比36.4%\n- **市场地位**: 主要粮食作物，收益稳定\n\n**玉米收益 (182.8万元, 42.7%)**\n- **产量贡献**: 628kg/亩 × 种植面积\n- **价格水平**: 当前市场价格约2.6元/kg\n- **收益占比**: 在总收益中占比42.7%，最大收益来源\n- **市场地位**: 饲料和工业原料，需求旺盛\n\n**油菜收益 (89.5万元, 20.9%)**\n- **产量贡献**: 199kg/亩 × 种植面积\n- **价格水平**: 当前市场价格约5.2元/kg\n- **收益占比**: 在总收益中占比20.9%\n- **市场地位**: 经济作物，价格相对较高\n",
-      "timestamp": "2025/8/15 17:54:48",
-      "elementId": "precise-span-noid-breakdown-label-10-0-0-小麦优质种植收益",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section:nth-of-type(3) > div.economic-analysis > div.profit-breakdown > div.breakdown-item:nth-of-type(2) > span.breakdown-label[data-text-content*=\"小麦优质种植收益\"]",
-        "elementFingerprint": {
-          "tagName": "SPAN",
-          "className": "breakdown-label",
-          "textContent": "小麦优质种植收益",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 45,
-            "offsetTop": 855,
-            "offsetWidth": 202,
-            "offsetHeight": 15
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "span.breakdown-label",
-        "textContent": "小麦优质种植收益",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-15T09:54:48.348Z"
-      },
-      "lastModified": "2025-08-15T09:54:48.355Z"
-    }
-  },
-  "index.html-weather-monitoring": {
-    "precise-div-noid-stat-card-5-1-2": {
-      "name": "气象图层选择控制",
-      "content": "#### 功能概述\n气象图层选择控制是气象监测系统的核心交互组件，采用标签页形式提供6种不同气象图层的切换功能。该组件位于左侧面板顶部，采用单选模式设计，确保用户能够专注查看单一气象要素的空间分布特征。\n\n#### 详细功能说明\n- **组件类型**: 标签页切换器，单选模式，一次只能选择一个图层\n- **显示内容**: 6种气象图层类型选择 + 透明度控制滑块\n- **数据来源**: 气象数值模型、卫星遥感反演数据、地面观测站插值\n- **更新频率**: 根据图层类型不同，实时图层每10分钟更新，历史图层按需加载\n\n#### 气象图层类型详解\n**6种核心气象图层**:\n1. **🌧️ 降雨数据** (`precipitation`): 实时和历史降水量分布\n2. **🌡️ 地温数据** (`soil-temperature`): 土壤表层温度分布  \n3. **🌡️ 气温数据** (`temperature`): 地表气温空间分布\n4. **🔥 积温数据** (`accumulated-temperature`): 累计有效积温分布\n5. **🌊 积雨数据** (`accumulated-precipitation`): 累计降水量分布\n6. **💧 空气相对湿度** (`humidity`): 大气湿度空间分布\n\n#### 透明度控制功能\n- **控制方式**: 水平滑块，范围0-100%\n- **默认值**: 90%透明度，确保底图可见\n- **实时调节**: 滑动时即时更新地图图层透明度\n- **数值显示**: 实时显示当前透明度百分比\n\n#### 交互逻辑与用户体验\n- **单选切换**: 点击图层标签时自动切换，其他图层自动隐藏\n- **视觉反馈**: 选中状态通过高亮显示，未选中状态为半透明\n- **加载状态**: 图层切换时显示加载动画，提升用户体验",
-      "timestamp": "2025/8/18 14:24:36",
-      "elementId": "precise-div-noid-stat-card-5-1-2",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(1)",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-card",
-          "textContent": "🗺️ 气象图层选择\n                    \n                    \n                        透明度：\n                        \n                        47%\n                    \n                \n                \n                \n                    \n                        🌧️\n                        降雨数据\n                    \n                    \n                    \n                        🌡️\n                        地温数据\n                    \n                    \n                    \n                        🌡️\n                        气温数据\n                    \n                    \n                    \n                        🔥\n                        积温\n                    \n                    \n                    \n                        🌊\n                        积雨\n                    \n                    \n                    \n                        💧\n                        空气相对湿度",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 15,
-            "offsetTop": 83,
-            "offsetWidth": 368,
-            "offsetHeight": 163
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-card",
-        "textContent": "🗺️ 气象图层选择\n                    \n                    \n                        透明度：\n                        \n                        47%\n                    \n                \n                \n                \n                    \n                        🌧️\n                        降雨数据\n                    \n                    \n                    \n                        🌡️\n                        地温数据\n                    \n                    \n                    \n                        🌡️\n                        气温数据\n                    \n                    \n                    \n                        🔥\n                        积温\n                    \n                    \n                    \n                        🌊\n                        积雨\n                    \n                    \n                    \n                        💧\n                        空气相对湿度",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T06:24:36.446Z"
-      },
-      "lastModified": "2025-08-18T06:24:36.453Z"
-    },
-    "precise-div-noid-stat-header-6-0-0": {
-      "name": "时间控制模块",
-      "content": "\n#### 功能概述  \n时间控制模块是气象监测系统的时序管理核心组件，提供历史数据和预报数据两种时间模式的切换，支持精确的时间点选择和动画播放控制。该模块设计灵活，既能满足历史分析需求，也能支持未来趋势预测。\n\n#### 详细功能说明\n- **组件类型**: 复合控制器，包含模式切换、时间选择、动画控制三个子模块\n- **显示内容**: 时间模式选择器 + 历史/预报时间选择 + 时间轴滑块 + 动画控制\n- **时间范围**: 历史数据支持30天回溯，预报数据支持24小时前瞻\n- **更新频率**: 实时模式每10分钟更新，历史和预报数据按需加载\n\n#### 时间模式切换功能\n**两种时间模式**:\n1. **📈 历史数据模式** (`historical`): \n   - 日期时间选择器：支持选择具体日期和小时\n   - 快捷按钮：昨天、7天前、30天前\n   - 用途：历史气象数据回顾和分析\n   \n2. **🔮 预报数据模式** (`forecast`):\n   - 下拉选择器：当前、1小时后、3小时后、6小时后、12小时后、24小时后\n   - 用途：未来气象趋势预测和规划\n\n#### 时间轴滑块控制\n- **滑块范围**: -168小时到+168小时（7天前到7天后）\n- **当前位置**: 默认为0点（现在）\n- **步进间隔**: 1小时精度\n- **标签显示**: 起始时间、当前时间、结束时间\n- **实时反馈**: 滑动时实时显示选中的具体时间\n\n#### 动画播放控制\n**4个核心控制按钮**:\n- **▶️ 播放按钮**: 开始时间序列动画播放\n- **⏸️ 暂停按钮**: 暂停当前动画播放\n- **🔄 重置按钮**: 重置到初始时间位置\n- **⏩ 速度按钮**: 循环切换播放速度（1x/2x/4x/0.5x）",
-      "timestamp": "2025/8/18 14:25:25",
-      "elementId": "precise-div-noid-stat-header-6-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(2) > div.stat-header",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "⏰ 时间控制\n                    \n                    \n                        \n                            历史数据\n                            预报数据",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "⏰ 时间控制\n                    \n                    \n                        \n                            历史数据\n                            预报数据",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T06:25:25.236Z"
-      },
-      "lastModified": "2025-08-18T06:25:25.240Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-气象预警": {
-      "name": "气象预警滚动显示",
-      "content": "\n#### 功能概述\n气象预警滚动显示是系统的风险管理核心组件，通过无限循环滚动方式展示各类气象灾害预警信息。该组件采用跑马灯形式，确保用户能够及时关注到所有预警信息，支持鼠标悬停暂停功能。\n\n#### 详细功能说明\n- **组件类型**: 垂直滚动列表，无限循环播放，悬停暂停\n- **显示内容**: 预警图标、预警标题、发布时间、预警等级颜色编码\n- **滚动效果**: CSS动画实现，20秒完成一轮滚动\n- **交互功能**: 鼠标悬停时暂停滚动，移开后继续\n- **数据来源**: 甘肃省气象局发布的临夏县气象灾害预警信息，非API接口形式\n- **获取方式**: 通过气象部门官方渠道获取发布的预警公告，人工录入系统\n- **更新机制**: 新预警发布后及时录入显示，系统根据时效性自动管理过期预警\n\n#### 预警信息类型与分级\n**六大预警类型**:\n1. **🌧️ 暴雨预警** - 黄色等级（较重灾害）\n2. **🌡️ 低温预警** - 蓝色等级（一般灾害）  \n3. **⚡ 雷电预警** - 黄色等级（较重灾害）\n4. **🌪️ 大风预警** - 橙色等级（严重灾害）\n5. **🌨️ 暴雪预警** - 蓝色等级（一般灾害）\n6. **🌫️ 大雾预警** - 黄色等级（较重灾害）\n\n#### 预警等级颜色体系\n- **蓝色预警** (`.info`): 一般性灾害，需注意防范\n- **黄色预警** (`.warning`): 较重灾害，加强防范措施  \n- **橙色预警** (`.danger`): 严重灾害，启动应急预案\n- **红色预警** (紧急): 特别严重，立即响应\n\n#### 预警信息管理机制\n\n**预警发布流程**:\n1. **信息获取**: 实时关注甘肃省气象局官方网站和临夏县气象局预警发布\n2. **信息录入**: 预警信息发布后立即录入系统，包含预警类型、等级、时间、影响区域\n3. **显示更新**: 新预警信息自动添加到滚动列表，按时间顺序排列\n4. **状态跟踪**: 对每条预警信息进行显示状态标记（生效展示中、已过期取消）\n\n**大屏显示取消机制**:\n1. **时效检查**: 系统定时检查每条预警信息的生效时限\n2. **自动过期**: 当预警信息超过实效期后，系统自动将其标记为\"已过期\"状态\n3. **显示移除**: 已过期的预警信息自动从大屏滚动列表中移除，不再展示\n4. **记录保存**: 过期的预警记录仍保存在后台数据库，用于历史查询和统计分析\n5. **时效标准**: 根据预警等级设定不同的有效期（蓝色24小时，黄色48小时，橙色72小时，红色96小时）\n\n**自动化时效管理**:\n- 预警信息按发布时间降序排列，最新预警优先显示\n- 系统每小时执行一次时效性检查，自动处理过期预警\n- 过期预警信息自动归档到历史记录中，保持大屏界面简洁有效",
-      "timestamp": "2025/8/18 14:41:52",
-      "elementId": "precise-div-noid-stat-header-6-0-0-气象预警",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(3) > div.stat-header[data-text-content*=\"⚠️ 气象预警\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "⚠️ 气象预警",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "⚠️ 气象预警",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T06:41:52.669Z"
-      },
-      "lastModified": "2025-08-18T06:41:52.687Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-农业气象指数": {
-      "name": "农业气象指数",
-      "content": "\n#### 功能概述\n农业气象指数评估是系统的农业决策支持核心组件，基于实时气象条件计算三个关键农业指标。该组件采用进度条形式直观展示各项指标的适宜程度，为农业生产决策提供科学依据。\n\n#### 详细功能说明\n- **组件类型**: 水平布局的指标卡片组，三个并列指标\n- **显示内容**: 指标名称、评估结果、进度条可视化\n- **评估算法**: 基于温度、湿度、风速、降水等多参数综合计算\n- **更新频率**: 随气象数据更新\n\n#### 三大农业指标详解\n**1. 🌾 作物适宜度指标**:\n- **当前评估**: 适宜（75%进度）\n- **评估标准**: 综合温度、湿度、光照条件评估作物生长环境\n- **颜色编码**: 绿色(`.good`) - 表示生长条件良好\n- **农业意义**: 指导作物生长期管理和田间作业安排\n\n**2. ⚠️ 病虫害风险指标**:\n- **当前评估**: 中等风险（45%进度）\n- **评估标准**: 基于温湿度组合、降水情况评估病虫害发生概率\n- **颜色编码**: 黄色(`.warning`) - 表示需要关注防控\n- **农业意义**: 指导病虫害预防措施和用药时机\n\n**3. 💧 灌溉建议指标**:\n- **当前评估**: 不需要灌溉（20%进度）\n- **评估标准**: 结合土壤湿度、蒸发量、降水预报综合评估\n- **颜色编码**: 蓝色(`.info`) - 表示当前水分充足\n- **农业意义**: 指导灌溉计划制定和水资源合理配置\n\n#### 指标计算算法原理\n- **多参数加权**: 不同气象参数按农业重要性设置权重\n- **阈值分级**: 设置适宜、警戒、危险等不同阈值区间\n- **动态调整**: 根据作物生育期和季节特点动态调整评估标准\n- **实时更新**: 随气象数据变化实时重新计算和更新显示\n",
-      "timestamp": "2025/8/18 15:14:27",
-      "elementId": "precise-div-noid-stat-header-6-0-0-农业气象指数",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(4) > div.stat-header[data-text-content*=\"🌾 农业气象指数\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🌾 农业气象指数",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🌾 农业气象指数",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:14:27.742Z"
-      },
-      "lastModified": "2025-08-18T07:14:27.766Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-当前天气状况": {
-      "name": "当前天气状况",
-      "content": "\n#### 功能概述\n当前天气状况卡片是气象监测系统的实时状态展示核心组件，通过图标化设计直观展示当前时刻的天气现象和详细气象参数。该组件位于右侧面板顶部，为用户提供最直接的气象信息概览。\n\n#### 详细功能说明\n- **组件类型**: 信息展示卡片，包含主要天气信息和详细参数列表\n- **显示内容**: 天气图标、天气描述、当前温度 + 6项详细气象指标\n- **数据来源**: 临夏县气象观测站实时数据、甘肃省气象局数据中心\n- **更新频率**: 每10分钟自动更新，确保数据时效性\n\n#### 主要天气信息显示\n**核心展示区域**:\n- **☁️ 天气图标**: 直观的天气现象图标（多云、晴、雨、雪等）\n- **天气描述**: 文字描述当前天气状况（\"多云\"）\n- **实时温度**: 当前气温数值显示（\"18.00°C\"）\n- **视觉布局**: 图标和温度信息采用水平布局，便于快速识别\n\n#### 详细气象参数列表\n**6项关键气象指标**:\n1. **🌡️ 体感温度**: 20.00°C - 综合考虑温度、湿度、风速的人体感受温度\n2. **💧 相对湿度**: 65.00% - 空气中水汽含量相对饱和度的百分比\n3. **💨 风速**: 3.20 m/s - 实时风速测量值，影响蒸发和作物摆动\n4. **🧭 风向**: 东南风 - 风向标识，影响污染物扩散和授粉\n5. **📊 气压**: 1013.00 hPa - 大气压力值，影响天气变化趋势\n6. **🌫️ 能见度**: 15.00 km - 大气透明度，影响光合作用和农机作业\n\n#### 数据精度与单位标准\n- **温度精度**: 保留2位小数，单位°C（摄氏度）\n- **湿度精度**: 保留2位小数，单位%（百分比）\n- **风速精度**: 保留2位小数，单位m/s（米每秒）\n- **气压精度**: 保留2位小数，单位hPa（百帕）\n- **能见度精度**: 保留2位小数，单位km（公里）",
-      "timestamp": "2025/8/18 15:16:04",
-      "elementId": "precise-div-noid-stat-header-6-0-0-当前天气状况",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(1) > div.stat-header[data-text-content*=\"🌈 当前天气状况\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🌈 当前天气状况",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🌈 当前天气状况",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:16:04.600Z"
-      },
-      "lastModified": "2025-08-18T07:16:04.606Z"
-    },
-    "precise-canvas-noid-noclass-8-0-0": {
-      "name": "ECharts图表",
-      "content": "\n#### 功能概述\n7天天气预报图表是气象监测系统的中期预测核心组件，使用ECharts组合图表展示未来一周的天气变化趋势。该组件不仅显示基础的天气预报信息，还结合温度变化曲线，为一周内的农事活动规划提供科学指导。\n\n#### 详细功能说明\n- **组件类型**: ECharts复合图表，包含柱状图、折线图和天气图标\n- **显示内容**: 7天温度趋势线、天气现象图标、降水概率、农事建议\n- **数据来源**: 甘肃省气象局发布的临夏县天气预报数据、数值预报模型\n\n#### 图表组成要素\n**多元素组合显示**:\n- **温度折线图**: 7天最高温和最低温变化趋势\n- **天气图标**: 每日天气现象图标（晴、云、雨、雪等）\n- **降水概率**: 柱状图显示每日降水概率百分比\n- **日期坐标**: X轴显示未来7天的日期信息\n- **温度坐标**: Y轴显示温度范围（°C）\n\n#### 预报数据结构\n**7天预报信息包含**:\n- **日期**:  星期x\n- **天气类型**: 晴天、多云、阴天、小雨、中雨、大雨、雷阵雨、雪等\n- **最高温度**: 当日预计最高温度（°C）\n- **最低温度**: 当日预计最低温度（°C）\n- **降水概率**: 降水可能性百分比（0-100%）\n- **风力等级**: 预计风力大小（1-12级）\n\n#### 交互功能特性\n- **数据标签**: 点击或悬停查看详细预报信息\n- **图例控制**: 可显示/隐藏不同数据系列",
-      "timestamp": "2025/8/18 15:18:25",
-      "elementId": "precise-canvas-noid-noclass-8-0-0",
-      "targetInfo": {
-        "smartSelector": "div#seven-day-weather-chart > div:nth-of-type(1) > canvas",
-        "elementFingerprint": {
-          "tagName": "CANVAS",
-          "className": "",
-          "textContent": "ECharts图表",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 0,
-            "offsetWidth": 342,
-            "offsetHeight": 200
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "canvas",
-        "textContent": "ECharts图表",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:18:25.516Z"
-      },
-      "lastModified": "2025-08-18T07:18:25.522Z"
-    }
-  },
-  "index.html-disaster-monitoring": {
-    "precise-div-noid-overview-item-7-0-0": {
-      "name": "灾害概览统计 (disaster-overview)",
-      "content": "\n**功能**: 实时显示不同严重程度的灾害分布统计\n\n**统计分类**:\n- 🔴 **极严重** (critical): 156 亩 (5.2%)\n- 🟠 **严重** (severe): 324 亩 (10.9%)\n- 🟡 **中等** (moderate): 567 亩 (19.1%)\n- 🟢 **轻微** (low): 892 亩 (30.0%)\n\n**显示特性**:\n- 实时更新指示器：⚡ 更新点 + \"实时更新\" 文字\n- 颜色编码与严重程度对应\n- 显示具体面积数值和百分比占比",
-      "timestamp": "2025/8/18 15:32:21",
-      "elementId": "precise-div-noid-overview-item-7-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.left-panel > div.stat-card:nth-of-type(1) > div.disaster-overview > div.overview-item.critical",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "overview-item critical",
-          "textContent": "🔴\n                        \n                            \n                                极严重\n                                156 亩\n                            \n                            5.2%",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 45,
-            "offsetWidth": 167,
-            "offsetHeight": 55
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.overview-item.critical",
-        "textContent": "🔴\n                        \n                            \n                                极严重\n                                156 亩\n                            \n                            5.2%",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:32:20.990Z"
-      },
-      "lastModified": "2025-08-18T07:32:21.032Z"
-    },
-    "precise-div-loss-prediction-chart-noclass-6-1-2": {
-      "name": "损失预测评估图表",
-      "content": "\n**图表切换按钮**:\n- **面积** (data-type=\"area\") - 默认激活\n- **产量** (data-type=\"yield\")  \n- **经济** (data-type=\"economic\")\n\n**统计汇总区域** (prediction-summary):\n- **受灾面积**: 1,939 亩 (红色警示)\n- **产量损失**: 325.6 吨 (橙色警示)\n- **经济损失**: 186.7 万元 (红色警示)\n\n**技术特性**:\n- 图表容器高度: 200px\n- 支持三种不同维度的数据展示切换\n- 颜色编码反映损失严重程度",
-      "timestamp": "2025/8/18 15:32:43",
-      "elementId": "precise-div-loss-prediction-chart-noclass-6-1-2",
-      "targetInfo": {
-        "smartSelector": "div#loss-prediction-chart",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "",
-          "textContent": "损失预测评估图表",
-          "attributes": {
-            "id": "loss-prediction-chart"
-          },
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 46,
-            "offsetWidth": 342,
-            "offsetHeight": 200
-          },
-          "chartType": "echarts"
-        },
-        "fallbackSelector": "div",
-        "textContent": "损失预测评估图表",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:32:43.320Z"
-      },
-      "lastModified": "2025-08-18T07:32:43.326Z"
-    },
-    "precise-canvas-noid-noclass-8-0-0": {
-      "name": "历史灾害对比分析",
-      "content": "**功能**: 历史同期灾害发生情况对比分析\n\n**对比数据显示**:\n- **同比去年**: +12.3% (上升趋势，红色显示)\n- **环比上月**: -5.8% (下降趋势，绿色显示)\n\n**图表特性**:\n- 图表容器高度: 160px\n- 显示历史趋势变化曲线\n- 支持同比、环比数据对比分析",
-      "timestamp": "2025/8/18 15:33:04",
-      "elementId": "precise-canvas-noid-noclass-8-0-0",
-      "targetInfo": {
-        "smartSelector": "div#historical-disaster-chart > div:nth-of-type(1) > canvas",
-        "elementFingerprint": {
-          "tagName": "CANVAS",
-          "className": "",
-          "textContent": "历史灾害对比分析",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 0,
-            "offsetWidth": 342,
-            "offsetHeight": 160
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "canvas",
-        "textContent": "历史灾害对比分析",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:33:04.915Z"
-      },
-      "lastModified": "2025-08-18T07:33:04.929Z"
-    },
-    "precise-div-noid-alert-item-7-0-0": {
-      "name": "实时预警信息",
-      "content": "**功能**: 实时显示各类农业灾害预警信息列表\n\n**预警计数显示**:\n- 预警总数徽章：红色圆形徽章显示 \"4\"\n- 表明当前有4条活跃预警\n\n**预警信息列表** (alert-list):\n\n1. **小麦冻害红色预警** (critical)\n   - 🔴 图标标识\n   - 📍 康乐县北部地区\n   - ⏰ 2024-01-15 13:45\n   - 详情: 预计未来48小时最低温度将降至-15°C\n   - 状态: **紧急**\n\n2. **玉米干旱橙色预警** (severe)  \n   - 🟠 图标标识\n   - 📍 临夏县中南部\n   - ⏰ 2024-01-15 11:20\n   - 详情: 土壤含水量低于30%，需紧急灌溉\n   - 状态: **严重**\n\n3. **高温胁迫黄色预警** (moderate)\n   - 🟡 图标标识  \n   - 📍 和政县东部\n   - ⏰ 2024-01-15 09:30\n   - 详情: 连续3天气温超过35°C\n   - 状态: **中等**\n\n4. **病虫害橙色预警** (severe)\n   - 🟠 图标标识\n   - 📍 广河县西南部  \n   - ⏰ 2024-01-15 08:15\n   - 详情: 玉米粘虫密度超过防治阈值，需紧急防治\n   - 状态: **严重**",
-      "timestamp": "2025/8/18 15:33:35",
-      "elementId": "precise-div-noid-alert-item-7-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card.alert-card > div.alert-list > div.alert-item.critical",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "alert-item critical",
-          "textContent": "🔴\n                        \n                            小麦冻害红色预警\n                            \n                                📍 康乐县北部地区\n                                ⏰ 2024-01-15 13:45\n                                预计未来48小时最低温度将降至-15°C\n                            \n                        \n                        紧急",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 0,
-            "offsetWidth": 342,
-            "offsetHeight": 62
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.alert-item.critical",
-        "textContent": "🔴\n                        \n                            小麦冻害红色预警\n                            \n                                📍 康乐县北部地区\n                                ⏰ 2024-01-15 13:45\n                                预计未来48小时最低温度将降至-15°C\n                            \n                        \n                        紧急",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:33:35.635Z"
-      },
-      "lastModified": "2025-08-18T07:33:35.642Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-灾害分布统计": {
-      "name": "灾害分布统计",
-      "content": "**显示特性**:\n- 标题: 🗺️ 灾害分布统计\n- 图表容器高度: 180px\n- 以饼图展示各类灾害的分布比例",
-      "timestamp": "2025/8/18 15:34:05",
-      "elementId": "precise-div-noid-stat-header-6-0-0-灾害分布统计",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card[data-text-content*=\"🗺️ 灾害分布统计\"]:nth-of-type(1) > div.stat-header[data-text-content*=\"🗺️ 灾害分布统计\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🗺️ 灾害分布统计",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🗺️ 灾害分布统计",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:34:05.313Z"
-      },
-      "lastModified": "2025-08-18T07:34:05.318Z"
-    },
-    "precise-div-noid-stat-header-6-0-0-应急响应建议": {
-      "name": "div: 🛡️ 应急响应建议",
-      "content": "**功能**: 根据当前灾害情况自动生成应急响应建议\n\n**建议分类**:\n\n1. **紧急级别** (urgent):\n   - 优先级标签: **紧急** (红色)\n   - 建议: **立即启动防冻措施**\n   - 详情: 对康乐县北部小麦田进行覆盖保温\n\n2. **重要级别** (important):\n   - 优先级标签: **重要** (橙色)\n   - 建议: **紧急灌溉调度**\n   - 详情: 临夏县中南部玉米田需立即补充灌溉\n\n3. **建议级别** (normal):\n   - 优先级标签: **建议** (蓝色)\n   - 建议: **加强监测频率**\n   - 详情: 增加高风险区域的监测频次至每6小时\n",
-      "timestamp": "2025/8/18 15:34:17",
-      "elementId": "precise-div-noid-stat-header-6-0-0-应急响应建议",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(2) > div.stat-header[data-text-content*=\"🛡️ 应急响应建议\"]",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "stat-header",
-          "textContent": "🛡️ 应急响应建议",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 12,
-            "offsetTop": 12,
-            "offsetWidth": 342,
-            "offsetHeight": 23
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.stat-header",
-        "textContent": "🛡️ 应急响应建议",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:34:17.240Z"
-      },
-      "lastModified": "2025-08-18T07:34:17.248Z"
-    },
-    "precise-div-noid-control-header-5-0-0": {
-      "name": " 灾害数据弹窗",
-      "content": "**功能**: 鼠标悬浮在地图上时显示该位置的灾害信息\n\n**弹窗结构**:\n- **标题区域**: 显示图层类型和坐标位置\n  - 图层类型: \"请选择图层\" (默认状态)\n  - 坐标信息: 鼠标位置的经纬度坐标\n- **内容区域**: 显示具体的灾害数据\n  - 灾害程度: 风险等级评估结果\n  - 更新时间: 数据最后更新时间\n\n**交互特性**:\n- 默认隐藏状态 (display: none)\n- 跟随鼠标位置动态显示\n- 实时计算鼠标位置的灾害风险数据\n\n\n**图层类型**:\n1. **温度监测图层**: 显示地表温度分布和高温/冻害风险区域\n2. **干旱监测图层**: 展示土壤湿度和干旱程度分布  \n3. **综合风险图层**: 多种灾害风险的综合评估结果\n\n**技术特性**:\n- 支持图层透明度动态调整\n",
-      "timestamp": "2025/8/18 15:34:54",
-      "elementId": "precise-div-noid-control-header-5-0-0",
-      "targetInfo": {
-        "smartSelector": "div#map-container > div.disaster-control-panel.collapsed > div.control-header",
-        "elementFingerprint": {
-          "tagName": "DIV",
-          "className": "control-header",
-          "textContent": "⚠️ 灾害监测\n                ▶",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 0,
-            "offsetTop": 0,
-            "offsetWidth": 298,
-            "offsetHeight": 57
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "div.control-header",
-        "textContent": "⚠️ 灾害监测\n                ▶",
-        "pageUrl": "http://localhost:3000/prototype/index.html",
-        "timestamp": "2025-08-18T07:34:54.888Z"
-      },
-      "lastModified": "2025-08-18T07:34:54.900Z"
+      "lastModified": "2025-08-20T09:41:42.335Z"
     }
   }
 }

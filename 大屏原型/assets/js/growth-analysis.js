@@ -1088,3 +1088,14 @@ function initPageFunctionSwitchBar() {
 // } else {
 //     initPageFunctionSwitchBar();
 // }
+
+// 页面加载完成后初始化时间轴
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        // 初始化时间轴
+        if (window.Timeline) {
+            window.Timeline.init();
+            console.log('⏰ 长势分析页面时间轴初始化完成');
+        }
+    }, 3000); // 等待其他模块初始化完成
+});

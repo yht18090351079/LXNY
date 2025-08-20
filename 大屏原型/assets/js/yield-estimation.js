@@ -8,7 +8,7 @@ let yieldEstimationCharts = {};
 let yieldEstimationData = {};
 let currentCrop = 'wheat'; // 当前选择的作物：wheat, corn
 let yieldLayerVisible = false;
-let currentChartType = 'bar'; // 当前图表类型：bar, line, table
+// currentChartType 已在 main.js 中声明，这里不再重复声明
 
 /**
  * 初始化产量预估模块
@@ -1996,3 +1996,14 @@ function showTownValueTable() {
 // } else {
 //     initPageFunctionSwitchBar();
 // }
+
+// 页面加载完成后初始化时间轴
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        // 初始化时间轴
+        if (window.Timeline) {
+            window.Timeline.init();
+            console.log('⏰ 产量预估页面时间轴初始化完成');
+        }
+    }, 3000); // 等待其他模块初始化完成
+});
