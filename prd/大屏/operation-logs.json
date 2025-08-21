@@ -856,5 +856,49 @@
       "content": "根据实际情况的产量预估\n因为高温 低温 干旱 损失"
     },
     "backup": null
+  },
+  {
+    "timestamp": "2025-08-20T10:07:15.529Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-5216万元",
+    "annotation": {
+      "name": "理想产值",
+      "content": "根据理想产量 和 理想价格计算"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-20T10:08:05.549Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-3947万元",
+    "annotation": {
+      "name": "实际产值估值",
+      "content": "根据实际预估产量 实际价格预估产值"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-20T10:08:23.227Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-403吨",
+    "annotation": {
+      "name": "减产产值",
+      "content": "理想和实际差值"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-20T10:08:49.337Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-label-10-0-0-亩均收益",
+    "annotation": {
+      "name": "实际预估产值",
+      "content": "实际预估产量/面积"
+    },
+    "backup": null
   }
 ]

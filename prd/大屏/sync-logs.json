@@ -654,5 +654,37 @@
       "name": "实际预估产量",
       "elementId": "precise-div-noid-metric-card-9-1-6"
     }
+  },
+  {
+    "timestamp": "2025-08-20T10:07:15.540Z",
+    "action": "create",
+    "annotation": {
+      "name": "理想产值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-5216万元"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T10:08:05.556Z",
+    "action": "create",
+    "annotation": {
+      "name": "实际产值估值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-3947万元"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T10:08:23.237Z",
+    "action": "create",
+    "annotation": {
+      "name": "减产产值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-403吨"
+    }
+  },
+  {
+    "timestamp": "2025-08-20T10:08:49.343Z",
+    "action": "create",
+    "annotation": {
+      "name": "实际预估产值",
+      "elementId": "precise-div-noid-metric-label-10-0-0-亩均收益"
+    }
   }
 ]

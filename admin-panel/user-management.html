@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 用户管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/data-management.css">
+    <link rel="stylesheet" href="assets/css/user-management.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="sidebar-title">农情遥感管理</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-item menu-parent" data-page="data-management">
+                        <i class="fas fa-database menu-icon"></i>
+                        <span class="menu-text">数据管理</span>
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </div>
+                    <div class="menu-submenu">
+                        <div class="menu-item menu-child" data-tab="planting-area">
+                            <i class="fas fa-chart-area menu-icon"></i>
+                            <span class="menu-text">种植面积管理</span>
+                        </div>
+                        <div class="menu-item menu-child" data-tab="crop-info">
+                            <i class="fas fa-leaf menu-icon"></i>
+                            <span class="menu-text">作物基础信息</span>
+                        </div>
+                        <div class="menu-item menu-child" data-tab="image-data">
+                            <i class="fas fa-satellite menu-icon"></i>
+                            <span class="menu-text">影像数据</span>
+                        </div>
+                        <div class="menu-item menu-child" data-tab="device-data">
+                            <i class="fas fa-microchip menu-icon"></i>
+                            <span class="menu-text">设备数据</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item active" data-page="user-management">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">用户管理</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>用户管理</span>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="user-info" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="currentUserName">管理员</div>
+                            <div class="user-role" id="currentUserRole">超级管理员</div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="handleLogout()" title="退出登录">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content">
+
+                
+
+                
+                <!-- 用户管理操作区 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="header-left">
+                            <h3 class="card-title">用户列表</h3>
+                            <p class="card-subtitle">管理系统用户账户和权限</p>
+                        </div>
+                        
+                        <div class="header-right">
+                            <div class="table-actions">
+                                <div class="action-group">
+                                    <div class="search-container">
+                                        <input type="text" class="form-input search-input" placeholder="搜索用户名或账号..." id="userSearchInput">
+                                    </div>
+                                    
+                                    <div class="filter-container">
+                                        <select class="form-select role-filter" id="roleFilter">
+                                            <option value="">全部角色</option>
+                                            <option value="superadmin">超级管理员</option>
+                                            <option value="township">乡镇管理员</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary" onclick="showAddUserModal()" id="addUserBtn">
+                                        新增用户
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                                         <div class="card-body">
+                         <!-- 列表头部 -->
+                         <div class="user-list-header">
+                             <div class="user-name-header">用户名称</div>
+                             <div class="user-account-header">账号</div>
+                             <div class="user-township-header">所属乡镇</div>
+                             <div class="user-login-header">最后登录</div>
+                             <div class="user-actions-header">操作</div>
+                         </div>
+                         
+                         <!-- 用户列表 -->
+                         <div id="userList" class="user-list">
+                             <!-- 用户列表项将通过JavaScript动态生成 -->
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 新增/编辑用户模态框 -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="userModalTitle">新增用户</h3>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-group">
+                        <label class="form-label">用户名 *</label>
+                        <input type="text" class="form-input" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">姓名 *</label>
+                        <input type="text" class="form-input" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">密码 *</label>
+                        <input type="password" class="form-input" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">确认密码 *</label>
+                        <input type="password" class="form-input" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">用户角色 *</label>
+                        <select class="form-select" id="role" name="role" required onchange="toggleTownshipSelector()">
+                            <option value="">请选择角色</option>
+                            <option value="superadmin">超级管理员</option>
+                            <option value="township">乡镇管理员</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group township-selector" id="townshipSelector">
+                        <label class="form-label">所属乡镇 *</label>
+                        <select class="form-select" id="township" name="township">
+                            <option value="">请选择乡镇</option>
+                            <option value="临夏县">临夏县</option>
+                            <option value="东乡县">东乡县</option>
+                            <option value="积石山县">积石山县</option>
+                            <option value="康乐县">康乐县</option>
+                            <option value="和政县">和政县</option>
+                            <option value="广河县">广河县</option>
+                            <option value="永靖县">永靖县</option>
+                            <option value="临夏市">临夏市</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeUserModal()">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="saveUser()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 权限管理模态框 -->
+    <div class="modal-overlay" id="permissionModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">权限管理</h3>
+                <button class="modal-close" onclick="closePermissionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="permission-grid" id="permissionGrid">
+                    <!-- 权限组将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closePermissionModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePermissions()">保存权限</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/user-management.js"></script>
+</body>
+</html>

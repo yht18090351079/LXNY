@@ -219,6 +219,114 @@
         "timestamp": "2025-08-20T09:41:42.322Z"
       },
       "lastModified": "2025-08-20T09:41:42.335Z"
+    },
+    "precise-div-noid-metric-value-10-1-1-5216万元": {
+      "name": "理想产值",
+      "content": "根据理想产量 和 理想价格计算",
+      "timestamp": "2025/8/20 18:07:15",
+      "elementId": "precise-div-noid-metric-value-10-1-1-5216万元",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(2) > div.metric-card.ideal > div.metric-content > div.metric-value[data-text-content*=\"521.6万元\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "metric-value",
+          "textContent": "521.6万元",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 69,
+            "offsetTop": 259,
+            "offsetWidth": 116,
+            "offsetHeight": 18
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.metric-value",
+        "textContent": "521.6万元",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T10:07:15.485Z"
+      },
+      "lastModified": "2025-08-20T10:07:15.526Z"
+    },
+    "precise-div-noid-metric-value-10-1-1-3947万元": {
+      "name": "实际产值估值",
+      "content": "根据实际预估产量 实际价格预估产值",
+      "timestamp": "2025/8/20 18:08:05",
+      "elementId": "precise-div-noid-metric-value-10-1-1-3947万元",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(2) > div.metric-card.actual > div.metric-content > div.metric-value[data-text-content*=\"394.7万元\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "metric-value",
+          "textContent": "394.7万元",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 241,
+            "offsetTop": 259,
+            "offsetWidth": 116,
+            "offsetHeight": 18
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.metric-value",
+        "textContent": "394.7万元",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T10:08:05.533Z"
+      },
+      "lastModified": "2025-08-20T10:08:05.541Z"
+    },
+    "precise-div-noid-metric-value-10-1-1-403吨": {
+      "name": "减产产值",
+      "content": "理想和实际差值",
+      "timestamp": "2025/8/20 18:08:23",
+      "elementId": "precise-div-noid-metric-value-10-1-1-403吨",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(3) > div.metric-card.impact > div.metric-content > div.metric-value[data-text-content*=\"-403吨\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "metric-value",
+          "textContent": "-403吨",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 69,
+            "offsetTop": 342,
+            "offsetWidth": 116,
+            "offsetHeight": 18
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.metric-value",
+        "textContent": "-403吨",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T10:08:23.217Z"
+      },
+      "lastModified": "2025-08-20T10:08:23.224Z"
+    },
+    "precise-div-noid-metric-label-10-0-0-亩均收益": {
+      "name": "实际预估产值",
+      "content": "实际预估产量/面积",
+      "timestamp": "2025/8/20 18:08:49",
+      "elementId": "precise-div-noid-metric-label-10-0-0-亩均收益",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.dashboard-row.two-cols:nth-of-type(3) > div.metric-card.revenue > div.metric-content > div.metric-label[data-text-content*=\"亩均收益\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "metric-label",
+          "textContent": "亩均收益",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 244,
+            "offsetTop": 326,
+            "offsetWidth": 113,
+            "offsetHeight": 14
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.metric-label",
+        "textContent": "亩均收益",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-20T10:08:49.330Z"
+      },
+      "lastModified": "2025-08-20T10:08:49.334Z"
     }
   }
 }

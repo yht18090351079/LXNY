@@ -1,0 +1,605 @@
+/* 用户管理页面样式 */
+
+/* 继承数据管理页面的基础样式 */
+@import url('data-management.css');
+
+/* 用户列表样式 */
+.user-list-header {
+    display: grid;
+    grid-template-columns: 1.5fr 1.2fr 1fr 1.5fr 2fr;
+    gap: 20px;
+    padding: 16px 24px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+}
+
+.user-actions-header {
+    text-align: center;
+}
+
+/* 卡片头部样式 */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: white;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-left {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+.header-right {
+    flex-shrink: 0;
+}
+
+.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    width: 260px;
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.search-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+
+.filter-container {
+    position: relative;
+}
+
+.role-filter {
+    width: 140px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.role-filter:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    min-height: 36px;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-list {
+    background: white;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-list-item {
+    display: grid;
+    grid-template-columns: 1.5fr 1.2fr 1fr 1.5fr 2fr;
+    gap: 20px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.user-list-item:hover {
+    background-color: #f8f9fa;
+}
+
+.user-list-item:last-child {
+    border-bottom: none;
+}
+
+/* 用户名称列 */
+.user-name-cell {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 账号列 */
+.user-account-cell {
+    font-size: 14px;
+    color: #666;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* 乡镇列 */
+.user-township-cell {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 登录时间列 */
+.user-login-cell {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 操作列 */
+.user-actions-cell {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    justify-content: end;
+    min-width: 240px;
+}
+
+.user-actions-cell .btn {
+    padding: 6px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    text-align: center;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-placeholder {
+    visibility: hidden;
+    min-height: 28px;
+}
+
+/* 权限管理样式 */
+.permission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.permission-group {
+    background: white;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.permission-group-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.permission-item:last-child {
+    border-bottom: none;
+}
+
+.permission-label {
+    font-size: 14px;
+    color: #333;
+}
+
+.permission-switch {
+    position: relative;
+    width: 44px;
+    height: 22px;
+    background-color: #ccc;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.permission-switch.active {
+    background-color: #1890ff;
+}
+
+.permission-switch::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.permission-switch.active::before {
+    transform: translateX(22px);
+}
+
+/* 角色标签样式 */
+.role-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.role-superadmin {
+    background-color: #fff2e8;
+    color: #fa8c16;
+    border: 1px solid #ffd591;
+}
+
+.role-township {
+    background-color: #f6ffed;
+    color: #52c41a;
+    border: 1px solid #b7eb8f;
+}
+
+/* 用户状态样式 */
+.user-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-active .status-indicator {
+    background-color: #52c41a;
+}
+
+.status-inactive .status-indicator {
+    background-color: #f5222d;
+}
+
+.status-pending .status-indicator {
+    background-color: #faad14;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* 表单增强样式 */
+.form-group-inline {
+    display: flex;
+    gap: 16px;
+    align-items: end;
+}
+
+.form-group-inline .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.township-selector {
+    display: none;
+}
+
+.township-selector.show {
+    display: block;
+}
+
+
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .user-list-header,
+    .user-list-item {
+        grid-template-columns: 1.3fr 1fr 0.8fr 1.2fr 1.8fr;
+        gap: 16px;
+        padding: 14px 20px;
+    }
+    
+    .search-input {
+        width: 200px;
+    }
+    
+    .table-actions {
+        gap: 16px;
+    }
+    
+    .action-group {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 992px) {
+    .card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        padding: 16px 20px;
+    }
+    
+    .header-left,
+    .header-right {
+        flex: none;
+    }
+    
+    .table-actions {
+        justify-content: space-between;
+        gap: 12px;
+    }
+    
+    .search-input {
+        width: 180px;
+    }
+    
+    .role-filter {
+        width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-header {
+        padding: 16px;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .action-group {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+    
+    .search-container,
+    .filter-container {
+        width: 100%;
+    }
+    
+    .search-input {
+        width: 100%;
+    }
+    
+    .role-filter {
+        width: 100%;
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: stretch;
+    }
+    
+    .action-buttons .btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 0;
+    }
+    
+    .user-list-header {
+        display: none;
+    }
+    
+    .user-list-item {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .user-list-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .user-name-cell {
+        order: 1;
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 8px;
+    }
+    
+    .user-account-cell {
+        order: 2;
+        font-size: 13px;
+        color: #666;
+    }
+    
+    .user-township-cell {
+        order: 3;
+        font-size: 13px;
+        color: #333;
+    }
+    
+    .user-login-cell {
+        order: 4;
+        font-size: 12px;
+        color: #666;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+    
+    .user-actions-cell {
+        order: 5;
+        display: flex;
+        justify-content: center;
+        padding-top: 8px;
+        border-top: 1px solid #f0f0f0;
+        gap: 8px;
+        min-width: auto;
+    }
+    
+    .user-actions-cell .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        flex: 1;
+        text-align: center;
+        max-width: 80px;
+    }
+    
+    .user-actions-cell .btn-placeholder {
+        display: none;
+    }
+    
+    .permission-grid {
+        grid-template-columns: 1fr;
+    }
+    
+
+    
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-group-inline .form-group {
+        margin-bottom: 16px;
+    }
+}

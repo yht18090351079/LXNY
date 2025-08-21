@@ -531,7 +531,7 @@
     <div class="prd-container">
         <!-- 左上角 - 内嵌页面区域 (70%) -->
         <div class="embedded-page">
-            <iframe id="embeddedFrame" src="/prototype/index.html" title="农情遥感系统大屏"></iframe>
+            <iframe id="embeddedFrame" src="../../admin-panel/index.html" title="农情遥感系统管理端"></iframe>
         </div>
 
         <!-- 右侧 - 页面元素批注区域 -->
@@ -1148,15 +1148,15 @@
             
             if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000') || currentUrl.includes('192.168.101.16:3000') || currentUrl.includes(':3000')) {
                 // 通过API服务器访问
-                targetPath = '/prototype/index.html';
+                targetPath = '/admin-panel/index.html';
                 console.log('🌐 检测到API服务器环境，使用服务器路径');
             } else if (currentUrl.includes('127.0.0.1:5501') || currentUrl.includes('localhost:5501')) {
                 // 通过Live Server访问
-                targetPath = '/管理端原型/index.html';
+                targetPath = '/admin-panel/index.html';
                 console.log('🌐 检测到Live Server环境，使用服务器路径');
             } else {
                 // 直接打开文件
-                targetPath = '../../管理端原型/index.html';
+                targetPath = '../../admin-panel/index.html';
                 console.log('📁 检测到本地文件访问，使用相对路径');
             }
             
@@ -1711,7 +1711,7 @@
             const selectedPage = pages[currentPageIndex];
             
             const iframe = document.getElementById('embeddedFrame');
-            iframe.src = '/prototype/' + selectedPage;
+            iframe.src = '/admin-panel/index.html';
             
             // 重置当前功能为默认值
             currentFunction = 'crop-distribution';
