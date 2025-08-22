@@ -50,6 +50,26 @@ function logout() {
 // ===== 区域选择模块 =====
 
 /**
+ * 切换区域下拉菜单显示状态
+ */
+function toggleRegionDropdown() {
+    const dropdown = document.getElementById('region-dropdown');
+    const regionSelector = document.querySelector('.region-selector');
+    
+    if (dropdown && regionSelector) {
+        const isActive = regionSelector.classList.contains('active');
+        
+        if (isActive) {
+            regionSelector.classList.remove('active');
+            dropdown.style.display = 'none';
+        } else {
+            regionSelector.classList.add('active');
+            dropdown.style.display = 'block';
+        }
+    }
+}
+
+/**
  * 区域配置数据
  */
 const regionConfig = {
@@ -296,7 +316,18 @@ function selectRegion(regionId, regionName, isInitialization = false) {
 
     // 更新乡镇长势图表
     if (typeof updateTownCropChart === 'function') {
-        updateTownCropChart(regionId, currentChartType || 'bar');
+        // 根据区域选择决定显示的数据类型
+        if (regionId === 'all') {
+            // 全县模式：显示各乡镇的长势分布
+            updateTownCropChart('wheat'); // 默认显示小麦数据
+        } else {
+            // 单个乡镇模式：显示该乡镇的长势分类分布
+            if (typeof updateSingleTownshipChart === 'function') {
+                updateSingleTownshipChart(regionId);
+            } else {
+                console.warn('⚠️ updateSingleTownshipChart 函数未定义');
+            }
+        }
         console.log(`📊 长势图表已联动到区域: ${regionName}`);
     }
 
@@ -338,6 +369,129 @@ function moveToRegion(regionId) {
             showLayerIndicator(`已切换到 ${region.name}`, 2000);
         }
     }
+}
+
+/**
+ * 更新单个乡镇的长势分类图表
+ */
+function updateSingleTownshipChart(regionId) {
+    const region = regionConfig[regionId];
+    if (!region) {
+        console.warn(`⚠️ 未找到区域配置: ${regionId}`);
+        return;
+    }
+
+    // 获取乡镇名称
+    const townshipName = region.name;
+    
+    // 模拟该乡镇的长势分类数据（优、良、中、差）
+    const growthData = {
+        '优': Math.floor(Math.random() * 40) + 30, // 30-70%
+        '良': Math.floor(Math.random() * 30) + 20, // 20-50%
+        '中': Math.floor(Math.random() * 20) + 10, // 10-30%
+        '差': Math.floor(Math.random() * 10) + 5   // 5-15%
+    };
+
+    // 获取图表容器
+    const chartContainer = document.getElementById('town-crop-chart');
+    if (!chartContainer) {
+        console.warn('⚠️ 未找到图表容器');
+        return;
+    }
+
+    // 初始化或获取ECharts实例
+    let chart = echarts.getInstanceByDom(chartContainer);
+    if (!chart) {
+        chart = echarts.init(chartContainer);
+    }
+
+    // 配置图表选项
+    const option = {
+        title: {
+            text: `${townshipName}长势分类分布`,
+            left: 'center',
+            textStyle: {
+                color: '#fff',
+                fontSize: 16,
+                fontWeight: 'bold'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            },
+            formatter: function(params) {
+                const data = params[0];
+                const total = Object.values(growthData).reduce((sum, val) => sum + val, 0);
+                const percentage = ((data.value / total) * 100).toFixed(1);
+                return `${data.name}<br/>面积: ${data.value}亩<br/>占比: ${percentage}%`;
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: Object.keys(growthData),
+            axisLabel: {
+                color: '#fff',
+                fontSize: 12,
+                fontWeight: 'bold'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '面积(亩)',
+            nameTextStyle: {
+                color: '#fff'
+            },
+            axisLabel: {
+                color: '#fff'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)'
+                }
+            }
+        },
+        series: [{
+            name: '长势分布',
+            type: 'bar',
+            data: Object.values(growthData),
+            itemStyle: {
+                color: function(params) {
+                    const colors = ['#4CAF50', '#FFC107', '#FF9800', '#F44336'];
+                    return colors[params.dataIndex];
+                },
+                borderRadius: [4, 4, 0, 0]
+            },
+            barWidth: '60%',
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(255,255,255,0.3)'
+                }
+            }
+        }]
+    };
+
+    // 设置图表配置
+    chart.setOption(option, true);
+    console.log(`📊 已更新${townshipName}的长势分类图表`);
 }
 
 /**

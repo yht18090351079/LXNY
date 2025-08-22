@@ -5,7 +5,7 @@
 
 /* 乡镇信息弹窗 */
 .township-info-popup {
-    position: fixed;
+    position: absolute;
     z-index: 10000;
     background: rgba(0, 20, 40, 0.95);
     backdrop-filter: blur(10px);
@@ -97,6 +97,14 @@
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.3);
     display: inline-block;
+}
+
+.township-info-popup .growth-level {
+    font-weight: bold;
+    text-shadow: 0 0 5px currentColor;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* 弹窗动画 */

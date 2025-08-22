@@ -197,31 +197,7 @@
         <!-- 地图覆盖层 -->
         <div class="map-overlay"></div>
 
-        <!-- 乡镇地块控制面板 -->
-        <div class="township-control-panel" id="township-control-panel" style="top: 140px;">
-            <div class="panel-title">🏘️ 乡镇地块</div>
 
-            <div class="control-item">
-                <div class="control-switch">
-                    <div class="switch-input active" id="township-visibility-switch" onclick="toggleTownshipVisibility()"></div>
-                    <span class="switch-label">显示乡镇</span>
-                </div>
-            </div>
-
-            <div class="control-item">
-                <label class="control-label">统计信息</label>
-                <div id="township-stats" style="font-size: 11px; color: #B0BEC5; margin-top: 4px;">
-                    <!-- 统计信息将通过JavaScript动态生成 -->
-                </div>
-            </div>
-
-            <div class="control-item">
-                <label class="control-label">乡镇列表</label>
-                <div class="township-list" id="township-list" style="max-height: 150px;">
-                    <!-- 乡镇列表将通过JavaScript动态生成 -->
-                </div>
-            </div>
-        </div>
 
 
 
@@ -371,7 +347,138 @@
         </div>
     </div>
 
+    <!-- 时间轴组件 -->
+    <div class="timeline-container" id="timeline-container">
+        <!-- 时间轴标题栏 -->
+        <div class="timeline-header">
+            <div class="timeline-title">
+                <span class="timeline-icon">📅</span>
+                <span class="timeline-text">数据时间轴</span>
+            </div>
+            <div class="timeline-controls">
+                <span class="timeline-year">2025年</span>
+            </div>
+        </div>
+        
+        <!-- 时间轴主体 -->
+        <div class="timeline-track">
+            <!-- 时间轴背景线 -->
+            <div class="timeline-line"></div>
+            
+            <!-- 进度指示条 -->
+            <div class="timeline-progress" id="timeline-progress" style="width: 66.67%;"></div>
+            
+            <!-- 当前时间指示器 -->
+            <div class="current-time-indicator" id="current-time-indicator" style="left: 62.5%;">
+                <div class="indicator-dot"></div>
+                <div class="indicator-label">当前</div>
+            </div>
+            
+            <!-- 月份节点容器 -->
+            <div class="timeline-months" id="timeline-months">
+                <!-- 1月 -->
+                <div class="month-node winter" data-month="1" data-season="winter" onclick="selectMonth(1)" title="1月数据 - 冬季作物休眠期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">1月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+                
+                <!-- 2月 -->
+                <div class="month-node winter" data-month="2" data-season="winter" onclick="selectMonth(2)" title="2月数据 - 春耕准备期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">2月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+                
+                <!-- 3月 -->
+                <div class="month-node spring" data-month="3" data-season="spring" onclick="selectMonth(3)" title="3月数据 - 春耕播种期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">3月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 4月 -->
+                <div class="month-node spring" data-month="4" data-season="spring" onclick="selectMonth(4)" title="4月数据 - 作物生长期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">4月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 5月 -->
+                <div class="month-node spring" data-month="5" data-season="spring" onclick="selectMonth(5)" title="5月数据 - 作物快速生长期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">5月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 6月 -->
+                <div class="month-node summer" data-month="6" data-season="summer" onclick="selectMonth(6)" title="6月数据 - 夏季生长旺期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">6月</div>
+                    <div class="season-indicator">夏</div>
+                </div>
+                
+                <!-- 7月 -->
+                <div class="month-node summer" data-month="7" data-season="summer" onclick="selectMonth(7)" title="7月数据 - 作物开花结果期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">7月</div>
+                    <div class="season-indicator">夏</div>
+                </div>
+                
+                <!-- 8月 - 当前激活月份 -->
+                <div class="month-node summer active current" data-month="8" data-season="summer" onclick="selectMonth(8)" title="8月数据 - 作物成熟期（当前月份）">
+                    <div class="month-dot"></div>
+                    <div class="month-label">8月</div>
+                    <div class="season-indicator">夏</div>
+                    <div class="current-badge">当前</div>
+                </div>
+                
+                <!-- 9月 -->
+                <div class="month-node autumn" data-month="9" data-season="autumn" onclick="selectMonth(9)" title="9月数据 - 秋收季节">
+                    <div class="month-dot"></div>
+                    <div class="month-label">9月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 10月 -->
+                <div class="month-node autumn" data-month="10" data-season="autumn" onclick="selectMonth(10)" title="10月数据 - 主要收获期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">10月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 11月 -->
+                <div class="month-node autumn" data-month="11" data-season="autumn" onclick="selectMonth(11)" title="11月数据 - 收获完成期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">11月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 12月 -->
+                <div class="month-node winter" data-month="12" data-season="winter" onclick="selectMonth(12)" title="12月数据 - 冬季休耕期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">12月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+            </div>
+            
+            <!-- 季节分割线 -->
+            <div class="season-dividers">
+                <div class="season-divider spring-start" style="left: 16.67%;" title="春季开始"></div>
+                <div class="season-divider summer-start" style="left: 41.67%;" title="夏季开始"></div>
+                <div class="season-divider autumn-start" style="left: 66.67%;" title="秋季开始"></div>
+                <div class="season-divider winter-start" style="left: 91.67%;" title="冬季开始"></div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
+        // ===== 全局变量 =====
+        // 注意：这些变量已在main.js中声明，这里不再重复声明
+        // let currentSelectedRegion = 'all';  // 当前选中的区域
+        // let currentChartType = 'bar';       // 当前图表类型
+
         // ===== 乡镇地块控制函数 =====
 
         /**
@@ -478,7 +585,8 @@
                 }
             });
 
-            currentChartType = chartType;
+            // 使用全局变量
+            window.currentChartType = chartType;
 
             // 根据图表类型显示对应内容
             const chartDiv = document.getElementById('town-crop-chart');
@@ -487,11 +595,11 @@
             if (chartType === 'table') {
                 chartDiv.style.display = 'none';
                 tableDiv.style.display = 'block';
-                updateTownCropTable(currentSelectedRegion);
+                updateTownCropTable(window.currentSelectedRegion || 'all');
             } else {
                 chartDiv.style.display = 'block';
                 tableDiv.style.display = 'none';
-                updateTownCropChart(currentSelectedRegion, chartType);
+                updateTownCropChart(window.currentSelectedRegion || 'all', chartType);
             }
         }
 
@@ -516,11 +624,13 @@
                 // 显示所有乡镇的汇总数据
                 titleElement.textContent = '🌾 小麦按乡镇长势分布';
                 option = getTownshipSummaryChartOption(chartType);
+                console.log(`📊 显示全县汇总数据`);
             } else {
                 // 显示单个乡镇的长势分类数据
                 const townshipName = getTownshipNameById(regionId);
                 titleElement.textContent = `🌾 ${townshipName}长势分类分布`;
                 option = getSingleTownshipChartOption(regionId, chartType);
+                console.log(`📊 显示${townshipName}长势分类数据:`, getSingleTownshipGrowthData(regionId));
             }
 
             chart.setOption(option, true);
@@ -540,6 +650,7 @@
             if (regionId === 'all') {
                 // 显示所有乡镇数据
                 titleElement.textContent = '🌾 小麦按乡镇长势分布';
+                console.log(`📋 显示全县汇总表格`);
                 // 保持原有的表格数据
             } else {
                 // 显示单个乡镇的长势分类数据
@@ -547,6 +658,7 @@
                 const growthData = getSingleTownshipGrowthData(regionId);
 
                 titleElement.textContent = `🌾 ${townshipName}长势分类分布`;
+                console.log(`📋 显示${townshipName}长势分类表格:`, growthData);
 
                 // 更新表格内容为长势分类
                 tableBody.innerHTML = `
@@ -616,7 +728,11 @@
                 backgroundColor: 'transparent',
                 tooltip: {
                     trigger: 'axis',
-                    axisPointer: { type: 'shadow' }
+                    axisPointer: { type: 'shadow' },
+                    formatter: function(params) {
+                        const data = params[0];
+                        return `${data.name}<br/>面积: ${data.value} 亩<br/>占比: ${((data.value / values.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`;
+                    }
                 },
                 grid: {
                     left: '3%', right: '4%', bottom: '3%', top: '10%',
@@ -625,43 +741,50 @@
                 xAxis: {
                     type: 'category',
                     data: categories,
-                    axisLabel: { color: '#fff', fontSize: 12 }
+                    axisLabel: { 
+                        color: '#fff', 
+                        fontSize: 12,
+                        fontWeight: 'bold'
+                    },
+                    axisLine: {
+                        lineStyle: { color: '#fff' }
+                    }
                 },
                 yAxis: {
                     type: 'value',
-                    axisLabel: { color: '#fff', fontSize: 10 }
+                    axisLabel: { 
+                        color: '#fff', 
+                        fontSize: 10 
+                    },
+                    axisLine: {
+                        lineStyle: { color: '#fff' }
+                    },
+                    splitLine: {
+                        lineStyle: { color: 'rgba(255, 255, 255, 0.2)' }
+                    }
                 },
                 series: [{
                     name: '面积(亩)',
                     type: 'bar',
                     data: values.map((value, index) => ({
                         value: value,
-                        itemStyle: { color: colors[index] }
-                    }))
+                        itemStyle: { 
+                            color: colors[index],
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    })),
+                    label: {
+                        show: true,
+                        position: 'top',
+                        color: '#fff',
+                        fontSize: 10,
+                        formatter: '{c} 亩'
+                    }
                 }]
             };
         }
 
-        /**
-         * 获取单个乡镇的长势数据
-         */
-        function getSingleTownshipGrowthData(regionId) {
-            // 模拟数据，实际应该从后端获取
-            const mockData = {
-                'chengguan': { excellent: 180, good: 135, medium: 90, poor: 45 },
-                'tuchang': { excellent: 160, good: 120, medium: 80, poor: 40 },
-                'beita': { excellent: 110, good: 82, medium: 55, poor: 28 },
-                'hongguang': { excellent: 140, good: 105, medium: 70, poor: 35 },
-                'jishishan': { excellent: 200, good: 150, medium: 100, poor: 50 },
-                'hanjiaji': { excellent: 130, good: 98, medium: 65, poor: 33 },
-                'xinji': { excellent: 120, good: 90, medium: 60, poor: 30 },
-                'liujiaxia': { excellent: 95, good: 71, medium: 47, poor: 24 },
-                'taiping': { excellent: 115, good: 86, medium: 58, poor: 29 },
-                'minfeng': { excellent: 105, good: 79, medium: 52, poor: 26 }
-            };
 
-            return mockData[regionId] || { excellent: 0, good: 0, medium: 0, poor: 0 };
-        }
 
         /**
          * 根据区域ID获取乡镇名称
@@ -683,6 +806,125 @@
         }
 
         /**
+         * 更新单个乡镇的长势分类图表
+         */
+        function updateSingleTownshipChart(regionId) {
+            console.log(`🔄 updateSingleTownshipChart 被调用，区域ID: ${regionId}`);
+            
+            // 获取乡镇名称
+            const townshipName = getTownshipNameById(regionId);
+            if (!townshipName || townshipName === '未知乡镇') {
+                console.warn(`⚠️ 未找到区域名称: ${regionId}`);
+                return;
+            }
+            
+            // 获取该乡镇的长势分类数据
+            const growthData = getSingleTownshipGrowthData(regionId);
+            console.log(`📊 ${townshipName}长势数据:`, growthData);
+
+            // 获取图表容器
+            const chartContainer = document.getElementById('town-crop-chart');
+            if (!chartContainer) {
+                console.warn('⚠️ 未找到图表容器');
+                return;
+            }
+
+            // 初始化或获取ECharts实例
+            let chart = echarts.getInstanceByDom(chartContainer);
+            if (!chart) {
+                chart = echarts.init(chartContainer);
+            }
+
+            // 配置图表选项
+            const option = {
+                title: {
+                    text: `${townshipName}长势分类分布`,
+                    left: 'center',
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    formatter: function(params) {
+                        const data = params[0];
+                        const total = growthData.excellent + growthData.good + growthData.medium + growthData.poor;
+                        const percentage = ((data.value / total) * 100).toFixed(1);
+                        return `${data.name}<br/>面积: ${data.value}亩<br/>占比: ${percentage}%`;
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['优', '良', '中', '差'],
+                    axisLabel: {
+                        color: '#fff',
+                        fontSize: 12,
+                        fontWeight: 'bold'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '面积(亩)',
+                    nameTextStyle: {
+                        color: '#fff'
+                    },
+                    axisLabel: {
+                        color: '#fff'
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    }
+                },
+                series: [{
+                    name: '长势分布',
+                    type: 'bar',
+                    data: [growthData.excellent, growthData.good, growthData.medium, growthData.poor],
+                    itemStyle: {
+                        color: function(params) {
+                            const colors = ['#4CAF50', '#FFC107', '#FF9800', '#F44336'];
+                            return colors[params.dataIndex];
+                        },
+                        borderRadius: [4, 4, 0, 0]
+                    },
+                    barWidth: '60%',
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(255,255,255,0.3)'
+                        }
+                    }
+                }]
+            };
+
+            // 设置图表配置
+            chart.setOption(option, true);
+            console.log(`📊 已更新${townshipName}的长势分类图表`);
+        }
+
+        /**
          * 月份数据更新函数
          */
         function updateChartsForMonth(month) {
@@ -690,7 +932,14 @@
 
             // 更新长势图表
             if (typeof updateTownCropChart === 'function') {
-                updateTownCropChart(currentSelectedRegion, currentChartType || 'bar');
+                if (currentSelectedRegion === 'all') {
+                    updateTownCropChart('wheat'); // 全县模式显示小麦数据
+                } else {
+                    // 单个乡镇模式，需要重新调用区域选择来更新图表
+                    if (typeof updateSingleTownshipChart === 'function') {
+                        updateSingleTownshipChart(currentSelectedRegion);
+                    }
+                }
             }
 
             // 更新其他图表
@@ -802,21 +1051,69 @@
 
         // 页面加载完成后初始化乡镇控制面板
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
+            console.log('🚀 开始初始化页面...');
+            
+            // 确保全局变量已初始化
+            if (typeof currentSelectedRegion === 'undefined') {
+                window.currentSelectedRegion = 'all';
+            }
+            if (typeof currentChartType === 'undefined') {
+                window.currentChartType = 'bar';
+            }
+
+            // 添加调试函数到全局作用域
+            window.debugRegionSelect = function() {
+                console.log('🔍 调试区域选择功能...');
+                console.log('当前选中区域:', window.currentSelectedRegion);
+                console.log('当前图表类型:', window.currentChartType);
+                console.log('selectRegion函数:', typeof selectRegion);
+                console.log('updateTownCropChart函数:', typeof updateTownCropChart);
+                console.log('updateSingleTownshipChart函数:', typeof updateSingleTownshipChart);
+                
+                // 测试区域选择
+                if (typeof selectRegion === 'function') {
+                    console.log('🧪 测试选择城关镇...');
+                    selectRegion('chengguan', '城关镇');
+                }
+            };
+
+
+
+            // 初始化检查函数
+            function initializeComponents() {
+                console.log('🔧 检查组件初始化状态...');
+                
+                // 检查乡镇地块模块
                 if (window.TownshipBlocks) {
+                    console.log('✅ 乡镇地块模块已加载');
                     generateTownshipStats();
                     generateTownshipList();
+                } else {
+                    console.log('⚠️ 乡镇地块模块未加载');
                 }
 
-                // 初始化图表
-                updateTownCropChart('all', 'bar');
+                // 检查图表更新函数
+                if (typeof updateTownCropChart === 'function') {
+                    console.log('✅ 图表更新函数已加载');
+                    updateTownCropChart('all', 'bar');
+                } else {
+                    console.log('⚠️ 图表更新函数未加载');
+                }
 
-                // 初始化时间轴
+                // 检查时间轴模块
                 if (window.Timeline) {
+                    console.log('✅ 时间轴模块已加载');
                     window.Timeline.init();
                     console.log('⏰ 时间轴初始化完成');
+                } else {
+                    console.log('⚠️ 时间轴模块未加载');
                 }
-            }, 5000); // 等待乡镇地块初始化完成
+
+                console.log('🎉 页面初始化完成');
+            }
+
+            // 延迟初始化，确保所有脚本加载完成
+            setTimeout(initializeComponents, 2000);
         });
     </script>
 

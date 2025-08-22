@@ -344,6 +344,132 @@
         </div>
     </div>
 
+    <!-- 时间轴组件 -->
+    <div class="timeline-container" id="timeline-container">
+        <!-- 时间轴标题栏 -->
+        <div class="timeline-header">
+            <div class="timeline-title">
+                <span class="timeline-icon">📅</span>
+                <span class="timeline-text">数据时间轴</span>
+            </div>
+            <div class="timeline-controls">
+                <span class="timeline-year">2025年</span>
+            </div>
+        </div>
+        
+        <!-- 时间轴主体 -->
+        <div class="timeline-track">
+            <!-- 时间轴背景线 -->
+            <div class="timeline-line"></div>
+            
+            <!-- 进度指示条 -->
+            <div class="timeline-progress" id="timeline-progress" style="width: 66.67%;"></div>
+            
+            <!-- 当前时间指示器 -->
+            <div class="current-time-indicator" id="current-time-indicator" style="left: 62.5%;">
+                <div class="indicator-dot"></div>
+                <div class="indicator-label">当前</div>
+            </div>
+            
+            <!-- 月份节点容器 -->
+            <div class="timeline-months" id="timeline-months">
+                <!-- 1月 -->
+                <div class="month-node winter" data-month="1" data-season="winter" onclick="selectMonth(1)" title="1月数据 - 冬季作物休眠期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">1月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+                
+                <!-- 2月 -->
+                <div class="month-node winter" data-month="2" data-season="winter" onclick="selectMonth(2)" title="2月数据 - 春耕准备期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">2月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+                
+                <!-- 3月 -->
+                <div class="month-node spring" data-month="3" data-season="spring" onclick="selectMonth(3)" title="3月数据 - 春耕播种期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">3月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 4月 -->
+                <div class="month-node spring" data-month="4" data-season="spring" onclick="selectMonth(4)" title="4月数据 - 作物生长期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">4月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 5月 -->
+                <div class="month-node spring" data-month="5" data-season="spring" onclick="selectMonth(5)" title="5月数据 - 作物快速生长期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">5月</div>
+                    <div class="season-indicator">春</div>
+                </div>
+                
+                <!-- 6月 -->
+                <div class="month-node summer" data-month="6" data-season="summer" onclick="selectMonth(6)" title="6月数据 - 夏季生长旺期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">6月</div>
+                    <div class="season-indicator">夏</div>
+                </div>
+                
+                <!-- 7月 -->
+                <div class="month-node summer" data-month="7" data-season="summer" onclick="selectMonth(7)" title="7月数据 - 作物开花结果期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">7月</div>
+                    <div class="season-indicator">夏</div>
+                </div>
+                
+                <!-- 8月 - 当前激活月份 -->
+                <div class="month-node summer active current" data-month="8" data-season="summer" onclick="selectMonth(8)" title="8月数据 - 作物成熟期（当前月份）">
+                    <div class="month-dot"></div>
+                    <div class="month-label">8月</div>
+                    <div class="season-indicator">夏</div>
+                    <div class="current-badge">当前</div>
+                </div>
+                
+                <!-- 9月 -->
+                <div class="month-node autumn" data-month="9" data-season="autumn" onclick="selectMonth(9)" title="9月数据 - 秋收季节">
+                    <div class="month-dot"></div>
+                    <div class="month-label">9月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 10月 -->
+                <div class="month-node autumn" data-month="10" data-season="autumn" onclick="selectMonth(10)" title="10月数据 - 主要收获期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">10月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 11月 -->
+                <div class="month-node autumn" data-month="11" data-season="autumn" onclick="selectMonth(11)" title="11月数据 - 收获完成期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">11月</div>
+                    <div class="season-indicator">秋</div>
+                </div>
+                
+                <!-- 12月 -->
+                <div class="month-node winter" data-month="12" data-season="winter" onclick="selectMonth(12)" title="12月数据 - 冬季休耕期">
+                    <div class="month-dot"></div>
+                    <div class="month-label">12月</div>
+                    <div class="season-indicator">冬</div>
+                </div>
+            </div>
+            
+            <!-- 季节分割线 -->
+            <div class="season-dividers">
+                <div class="season-divider spring-start" style="left: 16.67%;" title="春季开始"></div>
+                <div class="season-divider summer-start" style="left: 41.67%;" title="夏季开始"></div>
+                <div class="season-divider autumn-start" style="left: 66.67%;" title="秋季开始"></div>
+                <div class="season-divider winter-start" style="left: 91.67%;" title="冬季开始"></div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- 监测类型按钮切换脚本 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
