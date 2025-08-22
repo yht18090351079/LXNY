@@ -900,5 +900,148 @@
       "content": "实际预估产量/面积"
     },
     "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:05:30.202Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-impact-header-9-0-0",
+    "annotation": {
+      "name": "灾害经济影响分析",
+      "content": "根据实际预估和理论预估的占比计算"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:05:45.930Z",
+    "operation": "update",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-stat-card-6-1-51",
+    "annotation": {
+      "name": "乡镇产量产值分析",
+      "content": "如图所示"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:35:39.250Z",
+    "operation": "update",
+    "pageKey": "index.html-weather-monitoring",
+    "elementId": "precise-div-noid-weather-layer-tabs-6-1-1",
+    "annotation": {
+      "name": "气象图层控制",
+      "content": "点击不同的按钮 对应不同的图层\n图层获取鼠标焦点 会有详细数据弹窗"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:37:59.236Z",
+    "operation": "update",
+    "pageKey": "index.html-weather-monitoring",
+    "elementId": "precise-div-noid-time-controls-compact-6-2-20",
+    "annotation": {
+      "name": "时间控制模块",
+      "content": "根据实际的气象数据来决定\n时间密度"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:38:24.881Z",
+    "operation": "update",
+    "pageKey": "index.html-weather-monitoring",
+    "elementId": "precise-div-noid-stat-header-6-0-0-当前天气状况",
+    "annotation": {
+      "name": " 当前天气状况",
+      "content": "通过接口获取 甲方提供数据"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:38:48.141Z",
+    "operation": "update",
+    "pageKey": "index.html-weather-monitoring",
+    "elementId": "precise-div-noid-data-tab-8-0-0",
+    "annotation": {
+      "name": "七天气象数据预测",
+      "content": "未来七天的气象数据展示"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:41:38.106Z",
+    "operation": "update",
+    "pageKey": "index.html-weather-monitoring",
+    "elementId": "precise-div-noid-weather-data-selector-6-1-1",
+    "annotation": {
+      "name": "其余六个数据",
+      "content": "其余六个数据是历史数据\n"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:47:31.817Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-div-noid-stat-card-5-1-3",
+    "annotation": {
+      "name": "灾害概览",
+      "content": "按灾害损失程度 分成四个等级\n具体分级根据实际情况再调整"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T02:48:43.058Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-canvas-noid-noclass-8-0-0",
+    "annotation": {
+      "name": "灾害损失评估",
+      "content": "面积是左侧的坐标 \n其他是右侧的 百分比"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T03:24:10.344Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-canvas-noid-noclass-8-0-0",
+    "annotation": {
+      "name": "灾害损失评估",
+      "content": "面积是左侧的坐标 \n其他是右侧的 百分比"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T03:24:21.624Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-canvas-noid-noclass-8-0-0",
+    "annotation": {
+      "name": "灾害损失评估",
+      "content": "可选择统计维度"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T03:25:12.590Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-div-noid-overlay-switch-btn-4-2-6-设备监控",
+    "annotation": {
+      "name": " 设备监控",
+      "content": "点击出现设备点位显示\n点击点位出现弹窗 展示实际数据"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T03:27:48.429Z",
+    "operation": "update",
+    "pageKey": "index.html-disaster-monitoring",
+    "elementId": "precise-div-noid-overlay-switch-btn-4-3-7-作物选择",
+    "annotation": {
+      "name": " 作物选择",
+      "content": "选择后 右侧的统计数据 图层数据 都要变 \n单选 单作物"
+    },
+    "backup": null
   }
 ]

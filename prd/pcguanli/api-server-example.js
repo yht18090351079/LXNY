@@ -55,7 +55,7 @@ app.use(express.static('.')); // 静态文件服务
 
 // 管理端原型静态文件服务 - 处理相对路径问题
 const prototypeDir = path.resolve(__dirname, '../../大屏原型');
-const managementDir = path.resolve(__dirname, '../../管理端原型');
+const managementDir = path.resolve(__dirname, '../../admin-panel');
 
 console.log('📁 大屏原型目录:', prototypeDir);
 console.log('📁 管理端目录:', managementDir);
@@ -75,12 +75,11 @@ if (fs.pathExistsSync(prototypeDir)) {
 if (fs.pathExistsSync(managementDir)) {
     app.use('/management', express.static(managementDir));
     app.use('/admin', express.static(managementDir));
-    app.use('/农情遥感系统管理端', express.static(managementDir));
-    app.use('/管理端原型', express.static(managementDir));
-    console.log('✅ 管理端原型静态文件服务已启用');
-    console.log('   📂 可访问路径: /management/*, /admin/*, /农情遥感系统管理端/*, /管理端原型/*');
+    app.use('/admin-panel', express.static(managementDir));
+    console.log('✅ admin-panel静态文件服务已启用');
+    console.log('   📂 可访问路径: /management/*, /admin/*, /admin-panel/*');
 } else {
-    console.warn('⚠️ 管理端目录不存在:', managementDir);
+    console.warn('⚠️ admin-panel目录不存在:', managementDir);
 }
 
 // 确保annotations.json文件存在并检查现有数据

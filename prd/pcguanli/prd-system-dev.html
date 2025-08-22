@@ -647,7 +647,7 @@
                 icon: '🛠️',
                 allowAnnotation: true,
                 allowEdit: true,
-                enableRealTimeSync: true,
+                enableRealTimeSync: false,
                 apiBaseUrl: window.PRD_API_BASE_URL || 'http://localhost:3000/api',
                 debugMode: true,
                 showDebugTools: true
@@ -675,7 +675,7 @@
         class PRDApiClient {
             constructor() {
                 this.baseUrl = CURRENT_ENV.apiBaseUrl;
-                this.enabled = CURRENT_ENV.enableRealTimeSync && this.baseUrl;
+                this.enabled = false; // 强制使用本地文件模式
                 
                 if (this.enabled) {
                     console.log('🔗 API客户端已启用:', this.baseUrl);
@@ -1146,7 +1146,7 @@
             
             let targetPath;
             
-            if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000') || currentUrl.includes('192.168.101.16:3000') || currentUrl.includes(':3000')) {
+            if (currentUrl.includes('localhost:3000') || currentUrl.includes('127.0.0.1:3000') || currentUrl.includes('192.168.101.16:3000') || currentUrl.includes(':3000') || currentUrl.includes('localhost:3001') || currentUrl.includes(':3001')) {
                 // 通过API服务器访问
                 targetPath = '/admin-panel/index.html';
                 console.log('🌐 检测到API服务器环境，使用服务器路径');
@@ -1711,7 +1711,7 @@
             const selectedPage = pages[currentPageIndex];
             
             const iframe = document.getElementById('embeddedFrame');
-            iframe.src = '/admin-panel/index.html';
+            iframe.src = '../../admin-panel/index.html';
             
             // 重置当前功能为默认值
             currentFunction = 'crop-distribution';

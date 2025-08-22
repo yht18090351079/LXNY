@@ -728,7 +728,7 @@
             async loadAnnotationsFromFile() {
                 try {
                     const timestamp = new Date().getTime() + Math.random();
-                    const response = await fetch(`prd-docs/annotations.json?t=${timestamp}`, {
+                    const response = await fetch(`../大屏/prd-docs/annotations.json?t=${timestamp}`, {
                         method: 'GET',
                         cache: 'no-store',
                         headers: {

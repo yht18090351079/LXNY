@@ -591,78 +591,20 @@ function initLossPredictionChart() {
     
     disasterCharts.lossPredictionChart = echarts.init(container);
     
-    const option = {
-        backgroundColor: 'transparent',
-        tooltip: {
-            trigger: 'axis',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            borderColor: 'rgba(0, 212, 255, 0.5)',
-            textStyle: { color: '#ffffff' }
-        },
-        legend: {
-            data: ['面积损失', '产量损失', '经济损失'],
-            textStyle: { color: '#ffffff' },
-            top: 10
-        },
-        grid: {
-            left: '10%',
-            right: '10%',
-            bottom: '15%',
-            top: '25%'
-        },
-        xAxis: {
-            type: 'category',
-            data: ['轻微', '中等', '严重', '极严重'],
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
-            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' }
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
-            axisLabel: { color: 'rgba(255, 255, 255, 0.8)' },
-            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
-        },
-        series: [
-            {
-                name: '面积损失',
-                type: 'bar',
-                data: [89, 246, 435, 687],
-                itemStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#4CAF50' },
-                        { offset: 1, color: '#2E7D32' }
-                    ])
-                }
-            },
-            {
-                name: '产量损失',
-                type: 'bar',
-                data: [23, 87, 156, 234],
-                itemStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#FF9800' },
-                        { offset: 1, color: '#E65100' }
-                    ])
-                }
-            },
-            {
-                name: '经济损失',
-                type: 'bar',
-                data: [12, 45, 89, 187],
-                itemStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#F44336' },
-                        { offset: 1, color: '#C62828' }
-                    ])
-                }
-            }
-        ]
-    };
-    
-    disasterCharts.lossPredictionChart.setOption(option);
+    // 清空并使用默认的面积图表配置
+    disasterCharts.lossPredictionChart.clear();
+    const defaultOption = getLossAreaChartOption();
+    disasterCharts.lossPredictionChart.setOption(defaultOption);
     
     // 图表切换功能
     initLossChartSwitcher();
+    
+    // 初始化时更新汇总数据为面积类型
+    setTimeout(() => {
+        updatePredictionSummary('area');
+    }, 100);
+    
+    console.log('📊 损失预测图表初始化完成 - 默认显示面积数据');
 }
 
 /**
@@ -823,34 +765,319 @@ function initLossChartSwitcher() {
 function updateLossPredictionData(type) {
     if (!disasterCharts.lossPredictionChart) return;
     
-    let newData;
+    let chartOption;
+    
     switch (type) {
         case 'area':
-            newData = {
-                title: '受灾面积 (亩)',
-                data: [89, 246, 435, 687]
+            chartOption = getLossAreaChartOption();
+            break;
+        case 'yield':
+            chartOption = getLossYieldChartOption();
+            break;
+        case 'economic':
+            chartOption = getLossEconomicChartOption();
+            break;
+        default:
+            chartOption = getLossAreaChartOption();
+    }
+    
+    // 完全清空并重新设置图表，确保不会显示多个系列
+    disasterCharts.lossPredictionChart.clear();
+    disasterCharts.lossPredictionChart.setOption(chartOption);
+    console.log(`📊 损失预测图表已切换到: ${type}`);
+    
+    // 更新汇总数据
+    updatePredictionSummary(type);
+}
+
+/**
+ * 获取受灾面积图表配置
+ */
+function getLossAreaChartOption() {
+    return {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' },
+            formatter: function(params) {
+                const value = params[0].value;
+                return `${params[0].name}<br/>受灾面积: ${value.toLocaleString()} 亩`;
+            }
+        },
+        grid: {
+            left: '15%',
+            right: '10%',
+            bottom: '20%',
+            top: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: ['轻微', '中等', '严重', '极严重'],
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '受灾面积 (亩)',
+            nameTextStyle: { 
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: 10
+            },
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 10,
+                formatter: function(value) {
+                    return value >= 1000 ? (value/1000).toFixed(1) + 'k' : value;
+                }
+            },
+            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+        },
+        series: [
+            {
+                name: '受灾面积',
+                type: 'bar',
+                data: [156, 324, 567, 892],
+                barWidth: '60%',
+                itemStyle: {
+                    color: function(params) {
+                        const colors = ['#4CAF50', '#FFC107', '#FF9800', '#F44336'];
+                        return colors[params.dataIndex];
+                    },
+                    borderRadius: [3, 3, 0, 0]
+                },
+                label: {
+                    show: true,
+                    position: 'top',
+                    color: '#ffffff',
+                    fontSize: 10,
+                    formatter: function(params) {
+                        return params.value >= 1000 ? (params.value/1000).toFixed(1) + 'k' : params.value;
+                    }
+                }
+            }
+        ]
+    };
+}
+
+/**
+ * 获取产量损失图表配置
+ */
+function getLossYieldChartOption() {
+    return {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' },
+            formatter: function(params) {
+                const value = params[0].value;
+                return `${params[0].name}<br/>产量损失: ${value.toLocaleString()} 吨`;
+            }
+        },
+        grid: {
+            left: '15%',
+            right: '10%',
+            bottom: '20%',
+            top: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: ['轻微', '中等', '严重', '极严重'],
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '产量损失 (吨)',
+            nameTextStyle: { 
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: 10
+            },
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 10
+            },
+            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+        },
+        series: [
+            {
+                name: '产量损失',
+                type: 'bar',
+                data: [45.2, 89.7, 156.2, 234.5],
+                barWidth: '60%',
+                itemStyle: {
+                    color: function(params) {
+                        const colors = ['#81C784', '#FFB74D', '#FF8A65', '#E57373'];
+                        return colors[params.dataIndex];
+                    },
+                    borderRadius: [3, 3, 0, 0]
+                },
+                label: {
+                    show: true,
+                    position: 'top',
+                    color: '#ffffff',
+                    fontSize: 10,
+                    formatter: function(params) {
+                        return params.value.toFixed(1);
+                    }
+                }
+            }
+        ]
+    };
+}
+
+/**
+ * 获取经济损失图表配置
+ */
+function getLossEconomicChartOption() {
+    return {
+        backgroundColor: 'transparent',
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            borderColor: 'rgba(0, 212, 255, 0.5)',
+            textStyle: { color: '#ffffff' },
+            formatter: function(params) {
+                const value = params[0].value;
+                return `${params[0].name}<br/>经济损失: ${value.toLocaleString()} 万元`;
+            }
+        },
+        grid: {
+            left: '15%',
+            right: '10%',
+            bottom: '20%',
+            top: '15%'
+        },
+        xAxis: {
+            type: 'category',
+            data: ['轻微', '中等', '严重', '极严重'],
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 11
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: '经济损失 (万元)',
+            nameTextStyle: { 
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: 10
+            },
+            axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } },
+            axisLabel: { 
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 10
+            },
+            splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } }
+        },
+        series: [
+            {
+                name: '经济损失',
+                type: 'bar',
+                data: [25.8, 67.4, 132.8, 186.7],
+                barWidth: '60%',
+                itemStyle: {
+                    color: function(params) {
+                        const colors = ['#66BB6A', '#FFA726', '#FF7043', '#EF5350'];
+                        return colors[params.dataIndex];
+                    },
+                    borderRadius: [3, 3, 0, 0]
+                },
+                label: {
+                    show: true,
+                    position: 'top',
+                    color: '#ffffff',
+                    fontSize: 10,
+                    formatter: function(params) {
+                        return params.value.toFixed(1);
+                    }
+                }
+            }
+        ]
+    };
+}
+
+/**
+ * 更新损失预测汇总数据
+ */
+function updatePredictionSummary(type) {
+    const summaryItems = document.querySelectorAll('.prediction-summary .summary-item');
+    if (summaryItems.length < 3) return;
+    
+    let summaryData;
+    
+    switch (type) {
+        case 'area':
+            summaryData = {
+                area: { value: '1,939 亩', label: '受灾面积' },
+                affected: { value: '325.6 万平米', label: '影响范围' },
+                coverage: { value: '65.2%', label: '覆盖率' }
             };
             break;
         case 'yield':
-            newData = {
-                title: '产量损失 (吨)',
-                data: [23, 87, 156, 234]
+            summaryData = {
+                area: { value: '325.6 吨', label: '产量损失' },
+                affected: { value: '186.7 万元', label: '等值损失' },
+                coverage: { value: '42.8%', label: '损失率' }
             };
             break;
         case 'economic':
-            newData = {
-                title: '经济损失 (万元)',
-                data: [12, 45, 89, 187]
+            summaryData = {
+                area: { value: '186.7 万元', label: '经济损失' },
+                affected: { value: '325.6 吨', label: '等值产量' },
+                coverage: { value: '12.3%', label: 'GDP占比' }
             };
             break;
+        default:
+            return;
     }
     
-    if (newData) {
-        const option = disasterCharts.lossPredictionChart.getOption();
-        option.series[0].data = newData.data;
-        option.yAxis[0].name = newData.title;
-        disasterCharts.lossPredictionChart.setOption(option);
+    // 更新第一个汇总项
+    if (summaryItems[0]) {
+        const label = summaryItems[0].querySelector('.summary-label');
+        const value = summaryItems[0].querySelector('.summary-value');
+        if (label) label.textContent = summaryData.area.label;
+        if (value) {
+            value.textContent = summaryData.area.value;
+            value.className = 'summary-value danger'; // 保持原有样式
+        }
     }
+    
+    // 更新第二个汇总项
+    if (summaryItems[1]) {
+        const label = summaryItems[1].querySelector('.summary-label');
+        const value = summaryItems[1].querySelector('.summary-value');
+        if (label) label.textContent = summaryData.affected.label;
+        if (value) {
+            value.textContent = summaryData.affected.value;
+            value.className = 'summary-value warning'; // 保持原有样式
+        }
+    }
+    
+    // 更新第三个汇总项
+    if (summaryItems[2]) {
+        const label = summaryItems[2].querySelector('.summary-label');
+        const value = summaryItems[2].querySelector('.summary-value');
+        if (label) label.textContent = summaryData.coverage.label;
+        if (value) {
+            value.textContent = summaryData.coverage.value;
+            value.className = type === 'economic' ? 'summary-value warning' : 'summary-value danger';
+        }
+    }
+    
+    console.log(`📊 损失预测汇总数据已更新为: ${type}`);
 }
 
 /**

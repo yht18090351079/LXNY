@@ -327,6 +327,311 @@
         "timestamp": "2025-08-20T10:08:49.330Z"
       },
       "lastModified": "2025-08-20T10:08:49.334Z"
+    },
+    "precise-div-noid-impact-header-9-0-0": {
+      "name": "灾害经济影响分析",
+      "content": "根据实际预估和理论预估的占比计算",
+      "timestamp": "2025/8/22 10:05:30",
+      "elementId": "precise-div-noid-impact-header-9-0-0",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.data-section > div.comprehensive-dashboard > div.impact-analysis > div.impact-header",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "impact-header",
+          "textContent": "灾害经济影响分析\n                                -24.3%",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 42,
+            "offsetTop": 410,
+            "offsetWidth": 314,
+            "offsetHeight": 15
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.impact-header",
+        "textContent": "灾害经济影响分析\n                                -24.3%",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:05:30.161Z"
+      },
+      "lastModified": "2025-08-22T02:05:30.189Z"
+    },
+    "precise-div-noid-stat-card-6-1-51": {
+      "name": "乡镇产量产值分析",
+      "content": "如图所示",
+      "timestamp": "2025/8/22 10:05:45",
+      "elementId": "precise-div-noid-stat-card-6-1-51",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.panel-content > div.stat-card.chart-data-panel",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "stat-card chart-data-panel",
+          "textContent": "💰 乡镇产量产值分析\n                        \n                            产量产值\n                            饼状图\n                            表格\n                        \n                    \n                    \n                    \n                        \n                            \n                                \n                                    乡镇\n                                    预估产量 (吨)\n                                    平均价格 (元/kg)\n                                    预产值 (万元)\n                                    占比 (%)\n                                \n                                \n                                    合计\n                                    1,366\n                                    3.14\n                                    428.5\n                                    100.0%\n                                \n                            \n                            \n                                \n                                    红台镇\n                                    456\n                                    3.15\n                                    143.6\n                                    33.5%\n                                \n                                \n                                    土桥镇\n                                    298\n                                    3.12\n                                    93.0\n                                    21.7%\n                                \n                                \n                                    漫路镇\n                                    268\n                                    3.18\n                                    85.2\n                                    19.9%\n                                \n                                \n                                    北塬镇\n                                    134\n                                    3.10\n                                    41.5\n                                    9.7%\n                                \n                                \n                                    关滩镇\n                                    112\n                                    3.16\n                                    35.4\n                                    8.3%\n                                \n                                \n                                    新集镇\n                                    98\n                                    3.08\n                                    30.2\n                                    7.0%",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 15,
+            "offsetTop": 553,
+            "offsetWidth": 369,
+            "offsetHeight": 280
+          },
+          "chartType": "echarts"
+        },
+        "fallbackSelector": "div.stat-card.chart-data-panel",
+        "textContent": "💰 乡镇产量产值分析\n                        \n                            产量产值\n                            饼状图\n                            表格\n                        \n                    \n                    \n                    \n                        \n                            \n                                \n                                    乡镇\n                                    预估产量 (吨)\n                                    平均价格 (元/kg)\n                                    预产值 (万元)\n                                    占比 (%)\n                                \n                                \n                                    合计\n                                    1,366\n                                    3.14\n                                    428.5\n                                    100.0%\n                                \n                            \n                            \n                                \n                                    红台镇\n                                    456\n                                    3.15\n                                    143.6\n                                    33.5%\n                                \n                                \n                                    土桥镇\n                                    298\n                                    3.12\n                                    93.0\n                                    21.7%\n                                \n                                \n                                    漫路镇\n                                    268\n                                    3.18\n                                    85.2\n                                    19.9%\n                                \n                                \n                                    北塬镇\n                                    134\n                                    3.10\n                                    41.5\n                                    9.7%\n                                \n                                \n                                    关滩镇\n                                    112\n                                    3.16\n                                    35.4\n                                    8.3%\n                                \n                                \n                                    新集镇\n                                    98\n                                    3.08\n                                    30.2\n                                    7.0%",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:05:45.905Z"
+      },
+      "lastModified": "2025-08-22T02:05:45.926Z"
+    }
+  },
+  "index.html-weather-monitoring": {
+    "precise-div-noid-weather-layer-tabs-6-1-1": {
+      "name": "气象图层控制",
+      "content": "点击不同的按钮 对应不同的图层\n图层获取鼠标焦点 会有详细数据弹窗",
+      "timestamp": "2025/8/22 10:35:39",
+      "elementId": "precise-div-noid-weather-layer-tabs-6-1-1",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(1) > div.weather-layer-tabs",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "weather-layer-tabs",
+          "textContent": "🌧️\n                        降雨\n                    \n                    \n                        🌡️\n                        气温\n                    \n                    \n                        💧\n                        湿度\n                    \n                    \n                        🌡️\n                        地温\n                    \n                    \n                        🔥\n                        积温\n                    \n                    \n                        🌊\n                        积雨",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 6,
+            "offsetTop": 44,
+            "offsetWidth": 355,
+            "offsetHeight": 45
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.weather-layer-tabs",
+        "textContent": "🌧️\n                        降雨\n                    \n                    \n                        🌡️\n                        气温\n                    \n                    \n                        💧\n                        湿度\n                    \n                    \n                        🌡️\n                        地温\n                    \n                    \n                        🔥\n                        积温\n                    \n                    \n                        🌊\n                        积雨",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:35:39.191Z"
+      },
+      "lastModified": "2025-08-22T02:35:39.243Z"
+    },
+    "precise-div-noid-time-controls-compact-6-2-20": {
+      "name": "时间控制模块",
+      "content": "根据实际的气象数据来决定\n时间密度",
+      "timestamp": "2025/8/22 10:37:59",
+      "elementId": "precise-div-noid-time-controls-compact-6-2-20",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(1) > div.time-controls-compact",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "time-controls-compact",
+          "textContent": "时间:\n                        \n                        \n                    \n\n                    \n                        \n                            7天前\n                            时间轴\n                            现在\n                        \n                        \n                    \n\n                    \n                        ▶️\n                        ⏸️\n                        🔄\n                        1x",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 6,
+            "offsetTop": 99,
+            "offsetWidth": 355,
+            "offsetHeight": 105
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.time-controls-compact",
+        "textContent": "时间:\n                        \n                        \n                    \n\n                    \n                        \n                            7天前\n                            时间轴\n                            现在\n                        \n                        \n                    \n\n                    \n                        ▶️\n                        ⏸️\n                        🔄\n                        1x",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:37:59.217Z"
+      },
+      "lastModified": "2025-08-22T02:37:59.225Z"
+    },
+    "precise-div-noid-stat-header-6-0-0-当前天气状况": {
+      "name": " 当前天气状况",
+      "content": "通过接口获取 甲方提供数据",
+      "timestamp": "2025/8/22 10:38:24",
+      "elementId": "precise-div-noid-stat-header-6-0-0-当前天气状况",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(2) > div.stat-header[data-text-content*=\"🌈 当前天气状况\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "stat-header",
+          "textContent": "🌈 当前天气状况",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 6,
+            "offsetTop": 6,
+            "offsetWidth": 355,
+            "offsetHeight": 22
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.stat-header",
+        "textContent": "🌈 当前天气状况",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:38:24.863Z"
+      },
+      "lastModified": "2025-08-22T02:38:24.878Z"
+    },
+    "precise-div-noid-data-tab-8-0-0": {
+      "name": "七天气象数据预测",
+      "content": "未来七天的气象数据展示",
+      "timestamp": "2025/8/22 10:38:48",
+      "elementId": "precise-div-noid-data-tab-8-0-0",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(3) > div.weather-data-selector > div.data-type-tabs > div.data-tab.active",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "data-tab active",
+          "textContent": "🌤️\n                            天气预测",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 6,
+            "offsetTop": 38,
+            "offsetWidth": 87,
+            "offsetHeight": 37
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.data-tab.active",
+        "textContent": "🌤️\n                            天气预测",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:38:48.127Z"
+      },
+      "lastModified": "2025-08-22T02:38:48.138Z"
+    },
+    "precise-div-noid-weather-data-selector-6-1-1": {
+      "name": "其余六个数据",
+      "content": "其余六个数据是历史数据\n",
+      "timestamp": "2025/8/22 10:41:38",
+      "elementId": "precise-div-noid-weather-data-selector-6-1-1",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(3) > div.weather-data-selector",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "weather-data-selector",
+          "textContent": "🌤️\n                            天气预测\n                        \n                        \n                            🌧️\n                            降雨数据\n                        \n                        \n                            🌡️\n                            气温数据\n                        \n                        \n                            🌡️\n                            地温数据\n                        \n                    \n                    \n                        \n                            🔥\n                            积温\n                        \n                        \n                            🌊\n                            积雨\n                        \n                        \n                            💧\n                            相对湿度",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 6,
+            "offsetTop": 38,
+            "offsetWidth": 355,
+            "offsetHeight": 83
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.weather-data-selector",
+        "textContent": "🌤️\n                            天气预测\n                        \n                        \n                            🌧️\n                            降雨数据\n                        \n                        \n                            🌡️\n                            气温数据\n                        \n                        \n                            🌡️\n                            地温数据\n                        \n                    \n                    \n                        \n                            🔥\n                            积温\n                        \n                        \n                            🌊\n                            积雨\n                        \n                        \n                            💧\n                            相对湿度",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:41:38.089Z"
+      },
+      "lastModified": "2025-08-22T02:41:38.097Z"
+    }
+  },
+  "index.html-disaster-monitoring": {
+    "precise-div-noid-stat-card-5-1-3": {
+      "name": "灾害概览",
+      "content": "按灾害损失程度 分成四个等级\n具体分级根据实际情况再调整",
+      "timestamp": "2025/8/22 10:47:31",
+      "elementId": "precise-div-noid-stat-card-5-1-3",
+      "targetInfo": {
+        "smartSelector": "div#map-container > div.glass-panel.right-panel > div.stat-card:nth-of-type(1)",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "stat-card",
+          "textContent": "⚠️ 灾害概览\n                    \n                        \n                        实时更新\n                    \n                \n                \n                    \n                        🔴\n                        \n                            \n                                极严重\n                                156 亩\n                            \n                            5.2%\n                        \n                    \n                    \n                        🟠\n                        \n                            \n                                严重\n                                324 亩\n                            \n                            10.9%\n                        \n                    \n                    \n                        🟡\n                        \n                            \n                                中等\n                                567 亩\n                            \n                            19.1%\n                        \n                    \n                    \n                        🟢\n                        \n                            \n                                轻微\n                                892 亩\n                            \n                            30.0%",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 15,
+            "offsetTop": 83,
+            "offsetWidth": 369,
+            "offsetHeight": 172
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.stat-card",
+        "textContent": "⚠️ 灾害概览\n                    \n                        \n                        实时更新\n                    \n                \n                \n                    \n                        🔴\n                        \n                            \n                                极严重\n                                156 亩\n                            \n                            5.2%\n                        \n                    \n                    \n                        🟠\n                        \n                            \n                                严重\n                                324 亩\n                            \n                            10.9%\n                        \n                    \n                    \n                        🟡\n                        \n                            \n                                中等\n                                567 亩\n                            \n                            19.1%\n                        \n                    \n                    \n                        🟢\n                        \n                            \n                                轻微\n                                892 亩\n                            \n                            30.0%",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T02:47:31.791Z"
+      },
+      "lastModified": "2025-08-22T02:47:31.807Z"
+    },
+    "precise-canvas-noid-noclass-8-0-0": {
+      "name": "灾害损失评估",
+      "content": "可选择统计维度",
+      "timestamp": "2025/8/22 11:24:21",
+      "elementId": "precise-canvas-noid-noclass-8-0-0",
+      "targetInfo": {
+        "smartSelector": "div#loss-prediction-chart > div:nth-of-type(1) > canvas",
+        "elementFingerprint": {
+          "tagName": "CANVAS",
+          "className": "",
+          "textContent": "灾害损失评估",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 0,
+            "offsetTop": 0,
+            "offsetWidth": 343,
+            "offsetHeight": 200
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "canvas",
+        "textContent": "灾害损失评估",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T03:24:21.615Z"
+      },
+      "lastModified": "2025-08-22T03:24:21.621Z"
+    },
+    "precise-div-noid-overlay-switch-btn-4-2-6-设备监控": {
+      "name": " 设备监控",
+      "content": "点击出现设备点位显示\n点击点位出现弹窗 展示实际数据",
+      "timestamp": "2025/8/22 11:25:12",
+      "elementId": "precise-div-noid-overlay-switch-btn-4-2-6-设备监控",
+      "targetInfo": {
+        "smartSelector": "html > body > div.function-switch-bar > div.overlay-switch-btn.active[data-function=\"device-monitoring\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "overlay-switch-btn active",
+          "textContent": "📱\n            设备监控",
+          "attributes": {
+            "data-function": "device-monitoring"
+          },
+          "position": {
+            "offsetLeft": 9,
+            "offsetTop": 260,
+            "offsetWidth": 70,
+            "offsetHeight": 40
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.overlay-switch-btn.active",
+        "textContent": "📱\n            设备监控",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T03:25:12.571Z"
+      },
+      "lastModified": "2025-08-22T03:25:12.581Z"
+    },
+    "precise-div-noid-overlay-switch-btn-4-3-7-作物选择": {
+      "name": " 作物选择",
+      "content": "选择后 右侧的统计数据 图层数据 都要变 \n单选 单作物",
+      "timestamp": "2025/8/22 11:27:48",
+      "elementId": "precise-div-noid-overlay-switch-btn-4-3-7-作物选择",
+      "targetInfo": {
+        "smartSelector": "html > body > div.function-switch-bar > div.overlay-switch-btn[data-function=\"crop-selection\"]",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "overlay-switch-btn",
+          "textContent": "🌾\n            作物选择",
+          "attributes": {
+            "data-function": "crop-selection"
+          },
+          "position": {
+            "offsetLeft": 9,
+            "offsetTop": 320,
+            "offsetWidth": 70,
+            "offsetHeight": 40
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.overlay-switch-btn",
+        "textContent": "🌾\n            作物选择",
+        "pageUrl": "http://localhost:3000/prototype/index.html",
+        "timestamp": "2025-08-22T03:27:48.414Z"
+      },
+      "lastModified": "2025-08-22T03:27:48.425Z"
     }
   }
 }
