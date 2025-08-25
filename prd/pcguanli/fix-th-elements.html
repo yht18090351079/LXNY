@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表头元素修复工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        .button:hover {
+            background: #005a8b;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #007cba;
+            margin: 15px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 表头元素修复工具</h1>
+        <p>专门解决表头元素定位问题，<strong>无需重启API服务器</strong>，直接使用现有接口修复。</p>
+        <p>✨ <strong>新版本特点</strong>：自动发现所有表头元素，智能修复选择器缺失问题。</p>
+        
+        <div style="margin: 20px 0;">
+            <button class="button" onclick="checkApiServer()">1. 检查API服务器</button>
+            <button class="button" onclick="debugSpecificElement()">2. 调试问题元素</button>
+            <button class="button" onclick="forceFixElement()">3. 强制修复元素</button>
+            <button class="button" onclick="repairThElements()">4. 批量修复表头</button>
+        </div>
+
+        <div id="status" style="margin: 20px 0;"></div>
+        <div id="log" class="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const statusDiv = document.getElementById('status');
+            logDiv.style.display = 'block';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            
+            logDiv.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            statusDiv.innerHTML = `<span class="${className}">${message}</span>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // 1. 检查API服务器状态
+        async function checkApiServer() {
+            log('正在检查API服务器状态...', 'info');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    log('✅ API服务器运行正常', 'success');
+                } else {
+                    log('❌ API服务器状态异常', 'error');
+                }
+            } catch (error) {
+                log('❌ 无法连接到API服务器，请确保服务器已启动 (npm start)', 'error');
+                log('错误详情: ' + error.message, 'error');
+            }
+        }
+
+        // 2. 调试特定问题元素
+        async function debugSpecificElement() {
+            // 先检查实际存在的表头元素
+            log('正在检查批注文件中的所有表头元素...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/annotations`);
+                const data = await response.json();
+                
+                let thElements = [];
+                for (const [pageKey, pageAnnotations] of Object.entries(data)) {
+                    for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                        if (elementId.includes('precise-th-')) {
+                            thElements.push({
+                                elementId,
+                                pageKey,
+                                name: annotation.name,
+                                hasSelector: !!(annotation.selector || annotation.selectors)
+                            });
+                        }
+                    }
+                }
+                
+                if (thElements.length === 0) {
+                    log('❌ 未找到任何表头元素批注', 'error');
+                    log('请确保您已经在PRD系统中创建了表头元素的批注', 'info');
+                    return;
+                }
+                
+                log(`✅ 找到 ${thElements.length} 个表头元素:`, 'success');
+                thElements.forEach(el => {
+                    const status = el.hasSelector ? '✅有选择器' : '❌缺少选择器';
+                    log(`  - ${el.elementId} (${el.name}) ${status}`, el.hasSelector ? 'success' : 'error');
+                });
+                
+                // 尝试修复第一个缺少选择器的元素
+                const problematicElement = thElements.find(el => !el.hasSelector);
+                if (problematicElement) {
+                    log(`\n开始修复: ${problematicElement.elementId}`, 'info');
+                    await directFixElement(problematicElement.elementId, problematicElement.pageKey);
+                }
+                
+            } catch (error) {
+                log('❌ 检查批注数据失败: ' + error.message, 'error');
+            }
+        }
+
+        // 直接修复元素（不依赖新API接口）
+        async function directFixElement(elementId, pageKey) {
+            try {
+                // 解析元素信息
+                const textContent = elementId.split('-').pop();
+                const positionMatch = elementId.match(/-(\d+)-(\d+)-(\d+)-/);
+                const col = positionMatch ? parseInt(positionMatch[2]) + 1 : 1;
+                
+                // 生成表头选择器
+                const selectors = [
+                    `table thead tr th:nth-child(${col})`,
+                    `table tr:first-child th:nth-child(${col})`,
+                    `thead th:nth-child(${col})`,
+                    `th:nth-child(${col})`,
+                    `table th:nth-of-type(${col})`,
+                    `th:contains("${textContent}")`,
+                    `th[data-text*="${textContent}"]`,
+                    `th[title*="${textContent}"]`
+                ];
+                
+                log(`生成选择器: ${selectors[0]}`, 'info');
+                
+                // 构建修复数据
+                const fixedAnnotation = {
+                    name: `表头: ${textContent}`,
+                    content: `表头元素: ${textContent}`,
+                    selector: selectors[0],
+                    selectors: selectors,
+                    signature: `th[${col}]:${textContent}`,
+                    elementPath: `table > thead > tr > th:nth-child(${col})`,
+                    elementId: elementId,
+                    repaired: true,
+                    directFix: true,
+                    timestamp: new Date().toLocaleString('zh-CN'),
+                    lastModified: new Date().toISOString()
+                };
+
+                // 使用标准的更新接口
+                const response = await fetch(`${API_BASE}/annotations/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pageKey: pageKey,
+                        elementId: elementId,
+                        annotation: fixedAnnotation,
+                        action: 'update'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    log(`✅ 直接修复成功: ${elementId}`, 'success');
+                    log(`主选择器: ${selectors[0]}`, 'info');
+                    log(`备用选择器: ${selectors.length}个`, 'info');
+                    log('🔄 请立即刷新PRD系统页面测试修复效果', 'success');
+                    return true;
+                } else {
+                    log(`❌ 直接修复失败: ${result.error || '未知错误'}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ 直接修复过程中发生错误: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // 3. 强制修复特定元素
+        async function forceFixElement() {
+            log('正在查找需要修复的表头元素...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/annotations`);
+                const data = await response.json();
+                
+                let thElements = [];
+                for (const [pageKey, pageAnnotations] of Object.entries(data)) {
+                    for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                        if (elementId.includes('precise-th-')) {
+                            thElements.push({
+                                elementId,
+                                pageKey,
+                                name: annotation.name,
+                                hasSelector: !!(annotation.selector || annotation.selectors)
+                            });
+                        }
+                    }
+                }
+                
+                if (thElements.length === 0) {
+                    log('❌ 未找到任何表头元素批注', 'error');
+                    log('请先在PRD系统中为表头元素创建批注', 'info');
+                    return;
+                }
+                
+                log(`发现 ${thElements.length} 个表头元素`, 'info');
+                
+                // 查找需要修复的元素
+                const problematicElements = thElements.filter(el => !el.hasSelector);
+                
+                if (problematicElements.length === 0) {
+                    log('✅ 所有表头元素都有选择器，无需修复', 'success');
+                    return;
+                }
+                
+                log(`需要修复 ${problematicElements.length} 个表头元素:`, 'info');
+                problematicElements.forEach(el => {
+                    log(`  - ${el.elementId} (${el.name})`, 'error');
+                });
+                
+                // 逐个修复
+                let successCount = 0;
+                for (const element of problematicElements) {
+                    log(`\n正在修复: ${element.name}`, 'info');
+                    const success = await directFixElement(element.elementId, element.pageKey);
+                    if (success) successCount++;
+                    
+                    // 稍作延迟避免请求过快
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                log(`\n修复完成: ${successCount}/${problematicElements.length} 个元素修复成功`, 'success');
+                if (successCount > 0) {
+                    log('🔄 请立即刷新PRD系统页面测试修复效果', 'success');
+                }
+                
+            } catch (error) {
+                log('❌ 强制修复过程中发生错误: ' + error.message, 'error');
+            }
+        }
+
+        // 4. 批量修复表头元素
+        async function repairThElements() {
+            log('使用直接修复方法批量修复表头元素...', 'info');
+            // 直接调用强制修复函数，因为它已经实现了批量修复逻辑
+            await forceFixElement();
+        }
+
+
+
+        // 页面加载时自动检查
+        window.onload = function() {
+            log('🔧 表头元素修复工具已加载 (新版本)', 'success');
+            log('✨ 特点：无需重启API服务器，自动发现并修复所有表头元素', 'info');
+            log('📋 建议操作：1检查API → 2调试分析 → 3一键修复', 'info');
+            log('💡 步骤2会自动列出所有表头元素及其状态', 'info');
+            log('💡 步骤3会自动修复所有有问题的表头元素', 'info');
+        };
+    </script>
+</body>
+</html>

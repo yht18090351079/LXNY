@@ -414,5 +414,189 @@
       "name": "历史优良率对比卡",
       "elementId": "precise-div-noid-historical-comparison-cards-7-2-10"
     }
+  },
+  {
+    "timestamp": "2025-08-22T06:20:40.752Z",
+    "action": "create",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "elementId": "precise-div-noid-summary-item-10-3-3"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:32:41.482Z",
+    "action": "create",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "elementId": "precise-div-noid-summary-item-10-3-3"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:32:50.257Z",
+    "action": "delete",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "elementId": "precise-div-noid-summary-item-10-3-3"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:32:55.464Z",
+    "action": "delete",
+    "annotation": {
+      "name": "button: 导出数据",
+      "elementId": "precise-button-noid-btn-10-0-0-导出数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:33:33.340Z",
+    "action": "create",
+    "annotation": {
+      "name": "时间 一级分类",
+      "elementId": "precise-div-noid-date-nav-item-10-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:41:13.409Z",
+    "action": "create",
+    "annotation": {
+      "name": "二级分类",
+      "elementId": "precise-div-noid-tree-node-label-10-2-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:54:45.472Z",
+    "action": "create",
+    "annotation": {
+      "name": "二级分类",
+      "elementId": "precise-div-noid-tree-node-label-10-2-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:55:19.433Z",
+    "action": "create",
+    "annotation": {
+      "name": "三级分类 作物",
+      "elementId": "precise-span-noid-tree-node-title-10-0-0-小麦"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:55:41.507Z",
+    "action": "create",
+    "annotation": {
+      "name": "导出数据",
+      "elementId": "precise-button-noid-btn-10-0-0-导出数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:56:15.763Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物基本信息",
+      "elementId": "precise-table-cropInfoTable-data-table-10-1-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:56:40.103Z",
+    "action": "create",
+    "annotation": {
+      "name": "影像数据",
+      "elementId": "precise-div-noid-menu-item-8-2-2-影像数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:56:49.616Z",
+    "action": "create",
+    "annotation": {
+      "name": "设备数据",
+      "elementId": "precise-div-noid-menu-item-8-3-3-设备数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T06:57:07.917Z",
+    "action": "create",
+    "annotation": {
+      "name": "导出",
+      "elementId": "precise-button-noid-btn-10-0-0-导出"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:13:52.137Z",
+    "action": "delete",
+    "annotation": {
+      "name": "时间 一级分类",
+      "elementId": "precise-div-noid-date-nav-item-10-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:14:10.603Z",
+    "action": "create",
+    "annotation": {
+      "name": "时间 一级分类",
+      "elementId": "precise-div-noid-date-nav-item-10-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:15:17.619Z",
+    "action": "delete",
+    "annotation": {
+      "name": "作物基本信息",
+      "elementId": "precise-table-cropInfoTable-data-table-10-1-0"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:15:33.715Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物信息",
+      "elementId": "precise-th-noid-noclass-10-0-0-作物名称"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:15:49.698Z",
+    "action": "delete",
+    "annotation": {
+      "name": "影像数据",
+      "elementId": "precise-div-noid-menu-item-8-2-2-影像数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:16:07.137Z",
+    "action": "create",
+    "annotation": {
+      "name": "h3: 影像数据",
+      "elementId": "precise-h3-noid-table-title-10-0-0-影像数据"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:27:05.849Z",
+    "action": "create",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "elementId": "precise-td-noid-noclass-10-0-0-气象站001"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T07:28:05.839Z",
+    "action": "delete",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "elementId": "precise-td-noid-noclass-10-0-0-气象站001"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T08:13:20.392Z",
+    "action": "create",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "elementId": "precise-td-noid-noclass-10-0-0-气象站001"
+    }
+  },
+  {
+    "timestamp": "2025-08-22T08:13:23.016Z",
+    "action": "delete",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "elementId": "precise-td-noid-noclass-10-0-0-气象站001"
+    }
   }
 ]

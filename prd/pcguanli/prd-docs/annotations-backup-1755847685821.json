@@ -215,6 +215,33 @@
         "timestamp": "2025-08-22T07:16:07.111Z"
       },
       "lastModified": "2025-08-22T07:16:07.122Z"
+    },
+    "precise-td-noid-noclass-10-0-0-气象站001": {
+      "name": "td: 气象站-001",
+      "content": "1123",
+      "timestamp": "2025/8/22 15:27:05",
+      "elementId": "precise-td-noid-noclass-10-0-0-气象站001",
+      "targetInfo": {
+        "smartSelector": "tbody#deviceDataTableBody > tr.device-row:nth-of-type(1) > td[data-text-content*=\"气象站-001\"]:nth-of-type(1)",
+        "elementFingerprint": {
+          "tagName": "TD",
+          "className": "",
+          "textContent": "气象站-001",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 0,
+            "offsetTop": 44,
+            "offsetWidth": 103,
+            "offsetHeight": 61
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "td",
+        "textContent": "气象站-001",
+        "pageUrl": "http://localhost:3001/admin-panel/index.html",
+        "timestamp": "2025-08-22T07:27:05.793Z"
+      },
+      "lastModified": "2025-08-22T07:27:05.843Z"
     }
   }
 }

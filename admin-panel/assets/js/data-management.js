@@ -23,26 +23,26 @@ class DataManagement {
         
         // 模拟三级树状数据：月份 -> 乡镇 -> 作物
         this.plantingAreaData = [
-            { id: 1, township: '临夏县', crop: '小麦', area: 1200, month: '2024-01', updateTime: '2024-01-15 10:30:00', remark: '春小麦主产区' },
-            { id: 2, township: '临夏县', crop: '玉米', area: 800, month: '2024-01', updateTime: '2024-01-15 10:35:00', remark: '' },
-            { id: 3, township: '临夏县', crop: '青稞', area: 450, month: '2024-01', updateTime: '2024-01-15 10:40:00', remark: '高海拔地区种植' },
-            { id: 4, township: '东乡县', crop: '小麦', area: 950, month: '2024-01', updateTime: '2024-01-15 11:00:00', remark: '' },
-            { id: 5, township: '东乡县', crop: '青稞', area: 600, month: '2024-01', updateTime: '2024-01-15 11:15:00', remark: '传统种植作物' },
-            { id: 6, township: '积石山县', crop: '小麦', area: 780, month: '2024-01', updateTime: '2024-01-15 11:30:00', remark: '' },
-            { id: 7, township: '积石山县', crop: '土豆', area: 320, month: '2024-01', updateTime: '2024-01-15 11:45:00', remark: '新增种植品种' },
+            { id: 1, township: '临夏镇', crop: '小麦', area: 1200, month: '2024-01', updateTime: '2024-01-15 10:30:00', remark: '春小麦主产区' },
+            { id: 2, township: '临夏镇', crop: '玉米', area: 800, month: '2024-01', updateTime: '2024-01-15 10:35:00', remark: '' },
+            { id: 3, township: '临夏镇', crop: '青稞', area: 450, month: '2024-01', updateTime: '2024-01-15 10:40:00', remark: '高海拔地区种植' },
+            { id: 4, township: '东乡镇', crop: '小麦', area: 950, month: '2024-01', updateTime: '2024-01-15 11:00:00', remark: '' },
+            { id: 5, township: '东乡镇', crop: '青稞', area: 600, month: '2024-01', updateTime: '2024-01-15 11:15:00', remark: '传统种植作物' },
+            { id: 6, township: '积石山镇', crop: '小麦', area: 780, month: '2024-01', updateTime: '2024-01-15 11:30:00', remark: '' },
+            { id: 7, township: '积石山镇', crop: '土豆', area: 320, month: '2024-01', updateTime: '2024-01-15 11:45:00', remark: '新增种植品种' },
 
-            { id: 8, township: '临夏县', crop: '小麦', area: 1150, month: '2024-02', updateTime: '2024-02-15 09:20:00', remark: '面积略有增加' },
-            { id: 9, township: '临夏县', crop: '玉米', area: 850, month: '2024-02', updateTime: '2024-02-15 09:25:00', remark: '' },
-            { id: 10, township: '临夏县', crop: '青稞', area: 480, month: '2024-02', updateTime: '2024-02-15 09:30:00', remark: '' },
-            { id: 11, township: '东乡县', crop: '小麦', area: 980, month: '2024-02', updateTime: '2024-02-15 10:10:00', remark: '' },
-            { id: 12, township: '东乡县', crop: '青稞', area: 620, month: '2024-02', updateTime: '2024-02-15 10:30:00', remark: '' },
-            { id: 13, township: '积石山县', crop: '小麦', area: 820, month: '2024-02', updateTime: '2024-02-15 10:45:00', remark: '' },
-            { id: 14, township: '积石山县', crop: '土豆', area: 350, month: '2024-02', updateTime: '2024-02-15 11:00:00', remark: '种植面积扩大' },
+            { id: 8, township: '临夏镇', crop: '小麦', area: 1150, month: '2024-02', updateTime: '2024-02-15 09:20:00', remark: '面积略有增加' },
+            { id: 9, township: '临夏镇', crop: '玉米', area: 850, month: '2024-02', updateTime: '2024-02-15 09:25:00', remark: '' },
+            { id: 10, township: '临夏镇', crop: '青稞', area: 480, month: '2024-02', updateTime: '2024-02-15 09:30:00', remark: '' },
+            { id: 11, township: '东乡镇', crop: '小麦', area: 980, month: '2024-02', updateTime: '2024-02-15 10:10:00', remark: '' },
+            { id: 12, township: '东乡镇', crop: '青稞', area: 620, month: '2024-02', updateTime: '2024-02-15 10:30:00', remark: '' },
+            { id: 13, township: '积石山镇', crop: '小麦', area: 820, month: '2024-02', updateTime: '2024-02-15 10:45:00', remark: '' },
+            { id: 14, township: '积石山镇', crop: '土豆', area: 350, month: '2024-02', updateTime: '2024-02-15 11:00:00', remark: '种植面积扩大' },
 
-            { id: 15, township: '临夏县', crop: '小麦', area: 1180, month: '2024-03', updateTime: '2024-03-15 09:20:00', remark: '' },
-            { id: 16, township: '临夏县', crop: '玉米', area: 880, month: '2024-03', updateTime: '2024-03-15 09:25:00', remark: '' },
-            { id: 17, township: '东乡县', crop: '小麦', area: 1020, month: '2024-03', updateTime: '2024-03-15 10:10:00', remark: '' },
-            { id: 18, township: '东乡县', crop: '青稞', area: 650, month: '2024-03', updateTime: '2024-03-15 10:30:00', remark: '' }
+            { id: 15, township: '临夏镇', crop: '小麦', area: 1180, month: '2024-03', updateTime: '2024-03-15 09:20:00', remark: '' },
+            { id: 16, township: '临夏镇', crop: '玉米', area: 880, month: '2024-03', updateTime: '2024-03-15 09:25:00', remark: '' },
+            { id: 17, township: '东乡镇', crop: '小麦', area: 1020, month: '2024-03', updateTime: '2024-03-15 10:10:00', remark: '' },
+            { id: 18, township: '东乡镇', crop: '青稞', area: 650, month: '2024-03', updateTime: '2024-03-15 10:30:00', remark: '' }
         ];
         
         this.cropInfoData = [
@@ -110,14 +110,14 @@ class DataManagement {
         ];
         
         this.deviceData = [
-            { id: 1, name: '气象站-001', type: '气象监测', location: '临夏县中心', status: 'online', lastReport: '2024-01-20 14:30:00', longitude: 103.2012, latitude: 35.5889 },
-            { id: 2, name: '土壤传感器-002', type: '土壤监测', location: '临夏县农田A区', status: 'online', lastReport: '2024-01-20 14:25:00', longitude: 103.1876, latitude: 35.6123 },
-            { id: 3, name: '摄像头-003', type: '视频监控', location: '东乡县农田B区', status: 'offline', lastReport: '2024-01-19 16:45:00', longitude: 103.3901, latitude: 35.6645 },
-            { id: 4, name: '气象站-004', type: '气象监测', location: '东乡县中心', status: 'offline', lastReport: '2024-01-18 10:20:00', longitude: 103.3912, latitude: 35.6601 },
-            { id: 5, name: '土壤传感器-005', type: '土壤监测', location: '积石山县农田C区', status: 'online', lastReport: '2024-01-20 14:20:00', longitude: 102.8734, latitude: 35.7189 },
-            { id: 6, name: '摄像头-006', type: '视频监控', location: '积石山县农田D区', status: 'online', lastReport: '2024-01-20 14:15:00', longitude: 102.8456, latitude: 35.7345 },
-            { id: 7, name: '气象站-007', type: '气象监测', location: '康乐县中心', status: 'offline', lastReport: '2024-01-19 08:30:00', longitude: 103.7089, latitude: 35.3667 },
-            { id: 8, name: '土壤传感器-008', type: '土壤监测', location: '和政县农田E区', status: 'online', lastReport: '2024-01-20 14:10:00', longitude: 103.3501, latitude: 35.4234 }
+            { id: 1, name: '气象站-001', type: '气象监测', location: '临夏镇中心', status: 'online', lastReport: '2024-01-20 14:30:00', longitude: 103.2012, latitude: 35.5889 },
+            { id: 2, name: '土壤传感器-002', type: '土壤监测', location: '临夏镇农田A区', status: 'online', lastReport: '2024-01-20 14:25:00', longitude: 103.1876, latitude: 35.6123 },
+            { id: 3, name: '摄像头-003', type: '视频监控', location: '东乡镇农田B区', status: 'offline', lastReport: '2024-01-19 16:45:00', longitude: 103.3901, latitude: 35.6645 },
+            { id: 4, name: '气象站-004', type: '气象监测', location: '东乡镇中心', status: 'offline', lastReport: '2024-01-18 10:20:00', longitude: 103.3912, latitude: 35.6601 },
+            { id: 5, name: '土壤传感器-005', type: '土壤监测', location: '积石山镇农田C区', status: 'online', lastReport: '2024-01-20 14:20:00', longitude: 102.8734, latitude: 35.7189 },
+            { id: 6, name: '摄像头-006', type: '视频监控', location: '积石山镇农田D区', status: 'online', lastReport: '2024-01-20 14:15:00', longitude: 102.8456, latitude: 35.7345 },
+            { id: 7, name: '气象站-007', type: '气象监测', location: '康乐镇中心', status: 'offline', lastReport: '2024-01-19 08:30:00', longitude: 103.7089, latitude: 35.3667 },
+            { id: 8, name: '土壤传感器-008', type: '土壤监测', location: '和政镇农田E区', status: 'online', lastReport: '2024-01-20 14:10:00', longitude: 103.3501, latitude: 35.4234 }
         ];
         
         this.init();
@@ -1324,7 +1324,7 @@ class DataManagement {
             throw new Error('Leaflet库未加载');
         }
 
-        // 临夏县中心坐标
+        // 临夏镇中心坐标
         const center = [35.6, 103.2];
         
         this.deviceMap = L.map('deviceMap').setView(center, 10);

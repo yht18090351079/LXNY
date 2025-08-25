@@ -526,5 +526,258 @@
       "content": "#### 功能概述\n历史优良率对比卡是长势分析系统中的历史数据对比组件，通过卡片式布局展示多年度优良率数据的纵向对比。该组件帮助用户快速了解作物长势的年际变化趋势，评估农业管理效果的持续改善情况，为制定长期农业发展策略提供历史数据支撑。\n\n#### 详细功能说明\n- **组件类型**: 多卡片组合布局，包含汇总信息区和历史对比卡片区\n- **显示内容**: 近三年优良率数据对比，增长趋势分析，最佳表现年份标识\n- **数据来源**: 历史长势监测数据库，年度优良率统计档案\n\n#### 组件结构详解\n\n**1. 汇总信息区**\n- **三年平均增长**: 显示近三年优良率的平均增长幅度\n  - 计算方法: (当前年优良率 - 三年前优良率) / 三年前优良率 × 100%\n  - 颜色标识: 绿色表示正增长，红色表示负增长\n- **最佳表现年份**: 标识历史最高优良率年份(2025年当前)\n  - 自动识别: 系统自动比较历史数据确定最佳年份\n  - 当前标识: 如果当年是最佳年份，显示\"当前\"标签\n\n**2. 历史对比卡片区**\n包含三张年度对比卡片，每张卡片结构相同：\n\n**2025年卡片(当前年)**\n- **年份标识**: \"2025年\"\n- **特殊标识**: \"当前\"徽章，突出显示当前年份\n- **优良率数值**: 78.5%\n- **标签说明**: \"优良率\"\n\n**2024年卡片(上一年)**\n- **年份标识**: \"2024年\"\n- **变化指示器**: \"↑4.3%\"，表示相比2023年的变化\n- **优良率数值**: 75.2%\n- **标签说明**: \"同期优良率\"\n\n**2023年卡片(前年)**\n- **年份标识**: \"2023年\"\n- **变化指示器**: \"↑17.0%\"，表示相比2022年的变化\n- **优良率数值**: 67.0%\n- **标签说明**: \"同期优良率\"\n\n#### 优良率计算标准\n**定义**: 优良率是指长势等级为\"优秀\"和\"良好\"的农田面积占总监测面积的百分比\n\n**计算公式**:\n```\n优良率 = (优秀等级面积 + 良好等级面积) / 总监测面积 × 100%\n```\n\n**等级划分标准**:\n- **优秀**: NDVI > 0.8，长势指数 > 90分\n- **良好**: NDVI 0.7-0.8，长势指数 80-90分\n- **一般**: NDVI 0.6-0.7，长势指数 70-80分\n- **较差**: NDVI < 0.6，长势指数 < 70分\n\n#### 数据统计逻辑\n**时间节点**: 每年同一物候期进行统计对比，确保数据可比性\n**统计范围**: 覆盖全县域农田监测区域\n**数据质量**: 剔除云雾遮挡、数据缺失的区域\n**标准化处理**: 统一监测标准和评估方法，保证历史数据一致性\n\n#### 变化趋势分析\n**增长指示器逻辑**:\n- **↑**: 绿色向上箭头，表示相比前一年有所提升\n- **↓**: 红色向下箭头，表示相比前一年有所下降\n- **→**: 灰色平行箭头，表示相比前一年基本持平(变化<1%)\n\n**变化幅度计算**:\n```\n变化幅度 = (本年优良率 - 前年优良率) / 前年优良率 × 100%\n```\n\n#### 历史数据价值分析\n**趋势评估**: 从67.0% → 75.2% → 78.5%的上升趋势，显示农业管理效果显著\n**增长稳定性**: 连续两年保持正增长，说明改善措施具有持续性\n**管理效果验证**: 三年平均增长15.5%，证明农业技术推广和管理优化取得实效\n**目标达成情况**: 当前78.5%的优良率可能已达到或超过预设目标\n\n#### 业务应用价值\n**政策制定**: 为农业政策调整和资源配置提供历史数据支撑\n**效果评估**: 评估农业技术推广、基础设施建设等措施的长期效果\n**目标设定**: 基于历史趋势制定下一年度的优良率目标\n**经验总结**: 分析优良率提升的关键因素，推广成功经验\n**预警预判**: 识别可能影响优良率的风险因素，提前制定应对措施\n\n#### 交互功能特点\n**卡片悬浮**: 鼠标悬浮显示更详细的统计信息和分析说明\n**数据钻取**: 点击卡片可查看该年度的详细长势分布图和分析报告\n**对比模式**: 支持选择不同年份进行重点对比分析\n**导出功能**: 支持导出历史优良率统计表格和趋势分析报告"
     },
     "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:20:40.749Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-summary-item-10-3-3",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "content": "2213"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:32:41.478Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-summary-item-10-3-3",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "content": "221312"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:32:50.252Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-summary-item-10-3-3",
+    "annotation": {
+      "name": "div: 数据条目:         ...",
+      "content": "221312"
+    },
+    "backup": "annotations-backup-1755844370242.json"
+  },
+  {
+    "timestamp": "2025-08-22T06:32:55.452Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-button-noid-btn-10-0-0-导出数据",
+    "annotation": {
+      "name": "button: 导出数据",
+      "content": "1§23"
+    },
+    "backup": "annotations-backup-1755844375446.json"
+  },
+  {
+    "timestamp": "2025-08-22T06:33:33.331Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-date-nav-item-10-0-0",
+    "annotation": {
+      "name": "时间 一级分类",
+      "content": "按月度分"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:41:13.405Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-tree-node-label-10-2-0",
+    "annotation": {
+      "name": "二级分类",
+      "content": "乡镇"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:54:45.469Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-tree-node-label-10-2-0",
+    "annotation": {
+      "name": "二级分类",
+      "content": "乡镇"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:55:19.428Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-span-noid-tree-node-title-10-0-0-小麦",
+    "annotation": {
+      "name": "三级分类 作物",
+      "content": "作物"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:55:41.501Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-button-noid-btn-10-0-0-导出数据",
+    "annotation": {
+      "name": "导出数据",
+      "content": "导出pdf或者表格"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:56:15.755Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-table-cropInfoTable-data-table-10-1-0",
+    "annotation": {
+      "name": "作物基本信息",
+      "content": "手动录入 ，"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:56:40.098Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-menu-item-8-2-2-影像数据",
+    "annotation": {
+      "name": "影像数据",
+      "content": "根据后台上传的数据，显示上传记录"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:56:49.613Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-menu-item-8-3-3-设备数据",
+    "annotation": {
+      "name": "设备数据",
+      "content": "物联网设备"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T06:57:07.909Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-button-noid-btn-10-0-0-导出",
+    "annotation": {
+      "name": "导出",
+      "content": "导出表格或pdf"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T07:13:52.129Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-date-nav-item-10-0-0",
+    "annotation": {
+      "name": "时间 一级分类",
+      "content": "按月度分"
+    },
+    "backup": "annotations-backup-1755846832118.json"
+  },
+  {
+    "timestamp": "2025-08-22T07:14:10.600Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-date-nav-item-10-0-0",
+    "annotation": {
+      "name": "时间 一级分类",
+      "content": "按时间分类"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T07:15:17.613Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-table-cropInfoTable-data-table-10-1-0",
+    "annotation": {
+      "name": "作物基本信息",
+      "content": "手动录入 ，"
+    },
+    "backup": "annotations-backup-1755846917603.json"
+  },
+  {
+    "timestamp": "2025-08-22T07:15:33.702Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-th-noid-noclass-10-0-0-作物名称",
+    "annotation": {
+      "name": "作物信息",
+      "content": "手动录入"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T07:15:49.694Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-menu-item-8-2-2-影像数据",
+    "annotation": {
+      "name": "影像数据",
+      "content": "根据后台上传的数据，显示上传记录"
+    },
+    "backup": "annotations-backup-1755846949692.json"
+  },
+  {
+    "timestamp": "2025-08-22T07:16:07.125Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-h3-noid-table-title-10-0-0-影像数据",
+    "annotation": {
+      "name": "h3: 影像数据",
+      "content": "根据后台上传的数据，显示上传记录"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T07:27:05.845Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-td-noid-noclass-10-0-0-气象站001",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "content": "1123"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T07:28:05.832Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-td-noid-noclass-10-0-0-气象站001",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "content": "1123"
+    },
+    "backup": "annotations-backup-1755847685821.json"
+  },
+  {
+    "timestamp": "2025-08-22T08:13:20.389Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-td-noid-noclass-10-0-0-气象站001",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "content": "234"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T08:13:23.008Z",
+    "operation": "delete",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-td-noid-noclass-10-0-0-气象站001",
+    "annotation": {
+      "name": "td: 气象站-001",
+      "content": "234"
+    },
+    "backup": "annotations-backup-1755850403003.json"
   }
 ]

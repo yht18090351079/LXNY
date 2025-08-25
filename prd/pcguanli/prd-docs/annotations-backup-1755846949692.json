@@ -81,6 +81,33 @@
       },
       "lastModified": "2025-08-22T06:55:41.499Z"
     },
+    "precise-div-noid-menu-item-8-2-2-影像数据": {
+      "name": "影像数据",
+      "content": "根据后台上传的数据，显示上传记录",
+      "timestamp": "2025/8/22 14:56:40",
+      "elementId": "precise-div-noid-menu-item-8-2-2-影像数据",
+      "targetInfo": {
+        "smartSelector": "aside#sidebar > nav.sidebar-menu > div.menu-group > div.menu-submenu.show > div.menu-item.menu-child[data-text-content*=\"影像数据\"]:nth-of-type(2)",
+        "elementFingerprint": {
+          "tagName": "DIV",
+          "className": "menu-item menu-child",
+          "textContent": "影像数据",
+          "attributes": {},
+          "position": {
+            "offsetLeft": 0,
+            "offsetTop": 135,
+            "offsetWidth": 220,
+            "offsetHeight": 45
+          },
+          "chartType": null
+        },
+        "fallbackSelector": "div.menu-item.menu-child",
+        "textContent": "影像数据",
+        "pageUrl": "http://localhost:3001/admin-panel/index.html",
+        "timestamp": "2025-08-22T06:56:40.084Z"
+      },
+      "lastModified": "2025-08-22T06:56:40.096Z"
+    },
     "precise-div-noid-menu-item-8-3-3-设备数据": {
       "name": "设备数据",
       "content": "物联网设备",
@@ -188,33 +215,6 @@
         "timestamp": "2025-08-22T07:15:33.684Z"
       },
       "lastModified": "2025-08-22T07:15:33.693Z"
-    },
-    "precise-h3-noid-table-title-10-0-0-影像数据": {
-      "name": "h3: 影像数据",
-      "content": "根据后台上传的数据，显示上传记录",
-      "timestamp": "2025/8/22 15:16:07",
-      "elementId": "precise-h3-noid-table-title-10-0-0-影像数据",
-      "targetInfo": {
-        "smartSelector": "div#image-data > div.data-table-container > div.table-header > h3.table-title[data-text-content*=\"影像数据\"]",
-        "elementFingerprint": {
-          "tagName": "H3",
-          "className": "table-title",
-          "textContent": "影像数据",
-          "attributes": {},
-          "position": {
-            "offsetLeft": 264,
-            "offsetTop": 109,
-            "offsetWidth": 64,
-            "offsetHeight": 24
-          },
-          "chartType": null
-        },
-        "fallbackSelector": "h3.table-title",
-        "textContent": "影像数据",
-        "pageUrl": "http://localhost:3001/admin-panel/index.html",
-        "timestamp": "2025-08-22T07:16:07.111Z"
-      },
-      "lastModified": "2025-08-22T07:16:07.122Z"
     }
   }
 }

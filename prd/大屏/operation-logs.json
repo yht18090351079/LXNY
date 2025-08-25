@@ -1043,5 +1043,27 @@
       "content": "选择后 右侧的统计数据 图层数据 都要变 \n单选 单作物"
     },
     "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T08:17:48.315Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-th-noid-noclass-10-0-0-设备名称",
+    "annotation": {
+      "name": "设备名称",
+      "content": "表头：设备名称"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-08-22T08:17:49.385Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-th-noid-noclass-10-0-0-设备名称",
+    "annotation": {
+      "name": "设备名称",
+      "content": "表头：设备名称"
+    },
+    "backup": null
   }
 ]

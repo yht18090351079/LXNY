@@ -163,6 +163,26 @@
         "timestamp": "2025-08-20T09:37:09.638Z"
       },
       "lastModified": "2025-08-20T09:37:09.646Z"
+    },
+    "precise-th-noid-noclass-10-0-0-设备名称": {
+      "name": "设备名称",
+      "content": "表头：设备名称",
+      "selector": "table thead tr th:nth-child(1)",
+      "selectors": [
+        "table thead tr th:nth-child(1)",
+        "table tr:first-child th:nth-child(1)",
+        "thead th:nth-child(1)",
+        "th:nth-child(1)",
+        "th:contains(\"设备名称\")",
+        "th[data-text=\"设备名称\"]"
+      ],
+      "signature": "th[1]:设备名称",
+      "elementPath": "table > thead > tr > th:nth-child(1)",
+      "elementId": "precise-th-noid-noclass-10-0-0-设备名称",
+      "repaired": true,
+      "manualFix": true,
+      "timestamp": "2025/8/22 16:17:49",
+      "lastModified": "2025-08-22T08:17:49.384Z"
     }
   },
   "index.html-yield-estimation": {

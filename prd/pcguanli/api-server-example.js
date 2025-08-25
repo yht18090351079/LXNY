@@ -316,7 +316,26 @@ function setupFileWatcher() {
 
 // 处理根目录的index.html请求 - 重定向到大屏原型
 app.get('/index.html', (req, res) => {
-    res.redirect('/prototype/index.html');
+    // 检查是否是iframe请求
+    const userAgent = req.get('User-Agent') || '';
+    const referer = req.get('Referer') || '';
+    
+    if (referer.includes('prd-system')) {
+        // 来自PRD系统的iframe请求，直接提供内容而不重定向
+        const indexPath = path.join(__dirname, '../../大屏原型/index.html');
+        console.log('🎯 iframe请求 /index.html，直接提供内容:', indexPath);
+        res.sendFile(indexPath);
+    } else {
+        // 普通浏览器访问，使用重定向
+        res.redirect('/prototype/index.html');
+    }
+});
+
+// 处理admin-panel/index.html请求 - 直接提供admin-panel目录的index.html
+app.get('/admin-panel/index.html', (req, res) => {
+    const indexPath = path.join(__dirname, '../../admin-panel/index.html');
+    console.log('🎯 admin-panel请求，直接提供内容:', indexPath);
+    res.sendFile(indexPath);
 });
 
 // 根路径 - 显示欢迎页面
@@ -355,9 +374,14 @@ app.get('/api', (req, res) => {
             'POST /api/annotations': '保存所有批注数据', 
             'POST /api/annotations/update': '增量更新单个批注',
             'POST /api/annotations/sync': '实时同步批注',
+            'POST /api/annotations/repair': '修复批注数据完整性',
+            'POST /api/annotations/repair-th': '专门修复表头元素定位',
+            'GET /api/annotations/debug/:elementId': '调试特定元素信息',
+            'POST /api/annotations/force-fix/:elementId': '强制修复单个元素',
             'GET /api/sync-logs': '获取同步日志',
             'GET /api/operation-logs': '获取操作日志',
-            'GET /api/annotations/stats': '获取批注统计信息'
+            'GET /api/annotations/stats': '获取批注统计信息',
+            'GET /api/events': '实时事件推送 (SSE)'
         },
         usage: {
             development: 'window.PRD_API_BASE_URL = "http://localhost:' + (PORT || 3000) + '/api"',
@@ -509,15 +533,51 @@ app.post('/api/annotations/update', async (req, res) => {
         } else {
             // 创建或更新批注
             oldAnnotation = annotations[pageKey][elementId];
-            annotations[pageKey][elementId] = {
+            
+            // 构建完整的批注数据，确保选择器信息不丢失
+            const completeAnnotation = {
                 ...annotation,
                 elementId: elementId,
                 timestamp: new Date().toLocaleString('zh-CN'),
                 lastModified: new Date().toISOString()
             };
             
+            // 保护关键的选择器信息 - 如果新数据中缺失，使用旧数据
+            if (oldAnnotation) {
+                // 保持选择器信息
+                if (!annotation.selector && oldAnnotation.selector) {
+                    completeAnnotation.selector = oldAnnotation.selector;
+                    console.log(`🔧 恢复选择器: ${elementId} -> ${oldAnnotation.selector}`);
+                }
+                if (!annotation.selectors && oldAnnotation.selectors) {
+                    completeAnnotation.selectors = oldAnnotation.selectors;
+                    console.log(`🔧 恢复选择器列表: ${elementId} -> ${oldAnnotation.selectors.length}个`);
+                }
+                if (!annotation.signature && oldAnnotation.signature) {
+                    completeAnnotation.signature = oldAnnotation.signature;
+                    console.log(`🔧 恢复元素签名: ${elementId} -> ${oldAnnotation.signature}`);
+                }
+                if (!annotation.elementPath && oldAnnotation.elementPath) {
+                    completeAnnotation.elementPath = oldAnnotation.elementPath;
+                    console.log(`🔧 恢复元素路径: ${elementId} -> ${oldAnnotation.elementPath}`);
+                }
+            }
+            
+            annotations[pageKey][elementId] = completeAnnotation;
+            
             operationType = oldAnnotation ? '更新' : '创建';
             console.log(`${operationType === '创建' ? '✨' : '✏️'} ${operationType}批注: ${pageKey}/${elementId} - ${annotation.name}`);
+            
+            // 数据完整性检查 - 警告缺失的选择器信息
+            const missingInfo = [];
+            if (!completeAnnotation.selector) missingInfo.push('selector');
+            if (!completeAnnotation.selectors) missingInfo.push('selectors');
+            if (!completeAnnotation.signature) missingInfo.push('signature');
+            
+            if (missingInfo.length > 0) {
+                console.warn(`⚠️ 选择器信息不完整 [${elementId}]: 缺失 ${missingInfo.join(', ')}`);
+                console.warn(`   请检查前端元素识别逻辑是否正常工作`);
+            }
         }
         
         // 禁用自动备份 - 只在删除操作时备份
@@ -606,6 +666,416 @@ app.post('/api/annotations/sync', async (req, res) => {
         res.status(500).json({ 
             error: '实时同步失败', 
             details: error.message 
+        });
+    }
+});
+
+// 数据完整性验证和修复
+function validateAndFixAnnotationData(annotation, elementId) {
+    const fixes = [];
+    let isValid = true;
+    
+    // 检查基本字段
+    if (!annotation.name) {
+        annotation.name = `批注_${elementId.split('-').pop() || '未知'}`;
+        fixes.push('添加默认名称');
+        isValid = false;
+    }
+    
+    // 检查元素定位信息
+    if (!annotation.selector && !annotation.selectors) {
+        // 尝试从elementId生成基础选择器
+        const elementMatch = elementId.match(/precise-(\w+)-/);
+        if (elementMatch) {
+            const tagName = elementMatch[1];
+            const textContent = elementId.split('-').pop();
+            
+            if (tagName === 'th' || tagName === 'td') {
+                const posInfo = extractPositionFromId(elementId);
+                const position = posInfo ? posInfo.position : 1;
+                
+                if (tagName === 'th') {
+                    // 表头元素特殊处理 - 使用更可靠的选择器
+                    annotation.selectors = [
+                        `table thead tr th:nth-child(${position})`,
+                        `table tr:first-child th:nth-child(${position})`,
+                        `thead th:nth-child(${position})`,
+                        `th:nth-child(${position})`,
+                        `table th:nth-of-type(${position})`,
+                        `th[data-text*="${textContent}"]`,
+                        `th:contains("${textContent}")` // 最后尝试，某些环境可能不支持
+                    ];
+                    annotation.selector = annotation.selectors[0]; // 优先使用最精确的选择器
+                    fixes.push('生成表头元素专用选择器');
+                } else {
+                    // 表格数据单元格选择器（原逻辑保持）
+                    annotation.selectors = [
+                        `${tagName}:contains("${textContent}")`,
+                        `table ${tagName}:contains("${textContent}")`,
+                        `${tagName}[data-text="${textContent}"]`,
+                        `${tagName}:nth-of-type(${position})`
+                    ];
+                    annotation.selector = annotation.selectors[0];
+                    fixes.push('生成表格数据元素选择器');
+                }
+            } else {
+                // 通用元素的回退选择器
+                annotation.selectors = [
+                    `${tagName}:contains("${textContent}")`,
+                    `${tagName}[data-text="${textContent}"]`,
+                    `${tagName}:nth-of-type(${getSimplePosition(elementId)})`
+                ];
+                annotation.selector = annotation.selectors[0];
+                fixes.push('生成通用元素选择器');
+            }
+        } else {
+            fixes.push('无法生成选择器 - 元素ID格式异常');
+            isValid = false;
+        }
+    }
+    
+    // 检查元素签名
+    if (!annotation.signature) {
+        const elementMatch = elementId.match(/precise-(\w+)-(.*?)-(\d+)-(\d+)-(\d+)-(.+)/);
+        if (elementMatch) {
+            const [, tagName, idInfo, , , , textContent] = elementMatch;
+            annotation.signature = `${tagName}${idInfo !== 'noid' ? `#${idInfo}` : ''}:${textContent}`;
+            fixes.push('生成元素签名');
+        }
+    }
+    
+    return { isValid, fixes, annotation };
+}
+
+// 从elementId提取位置信息
+function extractPositionFromId(elementId) {
+    const match = elementId.match(/-(\d+)-(\d+)-(\d+)-/);
+    if (match) {
+        const [, row, col, depth] = match;
+        return {
+            row: parseInt(row) + 1,  // 转换为1基索引
+            col: parseInt(col) + 1,  // 转换为1基索引 
+            depth: parseInt(depth),
+            // 对于表头元素，通常使用列位置更重要
+            position: parseInt(col) + 1
+        };
+    }
+    return null;
+}
+
+// 获取简单位置（向后兼容）
+function getSimplePosition(elementId) {
+    const pos = extractPositionFromId(elementId);
+    return pos ? pos.position : 1;
+}
+
+// 表头元素专用修复接口
+app.post('/api/annotations/repair-th', async (req, res) => {
+    try {
+        const annotations = await fs.readJson(ANNOTATIONS_FILE);
+        let repairedCount = 0;
+        let totalThElements = 0;
+        const repairLog = [];
+        
+        for (const [pageKey, pageAnnotations] of Object.entries(annotations)) {
+            for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                // 专门处理th元素
+                if (elementId.includes('precise-th-')) {
+                    totalThElements++;
+                    
+                    const posInfo = extractPositionFromId(elementId);
+                    const textContent = elementId.split('-').pop();
+                    const position = posInfo ? posInfo.position : 1;
+                    
+                    console.log(`🔍 分析表头元素: ${elementId}`);
+                    console.log(`   位置信息: row=${posInfo?.row}, col=${posInfo?.col}, position=${position}`);
+                    console.log(`   文本内容: ${textContent}`);
+                    
+                    // 生成更强的表头选择器
+                    const newSelectors = [
+                        `table thead tr th:nth-child(${position})`,
+                        `table tr:first-child th:nth-child(${position})`,
+                        `thead th:nth-child(${position})`,
+                        `tr:first-child th:nth-child(${position})`,
+                        `th:nth-child(${position})`,
+                        `table th:nth-of-type(${position})`,
+                        `th:nth-of-type(${position})`,
+                        // 基于文本内容的选择器（作为最后的尝试）
+                        `th[title="${textContent}"]`,
+                        `th[data-text="${textContent}"]`,
+                        `th[aria-label="${textContent}"]`,
+                        `th:contains("${textContent}")`
+                    ];
+                    
+                    const updatedAnnotation = {
+                        ...annotation,
+                        selector: newSelectors[0], // 使用最可靠的选择器
+                        selectors: newSelectors,
+                        signature: `th[${position}]:${textContent}`,
+                        elementPath: `table > thead > tr > th:nth-child(${position})`,
+                        repaired: true,
+                        repairTimestamp: new Date().toISOString(),
+                        positionInfo: posInfo
+                    };
+                    
+                    annotations[pageKey][elementId] = updatedAnnotation;
+                    repairedCount++;
+                    
+                    repairLog.push({
+                        elementId,
+                        pageKey,
+                        textContent,
+                        position,
+                        newSelectors: newSelectors.slice(0, 3), // 只记录前3个选择器
+                        positionInfo: posInfo
+                    });
+                    
+                    console.log(`✅ 修复表头元素: ${elementId} -> ${newSelectors[0]}`);
+                }
+            }
+        }
+        
+        if (repairedCount > 0) {
+            // 创建备份并保存
+            await createBackup();
+            await fs.writeJson(ANNOTATIONS_FILE, annotations, { spaces: 2 });
+            console.log(`✅ 表头修复完成: ${repairedCount}/${totalThElements} 个表头元素被修复`);
+        }
+        
+        res.json({
+            success: true,
+            totalThElements,
+            repairedCount,
+            repairLog,
+            message: totalThElements === 0 ? '未发现表头元素' : `成功修复 ${repairedCount} 个表头元素`,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ 表头修复失败:', error);
+        res.status(500).json({
+            error: '表头修复失败',
+            details: error.message
+        });
+    }
+});
+
+// 调试特定元素接口
+app.get('/api/annotations/debug/:elementId', async (req, res) => {
+    try {
+        const { elementId } = req.params;
+        const annotations = await fs.readJson(ANNOTATIONS_FILE);
+        
+        let foundElement = null;
+        let pageKey = null;
+        
+        // 查找元素
+        for (const [pKey, pageAnnotations] of Object.entries(annotations)) {
+            if (pageAnnotations[elementId]) {
+                foundElement = pageAnnotations[elementId];
+                pageKey = pKey;
+                break;
+            }
+        }
+        
+        if (!foundElement) {
+            return res.json({
+                found: false,
+                elementId,
+                message: '未找到该元素的批注数据'
+            });
+        }
+        
+        // 分析元素信息
+        const posInfo = extractPositionFromId(elementId);
+        const textContent = elementId.split('-').pop();
+        const isThElement = elementId.includes('precise-th-');
+        
+        const debugInfo = {
+            found: true,
+            elementId,
+            pageKey,
+            annotation: foundElement,
+            analysis: {
+                isThElement,
+                textContent,
+                positionInfo: posInfo,
+                hasSelector: !!foundElement.selector,
+                hasSelectors: !!(foundElement.selectors && foundElement.selectors.length > 0),
+                selectorCount: foundElement.selectors ? foundElement.selectors.length : 0
+            },
+            recommendations: []
+        };
+        
+        // 生成建议
+        if (!foundElement.selector && !foundElement.selectors) {
+            debugInfo.recommendations.push('缺少选择器信息，需要修复');
+        }
+        if (isThElement && (!foundElement.selectors || foundElement.selectors.length < 3)) {
+            debugInfo.recommendations.push('表头元素选择器数量不足，建议使用专用修复');
+        }
+        
+        console.log(`🔍 调试元素: ${elementId}`);
+        console.log(`   页面: ${pageKey}`);
+        console.log(`   类型: ${isThElement ? '表头' : '其他'}`);
+        console.log(`   选择器: ${foundElement.selector || '无'}`);
+        
+        res.json(debugInfo);
+        
+    } catch (error) {
+        console.error('❌ 元素调试失败:', error);
+        res.status(500).json({
+            error: '元素调试失败',
+            details: error.message
+        });
+    }
+});
+
+// 强制修复单个元素接口
+app.post('/api/annotations/force-fix/:elementId', async (req, res) => {
+    try {
+        const { elementId } = req.params;
+        const annotations = await fs.readJson(ANNOTATIONS_FILE);
+        
+        let foundPageKey = null;
+        let foundAnnotation = null;
+        
+        // 查找元素
+        for (const [pageKey, pageAnnotations] of Object.entries(annotations)) {
+            if (pageAnnotations[elementId]) {
+                foundPageKey = pageKey;
+                foundAnnotation = pageAnnotations[elementId];
+                break;
+            }
+        }
+        
+        if (!foundAnnotation) {
+            return res.status(404).json({
+                success: false,
+                error: '未找到指定元素',
+                elementId
+            });
+        }
+        
+        // 强制修复
+        const posInfo = extractPositionFromId(elementId);
+        const textContent = elementId.split('-').pop();
+        const position = posInfo ? posInfo.position : 1;
+        const isThElement = elementId.includes('precise-th-');
+        
+        let newSelectors;
+        if (isThElement) {
+            newSelectors = [
+                `table thead tr th:nth-child(${position})`,
+                `table tr:first-child th:nth-child(${position})`,
+                `thead th:nth-child(${position})`,
+                `tr:first-child th:nth-child(${position})`,
+                `th:nth-child(${position})`,
+                `table th:nth-of-type(${position})`,
+                `th:nth-of-type(${position})`,
+                `th[title*="${textContent}"]`,
+                `th[data-text*="${textContent}"]`,
+                `th:contains("${textContent}")`
+            ];
+        } else {
+            newSelectors = [
+                `td:contains("${textContent}")`,
+                `table td:contains("${textContent}")`,
+                `td[data-text="${textContent}"]`,
+                `td:nth-of-type(${position})`
+            ];
+        }
+        
+        const updatedAnnotation = {
+            ...foundAnnotation,
+            selector: newSelectors[0],
+            selectors: newSelectors,
+            signature: `${isThElement ? 'th' : 'td'}[${position}]:${textContent}`,
+            elementPath: isThElement ? 
+                `table > thead > tr > th:nth-child(${position})` :
+                `table > tbody > tr > td:nth-child(${position})`,
+            forceFixed: true,
+            fixTimestamp: new Date().toISOString(),
+            positionInfo: posInfo
+        };
+        
+        annotations[foundPageKey][elementId] = updatedAnnotation;
+        
+        // 创建备份并保存
+        await createBackup();
+        await fs.writeJson(ANNOTATIONS_FILE, annotations, { spaces: 2 });
+        
+        console.log(`🔧 强制修复元素: ${elementId} -> ${newSelectors[0]}`);
+        
+        res.json({
+            success: true,
+            elementId,
+            pageKey: foundPageKey,
+            newSelector: newSelectors[0],
+            selectorCount: newSelectors.length,
+            message: `成功强制修复 ${isThElement ? '表头' : '表格'} 元素`,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ 强制修复失败:', error);
+        res.status(500).json({
+            success: false,
+            error: '强制修复失败',
+            details: error.message
+        });
+    }
+});
+
+// 数据修复API接口
+app.post('/api/annotations/repair', async (req, res) => {
+    try {
+        const annotations = await fs.readJson(ANNOTATIONS_FILE);
+        let repairedCount = 0;
+        let totalChecked = 0;
+        const repairLog = [];
+        
+        for (const [pageKey, pageAnnotations] of Object.entries(annotations)) {
+            for (const [elementId, annotation] of Object.entries(pageAnnotations)) {
+                totalChecked++;
+                const { isValid, fixes, annotation: repairedAnnotation } = validateAndFixAnnotationData(annotation, elementId);
+                
+                if (!isValid || fixes.length > 0) {
+                    annotations[pageKey][elementId] = repairedAnnotation;
+                    repairedCount++;
+                    
+                    repairLog.push({
+                        elementId,
+                        pageKey,
+                        fixes,
+                        wasValid: isValid
+                    });
+                    
+                    console.log(`🔧 修复批注 [${elementId}]: ${fixes.join(', ')}`);
+                }
+            }
+        }
+        
+        if (repairedCount > 0) {
+            // 创建修复前的备份
+            await createBackup();
+            await fs.writeJson(ANNOTATIONS_FILE, annotations, { spaces: 2 });
+            console.log(`✅ 数据修复完成: ${repairedCount}/${totalChecked} 个批注被修复`);
+        }
+        
+        res.json({
+            success: true,
+            totalChecked,
+            repairedCount,
+            repairLog,
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ 数据修复失败:', error);
+        res.status(500).json({
+            error: '数据修复失败',
+            details: error.message
         });
     }
 });
@@ -797,6 +1267,8 @@ async function startServer() {
    • 保存批注:   POST /api/annotations
    • 增量更新:   POST /api/annotations/update
    • 实时同步:   POST /api/annotations/sync
+   • 数据修复:   POST /api/annotations/repair
+   • 表头修复:   POST /api/annotations/repair-th
    • 同步日志:   GET  /api/sync-logs
    • 操作日志:   GET  /api/operation-logs
    • 数据统计:   GET  /api/annotations/stats

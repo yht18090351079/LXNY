@@ -2216,7 +2216,8 @@
                 xpath: generateXPath(element),
                 cssPath: generateCSSPath(element),
                 unique: generateUniqueSelector(element, iframeDoc),
-                backup: generateBackupSelectors(element)
+                backup: generateBackupSelectors(element),
+                enhanced: generateEnhancedSmartSelector(element)  // 新增增强选择器
             };
             
             // 内容特征
@@ -3130,8 +3131,37 @@
             }
             
             return matrix[str2.length][str1.length];
+                }
+
+        // 通过:contains选择器查找元素
+        function findElementByContains(selector, iframeDoc) {
+            // 解析 selector: "table td:contains('气象站001')"
+            const containsMatch = selector.match(/^(.*?)([a-zA-Z]+):contains\(["'](.+?)["']\)$/);
+            if (!containsMatch) return null;
+            
+            const [, baseSelector, tagName, searchText] = containsMatch;
+            
+            // 先找到基础容器
+            let container = iframeDoc;
+            if (baseSelector.trim()) {
+                try {
+                    container = iframeDoc.querySelector(baseSelector.trim()) || iframeDoc;
+                } catch (e) {
+                    console.log('基础选择器失败:', e);
+                }
+            }
+            
+            // 在容器中查找包含指定文本的元素
+            const elements = container.querySelectorAll(tagName);
+            for (const element of elements) {
+                if (element.textContent && element.textContent.trim().includes(searchText)) {
+                    return element;
+                }
+            }
+            
+            return null;
         }
-        
+
         // 测试元素重定位
         function testElementRelocation(elementId, iframeDoc) {
             const pageKey = getCurrentPageKey();
@@ -3152,6 +3182,30 @@
         function relocateElementBySignature(signature, iframeDoc) {
             console.log('🔍 根据签名重定位元素:', signature.id);
             
+            // 策略0: 使用增强选择器（优先级最高）
+            if (signature.selectors.enhanced) {
+                try {
+                    let element = null;
+                    
+                    // 如果选择器包含:contains，需要特殊处理
+                    if (signature.selectors.enhanced.includes(':contains(')) {
+                        element = findElementByContains(signature.selectors.enhanced, iframeDoc);
+                    } else {
+                        element = iframeDoc.querySelector(signature.selectors.enhanced);
+                    }
+                    
+                    if (element) {
+                        const validation = signature.validate(element);
+                        console.log('Enhanced选择器验证:', validation);
+                        if (validation.isMatch) {
+                            return element;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Enhanced选择器失败:', e);
+                }
+            }
+
             // 策略1: 使用primary选择器
             if (signature.selectors.primary) {
                 try {
@@ -3271,8 +3325,291 @@
             })));
             
             return candidates;
+                }
+
+        // 生成表格元素特殊签名
+        function generateTableSignature(element) {
+            const tagName = element.tagName.toLowerCase();
+            
+            try {
+                switch (tagName) {
+                    case 'table':
+                        // 表格：使用行列数和表头信息
+                        const rows = element.querySelectorAll('tr').length;
+                        const cols = element.querySelector('tr')?.children.length || 0;
+                        const hasHeader = !!element.querySelector('thead, th');
+                        return `table-${rows}x${cols}-${hasHeader ? 'header' : 'noheader'}`;
+                        
+                    case 'thead':
+                    case 'tbody':
+                        // 表头/表体：使用父表格信息和行数
+                        const parentTable = element.closest('table');
+                        const tableId = parentTable ? generateTableSignature(parentTable) : 'notable';
+                        const sectionRows = element.querySelectorAll('tr').length;
+                        return `${tagName}-${tableId}-${sectionRows}rows`;
+                        
+                    case 'tr':
+                        // 表格行：使用行位置、列数和内容摘要
+                        const row = element;
+                        const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+                        const cellCount = row.children.length;
+                        const contentSummary = Array.from(row.children)
+                            .map(cell => cell.textContent?.trim().substring(0, 10))
+                            .filter(text => text)
+                            .join('-');
+                        return `tr-${rowIndex}-${cellCount}cells-${contentSummary.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '').substring(0, 20)}`;
+                        
+                    case 'td':
+                    case 'th':
+                        // 表格单元格：使用行列位置和内容
+                        const cell = element;
+                        const parentRow = cell.parentElement;
+                        const rowIdx = Array.from(parentRow.parentElement.children).indexOf(parentRow);
+                        const colIdx = Array.from(parentRow.children).indexOf(cell);
+                        const cellText = cell.textContent?.trim().substring(0, 15) || '';
+                        const hasSpan = cell.colSpan > 1 || cell.rowSpan > 1;
+                        return `${tagName}-${rowIdx}x${colIdx}-${cellText.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '').substring(0, 10)}${hasSpan ? '-span' : ''}`;
+                        
+                    default:
+                        return `${tagName}-unknown`;
+                }
+            } catch (e) {
+                return `${tagName}-error`;
+            }
         }
-        
+
+        // 生成增强的智能选择器
+        function generateEnhancedSmartSelector(element) {
+            const selectors = [];
+            
+            // 策略1: ID选择器（最高优先级）
+            if (element.id) {
+                selectors.push(`#${element.id}`);
+            }
+            
+            // 策略2: 独特的data属性
+            for (const attr of element.attributes || []) {
+                if (attr.name.startsWith('data-') && attr.value) {
+                    const selector = `[${attr.name}="${attr.value}"]`;
+                    if (element.ownerDocument.querySelectorAll(selector).length === 1) {
+                        selectors.push(selector);
+                    }
+                }
+            }
+            
+            // 策略3: 表格特殊处理
+            if (['table', 'thead', 'tbody', 'tr', 'td', 'th'].includes(element.tagName.toLowerCase())) {
+                const tableSelector = generateTableContextSelector(element);
+                if (tableSelector) {
+                    selectors.push(tableSelector);
+                }
+            }
+            
+            // 策略4: 文本内容选择器（针对重复元素）
+            const textContent = element.textContent?.trim();
+            if (textContent && textContent.length < 50 && textContent.length > 2) {
+                const escapedText = textContent.replace(/['"\\]/g, '\\$&');
+                const tagName = element.tagName.toLowerCase();
+                
+                // 对于表格单元格，使用更精确的文本内容匹配
+                if (tagName === 'td' || tagName === 'th') {
+                    // 尝试使用文本内容 + 父级表格信息
+                    const table = element.closest('table');
+                    if (table) {
+                        let tableSelector = 'table';
+                        if (table.className) {
+                            tableSelector = `table.${table.className.split(' ')[0]}`;
+                        } else if (table.id) {
+                            tableSelector = `table#${table.id}`;
+                        }
+                        
+                        // 使用:contains伪选择器（如果支持）或回退到通用方法
+                        const textSelector = `${tableSelector} ${tagName}:contains("${escapedText}")`;
+                        selectors.push(textSelector);
+                    }
+                } else {
+                    // 其他元素的文本匹配
+                    const textSelector = `${tagName}:contains("${escapedText}")`;
+                    selectors.push(textSelector);
+                }
+            }
+            
+            // 策略5: 组合选择器（类名+位置）
+            if (element.className) {
+                const classes = element.className.split(' ').filter(cls => cls.trim());
+                const tagName = element.tagName.toLowerCase();
+                
+                // 逐级增加类名精确度
+                for (let i = 1; i <= Math.min(classes.length, 3); i++) {
+                    const classSelector = classes.slice(0, i).join('.');
+                    const fullSelector = `${tagName}.${classSelector}`;
+                    const matches = element.ownerDocument.querySelectorAll(fullSelector);
+                    
+                    if (matches.length === 1) {
+                        selectors.push(fullSelector);
+                        break;
+                    } else if (matches.length > 1 && matches.length <= 5) {
+                        // 如果有少量匹配，添加位置信息
+                        const index = Array.from(matches).indexOf(element);
+                        if (index >= 0) {
+                            selectors.push(`${fullSelector}:nth-of-type(${index + 1})`);
+                        }
+                    }
+                }
+            }
+            
+            // 策略6: 父元素上下文 + 子元素位置
+            const parent = element.parentElement;
+            if (parent) {
+                const parentSelector = generateParentContextSelector(parent);
+                if (parentSelector) {
+                    const childIndex = Array.from(parent.children).indexOf(element);
+                    selectors.push(`${parentSelector} > *:nth-child(${childIndex + 1})`);
+                }
+            }
+            
+            return selectors[0] || generateFallbackSelector(element);
+        }
+
+        // 生成表格上下文选择器
+        function generateTableContextSelector(element) {
+            const tagName = element.tagName.toLowerCase();
+            
+            switch (tagName) {
+                case 'table':
+                    // 寻找表格的独特标识
+                    if (element.className) {
+                        return `table.${element.className.split(' ')[0]}`;
+                    }
+                    // 如果没有类名，尝试使用ID或其他属性
+                    if (element.id) {
+                        return `table#${element.id}`;
+                    }
+                    return 'table';
+                    
+                case 'tr':
+                    const row = element;
+                    const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+                    const parentTable = row.closest('table');
+                    
+                    // 构建更稳定的选择器
+                    let trTableSelector = 'table';
+                    if (parentTable) {
+                        if (parentTable.className) {
+                            trTableSelector = `table.${parentTable.className.split(' ')[0]}`;
+                        } else if (parentTable.id) {
+                            trTableSelector = `table#${parentTable.id}`;
+                        }
+                    }
+                    
+                    const isHeader = row.closest('thead') !== null;
+                    const trSection = isHeader ? 'thead' : 'tbody';
+                    
+                    // 如果有明确的thead/tbody，使用它们
+                    if (row.parentElement.tagName.toLowerCase() === 'thead' || row.parentElement.tagName.toLowerCase() === 'tbody') {
+                        return `${trTableSelector} ${trSection} tr:nth-child(${rowIndex + 1})`;
+                    } else {
+                        // 直接在table下的tr
+                        return `${trTableSelector} tr:nth-child(${rowIndex + 1})`;
+                    }
+                    
+                case 'td':
+                case 'th':
+                    const cell = element;
+                    const cellRow = cell.parentElement;
+                    const cellIndex = Array.from(cellRow.children).indexOf(cell);
+                    const cellRowIndex = Array.from(cellRow.parentElement.children).indexOf(cellRow);
+                    const table = cell.closest('table');
+                    
+                    // 构建表格选择器
+                    let cellTableSelector = 'table';
+                    if (table) {
+                        if (table.className) {
+                            cellTableSelector = `table.${table.className.split(' ')[0]}`;
+                        } else if (table.id) {
+                            cellTableSelector = `table#${table.id}`;
+                        }
+                    }
+                    
+                    // 构建行选择器
+                    const isHeaderCell = tagName === 'th' || cell.closest('thead') !== null;
+                    const cellSection = isHeaderCell ? 'thead' : 'tbody';
+                    
+                    // 检查是否有明确的thead/tbody结构
+                    if (cellRow.parentElement.tagName.toLowerCase() === 'thead' || cellRow.parentElement.tagName.toLowerCase() === 'tbody') {
+                        return `${cellTableSelector} ${cellSection} tr:nth-child(${cellRowIndex + 1}) ${tagName}:nth-child(${cellIndex + 1})`;
+                    } else {
+                        // 直接在table下的结构
+                        return `${cellTableSelector} tr:nth-child(${cellRowIndex + 1}) ${tagName}:nth-child(${cellIndex + 1})`;
+                    }
+                    
+                default:
+                    return null;
+            }
+        }
+
+        // 生成父元素上下文选择器
+        function generateParentContextSelector(parent) {
+            if (parent.id) {
+                return `#${parent.id}`;
+            }
+            
+            if (parent.className) {
+                const mainClass = parent.className.split(' ')[0];
+                const matches = parent.ownerDocument.querySelectorAll(`.${mainClass}`);
+                if (matches.length === 1) {
+                    return `.${mainClass}`;
+                }
+            }
+            
+            // 使用标签名 + 类名组合
+            if (parent.className) {
+                const tagClass = `${parent.tagName.toLowerCase()}.${parent.className.split(' ')[0]}`;
+                const matches = parent.ownerDocument.querySelectorAll(tagClass);
+                if (matches.length === 1) {
+                    return tagClass;
+                }
+            }
+            
+            return parent.tagName.toLowerCase();
+        }
+
+        // 生成回退选择器
+        function generateFallbackSelector(element) {
+            const path = [];
+            let current = element;
+            
+            while (current && current.tagName) {
+                let selector = current.tagName.toLowerCase();
+                
+                if (current.id) {
+                    selector = `#${current.id}`;
+                    path.unshift(selector);
+                    break;
+                } else if (current.className) {
+                    const mainClass = current.className.split(' ')[0];
+                    selector += `.${mainClass}`;
+                }
+                
+                // 添加位置信息避免歧义
+                if (current.parentElement) {
+                    const siblings = Array.from(current.parentElement.children);
+                    const index = siblings.indexOf(current);
+                    if (siblings.filter(s => s.tagName === current.tagName).length > 1) {
+                        selector += `:nth-child(${index + 1})`;
+                    }
+                }
+                
+                path.unshift(selector);
+                current = current.parentElement;
+                
+                // 限制路径深度
+                if (path.length >= 4) break;
+            }
+            
+            return path.join(' > ');
+        }
+
         // 生成稳定的元素ID - 增强版
         function generateElementId(element) {
             // 策略1: 使用原生ID
@@ -3316,8 +3653,13 @@
                 specialFeature = `img-${src || 'noname'}`;
             }
             
-            // 表单元素特殊处理
-            else if (['input', 'select', 'textarea', 'button'].includes(tagName)) {
+                    // 表格元素特殊处理
+        else if (['table', 'thead', 'tbody', 'tr', 'td', 'th'].includes(tagName)) {
+            specialFeature = generateTableSignature(element);
+        }
+        
+        // 表单元素特殊处理
+        else if (['input', 'select', 'textarea', 'button'].includes(tagName)) {
                 const type = element.type || tagName;
                 const name = element.name || '';
                 specialFeature = `${type}-${name}`;
