@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>农情遥感系统大屏 - 产量预估功能</title>
+    <title>农情遥感系统大屏 - 长势分析功能</title>
     
     <!-- 引入Cesium CSS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
     
     <!-- 引入ECharts -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     
     <!-- 引入样式文件 -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/growth-analysis-main.css">
     <link rel="stylesheet" href="assets/css/cesium-map.css">
-    <link rel="stylesheet" href="assets/css/yield-estimation.css">
     <link rel="stylesheet" href="assets/css/township-blocks.css">
     <link rel="stylesheet" href="assets/css/timeline.css">
 </head>
@@ -39,7 +39,7 @@
         <!-- 右侧时间显示和用户信息 -->
         <div class="header-right">
             <div class="current-time">
-                <div class="time-display" id="current-time">2025-08-11 14:30:25</div>
+                <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
                 <div class="date-display" id="current-date">星期一</div>
             </div>
 
@@ -111,6 +111,30 @@
                     <div class="user-name">张三</div>
                     <div class="user-role">系统管理员</div>
                 </div>
+                
+                <!-- 用户下拉菜单 -->
+                <div class="user-dropdown">
+                    <div class="dropdown-item" onclick="showUserProfile()">
+                        <span>👤</span>
+                        <span>个人信息</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showSystemSettings()">
+                        <span>⚙️</span>
+                        <span>系统设置</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showOperationLog()">
+                        <span>📊</span>
+                        <span>操作日志</span>
+                    </div>
+                    <div class="dropdown-item" onclick="showHelp()">
+                        <span>❓</span>
+                        <span>帮助中心</span>
+                    </div>
+                    <div class="dropdown-item" onclick="logout()">
+                        <span>🚪</span>
+                        <span>退出登录</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -123,11 +147,11 @@
                 <span class="btn-icon">🌾</span>
                 <span class="btn-text">作物分布</span>
             </div>
-            <div class="main-switch-btn" data-function="growth-analysis" onclick="navigateToPage('growth-analysis-main.html')">
+            <div class="main-switch-btn active" data-function="growth-analysis">
                 <span class="btn-icon">📊</span>
                 <span class="btn-text">长势分析</span>
             </div>
-            <div class="main-switch-btn active" data-function="yield-estimation">
+            <div class="main-switch-btn" data-function="yield-estimation" onclick="navigateToPage('yield-estimation.html')">
                 <span class="btn-icon">📈</span>
                 <span class="btn-text">产量预估</span>
             </div>
@@ -154,10 +178,10 @@
             <span class="btn-icon">🌾</span>
             <span class="btn-text">作物选择</span>
         </div>
-
+        
         <!-- 第二个分隔线 -->
         <div class="switch-divider"></div>
-
+        
         <!-- 地图控制按钮 -->
         <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
             <span class="btn-icon">🎯</span>
@@ -176,174 +200,79 @@
         <!-- 地图覆盖层 -->
         <div class="map-overlay"></div>
 
-        <!-- 右侧产量分析看板 -->
+        <!-- 右侧长势分析数据看板 -->
         <div class="glass-panel right-panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    📈 产量分析看板
+                    📊 长势分析监测看板
                 </div>
                 <button class="collapse-btn">▶</button>
             </div>
-            
-            <div class="panel-content">
-                <!-- 4. 产量产值综合分析看板 -->
-                <div class="data-section">
-                    <div class="section-title">
-                        <span class="section-icon">📊</span>
-                        产量产值综合分析看板
+
+            <!-- 1. 区域面积汇总看板 -->
+            <div class="stat-card" id="region-summary-card">
+                <div class="stat-header">
+                    📋 区域面积汇总
+                </div>
+                <div class="area-summary">
+                    <div class="summary-item large">
+                        <div class="summary-value" id="total-area-value">5,272</div>
+                        <div class="summary-label">总监测面积 (亩)</div>
+                        <div class="summary-subtitle" id="coverage-info">覆盖8个乡镇</div>
                     </div>
-
-                    <!-- 核心指标卡片组 -->
-                    <div class="comprehensive-dashboard">
-                        <!-- 第一行：理想产量 -->
-                        <div class="dashboard-row one-col">
-                            <div class="metric-card ideal">
-                                <div class="metric-icon">🌾</div>
-                                <div class="metric-content">
-                                    <div class="metric-label">理想产量</div>
-                                    <div class="metric-value">1,660吨</div>
-                                    <div class="metric-desc">无灾害条件</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 第二行：实际产量 -->
-                        <div class="dashboard-row one-col">
-                            <div class="metric-card actual">
-                                <div class="metric-icon">⚠️</div>
-                                <div class="metric-content">
-                                    <div class="metric-label">实际产量</div>
-                                    <div class="metric-value">1,257吨</div>
-                                    <div class="metric-desc">高温冻害影响</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 第三行：影响分析 -->
-                        <div class="dashboard-row one-col">
-                            <div class="metric-card impact">
-                                <div class="metric-icon">⚠️</div>
-                                <div class="metric-content">
-                                    <div class="metric-label">减产影响</div>
-                                    <div class="metric-value">-403吨</div>
-                                    <div class="metric-desc">损失24.3%</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 影响分析条 -->
-                        <div class="impact-analysis">
-                            <div class="impact-header">
-                                <span class="impact-title">灾害经济影响分析</span>
-                                <span class="impact-percentage">-24.3%</span>
-                            </div>
-                            <div class="impact-bar">
-                                <div class="impact-fill" style="width: 75.7%;">
-                                    <span class="impact-label">实际产出占比 75.7%</span>
-                                </div>
-                            </div>
-                            <div class="impact-details">
-                                <div class="detail-item">
-                                    <span class="detail-icon">🌡️</span>
-                                    <span class="detail-text">高温干旱影响</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-icon">❄️</span>
-                                    <span class="detail-text">低温冻害影响</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-icon">📈</span>
-                                    <span class="detail-text">预计逐步恢复</span>
-                                </div>
-                            </div>
+                    <div class="summary-row">
+                        <div class="summary-item">
+                            <div class="summary-value" id="growth-index-value">0.8</div>
+                            <div class="summary-label">平均长势指数</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 5. 乡镇产量产值分析 -->
-                <div class="stat-card chart-data-panel" style="height: 280px !important; min-height: 280px !important; max-height: 280px !important; display: flex !important; flex-direction: column !important; overflow: hidden !important;">
-                    <div class="stat-header" style="flex-shrink: 0 !important; flex-grow: 0 !important;">
-                        <span id="town-value-title">🌾 乡镇产量分析</span>
-                        <div class="chart-switch-buttons">
-                            <button class="switch-btn active" data-type="bar">产量柱状图</button>
-                            <button class="switch-btn" data-type="table">表格</button>
-                        </div>
-                    </div>
-                    <div id="town-value-chart" style="height: 240px; flex-shrink: 0 !important; flex-grow: 0 !important; margin: 0px !important;"></div>
-                    <div id="town-value-table" class="town-value-table" style="display: none; flex: 1 !important; margin-top: 0 !important; height: auto !important; overflow-y: auto !important;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>乡镇</th>
-                                    <th>预估产量 (吨)</th>
-                                    <th>平均单产 (kg/亩)</th>
-                                    <th>占比 (%)</th>
-                                </tr>
-                                <tr class="total-row sticky-total">
-                                    <td><strong>合计</strong></td>
-                                    <td><strong>1,366</strong></td>
-                                    <td><strong>468</strong></td>
-                                    <td><strong>100.0%</strong></td>
-                                </tr>
-                            </thead>
-                            <tbody id="town-value-tbody">
-                                <tr>
-                                    <td>红台镇</td>
-                                    <td>456</td>
-                                    <td>485</td>
-                                    <td>33.5%</td>
-                                </tr>
-                                <tr>
-                                    <td>土桥镇</td>
-                                    <td>298</td>
-                                    <td>452</td>
-                                    <td>21.7%</td>
-                                </tr>
-                                <tr>
-                                    <td>漫路镇</td>
-                                    <td>268</td>
-                                    <td>478</td>
-                                    <td>19.9%</td>
-                                </tr>
-                                <tr>
-                                    <td>北塬镇</td>
-                                    <td>134</td>
-                                    <td>445</td>
-                                    <td>9.7%</td>
-                                </tr>
-                                <tr>
-                                    <td>关滩镇</td>
-                                    <td>112</td>
-                                    <td>467</td>
-                                    <td>8.3%</td>
-                                </tr>
-                                <tr>
-                                    <td>新集镇</td>
-                                    <td>98</td>
-                                    <td>436</td>
-                                    <td>7.0%</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <!-- 2. 单作物按乡镇长势分布 -->
+            <div class="stat-card chart-data-panel" style="height: 260px !important; min-height: 260px !important; max-height: 260px !important; display: flex !important; flex-direction: column !important; overflow: hidden !important;">
+                <div class="stat-header" style="flex-shrink: 0 !important; flex-grow: 0 !important;">
+                    <span id="current-crop-title">🌾 小麦按乡镇长势分布</span>
+                    <div class="chart-switch-buttons">
+                        <button class="switch-btn active" data-type="bar" onclick="switchTownCropChart('bar')">柱状图</button>
+                        <button class="switch-btn" data-type="table" onclick="switchTownCropChart('table')">表格</button>
                     </div>
                 </div>
+                <div id="town-crop-chart" style="height: 220px; flex-shrink: 0 !important; flex-grow: 0 !important; margin: 0 !important;"></div>
+                <div id="town-crop-table" class="town-crop-table" style="display: none; flex: 1 !important; margin-top: 0 !important; height: auto !important; overflow-y: auto !important;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>乡镇</th>
+                                <th>优 (亩)</th>
+                                <th>良 (亩)</th>
+                                <th>中 (亩)</th>
+                                <th>差 (亩)</th>
+                                <th>合计 (亩)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="town-crop-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- 3. 长势指数变化趋势图 -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="section-icon">📈</span>
+                    长势指数变化趋势图
+                </div>
+                <div class="trend-comparison-container">
+                    <div id="growth-trend-comparison" class="chart-container"></div>
+                </div>
+            </div>
 
+            <div class="update-time">
+                🔄 数据更新: 2024-01-15 14:30 | 遥感数据: 2024-01-12
             </div>
         </div>
     </div>
 
-    <!-- 引入JavaScript文件 -->
-    <script src="assets/js/cesium-config.js"></script>
-    <script src="assets/js/cesium-map.js"></script>
-    <script src="assets/js/crop-layers.js"></script>
-    <script src="assets/js/township-blocks.js"></script>
-    <script src="assets/js/timeline.js"></script>
-    <script src="assets/js/device-monitoring.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/dashboard-charts.js"></script>
-    <script src="assets/js/yield-estimation.js"></script>
-    
     <!-- 时间轴组件 -->
     <div class="timeline-container" id="timeline-container">
         <!-- 时间轴标题栏 -->
@@ -469,5 +398,15 @@
         </div>
 
     </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/cesium-config.js"></script>
+    <script src="assets/js/cesium-map.js"></script>
+    <script src="assets/js/crop-layers.js"></script>
+    <script src="assets/js/township-blocks.js"></script>
+    <script src="assets/js/timeline.js"></script>
+    <script src="assets/js/device-monitoring.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="assets/js/growth-analysis-main.js"></script>
 </body>
 </html>

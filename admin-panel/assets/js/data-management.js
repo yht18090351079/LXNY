@@ -101,13 +101,18 @@ class DataManagement {
         this.currentViewingCrop = null;
         
         this.imageData = [
-            { id: 1, name: 'LC08_L1TP_20240115', type: 'Landsat', captureTime: '2024-01-15 02:30:00', uploadTime: '2024-01-15 10:00:00', size: '245MB' },
-            { id: 2, name: 'S2A_MSIL1C_20240116', type: 'Sentinel', captureTime: '2024-01-16 03:15:00', uploadTime: '2024-01-16 11:30:00', size: '180MB' },
-            { id: 3, name: 'MOD09GA_20240117', type: 'MODIS', captureTime: '2024-01-17 01:45:00', uploadTime: '2024-01-17 09:20:00', size: '95MB' },
-            { id: 4, name: 'LC08_L1TP_20240118', type: 'Landsat', captureTime: '2024-01-18 02:45:00', uploadTime: '2024-01-18 10:15:00', size: '238MB' },
-            { id: 5, name: 'S2B_MSIL1C_20240119', type: 'Sentinel', captureTime: '2024-01-19 03:30:00', uploadTime: '2024-01-19 11:45:00', size: '192MB' },
-            { id: 6, name: 'MOD09GA_20240120', type: 'MODIS', captureTime: '2024-01-20 01:20:00', uploadTime: '2024-01-20 09:35:00', size: '88MB' }
+            { id: 1, name: 'GF2_PMS_20240115_临夏小麦', type: '高分2号', crop: '小麦', dataTime: '2024-01-15 02:30:00', uploadTime: '2024-01-15 10:00:00', size: '245MB', remark: '春小麦监测数据' },
+            { id: 2, name: 'S2A_MSIL1C_20240116_玉米长势', type: 'Sentinel-2', crop: '玉米', dataTime: '2024-01-16 03:15:00', uploadTime: '2024-01-16 11:30:00', size: '180MB', remark: '夏玉米长势监测' },
+            { id: 3, name: 'LC8_OLI_20240117_青稞种植', type: 'Landsat-8', crop: '青稞', dataTime: '2024-01-17 01:45:00', uploadTime: '2024-01-17 09:20:00', size: '295MB', remark: '高海拔青稞种植区' },
+            { id: 4, name: 'GF1_WFV_20240118_小麦分布', type: '高分1号', crop: '小麦', dataTime: '2024-01-18 02:45:00', uploadTime: '2024-01-18 10:15:00', size: '138MB', remark: '冬小麦分布调查' },
+            { id: 5, name: 'WV3_MS_20240119_土豆基地', type: 'WorldView', crop: '土豆', dataTime: '2024-01-19 03:30:00', uploadTime: '2024-01-19 11:45:00', size: '412MB', remark: '马铃薯种植基地' },
+            { id: 6, name: 'MOD09GA_20240120_农作物', type: 'MODIS', crop: '玉米', dataTime: '2024-01-20 01:20:00', uploadTime: '2024-01-20 09:35:00', size: '88MB', remark: '大范围农作物监测' }
         ];
+        
+        // 影像相关状态
+        this.editingImageId = null;
+        this.uploadedFile = null;
+        this.uploadProgress = 0;
         
         this.deviceData = [
             { id: 1, name: '气象站-001', type: '气象监测', location: '临夏镇中心', status: 'online', lastReport: '2024-01-20 14:30:00', longitude: 103.2012, latitude: 35.5889 },
@@ -166,6 +171,9 @@ class DataManagement {
 
         // 模态框事件
         this.bindModalEvents();
+        
+        // 文件上传事件
+        this.bindUploadEvents();
     }
 
     bindSearchEvents() {
@@ -199,6 +207,22 @@ class DataManagement {
             cropSearchInput.addEventListener('input', Utils.debounce(() => {
                 this.loadCropInfoData();
             }, 300));
+        }
+
+        // 影像数据搜索
+        const imageSearchInput = document.getElementById('imageSearchInput');
+        if (imageSearchInput) {
+            imageSearchInput.addEventListener('input', Utils.debounce(() => {
+                this.loadImageData();
+            }, 300));
+        }
+
+        // 影像类型筛选
+        const imageTypeFilter = document.getElementById('imageTypeFilter');
+        if (imageTypeFilter) {
+            imageTypeFilter.addEventListener('change', () => {
+                this.loadImageData();
+            });
         }
     }
 
@@ -239,6 +263,197 @@ class DataManagement {
                 }
             });
         }
+    }
+    
+    bindUploadEvents() {
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadContent = document.getElementById('uploadContent');
+        const fileInput = document.getElementById('imageFile');
+        const removeBtn = document.getElementById('removeFileBtn');
+        
+        if (!uploadArea || !uploadContent || !fileInput) return;
+        
+        // 点击上传区域触发文件选择
+        uploadContent.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // 文件选择事件
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.handleFileSelect(file);
+            }
+        });
+        
+        // 拖拽上传事件
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.handleFileSelect(files[0]);
+            }
+        });
+        
+        // 移除文件事件
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                this.removeUploadedFile();
+            });
+        }
+    }
+    
+    handleFileSelect(file) {
+        // 文件类型验证
+        const allowedExtensions = [
+            '.tiff', '.tif', '.jp2', '.img', '.hdf', '.nc', '.geotiff'
+        ];
+        
+        const fileName = file.name.toLowerCase();
+        const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+        
+        if (!hasValidExtension) {
+            Utils.showMessage('不支持的文件格式，请选择遥感影像文件（TIFF、JP2、IMG、HDF、NC等）', 'error');
+            return;
+        }
+        
+        // 文件大小验证 (500MB)
+        const maxSize = 500 * 1024 * 1024;
+        if (file.size > maxSize) {
+            Utils.showMessage('文件太大，请选择小于500MB的文件', 'error');
+            return;
+        }
+        
+        // 存储文件
+        this.uploadedFile = file;
+        
+        // 自动填充影像名称
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
+        document.getElementById('imageName').value = nameWithoutExt;
+        
+        // 根据文件名智能识别影像类型
+        this.detectImageType(fileName);
+        
+        // 自动填充文件大小
+        document.getElementById('imageSize').value = this.formatFileSize(file.size);
+        
+        // 模拟上传过程
+        this.simulateUpload(file);
+    }
+    
+    detectImageType(fileName) {
+        const imageTypeSelect = document.getElementById('imageType');
+        if (!imageTypeSelect) return;
+        
+        const typePatterns = {
+            'Landsat-8': ['lc8', 'lc08', 'landsat8', 'oli'],
+            'Sentinel-2': ['s2a', 's2b', 'sentinel2', 'msi'],
+            'MODIS': ['mod', 'myd', 'modis'],
+            '高分2号': ['gf2', 'gf-2', '高分2'],
+            '高分1号': ['gf1', 'gf-1', '高分1'],
+            'WorldView': ['wv', 'worldview', 'quickbird'],
+            '资源3号': ['zy3', 'zy-3', '资源3'],
+            '吉林一号': ['jl1', 'jilin1', '吉林']
+        };
+        
+        for (const [type, patterns] of Object.entries(typePatterns)) {
+            if (patterns.some(pattern => fileName.includes(pattern))) {
+                imageTypeSelect.value = type;
+                break;
+            }
+        }
+    }
+    
+    simulateUpload(file) {
+        const uploadContent = document.getElementById('uploadContent');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadedFile = document.getElementById('uploadedFile');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const uploadedFileName = document.getElementById('uploadedFileName');
+        const uploadedFileSize = document.getElementById('uploadedFileSize');
+        
+        // 隐藏上传区域，显示进度
+        uploadContent.style.display = 'none';
+        uploadProgress.style.display = 'block';
+        uploadedFile.style.display = 'none';
+        
+        // 模拟上传进度
+        let progress = 0;
+        const uploadInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 100) progress = 100;
+            
+            progressFill.style.width = progress + '%';
+            progressPercent.textContent = Math.round(progress) + '%';
+            
+            if (progress >= 100) {
+                clearInterval(uploadInterval);
+                
+                // 上传完成，显示文件信息
+                setTimeout(() => {
+                    uploadProgress.style.display = 'none';
+                    uploadedFile.style.display = 'block';
+                    
+                    uploadedFileName.textContent = file.name;
+                    uploadedFileSize.textContent = this.formatFileSize(file.size);
+                    
+                    // 标记上传区域为成功状态
+                    document.getElementById('uploadArea').classList.add('success');
+                    
+                    Utils.showMessage('文件上传成功', 'success');
+                }, 500);
+            }
+        }, 100);
+    }
+    
+    removeUploadedFile() {
+        this.uploadedFile = null;
+        this.uploadProgress = 0;
+        
+        // 重置UI状态
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadContent = document.getElementById('uploadContent');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadedFile = document.getElementById('uploadedFile');
+        const fileInput = document.getElementById('imageFile');
+        
+        uploadArea.classList.remove('success', 'error');
+        uploadContent.style.display = 'block';
+        uploadProgress.style.display = 'none';
+        uploadedFile.style.display = 'none';
+        
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        // 重置进度条
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressPercent) progressPercent.textContent = '0%';
+    }
+    
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
     
     switchContent(contentName) {
@@ -1194,15 +1409,60 @@ class DataManagement {
         const tbody = document.getElementById('imageDataTableBody');
         if (!tbody) return;
 
-        tbody.innerHTML = this.imageData.map(item => `
+        const filteredData = this.getFilteredImageData();
+
+        tbody.innerHTML = filteredData.map(item => `
             <tr>
-                <td>${item.name}</td>
-                <td>${item.type}</td>
-                <td>${item.captureTime}</td>
+                <td>
+                    <div class="image-name-cell">
+                        <strong>${item.name}</strong>
+                        ${item.remark ? `<div class="image-remark">${item.remark}</div>` : ''}
+                    </div>
+                </td>
+                <td>
+                    <span class="type-badge type-${item.type.toLowerCase().replace(/[^a-z0-9]/g, '')}">${item.type}</span>
+                </td>
+                <td>
+                    <span class="crop-tag" data-crop="${item.crop}">${item.crop}</span>
+                </td>
+                <td>${item.dataTime}</td>
                 <td>${item.uploadTime}</td>
                 <td>${item.size}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-primary" onclick="editImage(${item.id})" title="编辑">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteImage(${item.id})" title="删除">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             </tr>
         `).join('');
+    }
+
+    getFilteredImageData() {
+        let data = [...this.imageData];
+        
+        // 搜索过滤
+        const searchTerm = document.getElementById('imageSearchInput')?.value.toLowerCase();
+        if (searchTerm) {
+            data = data.filter(item =>
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.type.toLowerCase().includes(searchTerm) ||
+                item.crop.toLowerCase().includes(searchTerm) ||
+                item.remark?.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // 类型过滤
+        const typeFilter = document.getElementById('imageTypeFilter')?.value;
+        if (typeFilter) {
+            data = data.filter(item => item.type === typeFilter);
+        }
+        
+        return data;
     }
     
     loadDeviceData() {
@@ -2079,7 +2339,187 @@ function closeCropDetailModal() {
     document.getElementById('cropDetailModal').classList.remove('show');
 }
 
-// 影像数据相关函数 - 纯展示，无操作功能
+// ===== 影像数据管理相关函数 =====
+
+function showAddImageModal() {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    dataManager.editingImageId = null;
+    document.getElementById('imageModalTitle').textContent = '新增影像数据';
+    
+    // 重置表单
+    document.getElementById('imageForm').reset();
+    
+    // 重置上传状态
+    dataManager.removeUploadedFile();
+    
+    // 设置当前时间为默认上传时间
+    const now = new Date();
+    document.getElementById('imageUploadTime').value = now.toLocaleString('zh-CN');
+    
+    // 显示模态框
+    document.getElementById('imageModal').classList.add('show');
+    
+    // 不聚焦名称输入框，因为可能通过文件上传自动填充
+}
+
+function editImage(id) {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    const image = dataManager.imageData.find(img => img.id === id);
+    if (!image) {
+        Utils.showMessage('未找到对应的影像数据', 'error');
+        return;
+    }
+    
+    dataManager.editingImageId = id;
+    document.getElementById('imageModalTitle').textContent = '编辑影像数据';
+    
+    // 填充表单数据
+    document.getElementById('imageName').value = image.name;
+    document.getElementById('imageType').value = image.type;
+    document.getElementById('imageCrop').value = image.crop;
+    
+    // 转换时间格式为datetime-local格式
+    const dataTime = new Date(image.dataTime);
+    document.getElementById('imageDataTime').value = dataTime.toISOString().slice(0, 16);
+    
+    document.getElementById('imageSize').value = image.size;
+    document.getElementById('imageUploadTime').value = image.uploadTime;
+    document.getElementById('imageRemark').value = image.remark || '';
+    
+    // 显示模态框
+    document.getElementById('imageModal').classList.add('show');
+}
+
+function deleteImage(id) {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    const image = dataManager.imageData.find(img => img.id === id);
+    if (!image) {
+        Utils.showMessage('未找到对应的影像数据', 'error');
+        return;
+    }
+    
+    if (confirm(`确定要删除影像数据 "${image.name}" 吗？\n删除后无法恢复！`)) {
+        // 删除影像数据
+        dataManager.imageData = dataManager.imageData.filter(img => img.id !== id);
+        
+        // 刷新表格
+        dataManager.loadImageData();
+        
+        Utils.showMessage('影像数据删除成功', 'success');
+    }
+}
+
+function saveImage() {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    // 获取表单数据
+    const formData = {
+        name: document.getElementById('imageName').value.trim(),
+        type: document.getElementById('imageType').value,
+        crop: document.getElementById('imageCrop').value,
+        dataTime: document.getElementById('imageDataTime').value,
+        size: document.getElementById('imageSize').value.trim(),
+        remark: document.getElementById('imageRemark').value.trim()
+    };
+    
+    // 表单验证
+    if (!formData.name) {
+        Utils.showMessage('请输入影像名称', 'error');
+        return;
+    }
+    
+    if (!formData.type) {
+        Utils.showMessage('请选择影像类型', 'error');
+        return;
+    }
+    
+    if (!formData.crop) {
+        Utils.showMessage('请选择相关作物', 'error');
+        return;
+    }
+    
+    if (!formData.dataTime) {
+        Utils.showMessage('请选择数据产生时间', 'error');
+        return;
+    }
+    
+    // 新增时验证文件上传
+    if (!dataManager.editingImageId && !dataManager.uploadedFile) {
+        Utils.showMessage('请上传影像文件', 'error');
+        return;
+    }
+    
+    // 检查名称重复
+    const existingImage = dataManager.imageData.find(img => 
+        img.name.toLowerCase() === formData.name.toLowerCase() && 
+        img.id !== dataManager.editingImageId
+    );
+    
+    if (existingImage) {
+        Utils.showMessage('影像名称已存在，请选择其他名称', 'error');
+        return;
+    }
+    
+    // 格式化时间
+    const dataTime = new Date(formData.dataTime).toLocaleString('zh-CN');
+    const uploadTime = new Date().toLocaleString('zh-CN');
+    
+    if (dataManager.editingImageId) {
+        // 编辑模式
+        const imageIndex = dataManager.imageData.findIndex(img => img.id === dataManager.editingImageId);
+        if (imageIndex !== -1) {
+            dataManager.imageData[imageIndex] = {
+                ...dataManager.imageData[imageIndex],
+                name: formData.name,
+                type: formData.type,
+                crop: formData.crop,
+                dataTime: dataTime,
+                size: formData.size || dataManager.imageData[imageIndex].size,
+                remark: formData.remark
+            };
+            Utils.showMessage('影像数据更新成功', 'success');
+        }
+    } else {
+        // 新增模式
+        const newId = Math.max(...dataManager.imageData.map(img => img.id)) + 1;
+        const newImage = {
+            id: newId,
+            name: formData.name,
+            type: formData.type,
+            crop: formData.crop,
+            dataTime: dataTime,
+            uploadTime: uploadTime,
+            size: formData.size || '未知',
+            remark: formData.remark
+        };
+        dataManager.imageData.push(newImage);
+        Utils.showMessage('影像数据添加成功', 'success');
+    }
+    
+    // 刷新表格
+    dataManager.loadImageData();
+    
+    // 关闭模态框
+    closeImageModal();
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').classList.remove('show');
+    document.getElementById('imageForm').reset();
+    
+    const dataManager = window.dataManager;
+    if (dataManager) {
+        dataManager.editingImageId = null;
+        dataManager.removeUploadedFile();
+    }
+}
 
 // 设备数据相关函数
 function viewDeviceHistory(id) {

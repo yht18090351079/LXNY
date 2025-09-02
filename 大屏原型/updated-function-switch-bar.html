@@ -1,0 +1,53 @@
+<!-- 更新后的功能切换栏，使用增强的板块区分样式（无标识文字） -->
+<div class="function-switch-bar">
+    <!-- 主功能按钮组 (5个) -->
+    <div class="main-switch-buttons">
+        <div class="main-switch-btn" data-function="crop-distribution" onclick="navigateToPage('index.html')">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物分布</span>
+        </div>
+        <div class="main-switch-btn" data-function="growth-analysis" onclick="navigateToPage('growth-analysis-main.html')">
+            <span class="btn-icon">📊</span>
+            <span class="btn-text">长势分析</span>
+        </div>
+        <div class="main-switch-btn" data-function="yield-estimation" onclick="navigateToPage('yield-estimation.html')">
+            <span class="btn-icon">📈</span>
+            <span class="btn-text">产量预估</span>
+        </div>
+        <div class="main-switch-btn active" data-function="weather-monitoring">
+            <span class="btn-icon">🌤️</span>
+            <span class="btn-text">气象监测</span>
+        </div>
+        <div class="main-switch-btn" data-function="disaster-monitoring" onclick="navigateToPage('disaster-monitoring.html')">
+            <span class="btn-icon">⚠️</span>
+            <span class="btn-text">灾害定损</span>
+        </div>
+    </div>
+
+    <!-- 分隔线 -->
+    <div class="switch-divider"></div>
+
+    <!-- 叠加功能按钮容器 (2个) -->
+    <div class="overlay-functions-container">
+        <div class="overlay-switch-btn" data-function="device-monitoring">
+            <span class="btn-icon">📱</span>
+            <span class="btn-text">设备监控</span>
+        </div>
+        
+        <div class="overlay-switch-btn" data-function="crop-selection">
+            <span class="btn-icon">🌾</span>
+            <span class="btn-text">作物选择</span>
+        </div>
+    </div>
+
+    <!-- 第二个分隔线 -->
+    <div class="switch-divider"></div>
+
+    <!-- 地图控制按钮容器 -->
+    <div class="map-controls-container">
+        <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
+            <span class="btn-icon">🎯</span>
+            <span class="btn-text">重置视图</span>
+        </div>
+    </div>
+</div>

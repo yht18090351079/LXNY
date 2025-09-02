@@ -147,15 +147,19 @@
                 <span class="btn-icon">🌾</span>
                 <span class="btn-text">作物分布</span>
             </div>
-            <div class="main-switch-btn" data-function="yield-estimation">
+            <div class="main-switch-btn" data-function="growth-analysis" onclick="navigateToPage('growth-analysis-main.html')">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation" onclick="navigateToPage('yield-estimation.html')">
                 <span class="btn-icon">📈</span>
                 <span class="btn-text">产量预估</span>
             </div>
-            <div class="main-switch-btn" data-function="weather-monitoring">
+            <div class="main-switch-btn" data-function="weather-monitoring" onclick="navigateToPage('weather-monitoring.html')">
                 <span class="btn-icon">🌤️</span>
                 <span class="btn-text">气象监测</span>
             </div>
-            <div class="main-switch-btn" data-function="disaster-monitoring">
+            <div class="main-switch-btn" data-function="disaster-monitoring" onclick="navigateToPage('disaster-monitoring.html')">
                 <span class="btn-icon">⚠️</span>
                 <span class="btn-text">灾害定损</span>
             </div>
@@ -233,108 +237,16 @@
             <!-- 2. 单作物按乡镇面积分布 -->
             <div class="stat-card chart-data-panel" style="height: 260px !important; min-height: 260px !important; max-height: 260px !important; display: flex !important; flex-direction: column !important; overflow: hidden !important;">
                 <div class="stat-header" style="flex-shrink: 0 !important; flex-grow: 0 !important;">
-                    <span id="current-crop-title">🌾 小麦按乡镇长势分布</span>
-                    <div class="chart-switch-buttons">
-                        <button class="switch-btn active" data-type="bar" onclick="switchTownCropChart('bar')">柱状图</button>
-                        <button class="switch-btn" data-type="table" onclick="switchTownCropChart('table')">表格</button>
-                    </div>
+                    <span id="current-crop-title">🌾 小麦按乡镇面积分布</span>
                 </div>
                 <div id="town-crop-chart" style="height: 220px; flex-shrink: 0 !important; flex-grow: 0 !important; margin: 0 !important;"></div>
-                <div id="town-crop-table" class="town-crop-table" style="display: none; flex: 1 !important; margin-top: 0 !important; height: auto !important; overflow-y: auto !important;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>乡镇</th>
-                                <th>优 (亩)</th>
-                                <th>良 (亩)</th>
-                                <th>中 (亩)</th>
-                                <th>差 (亩)</th>
-                                <th>合计 (亩)</th>
-                            </tr>
-                            <tr class="total-row sticky-total">
-                                <td><strong>合计</strong></td>
-                                <td><strong>889</strong></td>
-                                <td><strong>667</strong></td>
-                                <td><strong>444</strong></td>
-                                <td><strong>222</strong></td>
-                                <td><strong id="crop-total">2,222</strong></td>
-                            </tr>
-                        </thead>
-                        <tbody id="town-crop-tbody">
-                            <tr>
-                                <td>红台镇</td>
-                                <td>182</td>
-                                <td>137</td>
-                                <td>91</td>
-                                <td>46</td>
-                                <td>456</td>
-                            </tr>
-                            <tr>
-                                <td>土桥镇</td>
-                                <td>159</td>
-                                <td>119</td>
-                                <td>80</td>
-                                <td>40</td>
-                                <td>398</td>
-                            </tr>
-                            <tr>
-                                <td>漫路镇</td>
-                                <td>107</td>
-                                <td>80</td>
-                                <td>54</td>
-                                <td>27</td>
-                                <td>268</td>
-                            </tr>
-                            <tr>
-                                <td>北塬镇</td>
-                                <td>54</td>
-                                <td>40</td>
-                                <td>27</td>
-                                <td>13</td>
-                                <td>134</td>
-                            </tr>
-                            <tr>
-                                <td>关滩镇</td>
-                                <td>125</td>
-                                <td>94</td>
-                                <td>62</td>
-                                <td>31</td>
-                                <td>312</td>
-                            </tr>
-                            <tr>
-                                <td>新集镇</td>
-                                <td>116</td>
-                                <td>87</td>
-                                <td>58</td>
-                                <td>29</td>
-                                <td>289</td>
-                            </tr>
-                            <tr>
-                                <td>麻尼寺沟镇</td>
-                                <td>79</td>
-                                <td>59</td>
-                                <td>40</td>
-                                <td>20</td>
-                                <td>198</td>
-                            </tr>
-                            <tr>
-                                <td>韩集镇</td>
-                                <td>67</td>
-                                <td>50</td>
-                                <td>33</td>
-                                <td>17</td>
-                                <td>167</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
-            <!-- 3. 长势指数变化趋势图 -->
+            <!-- 3. 种植面积变化趋势图 -->
             <div class="stat-card">
                 <div class="stat-header">
                     <span class="section-icon">📈</span>
-                    长势指数变化趋势图
+                    种植面积变化趋势图
                 </div>
                 <div class="trend-comparison-container">
                     <div id="growth-trend-comparison" class="chart-container"></div>
@@ -569,116 +481,7 @@
         }
 
         // ===== 乡镇长势图表功能 =====
-
-        /**
-         * 切换乡镇作物图表类型
-         */
-        function switchTownCropChart(chartType) {
-            console.log(`📊 切换图表类型: ${chartType}`);
-
-            // 更新按钮状态
-            const buttons = document.querySelectorAll('.chart-switch-buttons .switch-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-type') === chartType) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // 使用全局变量
-            window.currentChartType = chartType;
-
-            // 根据图表类型显示对应内容
-            const chartDiv = document.getElementById('town-crop-chart');
-            const tableDiv = document.getElementById('town-crop-table');
-
-            if (chartType === 'table') {
-                chartDiv.style.display = 'none';
-                tableDiv.style.display = 'block';
-                updateTownCropTable(window.currentSelectedRegion || 'all');
-            } else {
-                chartDiv.style.display = 'block';
-                tableDiv.style.display = 'none';
-                updateTownCropChart(window.currentSelectedRegion || 'all', chartType);
-            }
-        }
-
-        /**
-         * 更新乡镇作物长势图表
-         */
-        function updateTownCropChart(regionId, chartType = 'bar') {
-            const chartContainer = document.getElementById('town-crop-chart');
-            const titleElement = document.getElementById('current-crop-title');
-
-            if (!chartContainer || !titleElement) return;
-
-            // 获取或创建ECharts实例
-            let chart = echarts.getInstanceByDom(chartContainer);
-            if (!chart) {
-                chart = echarts.init(chartContainer);
-            }
-
-            let option;
-
-            if (regionId === 'all') {
-                // 显示所有乡镇的汇总数据
-                titleElement.textContent = '🌾 小麦按乡镇长势分布';
-                option = getTownshipSummaryChartOption(chartType);
-                console.log(`📊 显示全县汇总数据`);
-            } else {
-                // 显示单个乡镇的长势分类数据
-                const townshipName = getTownshipNameById(regionId);
-                titleElement.textContent = `🌾 ${townshipName}长势分类分布`;
-                option = getSingleTownshipChartOption(regionId, chartType);
-                console.log(`📊 显示${townshipName}长势分类数据:`, getSingleTownshipGrowthData(regionId));
-            }
-
-            chart.setOption(option, true);
-            console.log(`📊 图表已更新: ${regionId} - ${chartType}`);
-        }
-
-        /**
-         * 更新乡镇作物长势表格
-         */
-        function updateTownCropTable(regionId) {
-            const titleElement = document.getElementById('current-crop-title');
-            const tableBody = document.getElementById('town-crop-tbody');
-            const totalElement = document.getElementById('crop-total');
-
-            if (!titleElement || !tableBody) return;
-
-            if (regionId === 'all') {
-                // 显示所有乡镇数据
-                titleElement.textContent = '🌾 小麦按乡镇长势分布';
-                console.log(`📋 显示全县汇总表格`);
-                // 保持原有的表格数据
-            } else {
-                // 显示单个乡镇的长势分类数据
-                const townshipName = getTownshipNameById(regionId);
-                const growthData = getSingleTownshipGrowthData(regionId);
-
-                titleElement.textContent = `🌾 ${townshipName}长势分类分布`;
-                console.log(`📋 显示${townshipName}长势分类表格:`, growthData);
-
-                // 更新表格内容为长势分类
-                tableBody.innerHTML = `
-                    <tr>
-                        <td>${townshipName}</td>
-                        <td>${growthData.excellent}</td>
-                        <td>${growthData.good}</td>
-                        <td>${growthData.medium}</td>
-                        <td>${growthData.poor}</td>
-                        <td>${growthData.excellent + growthData.good + growthData.medium + growthData.poor}</td>
-                    </tr>
-                `;
-
-                // 更新合计
-                if (totalElement) {
-                    const total = growthData.excellent + growthData.good + growthData.medium + growthData.poor;
-                    totalElement.textContent = total.toLocaleString();
-                }
-            }
-        }
+        // 注意：已移除表格切换功能，使用 dashboard-charts.js 中的函数
 
         /**
          * 获取乡镇汇总图表配置

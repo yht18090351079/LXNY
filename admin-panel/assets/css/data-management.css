@@ -2028,3 +2028,381 @@ input[type="number"].form-input {
         align-items: flex-start;
     }
 }
+
+/* 影像数据表格样式增强 */
+.image-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.image-name-cell strong {
+    font-size: 13px;
+    color: #262626;
+    line-height: 1.2;
+}
+
+.image-remark {
+    font-size: 11px;
+    color: #8c8c8c;
+    font-weight: normal;
+    line-height: 1.2;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.image-type-badge {
+    font-size: 11px;
+    color: #8c8c8c;
+    font-weight: normal;
+}
+
+/* 影像类型标签样式 */
+.type-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid;
+    transition: all 0.3s ease;
+}
+
+.type-badge.type-landsat {
+    background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+    color: white;
+    border-color: rgba(24, 144, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.type-badge.type-sentinel {
+    background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);
+    color: white;
+    border-color: rgba(114, 46, 209, 0.3);
+    box-shadow: 0 2px 4px rgba(114, 46, 209, 0.2);
+}
+
+.type-badge.type-modis {
+    background: linear-gradient(135deg, #fa541c 0%, #ff7a45 100%);
+    color: white;
+    border-color: rgba(250, 84, 28, 0.3);
+    box-shadow: 0 2px 4px rgba(250, 84, 28, 0.2);
+}
+
+.type-badge.type-高分2号 {
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+    color: white;
+    border-color: rgba(82, 196, 26, 0.3);
+    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+}
+
+.type-badge.type-高分1号 {
+    background: linear-gradient(135deg, #13c2c2 0%, #36cfc9 100%);
+    color: white;
+    border-color: rgba(19, 194, 194, 0.3);
+    box-shadow: 0 2px 4px rgba(19, 194, 194, 0.2);
+}
+
+.type-badge.type-worldview {
+    background: linear-gradient(135deg, #f759ab 0%, #ff85c0 100%);
+    color: white;
+    border-color: rgba(247, 89, 171, 0.3);
+    box-shadow: 0 2px 4px rgba(247, 89, 171, 0.2);
+}
+
+.type-badge.type-资源3号 {
+    background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);
+    color: white;
+    border-color: rgba(250, 173, 20, 0.3);
+    box-shadow: 0 2px 4px rgba(250, 173, 20, 0.2);
+}
+
+.type-badge.type-吉林一号 {
+    background: linear-gradient(135deg, #eb2f96 0%, #f759ab 100%);
+    color: white;
+    border-color: rgba(235, 47, 150, 0.3);
+    box-shadow: 0 2px 4px rgba(235, 47, 150, 0.2);
+}
+
+.type-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 作物标签样式 */
+.crop-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    border: 1px solid rgba(82, 196, 26, 0.3);
+    box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.crop-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(82, 196, 26, 0.3);
+}
+
+/* 不同作物的颜色变化 */
+.crop-tag[data-crop="小麦"] {
+    background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);
+    border-color: rgba(250, 173, 20, 0.3);
+    box-shadow: 0 2px 4px rgba(250, 173, 20, 0.2);
+}
+
+.crop-tag[data-crop="小麦"]:hover {
+    box-shadow: 0 4px 8px rgba(250, 173, 20, 0.3);
+}
+
+.crop-tag[data-crop="玉米"] {
+    background: linear-gradient(135deg, #722ed1 0%, #9254de 100%);
+    border-color: rgba(114, 46, 209, 0.3);
+    box-shadow: 0 2px 4px rgba(114, 46, 209, 0.2);
+}
+
+.crop-tag[data-crop="玉米"]:hover {
+    box-shadow: 0 4px 8px rgba(114, 46, 209, 0.3);
+}
+
+.crop-tag[data-crop="青稞"] {
+    background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+    border-color: rgba(24, 144, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.crop-tag[data-crop="青稞"]:hover {
+    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+}
+
+.crop-tag[data-crop="土豆"] {
+    background: linear-gradient(135deg, #fa8c16 0%, #ffb347 100%);
+    border-color: rgba(250, 140, 22, 0.3);
+    box-shadow: 0 2px 4px rgba(250, 140, 22, 0.2);
+}
+
+.crop-tag[data-crop="土豆"]:hover {
+    box-shadow: 0 4px 8px rgba(250, 140, 22, 0.3);
+}
+
+/* 文件上传区域样式 */
+.upload-area {
+    border: 2px dashed #d9d9d9;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-area:hover {
+    border-color: #1890ff;
+    background: #f0f8ff;
+}
+
+.upload-area.dragover {
+    border-color: #1890ff;
+    background: #e6f7ff;
+    transform: scale(1.02);
+}
+
+.upload-content {
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #bfbfbf;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.upload-text {
+    font-size: 16px;
+    color: #595959;
+    margin: 8px 0;
+}
+
+.upload-link {
+    color: #1890ff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.upload-link:hover {
+    color: #40a9ff;
+}
+
+.upload-hint {
+    font-size: 12px;
+    color: #8c8c8c;
+    margin: 8px 0 0 0;
+}
+
+/* 上传进度样式 */
+.upload-progress {
+    padding: 20px;
+    background: white;
+    border-radius: 6px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1890ff 0%, #40a9ff 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #595959;
+}
+
+.progress-percent {
+    font-size: 14px;
+    color: #1890ff;
+    font-weight: 500;
+}
+
+/* 已上传文件显示样式 */
+.uploaded-file {
+    padding: 16px;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    border-radius: 6px;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-icon {
+    font-size: 24px;
+    color: #52c41a;
+    flex-shrink: 0;
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #262626;
+    font-weight: 500;
+    margin-bottom: 4px;
+    word-break: break-all;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #8c8c8c;
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    color: #ff4d4f;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-file-btn:hover {
+    background: #fff2f0;
+    color: #a8071a;
+}
+
+/* 文件上传错误状态 */
+.upload-area.error {
+    border-color: #ff4d4f;
+    background: #fff2f0;
+}
+
+.upload-area.error .upload-icon {
+    color: #ff4d4f;
+}
+
+.upload-area.error .upload-text {
+    color: #ff4d4f;
+}
+
+/* 文件上传成功状态 */
+.upload-area.success {
+    border-color: #52c41a;
+    background: #f6ffed;
+}
+
+.upload-area.success .upload-icon {
+    color: #52c41a;
+}
+
+/* 按钮样式优化 */
+.btn {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn i {
+    flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .upload-content {
+        padding: 30px 15px;
+    }
+    
+    .upload-icon {
+        font-size: 36px;
+    }
+    
+    .upload-text {
+        font-size: 14px;
+    }
+    
+    .file-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .remove-file-btn {
+        align-self: flex-end;
+    }
+}

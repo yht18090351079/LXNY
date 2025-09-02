@@ -1018,7 +1018,7 @@ function initPageFunctionSwitchBar() {
             // 页面跳转映射
             const pageMapping = {
                 'crop-distribution': 'index.html',
-                'growth-analysis': 'growth-analysis.html',
+                'growth-analysis': 'growth-analysis-main.html',
                 'yield-estimation': 'yield-estimation.html',
                 'weather-monitoring': 'weather-monitoring.html',
                 'disaster-monitoring': 'disaster-monitoring.html'

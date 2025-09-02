@@ -3,6 +3,16 @@
  * 功能：气象数据处理、图层控制、数据可视化、交互控制等
  */
 
+// ===== 页面导航功能 =====
+
+/**
+ * 导航到指定页面
+ */
+function navigateToPage(pageUrl) {
+    console.log(`🚀 导航到页面: ${pageUrl}`);
+    window.location.href = pageUrl;
+}
+
 // ===== 全局变量 =====
 let temperatureTrendChart = null;
 let weatherAnimationInterval = null;

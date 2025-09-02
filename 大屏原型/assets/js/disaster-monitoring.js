@@ -3,6 +3,16 @@
  * 功能：灾害监测、损失预测、预警管理、应急响应
  */
 
+// ===== 页面导航功能 =====
+
+/**
+ * 导航到指定页面
+ */
+function navigateToPage(pageUrl) {
+    console.log(`🚀 导航到页面: ${pageUrl}`);
+    window.location.href = pageUrl;
+}
+
 // ===== 全局变量 =====
 let disasterCharts = {
     lossPredictionChart: null,

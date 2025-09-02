@@ -7,6 +7,16 @@
 let currentSelectedRegion = 'all';
 let currentChartType = 'bar';
 
+// ===== 页面导航功能 =====
+
+/**
+ * 导航到指定页面
+ */
+function navigateToPage(pageUrl) {
+    console.log(`🚀 导航到页面: ${pageUrl}`);
+    window.location.href = pageUrl;
+}
+
 // ===== 用户功能模块 =====
 
 /**
@@ -314,28 +324,22 @@ function selectRegion(regionId, regionName, isInitialization = false) {
         console.log(`🏘️ 乡镇地块已联动到区域: ${regionName}`);
     }
 
-    // 更新乡镇长势图表
-    if (typeof updateTownCropChart === 'function') {
-        // 根据区域选择决定显示的数据类型
-        if (regionId === 'all') {
-            // 全县模式：显示各乡镇的长势分布
-            updateTownCropChart('wheat'); // 默认显示小麦数据
-        } else {
-            // 单个乡镇模式：显示该乡镇的长势分类分布
-            if (typeof updateSingleTownshipChart === 'function') {
-                updateSingleTownshipChart(regionId);
-            } else {
-                console.warn('⚠️ updateSingleTownshipChart 函数未定义');
-            }
-        }
-        console.log(`📊 长势图表已联动到区域: ${regionName}`);
-    }
-
-    // 如果当前显示的是表格，也需要更新
-    if (typeof updateTownCropTable === 'function' && (currentChartType === 'table' || document.getElementById('town-crop-table').style.display !== 'none')) {
-        updateTownCropTable(regionId);
-        console.log(`📋 长势表格已联动到区域: ${regionName}`);
-    }
+    // 更新乡镇长势图表 - 已禁用，切换乡镇时图表保持不变
+    // if (typeof updateTownCropChart === 'function') {
+    //     // 根据区域选择决定显示的数据类型
+    //     if (regionId === 'all') {
+    //         // 全县模式：显示各乡镇的长势分布
+    //         updateTownCropChart('wheat'); // 默认显示小麦数据
+    //     } else {
+    //         // 单个乡镇模式：显示该乡镇的长势分类分布
+    //         if (typeof updateSingleTownshipChart === 'function') {
+    //             updateSingleTownshipChart(regionId);
+    //         } else {
+    //             console.warn('⚠️ updateSingleTownshipChart 函数未定义');
+    //         }
+    //     }
+    //     console.log(`📊 长势图表已联动到区域: ${regionName}`);
+    // }
 
     console.log(`📍 区域已切换到: ${regionName} (${regionId})`);
 }
@@ -669,7 +673,7 @@ function initFunctionSwitchBar() {
             // 页面跳转映射
             const pageMapping = {
                 'crop-distribution': 'index.html',
-                'growth-analysis': 'growth-analysis.html',
+                'growth-analysis': 'growth-analysis-main.html',
                 'yield-estimation': 'yield-estimation.html',
                 'weather-monitoring': 'weather-monitoring.html',
                 'disaster-monitoring': 'disaster-monitoring.html'

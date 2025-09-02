@@ -1230,6 +1230,15 @@
     gap: 10px;
 }
 
+.dashboard-row.one-col {
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.dashboard-row.one-col .metric-card {
+    width: 100%;
+}
+
 .metric-card {
     display: flex;
     align-items: center;

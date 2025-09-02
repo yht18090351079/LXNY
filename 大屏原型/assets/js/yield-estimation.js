@@ -3,6 +3,12 @@
  * 负责产量预估数据的可视化和交互
  */
 
+// 页面导航函数
+function navigateToPage(pageUrl) {
+    console.log(`🚀 导航到页面: ${pageUrl}`);
+    window.location.href = pageUrl;
+}
+
 // 全局变量
 let yieldEstimationCharts = {};
 let yieldEstimationData = {};
@@ -1642,7 +1648,7 @@ function initPageFunctionSwitchBar() {
             // 页面跳转映射
             const pageMapping = {
                 'crop-distribution': 'index.html',
-                'growth-analysis': 'growth-analysis.html',
+                'growth-analysis': 'growth-analysis-main.html',
                 'yield-estimation': 'yield-estimation.html',
                 'weather-monitoring': 'weather-monitoring.html',
                 'disaster-monitoring': 'disaster-monitoring.html'
@@ -1705,18 +1711,18 @@ function initPageFunctionSwitchBar() {
     });
 }
 
-// ===== 乡镇预产值分析图表 =====
+// ===== 乡镇产量分析图表 =====
 
 let townValueChart = null;
-let currentTownValueChartType = 'combo'; // 当前图表类型：combo, pie, table
+let currentTownValueChartType = 'bar'; // 当前图表类型：bar, table
 
 /**
- * 初始化乡镇预产值分析图表
+ * 初始化乡镇产量分析图表
  */
 function initTownValueChart() {
     const chartElement = document.getElementById('town-value-chart');
     if (!chartElement) {
-        console.warn('⚠️ 乡镇预产值图表容器未找到');
+        console.warn('⚠️ 乡镇产量图表容器未找到');
         return;
     }
 
@@ -1725,10 +1731,10 @@ function initTownValueChart() {
     // 初始化图表切换按钮事件
     initTownValueChartSwitchButtons();
 
-    // 显示默认图表（产量产值组合图）
+    // 显示默认图表（产量柱状图）
     updateTownValueChart();
 
-    console.log('✅ 乡镇预产值图表初始化完成');
+    console.log('✅ 乡镇产量图表初始化完成');
 }
 
 /**
@@ -1758,14 +1764,14 @@ function initTownValueChartSwitchButtons() {
  * 更新乡镇预产值图表
  */
 function updateTownValueChart() {
-    // 乡镇预产值数据
+    // 乡镇产量数据
     const townValueData = [
-        { name: '红台镇', yield: 456, price: 3.15, value: 143.6, percent: 33.5 },
-        { name: '土桥镇', yield: 298, price: 3.12, value: 93.0, percent: 21.7 },
-        { name: '漫路镇', yield: 268, price: 3.18, value: 85.2, percent: 19.9 },
-        { name: '北塬镇', yield: 134, price: 3.10, value: 41.5, percent: 9.7 },
-        { name: '关滩镇', yield: 112, price: 3.16, value: 35.4, percent: 8.3 },
-        { name: '新集镇', yield: 98, price: 3.08, value: 30.2, percent: 7.0 }
+        { name: '红台镇', yield: 456, unitYield: 485, percent: 33.5 },
+        { name: '土桥镇', yield: 298, unitYield: 452, percent: 21.7 },
+        { name: '漫路镇', yield: 268, unitYield: 478, percent: 19.9 },
+        { name: '北塬镇', yield: 134, unitYield: 445, percent: 9.7 },
+        { name: '关滩镇', yield: 112, unitYield: 467, percent: 8.3 },
+        { name: '新集镇', yield: 98, unitYield: 436, percent: 7.0 }
     ];
 
     // 如果是表格模式，显示表格并隐藏图表
@@ -1781,8 +1787,8 @@ function updateTownValueChart() {
 
     let option = {};
 
-    if (currentTownValueChartType === 'combo') {
-        // 柱状图+折线图组合配置
+    if (currentTownValueChartType === 'bar' || currentTownValueChartType === 'combo') {
+        // 柱状图配置
         option = {
             backgroundColor: 'transparent',
             tooltip: {
@@ -1794,13 +1800,12 @@ function updateTownValueChart() {
                     const data = townValueData[params[0].dataIndex];
                     return `${data.name}<br/>
                             预估产量: ${data.yield}吨<br/>
-                            平均价格: ${data.price}元/kg<br/>
-                            预产值: ${data.value}万元<br/>
+                            平均单产: ${data.unitYield}kg/亩<br/>
                             占比: ${data.percent}%`;
                 }
             },
             legend: {
-                data: ['预估产量', '预产值'],
+                data: ['预估产量'],
                 top: '5%',
                 textStyle: {
                     color: 'rgba(255, 255, 255, 0.8)',
@@ -1825,54 +1830,31 @@ function updateTownValueChart() {
                     lineStyle: { color: 'rgba(0, 212, 255, 0.5)' }
                 }
             },
-            yAxis: [
-                {
-                    type: 'value',
-                    name: '产量(吨)',
-                    position: 'left',
-                    nameTextStyle: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: 10
-                    },
-                    axisLabel: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: 9
-                    },
-                    axisLine: {
-                        lineStyle: { color: 'rgba(0, 212, 255, 0.5)' }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(0, 212, 255, 0.2)',
-                            type: 'dashed'
-                        }
-                    }
+            yAxis: {
+                type: 'value',
+                name: '产量(吨)',
+                nameTextStyle: {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: 10
                 },
-                {
-                    type: 'value',
-                    name: '产值(万元)',
-                    position: 'right',
-                    nameTextStyle: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: 10
-                    },
-                    axisLabel: {
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: 9
-                    },
-                    axisLine: {
-                        lineStyle: { color: 'rgba(255, 215, 0, 0.5)' }
-                    },
-                    splitLine: {
-                        show: false
+                axisLabel: {
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: 9
+                },
+                axisLine: {
+                    lineStyle: { color: 'rgba(0, 212, 255, 0.5)' }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(0, 212, 255, 0.2)',
+                        type: 'dashed'
                     }
                 }
-            ],
+            },
             series: [
                 {
                     name: '预估产量',
                     type: 'bar',
-                    yAxisIndex: 0,
                     data: townValueData.map(item => item.yield),
                     itemStyle: {
                         color: {
@@ -1885,82 +1867,8 @@ function updateTownValueChart() {
                         }
                     },
                     barWidth: '50%'
-                },
-                {
-                    name: '预产值',
-                    type: 'line',
-                    yAxisIndex: 1,
-                    data: townValueData.map(item => item.value),
-                    smooth: true,
-                    lineStyle: {
-                        color: '#FFD700',
-                        width: 3
-                    },
-                    itemStyle: {
-                        color: '#FFD700',
-                        borderWidth: 2,
-                        borderColor: '#FFFFFF'
-                    },
-                    symbol: 'circle',
-                    symbolSize: 6
                 }
             ]
-        };
-    } else if (currentTownValueChartType === 'pie') {
-        // 饼状图配置
-        option = {
-            backgroundColor: 'transparent',
-            tooltip: {
-                trigger: 'item',
-                backgroundColor: 'rgba(0, 20, 40, 0.9)',
-                borderColor: 'rgba(0, 212, 255, 0.5)',
-                textStyle: { color: '#FFFFFF' },
-                formatter: function(params) {
-                    const data = townValueData[params.dataIndex];
-                    return `${data.name}<br/>
-                            预估产量: ${data.yield}吨<br/>
-                            平均价格: ${data.price}元/kg<br/>
-                            预产值: ${data.value}万元<br/>
-                            占比: ${data.percent}%`;
-                }
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                top: 'center',
-                textStyle: {
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: 9
-                }
-            },
-            series: [{
-                type: 'pie',
-                radius: ['30%', '70%'],
-                center: ['65%', '50%'],
-                data: townValueData.map((item, index) => ({
-                    value: item.value,
-                    name: item.name,
-                    itemStyle: {
-                        color: [
-                            '#FFD700', '#FF8C00', '#32CD32',
-                            '#00CED1', '#9370DB', '#FF69B4'
-                        ][index]
-                    }
-                })),
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                },
-                label: {
-                    show: true,
-                    fontSize: 9,
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    formatter: '{b}\n{c}万元'
-                }
-            }]
         };
     }
 
@@ -1968,7 +1876,7 @@ function updateTownValueChart() {
 }
 
 /**
- * 显示乡镇产值图表
+ * 显示乡镇产量图表
  */
 function showTownValueChart() {
     const chartContainer = document.getElementById('town-value-chart');
@@ -1979,7 +1887,7 @@ function showTownValueChart() {
 }
 
 /**
- * 显示乡镇产值表格
+ * 显示乡镇产量表格
  */
 function showTownValueTable() {
     const chartContainer = document.getElementById('town-value-chart');

@@ -144,11 +144,15 @@
     <div class="function-switch-bar">
         <!-- 主功能按钮组 (5个) -->
         <div class="main-switch-buttons">
-            <div class="main-switch-btn" data-function="crop-distribution">
+            <div class="main-switch-btn" data-function="crop-distribution" onclick="navigateToPage('index.html')">
                 <span class="btn-icon">🌾</span>
                 <span class="btn-text">作物分布</span>
             </div>
-            <div class="main-switch-btn" data-function="yield-estimation">
+            <div class="main-switch-btn" data-function="growth-analysis" onclick="navigateToPage('growth-analysis-main.html')">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">长势分析</span>
+            </div>
+            <div class="main-switch-btn" data-function="yield-estimation" onclick="navigateToPage('yield-estimation.html')">
                 <span class="btn-icon">📈</span>
                 <span class="btn-text">产量预估</span>
             </div>
@@ -156,7 +160,7 @@
                 <span class="btn-icon">🌤️</span>
                 <span class="btn-text">气象监测</span>
             </div>
-            <div class="main-switch-btn" data-function="disaster-monitoring">
+            <div class="main-switch-btn" data-function="disaster-monitoring" onclick="navigateToPage('disaster-monitoring.html')">
                 <span class="btn-icon">⚠️</span>
                 <span class="btn-text">灾害定损</span>
             </div>

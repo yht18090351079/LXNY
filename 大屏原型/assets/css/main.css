@@ -690,11 +690,11 @@ body {
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(0, 212, 255, 0.4);
     border-radius: 20px;
-    padding: 15px 8px;
+    padding: 20px 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 0;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 212, 255, 0.2);
 }
 
@@ -705,6 +705,11 @@ body {
     align-items: center;
     gap: 8px;
     width: 100%;
+    padding: 15px 0;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(0, 150, 255, 0.04) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 16px;
+    margin-bottom: 15px;
 }
 
 .main-switch-btn {
@@ -754,13 +759,31 @@ body {
 
 /* 分隔线 - 水平 */
 .switch-divider {
-    width: 45px;
-    height: 1px;
+    width: 70px;
+    height: 3px;
     background: linear-gradient(90deg, 
         transparent 0%, 
-        rgba(0, 212, 255, 0.5) 50%, 
+        rgba(0, 212, 255, 0.3) 20%,
+        rgba(0, 212, 255, 0.8) 50%, 
+        rgba(0, 212, 255, 0.3) 80%,
         transparent 100%);
-    margin: 6px 0;
+    margin: 20px 0;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* 叠加功能按钮容器 */
+.overlay-functions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px 0;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.06) 0%, rgba(156, 39, 176, 0.06) 100%);
+    border: 1px solid rgba(255, 152, 0, 0.2);
+    border-radius: 16px;
+    margin-bottom: 15px;
 }
 
 /* 叠加功能按钮 (2个) - 基础样式 */
@@ -777,7 +800,6 @@ body {
     gap: 2px;
     font-size: 12px;
     position: relative;
-    margin: 4px 0;
 }
 
 .overlay-switch-btn .btn-icon {
@@ -835,6 +857,19 @@ body {
     color: #9C27B0;
 }
 
+/* 地图控制按钮容器 */
+.map-controls-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px 0;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.04) 100%);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    border-radius: 16px;
+}
+
 /* 地图重置按钮 - 绿色主题 */
 .map-reset-btn {
     width: 70px;
@@ -849,7 +884,6 @@ body {
     gap: 2px;
     font-size: 12px;
     position: relative;
-    margin: 4px 0;
     background: rgba(76, 175, 80, 0.1);
     border: 1px solid rgba(76, 175, 80, 0.3);
     color: rgba(76, 175, 80, 0.9);
