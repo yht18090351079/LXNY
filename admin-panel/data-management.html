@@ -274,6 +274,10 @@
                                                 <i class="fas fa-sync-alt"></i>
                                                 刷新地图
                                             </button>
+                                            <button class="btn btn-success" onclick="showAddDeviceModal()" title="新增设备">
+                                                <i class="fas fa-plus"></i>
+                                                新增设备
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -630,6 +634,99 @@
                 <button type="button" class="btn btn-primary" onclick="savePlantingAreaEdit()">
                     <i class="fas fa-save"></i> 保存修改
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增/编辑设备信息模态框 -->
+    <div class="modal-overlay" id="deviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deviceModalTitle">新增设备信息</h3>
+                <button class="modal-close" onclick="closeDeviceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="deviceForm">
+                    <input type="hidden" id="deviceId" name="deviceId">
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">设备名称 *</label>
+                            <input type="text" class="form-input" id="deviceName" name="deviceName" required placeholder="请输入设备名称">
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">设备类型 *</label>
+                            <select class="form-select" id="deviceType" name="deviceType" required>
+                                <option value="">请选择设备类型</option>
+                                <option value="气象监测">气象监测</option>
+                                <option value="土壤监测">土壤监测</option>
+                                <option value="视频监控">视频监控</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">位置 *</label>
+                            <input type="text" class="form-input" id="deviceLocation" name="deviceLocation" required placeholder="请输入设备位置">
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">状态 *</label>
+                            <select class="form-select" id="deviceStatus" name="deviceStatus" required>
+                                <option value="">请选择设备状态</option>
+                                <option value="online">在线</option>
+                                <option value="offline">离线</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">经度 *</label>
+                            <input type="number" class="form-input" id="deviceLongitude" name="deviceLongitude" required step="0.0001" placeholder="请输入经度">
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">纬度 *</label>
+                            <input type="number" class="form-input" id="deviceLatitude" name="deviceLatitude" required step="0.0001" placeholder="请输入纬度">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">最后上报时间 *</label>
+                        <input type="datetime-local" class="form-input" id="deviceLastReport" name="deviceLastReport" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeDeviceModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal-overlay" id="deleteDeviceModal">
+        <div class="modal-content confirm-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">确认删除</h3>
+                <button class="modal-close" onclick="closeDeleteDeviceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="confirm-content">
+                    <i class="fas fa-exclamation-triangle confirm-icon"></i>
+                    <p>确定要删除设备 <strong id="deleteDeviceName"></strong> 吗？此操作不可恢复。</p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeDeleteDeviceModal()">取消</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteDeviceBtn">删除</button>
+                </div>
             </div>
         </div>
     </div>

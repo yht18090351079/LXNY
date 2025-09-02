@@ -13,6 +13,10 @@ class DataManagement {
         this.historyChart = null;
         this.currentSelectedMonth = '2024-01'; // 当前选择的月份
         
+        // 设备相关状态
+        this.editingDeviceId = null;
+        this.deletingDeviceId = null;
+        
         // 地图相关属性
         this.deviceMap = null;
         this.deviceMarkers = [];
@@ -262,6 +266,85 @@ class DataManagement {
                     this.savePlantingAreaEdit();
                 }
             });
+        }
+        
+        // 设备表单提交事件
+        const deviceForm = document.getElementById('deviceForm');
+        if (deviceForm) {
+            deviceForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveDeviceEdit();
+            });
+        }
+        
+        // 删除设备确认事件
+        const confirmDeleteBtn = document.getElementById('confirmDeleteDeviceBtn');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', () => {
+                this.confirmDeleteDevice();
+            });
+        }
+    }
+    
+    // 保存设备编辑
+    saveDeviceEdit() {
+        const form = document.getElementById('deviceForm');
+        if (!form) return;
+        
+        const formData = new FormData(form);
+        const deviceId = formData.get('deviceId');
+        const deviceData = {
+            id: deviceId ? parseInt(deviceId) : this.generateDeviceId(),
+            name: formData.get('deviceName'),
+            type: formData.get('deviceType'),
+            location: formData.get('deviceLocation'),
+            status: formData.get('deviceStatus'),
+            longitude: parseFloat(formData.get('deviceLongitude')),
+            latitude: parseFloat(formData.get('deviceLatitude')),
+            lastReport: formData.get('deviceLastReport').replace('T', ' ') + ':00'
+        };
+        
+        if (this.editingDeviceId) {
+            // 编辑现有设备
+            const index = this.deviceData.findIndex(d => d.id === this.editingDeviceId);
+            if (index !== -1) {
+                this.deviceData[index] = deviceData;
+            }
+        } else {
+            // 新增设备
+            this.deviceData.push(deviceData);
+        }
+        
+        // 重新加载设备数据
+        this.loadDeviceData();
+        
+        // 关闭模态框
+        closeDeviceModal();
+        
+        Utils.showMessage(this.editingDeviceId ? '设备信息更新成功' : '设备添加成功', 'success');
+    }
+    
+    // 生成设备ID
+    generateDeviceId() {
+        return Math.max(...this.deviceData.map(d => d.id), 0) + 1;
+    }
+    
+    // 确认删除设备
+    confirmDeleteDevice() {
+        if (!this.deletingDeviceId) return;
+        
+        // 从设备数据中移除
+        const index = this.deviceData.findIndex(d => d.id === this.deletingDeviceId);
+        if (index !== -1) {
+            this.deviceData.splice(index, 1);
+            
+            // 重新加载设备数据
+            this.loadDeviceData();
+            
+            // 关闭模态框
+            closeDeleteDeviceModal();
+            
+            Utils.showMessage('设备删除成功', 'success');
         }
     }
     
@@ -1524,9 +1607,17 @@ class DataManagement {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-info" onclick="event.stopPropagation(); viewDeviceHistory(${item.id})" title="查看历史数据">
-                        <i class="fas fa-chart-line"></i>
-                    </button>
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); editDevice(${item.id})" title="编辑">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteDevice(${item.id})" title="删除">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info" onclick="event.stopPropagation(); viewDeviceHistory(${item.id})" title="查看历史数据">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -2215,8 +2306,108 @@ function viewCropDetail(id) {
         </div>
     `;
     
-    // 显示模态框
     document.getElementById('cropDetailModal').classList.add('show');
+}
+
+// 设备管理相关函数
+function showAddDeviceModal() {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    dataManager.editingDeviceId = null;
+    document.getElementById('deviceModalTitle').textContent = '新增设备信息';
+    
+    // 重置表单
+    document.getElementById('deviceForm').reset();
+    document.getElementById('deviceId').value = '';
+    
+    // 设置默认最后上报时间为当前时间
+    const now = new Date();
+    const formattedDate = now.toISOString().slice(0, 16);
+    document.getElementById('deviceLastReport').value = formattedDate;
+    
+    // 显示模态框
+    document.getElementById('deviceModal').classList.add('show');
+}
+
+function editDevice(id) {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    const device = dataManager.deviceData.find(d => d.id === id);
+    if (!device) {
+        Utils.showMessage('未找到对应的设备信息', 'error');
+        return;
+    }
+    
+    dataManager.editingDeviceId = id;
+    document.getElementById('deviceModalTitle').textContent = '编辑设备信息';
+    
+    // 填充表单数据
+    document.getElementById('deviceId').value = device.id;
+    document.getElementById('deviceName').value = device.name;
+    document.getElementById('deviceType').value = device.type;
+    document.getElementById('deviceLocation').value = device.location;
+    document.getElementById('deviceStatus').value = device.status;
+    document.getElementById('deviceLongitude').value = device.longitude;
+    document.getElementById('deviceLatitude').value = device.latitude;
+    document.getElementById('deviceLastReport').value = device.lastReport.slice(0, 16); // 去掉秒数部分
+    
+    // 显示模态框
+    document.getElementById('deviceModal').classList.add('show');
+}
+
+function closeDeviceModal() {
+    document.getElementById('deviceModal').classList.remove('show');
+}
+
+function deleteDevice(id) {
+    const dataManager = window.dataManager;
+    if (!dataManager) return;
+    
+    const device = dataManager.deviceData.find(d => d.id === id);
+    if (!device) {
+        Utils.showMessage('未找到对应的设备信息', 'error');
+        return;
+    }
+    
+    // 设置要删除的设备信息
+    dataManager.deletingDeviceId = id;
+    document.getElementById('deleteDeviceName').textContent = device.name;
+    
+    // 显示删除确认模态框
+    document.getElementById('deleteDeviceModal').classList.add('show');
+}
+
+function closeDeleteDeviceModal() {
+    const dataManager = window.dataManager;
+    if (dataManager) {
+        dataManager.deletingDeviceId = null;
+    }
+    document.getElementById('deleteDeviceModal').classList.remove('show');
+}
+
+function confirmDeleteDevice() {
+    const dataManager = window.dataManager;
+    if (!dataManager || !dataManager.deletingDeviceId) return;
+    
+    // 从设备数据中移除
+    const index = dataManager.deviceData.findIndex(d => d.id === dataManager.deletingDeviceId);
+    if (index !== -1) {
+        dataManager.deviceData.splice(index, 1);
+        
+        // 重新加载设备数据
+        dataManager.loadDeviceData();
+        
+        // 关闭模态框
+        closeDeleteDeviceModal();
+        
+        Utils.showMessage('设备删除成功', 'success');
+    }
+}
+
+function viewDeviceHistory(id) {
+    Utils.showMessage('设备历史数据功能待实现', 'info');
 }
 
 function editCurrentCrop() {
