@@ -29,6 +29,11 @@
                 <span class="status-dot"></span>
                 <span class="status-text">系统运行正常</span>
             </div>
+            <!-- 导出报表按钮 -->
+            <div class="export-report-btn" onclick="showReportPreview()" title="导出农情监测报表">
+                <span class="export-icon">📊</span>
+                <span class="export-text">导出报表</span>
+            </div>
         </div>
 
         <!-- 中心标题 -->
@@ -39,11 +44,6 @@
 
         <!-- 右侧时间显示和用户信息 -->
         <div class="header-right">
-            <div class="current-time">
-                <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
-                <div class="date-display" id="current-date">星期一</div>
-            </div>
-
             <!-- 区域选择 -->
             <div class="region-selector">
                 <div class="region-display" onclick="toggleRegionDropdown()">
@@ -102,6 +102,11 @@
                 </div>
             </div>
 
+            <div class="current-time">
+                <div class="time-display" id="current-time">2024-01-15 14:30:25</div>
+                <div class="date-display" id="current-date">星期一</div>
+            </div>
+
             <!-- 用户信息区域 -->
             <div class="user-info">
                 <div class="user-avatar">
@@ -115,22 +120,6 @@
                 
                 <!-- 用户下拉菜单 -->
                 <div class="user-dropdown">
-                    <div class="dropdown-item" onclick="showUserProfile()">
-                        <span>👤</span>
-                        <span>个人信息</span>
-                    </div>
-                    <div class="dropdown-item" onclick="showSystemSettings()">
-                        <span>⚙️</span>
-                        <span>系统设置</span>
-                    </div>
-                    <div class="dropdown-item" onclick="showOperationLog()">
-                        <span>📊</span>
-                        <span>操作日志</span>
-                    </div>
-                    <div class="dropdown-item" onclick="showHelp()">
-                        <span>❓</span>
-                        <span>帮助中心</span>
-                    </div>
                     <div class="dropdown-item" onclick="logout()">
                         <span>🚪</span>
                         <span>退出登录</span>
@@ -183,6 +172,12 @@
         <!-- 第二个分隔线 -->
         <div class="switch-divider"></div>
 
+        <!-- 卷帘分析按钮 -->
+        <div class="map-swipe-btn" title="卷帘分析" onclick="toggleSwipeAnalysis()">
+            <span class="btn-icon">📏</span>
+            <span class="btn-text">卷帘分析</span>
+        </div>
+        
         <!-- 地图控制按钮 -->
         <div class="map-reset-btn" title="重置视图" onclick="resetMapView()">
             <span class="btn-icon">🎯</span>
@@ -679,6 +674,26 @@
         }
     </script>
 
+    <!-- 报表预览弹窗 -->
+    <div class="report-preview-modal" id="reportPreviewModal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeReportPreview()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>农情监测报表预览</h3>
+                <span class="close-btn" onclick="closeReportPreview()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="report-preview-content" id="reportPreviewContent">
+                    <!-- 报表内容将动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeReportPreview()">取消</button>
+                <button class="btn-primary" onclick="exportReport()">确认导出</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
@@ -689,5 +704,6 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/dashboard-charts.js"></script>
     <script src="assets/js/weather-monitoring.js"></script>
+    <script src="assets/js/report-export.js"></script>
 </body>
 </html>

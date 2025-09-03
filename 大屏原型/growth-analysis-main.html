@@ -28,6 +28,11 @@
                 <span class="status-dot"></span>
                 <span class="status-text">系统运行正常</span>
             </div>
+            <!-- 导出报表按钮 -->
+            <div class="export-report-btn" onclick="showReportPreview()" title="导出农情监测报表">
+                <span class="export-icon">📊</span>
+                <span class="export-text">导出报表</span>
+            </div>
         </div>
 
         <!-- 中心标题 -->
@@ -209,21 +214,39 @@
                 <button class="collapse-btn">▶</button>
             </div>
 
-            <!-- 1. 区域面积汇总看板 -->
+            <!-- 1. 长势指数评估看板 -->
             <div class="stat-card" id="region-summary-card">
                 <div class="stat-header">
-                    📋 区域面积汇总
+                    📊 长势指数评估
                 </div>
                 <div class="area-summary">
                     <div class="summary-item large">
-                        <div class="summary-value" id="total-area-value">5,272</div>
-                        <div class="summary-label">总监测面积 (亩)</div>
-                        <div class="summary-subtitle" id="coverage-info">覆盖8个乡镇</div>
+                        <div class="summary-value" id="growth-index-main-value">0.85</div>
+                        <div class="summary-label">综合长势指数</div>
+                        <div class="summary-subtitle" id="growth-level-info">等级：良好</div>
                     </div>
                     <div class="summary-row">
                         <div class="summary-item">
-                            <div class="summary-value" id="growth-index-value">0.8</div>
-                            <div class="summary-label">平均长势指数</div>
+                            <div class="summary-value-text" id="growth-score-reason">基于NDVI、LAI、温湿度</div>
+                            <div class="summary-label">得分依据</div>
+                            <div class="summary-detail" id="growth-factors">
+                                <div class="factor-item">
+                                    <span class="factor-name">植被指数(NDVI):</span>
+                                    <span class="factor-value good">0.78</span>
+                                </div>
+                                <div class="factor-item">
+                                    <span class="factor-name">叶面积指数(LAI):</span>
+                                    <span class="factor-value good">3.2</span>
+                                </div>
+                                <div class="factor-item">
+                                    <span class="factor-name">温湿度适宜度:</span>
+                                    <span class="factor-value excellent">0.91</span>
+                                </div>
+                                <div class="factor-item">
+                                    <span class="factor-name">土壤墒情:</span>
+                                    <span class="factor-value medium">0.73</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -399,6 +422,26 @@
 
     </div>
 
+    <!-- 报表预览弹窗 -->
+    <div class="report-preview-modal" id="reportPreviewModal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeReportPreview()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>农情监测报表预览</h3>
+                <span class="close-btn" onclick="closeReportPreview()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="report-preview-content" id="reportPreviewContent">
+                    <!-- 报表内容将动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeReportPreview()">取消</button>
+                <button class="btn-primary" onclick="exportReport()">确认导出</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
@@ -408,5 +451,6 @@
     <script src="assets/js/device-monitoring.js"></script>
     <script src="assets/js/dashboard-charts.js"></script>
     <script src="assets/js/growth-analysis-main.js"></script>
+    <script src="assets/js/report-export.js"></script>
 </body>
 </html>

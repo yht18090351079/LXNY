@@ -28,6 +28,11 @@
                 <span class="status-dot"></span>
                 <span class="status-text">系统运行正常</span>
             </div>
+            <!-- 导出报表按钮 -->
+            <div class="export-report-btn" onclick="showReportPreview()" title="导出农情监测报表">
+                <span class="export-icon">📊</span>
+                <span class="export-text">导出报表</span>
+            </div>
         </div>
 
         <!-- 中心标题 -->
@@ -920,6 +925,26 @@
         });
     </script>
 
+    <!-- 报表预览弹窗 -->
+    <div class="report-preview-modal" id="reportPreviewModal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeReportPreview()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>农情监测报表预览</h3>
+                <span class="close-btn" onclick="closeReportPreview()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="report-preview-content" id="reportPreviewContent">
+                    <!-- 报表内容将动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeReportPreview()">取消</button>
+                <button class="btn-primary" onclick="exportReport()">确认导出</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 引入JavaScript文件 -->
     <script src="assets/js/cesium-config.js"></script>
     <script src="assets/js/cesium-map.js"></script>
@@ -929,5 +954,6 @@
     <script src="assets/js/device-monitoring.js"></script>
     <script src="assets/js/dashboard-charts.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/report-export.js"></script>
 </body>
 </html>

@@ -263,6 +263,11 @@ function updateChartsForRegion(regionId) {
         updateGrowthTrendChart(townshipName);
     }
     
+    // 更新长势指数评估
+    if (typeof updateGrowthIndexAssessment === 'function') {
+        updateGrowthIndexAssessment(regionId);
+    }
+    
     // 更新汇总数据
     updateGrowthSummaryData(regionId);
 }
@@ -683,6 +688,11 @@ function updateChartsForMonth(month) {
         updateTownCropChart(currentSelectedRegion, currentChartType);
     }
 
+    // 更新长势指数评估（根据新月份重新计算）
+    if (typeof updateGrowthIndexAssessment === 'function') {
+        updateGrowthIndexAssessment(currentSelectedRegion);
+    }
+
     // 更新汇总数据
     updateGrowthSummaryData(currentSelectedRegion);
 }
@@ -1092,7 +1102,199 @@ function updateGrowthTrendChart(townName) {
 // 将长势指数图表更新函数暴露到全局，供其他模块调用
 window.updateGrowthTrendChart = updateGrowthTrendChart;
 
-// 页面加载完成后初始化长势指数图表
+// ===== 长势指数评估功能 =====
+
+/**
+ * 更新长势指数评估数据
+ */
+function updateGrowthIndexAssessment(regionId) {
+    console.log(`📊 更新长势指数评估，区域: ${regionId}`);
+    
+    // 获取当前月份
+    const currentMonth = window.Timeline ? window.Timeline.getCurrentMonth() : new Date().getMonth() + 1;
+    
+    // 根据区域和月份获取长势指数数据
+    const assessmentData = getGrowthIndexData(regionId, currentMonth);
+    
+    // 更新主要指数值
+    const mainValueElement = document.getElementById('growth-index-main-value');
+    const levelInfoElement = document.getElementById('growth-level-info');
+    const reasonElement = document.getElementById('growth-score-reason');
+    
+    if (mainValueElement) {
+        mainValueElement.textContent = assessmentData.overallIndex.toFixed(2);
+    }
+    
+    if (levelInfoElement) {
+        levelInfoElement.textContent = `等级：${assessmentData.level}`;
+        levelInfoElement.className = `summary-subtitle ${assessmentData.levelClass}`;
+    }
+    
+    if (reasonElement) {
+        reasonElement.textContent = assessmentData.basisText;
+    }
+    
+    // 更新详细因子数据
+    updateGrowthFactors(assessmentData.factors);
+    
+    console.log(`✅ 长势指数评估已更新：${assessmentData.overallIndex.toFixed(2)} (${assessmentData.level})`);
+}
+
+/**
+ * 更新长势评估因子详情
+ */
+function updateGrowthFactors(factors) {
+    const factorsContainer = document.getElementById('growth-factors');
+    if (!factorsContainer) return;
+    
+    factorsContainer.innerHTML = '';
+    
+    factors.forEach(factor => {
+        const factorDiv = document.createElement('div');
+        factorDiv.className = 'factor-item';
+        
+        factorDiv.innerHTML = `
+            <span class="factor-name">${factor.name}:</span>
+            <span class="factor-value ${factor.level}">${factor.value}</span>
+        `;
+        
+        factorsContainer.appendChild(factorDiv);
+    });
+}
+
+/**
+ * 获取长势指数评估数据
+ */
+function getGrowthIndexData(regionId, month) {
+    // 基础数据配置
+    const baseFactors = {
+        'all': {
+            ndvi: { base: 0.78, range: 0.15 },
+            lai: { base: 3.2, range: 0.8 },
+            temperature: { base: 0.91, range: 0.12 },
+            moisture: { base: 0.73, range: 0.20 }
+        },
+        'chengguan': {
+            ndvi: { base: 0.82, range: 0.12 },
+            lai: { base: 3.5, range: 0.6 },
+            temperature: { base: 0.88, range: 0.10 },
+            moisture: { base: 0.79, range: 0.15 }
+        },
+        'tuchang': {
+            ndvi: { base: 0.75, range: 0.18 },
+            lai: { base: 3.0, range: 0.9 },
+            temperature: { base: 0.93, range: 0.08 },
+            moisture: { base: 0.71, range: 0.22 }
+        },
+        'beita': {
+            ndvi: { base: 0.69, range: 0.20 },
+            lai: { base: 2.8, range: 1.0 },
+            temperature: { base: 0.89, range: 0.14 },
+            moisture: { base: 0.68, range: 0.25 }
+        }
+    };
+    
+    // 获取区域基础数据，如果没有则使用全县数据
+    const regionFactors = baseFactors[regionId] || baseFactors['all'];
+    
+    // 根据月份调整季节性变化
+    const seasonalFactor = getSeasonalGrowthFactor(month);
+    
+    // 计算各项指标
+    const ndviValue = Math.max(0.3, Math.min(1.0, 
+        regionFactors.ndvi.base * seasonalFactor + (Math.random() - 0.5) * regionFactors.ndvi.range * 0.3
+    ));
+    
+    const laiValue = Math.max(1.0, Math.min(6.0,
+        regionFactors.lai.base * seasonalFactor + (Math.random() - 0.5) * regionFactors.lai.range * 0.3
+    ));
+    
+    const tempValue = Math.max(0.5, Math.min(1.0,
+        regionFactors.temperature.base * (1 + (Math.random() - 0.5) * regionFactors.temperature.range * 0.2)
+    ));
+    
+    const moistureValue = Math.max(0.4, Math.min(1.0,
+        regionFactors.moisture.base * (1 + (Math.random() - 0.5) * regionFactors.moisture.range * 0.2)
+    ));
+    
+    // 计算综合指数 (权重：NDVI 40%, LAI 25%, 温度 20%, 墒情 15%)
+    const overallIndex = (ndviValue * 0.4) + (laiValue / 6 * 0.25) + (tempValue * 0.2) + (moistureValue * 0.15);
+    
+    // 确定等级
+    let level, levelClass;
+    if (overallIndex >= 0.85) {
+        level = '优秀';
+        levelClass = 'excellent';
+    } else if (overallIndex >= 0.75) {
+        level = '良好';
+        levelClass = 'good';
+    } else if (overallIndex >= 0.65) {
+        level = '中等';
+        levelClass = 'medium';
+    } else {
+        level = '较差';
+        levelClass = 'poor';
+    }
+    
+    // 生成因子数据
+    const factors = [
+        {
+            name: '植被指数(NDVI)',
+            value: ndviValue.toFixed(2),
+            level: ndviValue >= 0.8 ? 'excellent' : ndviValue >= 0.7 ? 'good' : ndviValue >= 0.6 ? 'medium' : 'poor'
+        },
+        {
+            name: '叶面积指数(LAI)',
+            value: laiValue.toFixed(1),
+            level: laiValue >= 3.5 ? 'excellent' : laiValue >= 2.8 ? 'good' : laiValue >= 2.0 ? 'medium' : 'poor'
+        },
+        {
+            name: '温湿度适宜度',
+            value: tempValue.toFixed(2),
+            level: tempValue >= 0.9 ? 'excellent' : tempValue >= 0.8 ? 'good' : tempValue >= 0.7 ? 'medium' : 'poor'
+        },
+        {
+            name: '土壤墒情',
+            value: moistureValue.toFixed(2),
+            level: moistureValue >= 0.8 ? 'excellent' : moistureValue >= 0.7 ? 'good' : moistureValue >= 0.6 ? 'medium' : 'poor'
+        }
+    ];
+    
+    return {
+        overallIndex,
+        level,
+        levelClass,
+        basisText: '基于NDVI、LAI、温湿度',
+        factors
+    };
+}
+
+/**
+ * 获取季节性长势调整因子
+ */
+function getSeasonalGrowthFactor(month) {
+    const factors = {
+        1: 0.6,   // 冬季休眠期
+        2: 0.65,  // 冬季末期
+        3: 0.75,  // 春季开始
+        4: 0.85,  // 春季生长期
+        5: 0.95,  // 春季旺盛期
+        6: 1.1,   // 夏季生长高峰
+        7: 1.15,  // 夏季最旺盛期
+        8: 1.1,   // 夏季后期
+        9: 0.95,  // 秋季成熟期
+        10: 0.85, // 秋季收获期
+        11: 0.7,  // 秋季末期
+        12: 0.6   // 冬季开始
+    };
+    
+    return factors[month] || 1.0;
+}
+
+// 暴露长势指数评估函数到全局
+window.updateGrowthIndexAssessment = updateGrowthIndexAssessment;
+
+// 页面加载完成后初始化长势指数图表和评估
 document.addEventListener('DOMContentLoaded', function() {
     // 延迟初始化，确保ECharts库已加载
     setTimeout(() => {
@@ -1101,5 +1303,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.warn('⚠️ ECharts库未加载，无法初始化长势指数图表');
         }
+        
+        // 初始化长势指数评估
+        updateGrowthIndexAssessment('all');
     }, 1000);
 });

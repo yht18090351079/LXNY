@@ -1504,6 +1504,557 @@ function updateRightPanelCropStats(stats) {
     console.log('📊 作物统计信息已更新');
 }
 
+// ===== 卷帘分析功能模块 =====
+
+/**
+ * 卷帘分析控制状态
+ */
+let swipeAnalysisState = {
+    isActive: false,
+    swipePosition: 50, // 卷帘位置百分比 (0-100)
+    leftLayer: null,
+    rightLayer: null,
+    swipeDivider: null
+};
+
+/**
+ * 切换卷帘分析功能
+ */
+function toggleSwipeAnalysis() {
+    const swipeBtn = document.querySelector('.map-swipe-btn');
+    
+    if (swipeAnalysisState.isActive) {
+        // 关闭卷帘分析
+        deactivateSwipeAnalysis();
+        if (swipeBtn) {
+            swipeBtn.classList.remove('active');
+        }
+        console.log('📏 卷帘分析已关闭');
+    } else {
+        // 开启卷帘分析
+        activateSwipeAnalysis();
+        if (swipeBtn) {
+            swipeBtn.classList.add('active');
+        }
+        console.log('📏 卷帘分析已开启');
+    }
+}
+
+/**
+ * 激活卷帘分析功能
+ */
+function activateSwipeAnalysis() {
+    swipeAnalysisState.isActive = true;
+    
+    // 隐藏数据看板和时间轴
+    hideDataPanelsForSwipe();
+    
+    // 创建卷帘分割线
+    createSwipeDivider();
+    
+    // 设置地图图层
+    setupSwipeLayers();
+    
+    // 显示卷帘控制面板
+    showSwipeControlPanel();
+    
+    console.log('✅ 卷帘分析功能已激活');
+}
+
+/**
+ * 关闭卷帘分析功能
+ */
+function deactivateSwipeAnalysis() {
+    swipeAnalysisState.isActive = false;
+    
+    // 移除卷帘分割线
+    removeSwipeDivider();
+    
+    // 重置地图图层
+    resetMapLayers();
+    
+    // 隐藏卷帘控制面板
+    hideSwipeControlPanel();
+    
+    // 恢复数据看板和时间轴显示
+    showDataPanelsAfterSwipe();
+    
+    console.log('❌ 卷帘分析功能已关闭');
+}
+
+/**
+ * 为卷帘分析隐藏数据面板
+ */
+function hideDataPanelsForSwipe() {
+    // 隐藏功能切换栏
+    const functionSwitchBar = document.querySelector('.function-switch-bar');
+    if (functionSwitchBar) {
+        functionSwitchBar.classList.add('panel-hidden-for-swipe');
+        setTimeout(() => {
+            functionSwitchBar.style.display = 'none';
+        }, 300);
+        console.log('🙈 功能切换栏已隐藏');
+    }
+    
+    // 隐藏左侧数据看板
+    const leftPanel = document.querySelector('.left-panel');
+    if (leftPanel) {
+        leftPanel.classList.add('panel-hidden-for-swipe');
+        setTimeout(() => {
+            leftPanel.style.display = 'none';
+        }, 300);
+        console.log('🙈 左侧数据看板已隐藏');
+    }
+    
+    // 隐藏右侧数据看板
+    const rightPanel = document.querySelector('.right-panel');
+    if (rightPanel) {
+        rightPanel.classList.add('panel-hidden-for-swipe');
+        setTimeout(() => {
+            rightPanel.style.display = 'none';
+        }, 300);
+        console.log('🙈 右侧数据看板已隐藏');
+    }
+    
+    // 隐藏时间轴
+    const timelineContainer = document.getElementById('timeline-container');
+    if (timelineContainer) {
+        timelineContainer.classList.add('panel-hidden-for-swipe');
+        setTimeout(() => {
+            timelineContainer.style.display = 'none';
+        }, 300);
+        console.log('🙈 时间轴已隐藏');
+    }
+    
+    console.log('📋 功能切换栏、数据面板和时间轴已隐藏，进入卷帘分析模式');
+}
+
+/**
+ * 卷帘分析结束后恢复数据面板显示
+ */
+function showDataPanelsAfterSwipe() {
+    // 显示功能切换栏
+    const functionSwitchBar = document.querySelector('.function-switch-bar');
+    if (functionSwitchBar) {
+        functionSwitchBar.style.display = 'flex';
+        functionSwitchBar.classList.remove('panel-hidden-for-swipe');
+        functionSwitchBar.classList.add('panel-shown-after-swipe');
+        setTimeout(() => {
+            functionSwitchBar.classList.remove('panel-shown-after-swipe');
+        }, 300);
+        console.log('👁️ 功能切换栏已恢复显示');
+    }
+    
+    // 显示左侧数据看板
+    const leftPanel = document.querySelector('.left-panel');
+    if (leftPanel) {
+        leftPanel.style.display = 'block';
+        leftPanel.classList.remove('panel-hidden-for-swipe');
+        leftPanel.classList.add('panel-shown-after-swipe');
+        setTimeout(() => {
+            leftPanel.classList.remove('panel-shown-after-swipe');
+        }, 300);
+        console.log('👁️ 左侧数据看板已恢复显示');
+    }
+    
+    // 显示右侧数据看板
+    const rightPanel = document.querySelector('.right-panel');
+    if (rightPanel) {
+        rightPanel.style.display = 'block';
+        rightPanel.classList.remove('panel-hidden-for-swipe');
+        rightPanel.classList.add('panel-shown-after-swipe');
+        setTimeout(() => {
+            rightPanel.classList.remove('panel-shown-after-swipe');
+        }, 300);
+        console.log('👁️ 右侧数据看板已恢复显示');
+    }
+    
+    // 显示时间轴
+    const timelineContainer = document.getElementById('timeline-container');
+    if (timelineContainer) {
+        timelineContainer.style.display = 'block';
+        timelineContainer.classList.remove('panel-hidden-for-swipe');
+        timelineContainer.classList.add('panel-shown-after-swipe');
+        setTimeout(() => {
+            timelineContainer.classList.remove('panel-shown-after-swipe');
+        }, 300);
+        console.log('👁️ 时间轴已恢复显示');
+    }
+    
+    console.log('📋 功能切换栏、数据面板和时间轴已恢复显示');
+}
+
+/**
+ * 创建卷帘分割线
+ */
+function createSwipeDivider() {
+    // 检查是否已存在分割线
+    if (swipeAnalysisState.swipeDivider) {
+        return;
+    }
+    
+    const mapContainer = document.getElementById('map-container');
+    if (!mapContainer) {
+        console.warn('⚠️ 未找到地图容器');
+        return;
+    }
+    
+    // 创建分割线元素
+    const divider = document.createElement('div');
+    divider.id = 'swipe-divider';
+    divider.className = 'swipe-divider';
+    divider.style.cssText = `
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, 
+            rgba(255, 152, 0, 0.8) 0%,
+            rgba(255, 193, 7, 0.9) 50%,
+            rgba(255, 152, 0, 0.8) 100%);
+        cursor: col-resize;
+        z-index: 1000;
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+        border-radius: 2px;
+    `;
+    
+    // 创建拖拽手柄
+    const handle = document.createElement('div');
+    handle.className = 'swipe-handle';
+    handle.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 60px;
+        background: rgba(255, 152, 0, 0.9);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: white;
+        user-select: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    `;
+    handle.innerHTML = '⟷';
+    
+    divider.appendChild(handle);
+    mapContainer.appendChild(divider);
+    
+    // 添加拖拽事件
+    addSwipeDragEvents(divider);
+    
+    swipeAnalysisState.swipeDivider = divider;
+    console.log('📏 卷帘分割线已创建');
+}
+
+/**
+ * 移除卷帘分割线
+ */
+function removeSwipeDivider() {
+    if (swipeAnalysisState.swipeDivider) {
+        swipeAnalysisState.swipeDivider.remove();
+        swipeAnalysisState.swipeDivider = null;
+        console.log('🗑️ 卷帘分割线已移除');
+    }
+}
+
+/**
+ * 添加卷帘拖拽事件
+ */
+function addSwipeDragEvents(divider) {
+    let isDragging = false;
+    
+    divider.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const mapContainer = document.getElementById('map-container');
+        if (!mapContainer) return;
+        
+        const containerRect = mapContainer.getBoundingClientRect();
+        const x = e.clientX - containerRect.left;
+        const percentage = Math.max(10, Math.min(90, (x / containerRect.width) * 100));
+        
+        // 更新分割线位置
+        divider.style.left = `${percentage}%`;
+        swipeAnalysisState.swipePosition = percentage;
+        
+        // 实时更新位置显示
+        updateSwipePositionDisplay(percentage);
+        
+        // 更新图层裁剪
+        updateLayerClipping(percentage);
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = 'default';
+            console.log(`📏 卷帘位置更新: ${swipeAnalysisState.swipePosition.toFixed(1)}%`);
+        }
+    });
+}
+
+/**
+ * 设置卷帘图层
+ */
+function setupSwipeLayers() {
+    // 这里可以设置不同的图层用于对比
+    // 例如：当前年度 vs 历史数据，或者不同的遥感指数
+    
+    console.log('🗺️ 正在设置卷帘对比图层...');
+    
+    // 模拟设置左右图层
+    swipeAnalysisState.leftLayer = 'current_year_data';
+    swipeAnalysisState.rightLayer = 'historical_data';
+    
+    // 这里应该调用实际的地图API来设置图层
+    if (window.viewer && window.viewer.imageryLayers) {
+        // Cesium 地图图层设置示例
+        setupCesiumSwipeLayers();
+    }
+}
+
+/**
+ * 设置Cesium卷帘图层
+ */
+function setupCesiumSwipeLayers() {
+    try {
+        // 这里是Cesium地图的卷帘设置示例
+        console.log('🌍 正在配置Cesium卷帘图层...');
+        
+        // 实际项目中需要根据具体的图层数据来实现
+        // 这里只是示例代码
+        
+    } catch (error) {
+        console.warn('⚠️ Cesium卷帘图层设置失败:', error);
+    }
+}
+
+/**
+ * 更新图层裁剪
+ */
+function updateLayerClipping(percentage) {
+    // 根据卷帘位置更新图层裁剪
+    if (window.viewer && window.viewer.imageryLayers) {
+        // 实际的图层裁剪逻辑
+        console.log(`🎭 更新图层裁剪: ${percentage}%`);
+    }
+}
+
+/**
+ * 重置地图图层
+ */
+function resetMapLayers() {
+    console.log('🔄 重置地图图层');
+    swipeAnalysisState.leftLayer = null;
+    swipeAnalysisState.rightLayer = null;
+    swipeAnalysisState.swipePosition = 50;
+}
+
+/**
+ * 显示卷帘控制面板
+ */
+function showSwipeControlPanel() {
+    // 创建或显示卷帘控制面板
+    let controlPanel = document.getElementById('swipe-control-panel');
+    
+    if (!controlPanel) {
+        controlPanel = createSwipeControlPanel();
+    }
+    
+    controlPanel.style.display = 'block';
+    console.log('🎛️ 卷帘控制面板已显示');
+}
+
+/**
+ * 隐藏卷帘控制面板
+ */
+function hideSwipeControlPanel() {
+    const controlPanel = document.getElementById('swipe-control-panel');
+    if (controlPanel) {
+        controlPanel.style.display = 'none';
+        console.log('🙈 卷帘控制面板已隐藏');
+    }
+}
+
+/**
+ * 创建卷帘控制面板
+ */
+function createSwipeControlPanel() {
+    const mapContainer = document.getElementById('map-container');
+    if (!mapContainer) return null;
+    
+    const panel = document.createElement('div');
+    panel.id = 'swipe-control-panel';
+    panel.className = 'swipe-control-panel';
+    panel.style.cssText = `
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 280px;
+        background: rgba(30, 30, 30, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 152, 0, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        color: white;
+        font-size: 12px;
+        z-index: 1001;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    `;
+    
+    panel.innerHTML = `
+        <!-- 时间选择区域 -->
+        <div style="margin-bottom: 16px; padding: 12px; background: rgba(255, 152, 0, 0.1); border-radius: 8px; text-align: center;">
+            <div style="display: flex; gap: 12px; justify-content: center; align-items: end;">
+                <div style="text-align: center;">
+                    <label style="display: block; font-size: 11px; margin-bottom: 4px; color: #FFC107; font-weight: bold;">左侧时间</label>
+                    <select id="swipe-left-time" onchange="updateSwipeTimeSelection()" style="
+                        width: 100px; 
+                        padding: 4px 6px; 
+                        border: 1px solid rgba(255, 152, 0, 0.6);
+                        background: rgba(40, 40, 40, 0.9);
+                        color: white;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        text-align: center;
+                        cursor: pointer;
+                    ">
+                        <option value="2024">2024年</option>
+                        <option value="2023">2023年</option>
+                        <option value="2022">2022年</option>
+                        <option value="2021">2021年</option>
+                    </select>
+                </div>
+                <div style="color: #FF9800; font-size: 16px; font-weight: bold; margin: 0 8px;">VS</div>
+                <div style="text-align: center;">
+                    <label style="display: block; font-size: 11px; margin-bottom: 4px; color: #FF9800; font-weight: bold;">右侧时间</label>
+                    <select id="swipe-right-time" onchange="updateSwipeTimeSelection()" style="
+                        width: 100px; 
+                        padding: 4px 6px; 
+                        border: 1px solid rgba(255, 152, 0, 0.6);
+                        background: rgba(40, 40, 40, 0.9);
+                        color: white;
+                        border-radius: 4px;
+                        font-size: 11px;
+                        text-align: center;
+                        cursor: pointer;
+                    ">
+                        <option value="2023" selected>2023年</option>
+                        <option value="2024">2024年</option>
+                        <option value="2022">2022年</option>
+                        <option value="2021">2021年</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 退出按钮 -->
+        <div style="text-align: center; margin-top: 16px;">
+            <button onclick="toggleSwipeAnalysis()" style="
+                background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(244, 67, 54, 0.3));
+                border: 1px solid rgba(244, 67, 54, 0.6);
+                color: #F44336;
+                padding: 8px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+            " onmouseover="this.style.background='linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.4))'; this.style.boxShadow='0 4px 12px rgba(244, 67, 54, 0.3)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(244, 67, 54, 0.3))'; this.style.boxShadow='0 2px 8px rgba(244, 67, 54, 0.2)'">
+                🚪 退出卷帘分析
+            </button>
+        </div>
+    `;
+    
+    mapContainer.appendChild(panel);
+    return panel;
+}
+
+/**
+ * 更新卷帘位置显示
+ */
+function updateSwipePositionDisplay(percentage) {
+    // 记录位置变化（UI显示已移除）
+    swipeAnalysisState.swipePosition = percentage;
+    
+    // 控制台记录位置信息
+    if (percentage < 25) {
+        console.log(`📏 卷帘偏左: ${percentage.toFixed(1)}%`);
+    } else if (percentage > 75) {
+        console.log(`📏 卷帘偏右: ${percentage.toFixed(1)}%`);
+    } else {
+        console.log(`📏 卷帘居中: ${percentage.toFixed(1)}%`);
+    }
+}
+
+/**
+ * 更新卷帘时间选择
+ */
+function updateSwipeTimeSelection() {
+    const leftSelect = document.getElementById('swipe-left-time');
+    const rightSelect = document.getElementById('swipe-right-time');
+    
+    if (leftSelect && rightSelect) {
+        const leftYear = leftSelect.value;
+        const rightYear = rightSelect.value;
+        
+        // 更新卷帘状态
+        swipeAnalysisState.leftLayer = `${leftYear}_data`;
+        swipeAnalysisState.rightLayer = `${rightYear}_data`;
+        
+        // 重新设置图层
+        setupSwipeLayers();
+        
+        console.log(`🕒 卷帘时间选择已更新: 左侧${leftYear}年 vs 右侧${rightYear}年`);
+    }
+}
+
+
+
+/**
+ * 重置地图视图（原有功能）
+ */
+function resetMapView() {
+    console.log('🎯 重置地图视图');
+    
+    // 如果卷帘分析处于激活状态，先关闭它
+    if (swipeAnalysisState.isActive) {
+        toggleSwipeAnalysis();
+    }
+    
+    // 重置地图到初始视图
+    if (window.viewer) {
+        try {
+            // Cesium地图重置
+            window.viewer.camera.setView({
+                destination: Cesium.Cartesian3.fromDegrees(103.2, 35.4, 50000)
+            });
+            console.log('✅ Cesium地图视图已重置');
+        } catch (error) {
+            console.warn('⚠️ 地图重置失败:', error);
+        }
+    }
+    
+    // 重置区域选择
+    selectRegion('all', '全县');
+    
+    console.log('✅ 地图视图重置完成');
+}
+
 // ===== 工具函数 =====
 
 /**
