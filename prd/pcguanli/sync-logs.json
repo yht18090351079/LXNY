@@ -598,5 +598,53 @@
       "name": "td: 气象站-001",
       "elementId": "precise-td-noid-noclass-10-0-0-气象站001"
     }
+  },
+  {
+    "timestamp": "2025-09-04T06:20:43.622Z",
+    "action": "create",
+    "annotation": {
+      "name": "span: 2024年1月",
+      "elementId": "precise-span-noid-date-text-10-0-0-2024年1月"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:22:09.651Z",
+    "action": "create",
+    "annotation": {
+      "name": "时间一级分类",
+      "elementId": "precise-div-noid-date-nav-item-10-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:22:26.484Z",
+    "action": "create",
+    "annotation": {
+      "name": "乡镇二级分类",
+      "elementId": "precise-div-noid-tree-node-label-10-2-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:22:37.606Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物三级分类 ",
+      "elementId": "precise-span-noid-tree-node-title-10-0-0-小麦"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:23:37.491Z",
+    "action": "create",
+    "annotation": {
+      "name": "作物种植面积更改",
+      "elementId": "precise-th-noid-noclass-10-0-0-作物名称"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:24:45.258Z",
+    "action": "create",
+    "annotation": {
+      "name": "灾害阈值设置",
+      "elementId": "precise-div-noid-threshold-table-wrapper-9-1-3"
+    }
   }
 ]

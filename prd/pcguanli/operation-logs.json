@@ -779,5 +779,80 @@
       "content": "234"
     },
     "backup": "annotations-backup-1755850403003.json"
+  },
+  {
+    "timestamp": "2025-09-04T06:14:49.670Z",
+    "operation": "save_all",
+    "stats": {
+      "totalAnnotations": 1,
+      "pageCount": 1
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:20:43.618Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-span-noid-date-text-10-0-0-2024年1月",
+    "annotation": {
+      "name": "span: 2024年1月",
+      "content": "we d"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:22:09.646Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-date-nav-item-10-0-0",
+    "annotation": {
+      "name": "时间一级分类",
+      "content": "时间一级分类"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:22:26.475Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-tree-node-label-10-2-0",
+    "annotation": {
+      "name": "乡镇二级分类",
+      "content": "乡镇二级分类"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:22:37.602Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-span-noid-tree-node-title-10-0-0-小麦",
+    "annotation": {
+      "name": "作物三级分类 ",
+      "content": "作物三级分类 "
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:23:37.487Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-th-noid-noclass-10-0-0-作物名称",
+    "annotation": {
+      "name": "作物种植面积更改",
+      "content": "遥感影像解译后 数据读取到这里 ；可以修改；那边更新后，这边又替换为更新的面积"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:24:45.253Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-threshold-table-wrapper-9-1-3",
+    "annotation": {
+      "name": "灾害阈值设置",
+      "content": "灾害阈值设置\n根据 作物 地区 类型来设置"
+    },
+    "backup": null
   }
 ]
