@@ -1,85 +1,5 @@
 [
   {
-    "timestamp": "2025-08-14T03:23:39.771Z",
-    "action": "create",
-    "annotation": {
-      "name": "undefined",
-      "elementId": "precise-span-noid-crop-area-9-1-1-986亩"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T03:23:53.504Z",
-    "action": "create",
-    "annotation": {
-      "name": "undefined",
-      "elementId": "precise-div-noid-stat-label-9-1-1-占总监测面积"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T03:24:30.843Z",
-    "action": "create",
-    "annotation": {
-      "name": "undefined",
-      "elementId": "precise-div-noid-comparison-summary-6-3-6"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T03:24:46.339Z",
-    "action": "create",
-    "annotation": {
-      "name": "undefined",
-      "elementId": "precise-span-noid-log-msg-9-1-1-开始处理新批次数据"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T03:47:44.561Z",
-    "action": "create",
-    "annotation": {
-      "name": "span: 1,256 亩",
-      "elementId": "precise-span-noid-crop-area-9-1-1-1256亩"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T06:45:59.923Z",
-    "action": "create",
-    "annotation": {
-      "name": "div: 🌶️",
-      "elementId": "precise-div-noid-area-item-7-2-4"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T06:49:07.656Z",
-    "action": "create",
-    "annotation": {
-      "name": "div: 6.3%",
-      "elementId": "precise-div-noid-stat-value-9-0-0-63"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T06:50:25.993Z",
-    "action": "create",
-    "annotation": {
-      "name": "div: 186           ...",
-      "elementId": "precise-div-noid-stat-item-8-0-0"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T06:51:17.209Z",
-    "action": "create",
-    "annotation": {
-      "name": "div: 2,970         ...",
-      "elementId": "precise-div-noid-summary-item-7-0-0"
-    }
-  },
-  {
-    "timestamp": "2025-08-14T07:07:39.995Z",
-    "action": "create",
-    "annotation": {
-      "name": "ECharts图表",
-      "elementId": "precise-canvas-noid-noclass-8-0-0"
-    }
-  },
-  {
     "timestamp": "2025-08-14T07:12:15.723Z",
     "action": "create",
     "annotation": {
@@ -789,6 +709,94 @@
     "annotation": {
       "name": " 作物选择",
       "elementId": "precise-div-noid-overlay-switch-btn-4-3-7-作物选择"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:01:43.640Z",
+    "action": "create",
+    "annotation": {
+      "name": "预警横幅",
+      "elementId": "precise-div-alert-text-alert-text-6-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:02:16.083Z",
+    "action": "create",
+    "annotation": {
+      "name": "长势指数",
+      "elementId": "precise-div-noid-summary-item-7-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:02:33.502Z",
+    "action": "create",
+    "annotation": {
+      "name": "得分原因  ",
+      "elementId": "precise-div-noid-summary-item-8-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:03:04.015Z",
+    "action": "create",
+    "annotation": {
+      "name": "乡镇长势分布",
+      "elementId": "precise-div-noid-stat-card-5-2-16"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:03:33.125Z",
+    "action": "create",
+    "annotation": {
+      "name": "ECharts图表",
+      "elementId": "precise-canvas-noid-noclass-9-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:03:47.150Z",
+    "action": "create",
+    "annotation": {
+      "name": "ECharts图表",
+      "elementId": "precise-canvas-noid-noclass-9-0-0"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:04:22.098Z",
+    "action": "delete",
+    "annotation": {
+      "name": "理想产值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-5216万元"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:04:25.102Z",
+    "action": "delete",
+    "annotation": {
+      "name": "实际产值估值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-3947万元"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:04:27.269Z",
+    "action": "delete",
+    "annotation": {
+      "name": "减产产值",
+      "elementId": "precise-div-noid-metric-value-10-1-1-403吨"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:04:30.129Z",
+    "action": "delete",
+    "annotation": {
+      "name": "实际预估产值",
+      "elementId": "precise-div-noid-metric-label-10-0-0-亩均收益"
+    }
+  },
+  {
+    "timestamp": "2025-09-04T06:05:13.759Z",
+    "action": "create",
+    "annotation": {
+      "name": "导出报表按钮",
+      "elementId": "precise-div-noid-export-report-btn-5-1-1"
     }
   }
 ]

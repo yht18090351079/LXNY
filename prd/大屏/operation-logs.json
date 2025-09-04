@@ -1065,5 +1065,126 @@
       "content": "表头：设备名称"
     },
     "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:01:43.637Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-alert-text-alert-text-6-0-0",
+    "annotation": {
+      "name": "预警横幅",
+      "content": "无预警 取消显示\n有预警 显示\n多条预警 滚动显示 颜色根据预警等级来\n每天重新计算"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:02:16.078Z",
+    "operation": "update",
+    "pageKey": "index.html-growth-analysis",
+    "elementId": "precise-div-noid-summary-item-7-0-0",
+    "annotation": {
+      "name": "长势指数",
+      "content": "长势得分"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:02:33.498Z",
+    "operation": "update",
+    "pageKey": "index.html-growth-analysis",
+    "elementId": "precise-div-noid-summary-item-8-0-0",
+    "annotation": {
+      "name": "得分原因  ",
+      "content": "显示得分原因"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:03:04.006Z",
+    "operation": "update",
+    "pageKey": "index.html-growth-analysis",
+    "elementId": "precise-div-noid-stat-card-5-2-16",
+    "annotation": {
+      "name": "乡镇长势分布",
+      "content": "全域：堆叠柱状图\n某乡镇 ：分等级柱状图"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:03:33.119Z",
+    "operation": "update",
+    "pageKey": "index.html-growth-analysis",
+    "elementId": "precise-canvas-noid-noclass-9-0-0",
+    "annotation": {
+      "name": "ECharts图表",
+      "content": "全域和某乡镇对比 选择乡镇才显示"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:03:47.140Z",
+    "operation": "update",
+    "pageKey": "index.html-growth-analysis",
+    "elementId": "precise-canvas-noid-noclass-9-0-0",
+    "annotation": {
+      "name": "ECharts图表",
+      "content": "全域和某乡镇对比 选择乡镇才显示该乡镇的"
+    },
+    "backup": null
+  },
+  {
+    "timestamp": "2025-09-04T06:04:22.092Z",
+    "operation": "delete",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-5216万元",
+    "annotation": {
+      "name": "理想产值",
+      "content": "根据理想产量 和 理想价格计算"
+    },
+    "backup": "annotations-backup-1756965862079.json"
+  },
+  {
+    "timestamp": "2025-09-04T06:04:25.098Z",
+    "operation": "delete",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-3947万元",
+    "annotation": {
+      "name": "实际产值估值",
+      "content": "根据实际预估产量 实际价格预估产值"
+    },
+    "backup": "annotations-backup-1756965865095.json"
+  },
+  {
+    "timestamp": "2025-09-04T06:04:27.265Z",
+    "operation": "delete",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-value-10-1-1-403吨",
+    "annotation": {
+      "name": "减产产值",
+      "content": "理想和实际差值"
+    },
+    "backup": "annotations-backup-1756965867264.json"
+  },
+  {
+    "timestamp": "2025-09-04T06:04:30.124Z",
+    "operation": "delete",
+    "pageKey": "index.html-yield-estimation",
+    "elementId": "precise-div-noid-metric-label-10-0-0-亩均收益",
+    "annotation": {
+      "name": "实际预估产值",
+      "content": "实际预估产量/面积"
+    },
+    "backup": "annotations-backup-1756965870122.json"
+  },
+  {
+    "timestamp": "2025-09-04T06:05:13.752Z",
+    "operation": "update",
+    "pageKey": "index.html-crop-distribution",
+    "elementId": "precise-div-noid-export-report-btn-5-1-1",
+    "annotation": {
+      "name": "导出报表按钮",
+      "content": "点击先预览报表 点击生成再生成"
+    },
+    "backup": null
   }
 ]
