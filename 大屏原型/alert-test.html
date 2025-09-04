@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预警横幅测试页面</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+    <style>
+        .test-container {
+            padding: 200px 50px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: white;
+            background: #0a0a0a;
+            min-height: 100vh;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .test-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #00a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .test-description {
+            font-size: 16px;
+            color: #999;
+            line-height: 1.6;
+        }
+        
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .test-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-btn.warning {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+            border-color: rgba(255, 193, 7, 0.5);
+        }
+        
+        .test-btn.danger {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(211, 47, 47, 0.2));
+            border-color: rgba(244, 67, 54, 0.5);
+        }
+        
+        .test-btn.critical {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(123, 31, 162, 0.2));
+            border-color: rgba(156, 39, 176, 0.5);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(30, 136, 229, 0.2));
+            border-color: rgba(33, 150, 243, 0.5);
+        }
+        
+        .alert-status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+        
+        .status-info {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 预警横幅滚动区域 -->
+    <div class="alert-banner" id="alert-banner" style="display: none;">
+        <div class="alert-banner-content">
+            <div class="alert-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-text-container">
+                <div class="alert-text" id="alert-text">
+                    <!-- 滚动的预警信息将在这里显示 -->
+                </div>
+            </div>
+            <div class="alert-close" onclick="closeAlertBanner()">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h1 class="test-title">🚨 预警横幅测试页面</h1>
+            <p class="test-description">
+                测试农情遥感系统的预警横幅功能。横幅位置：固定在窗口顶部下方100px，居中显示。<br>
+                点击下方按钮测试不同级别的预警效果。
+            </p>
+        </div>
+        
+        <div class="test-buttons">
+            <button class="test-btn warning" onclick="testAlert('warning')">
+                <i class="fas fa-exclamation-triangle"></i>
+                测试警告级预警
+            </button>
+            
+            <button class="test-btn danger" onclick="testAlert('danger')">
+                <i class="fas fa-exclamation-circle"></i>
+                测试危险级预警
+            </button>
+            
+            <button class="test-btn critical" onclick="testAlert('critical')">
+                <i class="fas fa-skull-crossbones"></i>
+                测试严重级预警
+            </button>
+            
+            <button class="test-btn info" onclick="testAlert('info')">
+                <i class="fas fa-info-circle"></i>
+                测试信息级预警
+            </button>
+            
+            <button class="test-btn" onclick="testRandomAlert()">
+                <i class="fas fa-random"></i>
+                随机预警测试
+            </button>
+            
+            <button class="test-btn" onclick="clearAllAlerts()">
+                <i class="fas fa-times"></i>
+                清除所有预警
+            </button>
+        </div>
+        
+        <div class="alert-status">
+            <div class="status-title">📊 预警状态</div>
+            <div class="status-info" id="alert-status-info">
+                当前无预警信息。点击上方按钮触发预警测试。
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入主要的JavaScript文件 -->
+    <script>
+        // 简化版的预警管理器（用于测试）
+        class AlertBannerManager {
+            constructor() {
+                this.banner = document.getElementById('alert-banner');
+                this.alertText = document.getElementById('alert-text');
+                this.currentAlert = null;
+                this.isShowing = false;
+            }
+            
+            showAlert(alert) {
+                if (this.isShowing) return;
+                
+                this.currentAlert = alert;
+                this.isShowing = true;
+                
+                // 设置横幅样式
+                this.banner.className = `alert-banner ${alert.level}`;
+                
+                // 设置图标
+                const icon = this.banner.querySelector('.alert-icon i');
+                icon.className = this.getAlertIcon(alert.type, alert.level);
+                
+                // 设置文本内容
+                this.alertText.textContent = `【${alert.title}】${alert.message} - ${alert.location} ${alert.time}`;
+                
+                // 显示横幅
+                this.banner.style.display = 'block';
+                
+                // 更新状态显示
+                this.updateStatus();
+                
+                // 10秒后自动隐藏（critical级别20秒）
+                const hideDelay = alert.level === 'critical' ? 20000 : 10000;
+                setTimeout(() => {
+                    this.hideAlert();
+                }, hideDelay);
+                
+                console.log('显示预警:', alert);
+            }
+            
+            hideAlert() {
+                if (!this.isShowing) return;
+                
+                this.banner.style.display = 'none';
+                this.isShowing = false;
+                this.currentAlert = null;
+                
+                this.updateStatus();
+                console.log('隐藏预警横幅');
+            }
+            
+            closeAlert() {
+                this.hideAlert();
+            }
+            
+            getAlertIcon(type, level) {
+                const icons = {
+                    temperature: {
+                        warning: 'fas fa-thermometer-half',
+                        danger: 'fas fa-temperature-high',
+                        critical: 'fas fa-fire'
+                    },
+                    humidity: {
+                        warning: 'fas fa-tint',
+                        danger: 'fas fa-tint-slash', 
+                        critical: 'fas fa-exclamation-triangle'
+                    },
+                    ndvi: {
+                        warning: 'fas fa-leaf',
+                        danger: 'fas fa-seedling',
+                        critical: 'fas fa-skull-crossbones'
+                    },
+                    general: {
+                        info: 'fas fa-info-circle',
+                        warning: 'fas fa-exclamation-triangle',
+                        danger: 'fas fa-exclamation-circle',
+                        critical: 'fas fa-skull-crossbones'
+                    }
+                };
+                
+                return icons[type]?.[level] || icons.general[level] || 'fas fa-exclamation-triangle';
+            }
+            
+            updateStatus() {
+                const statusInfo = document.getElementById('alert-status-info');
+                if (this.currentAlert) {
+                    statusInfo.innerHTML = `
+                        <strong>当前预警：</strong>${this.currentAlert.title}<br>
+                        <strong>级别：</strong>${this.getLevelText(this.currentAlert.level)}<br>
+                        <strong>位置：</strong>${this.currentAlert.location}<br>
+                        <strong>消息：</strong>${this.currentAlert.message}
+                    `;
+                } else {
+                    statusInfo.textContent = '当前无预警信息。点击上方按钮触发预警测试。';
+                }
+            }
+            
+            getLevelText(level) {
+                const levels = {
+                    info: '信息级',
+                    warning: '警告级', 
+                    danger: '危险级',
+                    critical: '严重级'
+                };
+                return levels[level] || level;
+            }
+        }
+
+        // 全局预警管理器
+        let alertBannerManager;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            alertBannerManager = new AlertBannerManager();
+            console.log('🚨 预警横幅管理器初始化完成');
+        });
+        
+        // 关闭预警横幅
+        function closeAlertBanner() {
+            if (alertBannerManager) {
+                alertBannerManager.closeAlert();
+            }
+        }
+        
+        // 测试预警函数
+        function testAlert(level) {
+            const alerts = {
+                warning: {
+                    type: 'temperature',
+                    level: 'warning',
+                    title: '高温预警',
+                    message: '临夏县城关镇温度达到36°C，超过高温预警阈值35°C',
+                    location: '城关镇',
+                    time: '刚刚'
+                },
+                danger: {
+                    type: 'humidity',
+                    level: 'danger',
+                    title: '干旱预警',
+                    message: '土场镇空气湿度降至25%，作物面临干旱威胁',
+                    location: '土场镇',
+                    time: '2分钟前'
+                },
+                critical: {
+                    type: 'ndvi',
+                    level: 'critical',
+                    title: '作物长势严重异常',
+                    message: '北塔镇小麦NDVI值降至0.1，远低于正常阈值，需要紧急处理',
+                    location: '北塔镇', 
+                    time: '刚刚'
+                },
+                info: {
+                    type: 'general',
+                    level: 'info',
+                    title: '系统提醒',
+                    message: '农情监测数据已更新，请查看最新的作物长势分析报告',
+                    location: '全县',
+                    time: '5分钟前'
+                }
+            };
+            
+            if (alerts[level]) {
+                alertBannerManager.showAlert(alerts[level]);
+            }
+        }
+        
+        // 随机预警测试
+        function testRandomAlert() {
+            const levels = ['warning', 'danger', 'critical', 'info'];
+            const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+            testAlert(randomLevel);
+        }
+        
+        // 清除所有预警
+        function clearAllAlerts() {
+            alertBannerManager.hideAlert();
+        }
+    </script>
+</body>
+</html>

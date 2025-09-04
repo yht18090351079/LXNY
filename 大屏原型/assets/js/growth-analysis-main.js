@@ -4,18 +4,16 @@
  */
 
 // ===== 全局变量 =====
-let currentSelectedRegion = 'all';
-let currentChartType = 'bar';
+// 注意：这些变量已在 main.js 中声明，这里只是确保它们存在
+if (typeof window.currentSelectedRegion === 'undefined') {
+    window.currentSelectedRegion = 'all';
+}
+if (typeof window.currentChartType === 'undefined') {
+    window.currentChartType = 'bar';
+}
 
 // ===== 页面导航功能 =====
-
-/**
- * 导航到指定页面
- */
-function navigateToPage(pageUrl) {
-    console.log(`🚀 导航到页面: ${pageUrl}`);
-    window.location.href = pageUrl;
-}
+// 注意：navigateToPage 函数已在 main.js 中声明
 
 // ===== 用户功能模块 =====
 
@@ -80,13 +78,13 @@ function toggleRegionDropdown() {
 }
 
 /**
- * 选择区域
+ * 长势分析页面专用区域选择（避免与main.js冲突）
  */
-function selectRegion(regionId, regionName) {
+function selectRegionGrowthAnalysis(regionId, regionName) {
     console.log(`🗺️ 选择区域: ${regionId} - ${regionName}`);
     
     // 更新全局变量
-    currentSelectedRegion = regionId;
+    window.currentSelectedRegion = regionId;
     
     // 更新界面显示
     const regionNameElement = document.getElementById('selected-region');
@@ -122,6 +120,12 @@ function selectRegion(regionId, regionName) {
     updateChartsForRegion(regionId);
     
     console.log(`✅ 区域选择完成: ${regionName}`);
+}
+
+// 为了避免与main.js中的selectRegion函数冲突，重新声明
+// 这个函数将被HTML调用，并代理到专用的长势分析函数
+function selectRegion(regionId, regionName) {
+    selectRegionGrowthAnalysis(regionId, regionName);
 }
 
 /**
@@ -227,7 +231,7 @@ function switchTownCropChart(chartType) {
     });
 
     // 更新全局变量
-    currentChartType = chartType;
+    window.currentChartType = chartType;
 
     // 根据图表类型显示对应内容
     const chartDiv = document.getElementById('town-crop-chart');
@@ -236,11 +240,11 @@ function switchTownCropChart(chartType) {
     if (chartType === 'table') {
         chartDiv.style.display = 'none';
         tableDiv.style.display = 'block';
-        updateTownCropTable(currentSelectedRegion);
+        updateTownCropTable(window.currentSelectedRegion);
     } else {
         chartDiv.style.display = 'block';
         tableDiv.style.display = 'none';
-        updateTownCropChart(currentSelectedRegion, chartType);
+        updateTownCropChart(window.currentSelectedRegion, chartType);
     }
 }
 
@@ -251,10 +255,10 @@ function updateChartsForRegion(regionId) {
     console.log(`📊 更新图表数据: ${regionId}`);
     
     // 更新长势分析图表
-    if (currentChartType === 'table') {
+    if (window.currentChartType === 'table') {
         updateTownCropTable(regionId);
     } else {
-        updateTownCropChart(regionId, currentChartType);
+        updateTownCropChart(regionId, window.currentChartType);
     }
     
     // 更新长势指数变化趋势图 - 使用本页面独立实现
@@ -650,30 +654,7 @@ function getSeasonalFactor(month) {
 }
 
 // ===== 时间更新模块 =====
-
-/**
- * 更新系统时间显示
- */
-function updateSystemTime() {
-    const now = new Date();
-    const timeElement = document.getElementById('current-time');
-    const dateElement = document.getElementById('current-date');
-    
-    if (timeElement) {
-        const timeString = now.toLocaleTimeString('zh-CN', { 
-            hour12: false,
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        timeElement.textContent = `2024-01-15 ${timeString}`;
-    }
-    
-    if (dateElement) {
-        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-        dateElement.textContent = weekdays[now.getDay()];
-    }
-}
+// 注意：updateSystemTime 函数已在 main.js 中声明，这里不需要重新声明
 
 /**
  * 月份数据更新函数
@@ -682,19 +663,19 @@ function updateChartsForMonth(month) {
     console.log(`📊 更新图表数据到${month}月`);
 
     // 更新长势图表
-    if (currentSelectedRegion === 'all') {
-        updateTownCropChart('all', currentChartType);
+    if (window.currentSelectedRegion === 'all') {
+        updateTownCropChart('all', window.currentChartType);
     } else {
-        updateTownCropChart(currentSelectedRegion, currentChartType);
+        updateTownCropChart(window.currentSelectedRegion, window.currentChartType);
     }
 
     // 更新长势指数评估（根据新月份重新计算）
     if (typeof updateGrowthIndexAssessment === 'function') {
-        updateGrowthIndexAssessment(currentSelectedRegion);
+        updateGrowthIndexAssessment(window.currentSelectedRegion);
     }
-
+    
     // 更新汇总数据
-    updateGrowthSummaryData(currentSelectedRegion);
+    updateGrowthSummaryData(window.currentSelectedRegion);
 }
 
 /**
@@ -808,17 +789,13 @@ function selectTownshipFromList(townshipId, townshipName) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 长势分析页面开始初始化...');
     
-    // 确保全局变量已初始化
-    if (typeof currentSelectedRegion === 'undefined') {
-        window.currentSelectedRegion = 'all';
-    }
-    if (typeof currentChartType === 'undefined') {
-        window.currentChartType = 'bar';
-    }
+    // 全局变量已在 main.js 中初始化，这里只需确认
 
-    // 启动时间更新
-    updateSystemTime();
-    setInterval(updateSystemTime, 1000);
+    // 启动时间更新（使用main.js中的函数）
+    if (typeof updateSystemTime === 'function') {
+        updateSystemTime();
+        setInterval(updateSystemTime, 1000);
+    }
 
     // 初始化组件
     function initializeComponents() {

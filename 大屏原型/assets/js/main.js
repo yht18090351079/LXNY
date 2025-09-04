@@ -1106,6 +1106,10 @@ function initializeSystem() {
     initPanelControls();
     console.log('📋 面板控制模块初始化完成');
     
+    // 初始化预警横幅管理器
+    alertBannerManager = new AlertBannerManager();
+    console.log('🚨 预警横幅管理器初始化完成');
+    
     // 初始化Cesium地图
     if (typeof initCesiumMap === 'function') {
         // 延迟初始化地图，确保DOM和Cesium库完全加载
@@ -2056,6 +2060,494 @@ function resetMapView() {
 }
 
 // ===== 工具函数 =====
+
+/* ===== 预警横幅管理 ===== */
+class AlertBannerManager {
+    constructor() {
+        this.banner = document.getElementById('alert-banner');
+        this.alertText = document.getElementById('alert-text');
+        this.systemHeader = document.querySelector('.system-header');
+        this.currentAlert = null;
+        this.alertQueue = [];
+        this.isShowing = false;
+        this.isAlwaysVisible = true; // 横幅常驻显示
+        this.currentAlertIndex = 0; // 当前显示的预警索引
+        this.rotationTimer = null; // 轮播定时器
+        this.rotationInterval = 5000; // 轮播间隔5秒
+        this.alertPanel = document.getElementById('alert-panel'); // 展开面板
+        this.alertPanelContent = document.getElementById('alert-panel-content'); // 面板内容
+        this.expandIcon = document.getElementById('alert-expand-icon'); // 展开图标
+        this.isPanelOpen = false; // 面板是否打开
+        
+        // 检查必要的DOM元素是否存在
+        if (!this.banner || !this.alertText) {
+            console.warn('⚠️ 预警横幅DOM元素未找到，预警功能将不可用');
+            return;
+        }
+        
+        // 模拟的预警数据（实际使用时应从后端API获取）
+        this.mockAlerts = [
+            {
+                id: 1,
+                type: 'temperature',
+                level: 'warning',
+                title: '高温预警',
+                message: '临夏县城关镇温度达到36°C，超过高温预警阈值35°C',
+                location: '城关镇',
+                time: new Date(Date.now() - 5 * 60 * 1000), // 5分钟前
+                active: true
+            },
+            {
+                id: 2,
+                type: 'humidity',
+                level: 'critical',
+                title: '极端干旱预警',
+                message: '土场镇空气湿度降至25%，作物面临严重干旱威胁',
+                location: '土场镇',
+                time: new Date(Date.now() - 2 * 60 * 1000), // 2分钟前
+                active: true
+            },
+            {
+                id: 3,
+                type: 'ndvi',
+                level: 'danger',
+                title: '作物长势异常',
+                message: '北塔镇小麦NDVI值降至0.2，低于正常阈值0.3，需要立即关注',
+                location: '北塔镇',
+                time: new Date(Date.now() - 10 * 60 * 1000), // 10分钟前
+                active: true
+            },
+            {
+                id: 4,
+                type: 'temperature',
+                level: 'info',
+                title: '气温回升',
+                message: '红光镇气温逐步回升至正常范围，农作物生长环境改善',
+                location: '红光镇',
+                time: new Date(Date.now() - 15 * 60 * 1000), // 15分钟前
+                active: true
+            },
+            {
+                id: 5,
+                type: 'humidity',
+                level: 'warning',
+                title: '湿度偏低',
+                message: '积石山镇相对湿度下降至40%，建议加强农田灌溉',
+                location: '积石山镇',
+                time: new Date(Date.now() - 8 * 60 * 1000), // 8分钟前
+                active: true
+            }
+        ];
+        
+        this.init();
+    }
+    
+    init() {
+        // 显示横幅（常驻显示）
+        this.showBanner();
+        
+        // 启动预警检查
+        this.checkAlerts();
+        
+        // 定期检查预警（每30秒）
+        setInterval(() => {
+            this.checkAlerts();
+        }, 30000);
+    }
+    
+    // 检查预警数据
+    checkAlerts() {
+        // 模拟从管理端API获取预警数据
+        const activeAlerts = this.mockAlerts.filter(alert => alert.active);
+        
+        if (activeAlerts.length > 0) {
+            // 按优先级排序（critical > danger > warning > info）
+            const priorityOrder = { critical: 4, danger: 3, warning: 2, info: 1 };
+            activeAlerts.sort((a, b) => priorityOrder[b.level] - priorityOrder[a.level]);
+            
+            // 更新预警队列
+            this.alertQueue = activeAlerts;
+            
+            if (activeAlerts.length === 1) {
+                // 只有一个预警，直接显示
+                this.stopRotation();
+                this.updateAlert(activeAlerts[0]);
+            } else {
+                // 多个预警，开始轮播
+                this.startRotation();
+            }
+        } else {
+            // 没有预警时显示默认状态
+            this.stopRotation();
+            this.showNoAlert();
+        }
+    }
+    
+    // 开始轮播
+    startRotation() {
+        if (!this.alertQueue || this.alertQueue.length <= 1) return;
+        
+        // 停止之前的轮播
+        this.stopRotation();
+        
+        // 重置索引
+        this.currentAlertIndex = 0;
+        
+        // 显示第一个预警
+        this.updateAlert(this.alertQueue[0]);
+        
+        // 启动轮播定时器
+        this.rotationTimer = setInterval(() => {
+            this.rotateToNext();
+        }, this.rotationInterval);
+        
+        console.log(`🔄 开始轮播 ${this.alertQueue.length} 个预警，间隔 ${this.rotationInterval/1000} 秒`);
+    }
+    
+    // 停止轮播
+    stopRotation() {
+        if (this.rotationTimer) {
+            clearInterval(this.rotationTimer);
+            this.rotationTimer = null;
+        }
+        this.currentAlertIndex = 0;
+    }
+    
+    // 轮播到下一个预警
+    rotateToNext() {
+        if (!this.alertQueue || this.alertQueue.length <= 1) return;
+        
+        // 移动到下一个预警
+        this.currentAlertIndex = (this.currentAlertIndex + 1) % this.alertQueue.length;
+        
+        // 显示当前预警
+        const currentAlert = this.alertQueue[this.currentAlertIndex];
+        this.updateAlert(currentAlert);
+        
+        console.log(`🔄 轮播到预警 ${this.currentAlertIndex + 1}/${this.alertQueue.length}: ${currentAlert.title}`);
+    }
+    
+    // 显示横幅（常驻模式）
+    showBanner() {
+        if (!this.banner) return;
+        
+        this.banner.style.display = 'block';
+        this.isShowing = true;
+        
+        console.log('🚨 预警横幅已显示（常驻模式）');
+    }
+    
+    // 显示"无预警"状态
+    showNoAlert() {
+        if (!this.banner || !this.alertText) return;
+        
+        this.currentAlert = null;
+        
+        // 设置为绿色样式（无预警）
+        this.banner.className = 'alert-banner no-alerts';
+        
+        // 设置图标为成功图标
+        const icon = this.banner.querySelector('.alert-icon i');
+        if (icon) {
+            icon.className = 'fas fa-check-circle';
+        }
+        
+        // 设置默认文本
+        this.alertText.textContent = '【系统状态】当前无预警信息，系统运行正常';
+        
+        // 确保横幅显示
+        this.banner.style.display = 'block';
+        this.isShowing = true;
+        
+        console.log('✅ 显示无预警状态');
+    }
+    
+    // 更新预警内容（替代原来的showAlert）
+    updateAlert(alert) {
+        if (!this.banner || !this.alertText) return;
+        
+        this.currentAlert = alert;
+        this.isShowing = true;
+        
+        // 设置为黄色样式（有预警）
+        this.banner.className = 'alert-banner has-alerts';
+        
+        // 设置图标
+        const icon = this.banner.querySelector('.alert-icon i');
+        if (icon) {
+            icon.className = this.getAlertIcon(alert.type, alert.level);
+        }
+        
+        // 设置文本内容
+        const alertTime = this.formatTime(alert.time);
+        let alertMessage = `【${alert.title}】${alert.message} - ${alert.location} ${alertTime}`;
+        
+        // 如果有多个预警，添加轮播指示器
+        if (this.alertQueue && this.alertQueue.length > 1) {
+            alertMessage += ` (${this.currentAlertIndex + 1}/${this.alertQueue.length})`;
+        }
+        
+        this.alertText.textContent = alertMessage;
+        
+        // 确保横幅显示
+        this.banner.style.display = 'block';
+        
+        console.log('🚨 预警内容已更新:', alert);
+    }
+    
+    // 显示预警横幅（保留原方法名以兼容）
+    showAlert(alert) {
+        this.updateAlert(alert);
+    }
+    
+    // 隐藏预警横幅（常驻模式下切换到无预警状态）
+    hideAlert() {
+        if (!this.banner) return;
+        
+        if (this.isAlwaysVisible) {
+            // 常驻模式：切换到无预警状态而不是隐藏
+            this.showNoAlert();
+        } else {
+            // 非常驻模式：真正隐藏横幅
+            this.banner.style.display = 'none';
+            this.isShowing = false;
+            this.currentAlert = null;
+        }
+        
+        console.log('🔄 预警横幅状态已重置');
+    }
+    
+    // 手动关闭预警横幅
+    closeAlert() {
+        this.hideAlert();
+    }
+    
+    // 获取预警图标
+    getAlertIcon(type, level) {
+        const icons = {
+            temperature: {
+                warning: 'fas fa-thermometer-half',
+                danger: 'fas fa-temperature-high',
+                critical: 'fas fa-fire'
+            },
+            humidity: {
+                warning: 'fas fa-tint',
+                danger: 'fas fa-tint-slash',
+                critical: 'fas fa-exclamation-triangle'
+            },
+            ndvi: {
+                warning: 'fas fa-leaf',
+                danger: 'fas fa-seedling',
+                critical: 'fas fa-skull-crossbones'
+            },
+            default: 'fas fa-exclamation-triangle'
+        };
+        
+        return icons[type]?.[level] || icons.default;
+    }
+    
+    // 格式化时间
+    formatTime(date) {
+        const now = new Date();
+        const diff = Math.floor((now - date) / 1000 / 60); // 分钟差
+        
+        if (diff < 1) return '刚刚';
+        if (diff < 60) return `${diff}分钟前`;
+        if (diff < 1440) return `${Math.floor(diff / 60)}小时前`;
+        return date.toLocaleDateString();
+    }
+    
+    // 添加新预警（供外部调用）
+    addAlert(alert) {
+        this.mockAlerts.push({
+            ...alert,
+            id: Date.now(),
+            time: new Date(),
+            active: true
+        });
+        
+        // 立即检查并显示
+        this.checkAlerts();
+    }
+    
+    // 清除指定预警
+    clearAlert(alertId) {
+        const alertIndex = this.mockAlerts.findIndex(alert => alert.id === alertId);
+        if (alertIndex !== -1) {
+            this.mockAlerts[alertIndex].active = false;
+        }
+        
+        // 如果当前显示的就是这个预警，则隐藏
+        if (this.currentAlert && this.currentAlert.id === alertId) {
+            this.hideAlert();
+        }
+    }
+    
+    // 切换展开面板
+    toggleAlertPanel() {
+        if (this.isPanelOpen) {
+            this.closeAlertPanel();
+        } else {
+            this.openAlertPanel();
+        }
+    }
+    
+    // 打开展开面板
+    openAlertPanel() {
+        if (!this.alertPanel || !this.alertPanelContent) return;
+        
+        this.isPanelOpen = true;
+        
+        // 更新展开图标
+        if (this.expandIcon) {
+            this.expandIcon.classList.add('expanded');
+        }
+        
+        // 生成面板内容
+        this.updateAlertPanelContent();
+        
+        // 显示面板
+        this.alertPanel.style.display = 'block';
+        
+        // 暂停轮播
+        if (this.rotationTimer) {
+            clearInterval(this.rotationTimer);
+        }
+        
+        console.log('📋 预警详情面板已打开');
+    }
+    
+    // 关闭展开面板
+    closeAlertPanel() {
+        if (!this.alertPanel) return;
+        
+        this.isPanelOpen = false;
+        
+        // 更新展开图标
+        if (this.expandIcon) {
+            this.expandIcon.classList.remove('expanded');
+        }
+        
+        // 隐藏面板
+        this.alertPanel.style.display = 'none';
+        
+        // 恢复轮播
+        if (this.alertQueue && this.alertQueue.length > 1) {
+            this.startRotation();
+        }
+        
+        console.log('📋 预警详情面板已关闭');
+    }
+    
+    // 更新面板内容
+    updateAlertPanelContent() {
+        if (!this.alertPanelContent) return;
+        
+        const activeAlerts = this.mockAlerts.filter(alert => alert.active);
+        
+        if (activeAlerts.length === 0) {
+            // 无预警状态
+            this.alertPanelContent.innerHTML = `
+                <div class="no-alerts">
+                    <div class="no-alerts-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="no-alerts-text">当前无预警信息</div>
+                    <div class="no-alerts-desc">系统运行正常，所有监测指标均在正常范围内</div>
+                </div>
+            `;
+            return;
+        }
+        
+        // 按优先级排序
+        const priorityOrder = { critical: 4, danger: 3, warning: 2, info: 1 };
+        activeAlerts.sort((a, b) => priorityOrder[b.level] - priorityOrder[a.level]);
+        
+        // 生成预警列表
+        const alertListHTML = activeAlerts.map(alert => {
+            const alertTime = this.formatTime(alert.time);
+            const levelText = this.getLevelText(alert.level);
+            const iconClass = this.getAlertIcon(alert.type, alert.level);
+            
+            return `
+                <div class="alert-item ${alert.level}">
+                    <div class="alert-item-icon">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="alert-item-content">
+                        <div class="alert-item-title">
+                            <span>${alert.title}</span>
+                            <span class="alert-level-badge ${alert.level}">${levelText}</span>
+                        </div>
+                        <div class="alert-item-message">${alert.message}</div>
+                        <div class="alert-item-meta">
+                            <div class="alert-meta-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${alert.location}</span>
+                            </div>
+                            <div class="alert-meta-time">
+                                <i class="fas fa-clock"></i>
+                                <span>${alertTime}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        this.alertPanelContent.innerHTML = alertListHTML;
+    }
+    
+    // 获取级别文本
+    getLevelText(level) {
+        const levels = {
+            info: '信息',
+            warning: '警告', 
+            danger: '危险',
+            critical: '严重'
+        };
+        return levels[level] || level;
+    }
+}
+
+// 全局预警横幅管理器
+let alertBannerManager;
+
+// 关闭预警横幅（供HTML调用）
+function closeAlertBanner(event) {
+    if (event) {
+        event.stopPropagation(); // 阻止事件冒泡，避免触发展开面板
+    }
+    if (alertBannerManager) {
+        alertBannerManager.closeAlert();
+    }
+}
+
+// 切换预警面板（供HTML调用）
+function toggleAlertPanel() {
+    if (alertBannerManager) {
+        alertBannerManager.toggleAlertPanel();
+    }
+}
+
+// 关闭预警面板（供HTML调用）
+function closeAlertPanel() {
+    if (alertBannerManager) {
+        alertBannerManager.closeAlertPanel();
+    }
+}
+
+// 全局错误处理器（用于捕获第三方库的错误）
+window.addEventListener('error', function(event) {
+    // 忽略MutationObserver相关的第三方错误
+    if (event.error && event.error.message && 
+        event.error.message.includes('MutationObserver') && 
+        event.filename && event.filename.includes('index.ts')) {
+        console.warn('⚠️ 捕获到第三方MutationObserver错误，已忽略:', event.error.message);
+        event.preventDefault();
+        return false;
+    }
+});
 
 /**
  * 格式化数字显示（添加千分位分隔符）
