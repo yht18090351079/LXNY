@@ -32,7 +32,12 @@ const CONFIG = {
     routes: {
         login: 'index.html',
         dataManagement: 'data-management.html',
-        userManagement: 'user-management.html'
+        plantingArea: 'planting-area-new.html',
+        cropInfo: 'crop-info-new.html',
+        imageData: 'image-data-new.html',
+        deviceData: 'device-data-new.html',
+        userManagement: 'user-management.html',
+        disasterThreshold: 'disaster-threshold.html' // 超级管理员专用
     }
 };
 
@@ -341,3 +346,91 @@ const globalStyles = `
 const styleSheet = document.createElement('style');
 styleSheet.textContent = globalStyles;
 document.head.appendChild(styleSheet);
+
+// 导航管理类
+class Navigation {
+    /**
+     * 初始化导航
+     */
+    static init() {
+        // 绑定菜单点击事件
+        document.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('.menu-item[data-page]');
+            if (menuItem) {
+                const page = menuItem.getAttribute('data-page');
+                Navigation.navigateTo(page);
+            }
+        });
+        
+        // 更新当前用户信息显示
+        Navigation.updateUserInfo();
+    }
+    
+    /**
+     * 导航到指定页面
+     * @param {string} page - 页面标识
+     */
+            static navigateTo(page) {
+            const routes = {
+                'planting-area': CONFIG.routes.plantingArea,
+                'crop-info': CONFIG.routes.cropInfo,
+                'image-data': CONFIG.routes.imageData,
+                'device-data': CONFIG.routes.deviceData,
+                'data-management': CONFIG.routes.dataManagement,
+                'user-management': CONFIG.routes.userManagement,
+                'disaster-threshold': CONFIG.routes.disasterThreshold
+            };
+            
+            if (routes[page]) {
+                window.location.href = routes[page];
+            }
+        }
+    
+    /**
+     * 更新用户信息显示
+     */
+    static updateUserInfo() {
+        const user = Auth.getCurrentUser();
+        if (user) {
+            const userNameEl = document.getElementById('currentUserName');
+            const userRoleEl = document.getElementById('currentUserRole');
+            
+            if (userNameEl) userNameEl.textContent = user.name;
+            if (userRoleEl) {
+                userRoleEl.textContent = user.role === 'superadmin' ? '超级管理员' : 
+                                       user.role === 'township' ? '乡镇管理员' : user.role;
+            }
+            
+            // 根据用户角色显示/隐藏超级管理员专用菜单
+            Navigation.updateMenuVisibility(user);
+        }
+    }
+    
+    static updateMenuVisibility(user) {
+        const superadminMenus = document.querySelectorAll('.menu-item.superadmin-only');
+        superadminMenus.forEach(menu => {
+            if (user && user.role === 'superadmin') {
+                menu.style.display = 'flex';
+            } else {
+                menu.style.display = 'none';
+            }
+        });
+    }
+}
+
+// 全局函数 - 处理用户操作
+function toggleUserMenu() {
+    // 可以添加用户菜单下拉功能
+    console.log('用户菜单点击');
+}
+
+function handleLogout() {
+    if (confirm('确定要退出登录吗？')) {
+        Auth.logout();
+    }
+}
+
+// 页面加载完成后初始化导航
+document.addEventListener('DOMContentLoaded', function() {
+    Navigation.init();
+});

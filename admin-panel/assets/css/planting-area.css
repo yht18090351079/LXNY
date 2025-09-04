@@ -1,0 +1,880 @@
+/* 种植面积管理页面样式 */
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 220px;
+    background-color: #001529;
+    color: white;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #1f1f1f;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-logo {
+    font-size: 24px;
+    color: #1890ff;
+}
+
+.sidebar-title {
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-menu {
+    padding: 20px 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu-item:hover {
+    background-color: #1890ff;
+}
+
+.menu-item.active {
+    background-color: #1890ff;
+}
+
+.menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #40a9ff;
+}
+
+.menu-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    margin-right: 12px;
+}
+
+.menu-text {
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+/* 子菜单样式 */
+.menu-group {
+    position: relative;
+}
+
+.menu-parent {
+    position: relative;
+}
+
+.menu-arrow {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+}
+
+.menu-parent.expanded .menu-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.menu-submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.menu-submenu.show {
+    max-height: 300px;
+}
+
+.menu-child {
+    padding-left: 52px;
+    font-size: 14px;
+}
+
+.menu-child:hover {
+    background-color: rgba(24, 144, 255, 0.8);
+}
+
+.menu-child.active {
+    background-color: rgba(24, 144, 255, 0.8);
+    color: #40a9ff;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #1f1f1f;
+    margin-top: auto;
+}
+
+/* 主内容区域 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 顶部导航栏 */
+.header {
+    background: white;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #666;
+    font-size: 14px;
+}
+
+.breadcrumb-item:last-child {
+    color: #333;
+    font-weight: 500;
+}
+
+.breadcrumb-separator {
+    color: #ccc;
+    margin: 0 4px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.user-info:hover {
+    background-color: #f5f5f5;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: #1890ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.user-details {
+    text-align: right;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #666;
+}
+
+.logout-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #ff4d4f;
+    color: white;
+}
+
+/* 内容区域 */
+.content {
+    flex: 1;
+    padding: 24px;
+    overflow: auto;
+}
+
+.content-pane {
+    display: none;
+}
+
+.content-pane.active {
+    display: block;
+}
+
+/* 种植面积管理样式 */
+.planting-area-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.planting-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.planting-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.planting-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.action-group {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* 种植面积操作区域的表单元素优化 */
+.planting-actions .search-box {
+    flex-shrink: 1;
+}
+
+.planting-actions .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* 种植面积数据布局 */
+.planting-data-layout {
+    display: flex;
+    height: calc(100vh - 200px);
+    min-height: 600px;
+}
+
+/* 日期导航栏样式 */
+.date-navigation {
+    width: 220px;
+    background: #fafafa;
+    border-right: 1px solid #f0f0f0;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.date-nav-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.date-nav-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.date-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.date-nav-item {
+    padding: 12px;
+    background: white;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-nav-item:hover {
+    border-color: #1890ff;
+    background: #f6f8ff;
+}
+
+.date-nav-item.active {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: white;
+}
+
+.date-text {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.data-count {
+    font-size: 12px;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.date-nav-item.active .data-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 乡镇作物数据展示区域 */
+.township-crop-data {
+    flex: 1;
+    padding: 20px 24px;
+    overflow-y: auto;
+}
+
+.data-content-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.current-month-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.data-summary {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.summary-label {
+    color: #666;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #1890ff;
+}
+
+/* 树状结构样式 */
+.tree-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tree-node {
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    background: white;
+    overflow: hidden;
+}
+
+.tree-node-header {
+    padding: 16px 20px;
+    background: #fafafa;
+    border-bottom: 1px solid #e8e8e8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.tree-node-header:hover {
+    background: #f0f0f0;
+}
+
+.tree-icon {
+    font-size: 12px;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.node-icon {
+    font-size: 16px;
+    color: #1890ff;
+}
+
+.node-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    flex: 1;
+}
+
+.node-summary {
+    font-size: 14px;
+    color: #666;
+    padding: 4px 12px;
+    background: #f0f0f0;
+    border-radius: 12px;
+}
+
+.tree-node-children {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.tree-node-children.show {
+    max-height: 1000px;
+}
+
+/* 作物节点样式 */
+.crop-node {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.crop-node:hover {
+    background: #fafafa;
+}
+
+.crop-node:last-child {
+    border-bottom: none;
+}
+
+.crop-info {
+    flex: 1;
+}
+
+.crop-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.crop-icon {
+    font-size: 14px;
+    color: #52c41a;
+}
+
+.crop-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+.crop-area {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1890ff;
+}
+
+.crop-details {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: #999;
+}
+
+.crop-update-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.crop-remark {
+    color: #666;
+    font-style: italic;
+}
+
+.crop-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* 搜索框样式 */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding-right: 35px;
+    width: 200px;
+    min-width: 150px;
+    flex-shrink: 1;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    color: #999;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 14px;
+}
+
+.empty-state::before {
+    content: '📂';
+    display: block;
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: #ff4d4f;
+    color: white;
+}
+
+.modal-body {
+    padding: 24px;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 表单样式 */
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #1890ff;
+    color: white;
+    border-color: #1890ff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #40a9ff;
+    border-color: #40a9ff;
+}
+
+.btn-success {
+    background: #52c41a;
+    color: white;
+    border-color: #52c41a;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #73d13d;
+    border-color: #73d13d;
+}
+
+.btn-default {
+    background: #f5f5f5;
+    color: #666;
+    border-color: #d9d9d9;
+}
+
+.btn-default:hover:not(:disabled) {
+    background: #e6e6e6;
+    border-color: #b3b3b3;
+    color: #333;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #1890ff;
+    border-color: #1890ff;
+}
+
+.btn-outline:hover:not(:disabled) {
+    background: #1890ff;
+    color: white;
+}
+
+.btn-danger {
+    background: #ff4d4f;
+    color: white;
+    border-color: #ff4d4f;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #ff7875;
+    border-color: #ff7875;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+    
+    .sidebar-title,
+    .menu-text {
+        opacity: 0;
+    }
+    
+    .planting-data-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .date-navigation {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .date-nav-list {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 8px;
+    }
+    
+    .date-nav-item {
+        min-width: 120px;
+        flex-shrink: 0;
+    }
+    
+    .planting-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .planting-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .action-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .data-content-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .data-summary {
+        justify-content: center;
+    }
+    
+    .crop-header {
+        flex-wrap: wrap;
+    }
+    
+    .crop-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

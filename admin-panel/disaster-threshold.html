@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 灾害阈值设置</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/disaster-threshold.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="sidebar-title">农情遥感管理</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-item menu-parent" data-page="data-management">
+                        <i class="fas fa-database menu-icon"></i>
+                        <span class="menu-text">数据管理</span>
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </div>
+                    <div class="menu-submenu">
+                        <div class="menu-item menu-child" data-page="planting-area">
+                            <i class="fas fa-chart-area menu-icon"></i>
+                            <span class="menu-text">种植面积管理</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="crop-info">
+                            <i class="fas fa-leaf menu-icon"></i>
+                            <span class="menu-text">作物基础信息</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="image-data">
+                            <i class="fas fa-satellite menu-icon"></i>
+                            <span class="menu-text">影像数据</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="device-data">
+                            <i class="fas fa-microchip menu-icon"></i>
+                            <span class="menu-text">设备数据</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item" data-page="user-management">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">用户管理</span>
+                </div>
+                <!-- 超级管理员专用菜单 -->
+                <div class="menu-item superadmin-only active" data-page="disaster-threshold">
+                    <i class="fas fa-exclamation-triangle menu-icon"></i>
+                    <span class="menu-text">灾害阈值设置</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>系统管理</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>灾害阈值设置</span>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="user-info" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="currentUserName">超级管理员</div>
+                            <div class="user-role" id="currentUserRole">超级管理员</div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="handleLogout()" title="退出登录">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 灾害阈值设置 -->
+                <div class="content-pane active" id="disaster-threshold">
+                    <div class="threshold-container">
+                        <div class="threshold-header">
+                            <div class="header-left">
+                                <h3 class="threshold-title">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    灾害阈值设置
+                                </h3>
+                                <p class="threshold-subtitle">配置温度、湿度、NDVI等指标的预警阈值，用于灾害监测和预警</p>
+                            </div>
+                            <div class="threshold-actions">
+                                <button class="btn btn-primary" onclick="showAddThresholdModal()">
+                                    <i class="fas fa-plus"></i> 新增阈值
+                                </button>
+                                <button class="btn btn-outline" onclick="exportThresholdData()">
+                                    <i class="fas fa-download"></i> 导出配置
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 阈值统计卡片 -->
+                        <div class="threshold-stats" id="thresholdStats">
+                            <!-- 统计卡片将通过JavaScript动态生成 -->
+                        </div>
+
+                        <!-- 阈值列表 -->
+                        <div class="threshold-list-container">
+                            <div class="list-header">
+                                <h4 class="list-title">阈值配置列表</h4>
+                                <div class="list-filters">
+                                    <select class="form-select" id="thresholdTypeFilter">
+                                        <option value="">所有类型</option>
+                                        <option value="temperature">温度</option>
+                                        <option value="humidity">湿度</option>
+                                        <option value="ndvi">长势</option>
+                                    </select>
+                                    <select class="form-select" id="thresholdCropFilter">
+                                        <option value="">所有作物</option>
+                                        <option value="wheat">小麦</option>
+                                        <option value="corn">玉米</option>
+                                        <option value="rice">水稻</option>
+                                        <option value="potato">马铃薯</option>
+                                        <option value="rapeseed">油菜</option>
+                                        <option value="barley">青稞</option>
+                                        <option value="beans">豆类</option>
+                                        <option value="vegetables">蔬菜</option>
+                                        <option value="fruits">果树</option>
+                                    </select>
+                                    <select class="form-select" id="thresholdStatusFilter">
+                                        <option value="">所有状态</option>
+                                        <option value="active">启用</option>
+                                        <option value="inactive">禁用</option>
+                                    </select>
+                                    <div class="search-box">
+                                        <input type="text" class="form-input search-input" placeholder="搜索阈值名称..." id="thresholdSearchInput">
+                                        <i class="fas fa-search search-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 阈值表格 -->
+                            <div class="threshold-table-wrapper">
+                                <table class="threshold-table">
+                                    <thead>
+                                        <tr>
+                                            <th>阈值名称</th>
+                                            <th>监测类型</th>
+                                            <th>预警等级</th>
+                                            <th>阈值范围</th>
+                                                                        <th>适用作物</th>
+                            <th>适用区域</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="thresholdTableBody">
+                                        <!-- 表格数据将通过JavaScript动态生成 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 新增/编辑阈值模态框 -->
+    <div class="modal-overlay" id="thresholdModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="thresholdModalTitle">新增灾害阈值</h3>
+                <button class="modal-close" onclick="closeThresholdModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="thresholdForm">
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            基本信息
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group form-col">
+                                <label class="form-label">阈值名称 *</label>
+                                <input type="text" class="form-input" id="thresholdName" placeholder="例如：高温预警阈值" required>
+                            </div>
+                            <div class="form-group form-col">
+                                <label class="form-label">监测类型 *</label>
+                                <select class="form-select" id="thresholdType" required onchange="updateThresholdFields()">
+                                    <option value="">请选择监测类型</option>
+                                    <option value="temperature">温度 (°C)</option>
+                                    <option value="humidity">湿度 (%)</option>
+                                    <option value="ndvi">NDVI指数</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group form-col">
+                                <label class="form-label">预警等级 *</label>
+                                <select class="form-select" id="warningLevel" required>
+                                    <option value="">请选择预警等级</option>
+                                    <option value="info">信息 (蓝色)</option>
+                                    <option value="warning">注意 (黄色)</option>
+                                    <option value="danger">警告 (橙色)</option>
+                                    <option value="critical">严重 (红色)</option>
+                                </select>
+                            </div>
+                            <div class="form-group form-col">
+                                <label class="form-label">适用作物</label>
+                                <select class="form-select" id="applicableCrop">
+                                    <option value="all">所有作物</option>
+                                    <option value="wheat">小麦</option>
+                                    <option value="corn">玉米</option>
+                                    <option value="rice">水稻</option>
+                                    <option value="potato">马铃薯</option>
+                                    <option value="rapeseed">油菜</option>
+                                    <option value="barley">青稞</option>
+                                    <option value="beans">豆类</option>
+                                    <option value="vegetables">蔬菜</option>
+                                    <option value="fruits">果树</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group form-col-full">
+                                <label class="form-label">适用区域 (可多选)</label>
+                                <div class="checkbox-group-container">
+                                    <div class="checkbox-group" id="applicableAreaGroup">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_all" value="all" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_all" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">全部区域</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_linxia" value="linxia" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_linxia" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">临夏镇</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_dongxiang" value="dongxiang" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_dongxiang" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">东乡镇</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_jishishan" value="jishishan" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_jishishan" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">积石山镇</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_kangle" value="kangle" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_kangle" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">康乐镇</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="area_hezheng" value="hezheng" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
+                                            <label for="area_hezheng" class="checkbox-label">
+                                                <span class="checkbox-custom"></span>
+                                                <span class="checkbox-text">和政镇</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="checkbox-help">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>可以选择多个区域，选择"全部区域"将应用于所有乡镇</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-sliders-h"></i>
+                            阈值配置
+                        </h4>
+                        <div class="threshold-config" id="thresholdConfig">
+                            <!-- 阈值配置内容将根据监测类型动态生成 -->
+                            <div class="config-placeholder">
+                                <i class="fas fa-arrow-up"></i>
+                                <p>请先选择监测类型</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-cog"></i>
+                            其他设置
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group form-col">
+                                <label class="form-label">状态</label>
+                                <select class="form-select" id="thresholdStatus">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">禁用</option>
+                                </select>
+                            </div>
+                            <div class="form-group form-col">
+                                <label class="form-label">优先级</label>
+                                <select class="form-select" id="priority">
+                                    <option value="1">低</option>
+                                    <option value="2">中</option>
+                                    <option value="3">高</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">备注说明</label>
+                            <textarea class="form-textarea" id="thresholdDescription" rows="3" placeholder="请输入阈值设置的详细说明或注意事项..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeThresholdModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveThreshold()">
+                    <i class="fas fa-save"></i> 保存阈值
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 阈值详情查看模态框 -->
+    <div class="modal-overlay" id="thresholdDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">阈值详情</h3>
+                <button class="modal-close" onclick="closeThresholdDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="threshold-detail-container" id="thresholdDetailContainer">
+                    <!-- 详情内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeThresholdDetailModal()">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="editCurrentThreshold()">
+                    <i class="fas fa-edit"></i> 编辑阈值
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal-overlay" id="deleteThresholdModal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3 class="modal-title">确认删除</h3>
+                <button class="modal-close" onclick="closeDeleteThresholdModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="delete-confirm-content">
+                    <div class="confirm-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <p>确定要删除阈值 "<span id="deleteThresholdName"></span>" 吗？</p>
+                    <p class="warning-text">此操作不可恢复，删除后相关的预警规则将失效。</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeDeleteThresholdModal()">取消</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteThreshold()">
+                    <i class="fas fa-trash"></i> 确认删除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/disaster-threshold.js"></script>
+</body>
+</html>

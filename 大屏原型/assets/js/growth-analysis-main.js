@@ -1153,10 +1153,19 @@ function updateGrowthFactors(factors) {
         const factorDiv = document.createElement('div');
         factorDiv.className = 'factor-item';
         
-        factorDiv.innerHTML = `
-            <span class="factor-name">${factor.name}:</span>
-            <span class="factor-value ${factor.level}">${factor.value}</span>
-        `;
+        if (factor.isReference) {
+            // 参考标准元素
+            factorDiv.innerHTML = `
+                <span class="factor-name">${factor.name}:</span>
+                <span class="factor-reference">${factor.value}</span>
+            `;
+        } else {
+            // 普通NDVI值元素
+            factorDiv.innerHTML = `
+                <span class="factor-name">${factor.name}:</span>
+                <span class="factor-value ${factor.level}">${factor.value}</span>
+            `;
+        }
         
         factorsContainer.appendChild(factorDiv);
     });
@@ -1217,18 +1226,18 @@ function getGrowthIndexData(regionId, month) {
         regionFactors.moisture.base * (1 + (Math.random() - 0.5) * regionFactors.moisture.range * 0.2)
     ));
     
-    // 计算综合指数 (权重：NDVI 40%, LAI 25%, 温度 20%, 墒情 15%)
-    const overallIndex = (ndviValue * 0.4) + (laiValue / 6 * 0.25) + (tempValue * 0.2) + (moistureValue * 0.15);
+    // 长势指数就是NDVI值
+    const overallIndex = ndviValue;
     
     // 确定等级
     let level, levelClass;
-    if (overallIndex >= 0.85) {
+    if (overallIndex >= 0.8) {
         level = '优秀';
         levelClass = 'excellent';
-    } else if (overallIndex >= 0.75) {
+    } else if (overallIndex >= 0.7) {
         level = '良好';
         levelClass = 'good';
-    } else if (overallIndex >= 0.65) {
+    } else if (overallIndex >= 0.6) {
         level = '中等';
         levelClass = 'medium';
     } else {
@@ -1236,27 +1245,34 @@ function getGrowthIndexData(regionId, month) {
         levelClass = 'poor';
     }
     
-    // 生成因子数据
+    // 根据NDVI值和季节生成得分原因
+    let reasonText = '';
+    const seasonalContext = getSeasonalContext(month);
+    
+    if (ndviValue >= 0.8) {
+        reasonText = `植被覆盖度高，${seasonalContext.excellent}`;
+    } else if (ndviValue >= 0.7) {
+        reasonText = `植被覆盖度适中，${seasonalContext.good}`;
+    } else if (ndviValue >= 0.6) {
+        reasonText = `植被覆盖一般，${seasonalContext.medium}`;
+    } else if (ndviValue >= 0.5) {
+        reasonText = `植被覆盖偏低，${seasonalContext.poor}`;
+    } else {
+        reasonText = `植被覆盖稀少，${seasonalContext.critical}`;
+    }
+    
+    // 显示NDVI值和参考标准
     const factors = [
         {
-            name: '植被指数(NDVI)',
+            name: '当前NDVI值',
             value: ndviValue.toFixed(2),
             level: ndviValue >= 0.8 ? 'excellent' : ndviValue >= 0.7 ? 'good' : ndviValue >= 0.6 ? 'medium' : 'poor'
         },
         {
-            name: '叶面积指数(LAI)',
-            value: laiValue.toFixed(1),
-            level: laiValue >= 3.5 ? 'excellent' : laiValue >= 2.8 ? 'good' : laiValue >= 2.0 ? 'medium' : 'poor'
-        },
-        {
-            name: '温湿度适宜度',
-            value: tempValue.toFixed(2),
-            level: tempValue >= 0.9 ? 'excellent' : tempValue >= 0.8 ? 'good' : tempValue >= 0.7 ? 'medium' : 'poor'
-        },
-        {
-            name: '土壤墒情',
-            value: moistureValue.toFixed(2),
-            level: moistureValue >= 0.8 ? 'excellent' : moistureValue >= 0.7 ? 'good' : moistureValue >= 0.6 ? 'medium' : 'poor'
+            name: '参考标准',
+            value: '优秀≥0.8, 良好≥0.7',
+            level: 'reference',
+            isReference: true
         }
     ];
     
@@ -1264,7 +1280,7 @@ function getGrowthIndexData(regionId, month) {
         overallIndex,
         level,
         levelClass,
-        basisText: '基于NDVI、LAI、温湿度',
+        basisText: reasonText,
         factors
     };
 }
@@ -1289,6 +1305,100 @@ function getSeasonalGrowthFactor(month) {
     };
     
     return factors[month] || 1.0;
+}
+
+/**
+ * 获取季节性得分原因说明
+ */
+function getSeasonalContext(month) {
+    const contexts = {
+        1: { // 1月 - 冬季
+            excellent: '冬季植被状态极佳',
+            good: '冬季长势良好',
+            medium: '冬季正常状态',
+            poor: '冬季休眠期偏弱',
+            critical: '冬季植被稀少'
+        },
+        2: { // 2月 - 冬季末期
+            excellent: '冬末植被活力显现',
+            good: '冬末状态良好',
+            medium: '冬末正常休眠',
+            poor: '冬末活力不足',
+            critical: '冬末植被衰弱'
+        },
+        3: { // 3月 - 春季开始
+            excellent: '春季萌发状态优秀',
+            good: '春季萌发良好',
+            medium: '春季萌发正常',
+            poor: '春季萌发迟缓',
+            critical: '春季萌发困难'
+        },
+        4: { // 4月 - 春季生长期
+            excellent: '春季生长旺盛',
+            good: '春季生长良好',
+            medium: '春季生长正常',
+            poor: '春季生长缓慢',
+            critical: '春季生长受阻'
+        },
+        5: { // 5月 - 春季旺盛期
+            excellent: '春末长势强劲',
+            good: '春末长势良好',
+            medium: '春末长势中等',
+            poor: '春末长势偏弱',
+            critical: '春末长势堪忧'
+        },
+        6: { // 6月 - 夏季高峰
+            excellent: '夏季长势达到峰值',
+            good: '夏季长势良好',
+            medium: '夏季长势一般',
+            poor: '夏季长势不佳',
+            critical: '夏季长势严重不足'
+        },
+        7: { // 7月 - 夏季最旺盛期
+            excellent: '盛夏植被繁茂',
+            good: '盛夏长势良好',
+            medium: '盛夏长势中等',
+            poor: '盛夏长势欠佳',
+            critical: '盛夏植被稀疏'
+        },
+        8: { // 8月 - 夏季后期
+            excellent: '夏末植被茂盛',
+            good: '夏末长势良好',
+            medium: '夏末长势正常',
+            poor: '夏末长势偏差',
+            critical: '夏末植被衰退'
+        },
+        9: { // 9月 - 秋季成熟期
+            excellent: '秋季成熟度佳',
+            good: '秋季成熟良好',
+            medium: '秋季成熟正常',
+            poor: '秋季成熟偏慢',
+            critical: '秋季成熟困难'
+        },
+        10: { // 10月 - 秋季收获期
+            excellent: '收获期植被状态优',
+            good: '收获期状态良好',
+            medium: '收获期状态正常',
+            poor: '收获期状态偏差',
+            critical: '收获期植被不良'
+        },
+        11: { // 11月 - 秋季末期
+            excellent: '秋末植被保持良好',
+            good: '秋末状态良好',
+            medium: '秋末正常凋落',
+            poor: '秋末衰退明显',
+            critical: '秋末植被稀少'
+        },
+        12: { // 12月 - 冬季开始
+            excellent: '初冬植被状态佳',
+            good: '初冬状态良好',
+            medium: '初冬正常休眠',
+            poor: '初冬活力不足',
+            critical: '初冬植被稀疏'
+        }
+    };
+    
+    return contexts[month] || contexts[7]; // 默认使用7月的描述
 }
 
 // 暴露长势指数评估函数到全局

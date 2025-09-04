@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作栏位置优化演示</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .demo-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .demo-subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .comparison-section {
+            margin: 30px 0;
+        }
+        
+        .comparison-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .example-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-content {
+            padding: 0;
+        }
+        
+        /* 模拟表格头部样式 */
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: white;
+        }
+        
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        /* 优化前的样式 */
+        .old-table-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+        
+        /* 优化后的样式 */
+        .new-table-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+            min-width: 0;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+        
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-shrink: 1;
+        }
+        
+        .search-input {
+            padding: 8px 35px 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 200px;
+            min-width: 150px;
+            flex-shrink: 1;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            color: #999;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        
+        .form-select {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        /* 添加边界线帮助理解布局 */
+        .with-border {
+            position: relative;
+        }
+        
+        .with-border::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ff4757;
+            opacity: 0.6;
+        }
+        
+        .with-border::before {
+            content: '右边界';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #ff4757;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+        }
+        
+        .old-example {
+            background: #fff5f5;
+            border-left: 4px solid #ff6b7a;
+        }
+        
+        .new-example {
+            background: #f0fff4;
+            border-left: 4px solid #28a745;
+        }
+        
+        .annotation {
+            padding: 15px 20px;
+            font-size: 14px;
+            color: #6c757d;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .annotation.problem {
+            background: #fff5f5;
+            color: #dc3545;
+        }
+        
+        .annotation.solution {
+            background: #f0fff4;
+            color: #28a745;
+        }
+        
+        .highlight-margin {
+            position: relative;
+        }
+        
+        .highlight-margin::after {
+            content: '20px 边距';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #28a745;
+            font-weight: 600;
+            background: rgba(40, 167, 69, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">
+                <i class="fas fa-adjust" style="color: #28a745;"></i>
+                操作栏位置优化
+            </h1>
+            <p class="demo-subtitle">解决"太靠右"的问题，添加适当的右边距</p>
+        </div>
+        
+        <div class="comparison-section">
+            <h2 class="comparison-title">🔍 问题 & 解决方案对比</h2>
+            
+            <div class="comparison-grid">
+                <!-- 优化前的示例 -->
+                <div class="example-card old-example">
+                    <div class="card-header">
+                        <i class="fas fa-times-circle" style="color: #dc3545;"></i>
+                        优化前 - 操作栏贴边显示
+                    </div>
+                    <div class="card-content">
+                        <div class="table-header with-border">
+                            <h3 class="table-title">影像数据管理</h3>
+                            <div class="old-table-actions">
+                                <div class="search-box">
+                                    <input type="text" class="search-input" placeholder="搜索影像名称...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <select class="form-select">
+                                    <option>所有类型</option>
+                                    <option>Landsat-8</option>
+                                    <option>Sentinel-2</option>
+                                    <option>MODIS</option>
+                                </select>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> 新增影像
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="annotation problem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>问题：</strong>操作栏完全贴着右边界，视觉上显得拥挤，缺乏呼吸感。
+                    </div>
+                </div>
+                
+                <!-- 优化后的示例 -->
+                <div class="example-card new-example">
+                    <div class="card-header">
+                        <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                        优化后 - 添加右边距
+                    </div>
+                    <div class="card-content">
+                        <div class="table-header with-border">
+                            <h3 class="table-title">影像数据管理</h3>
+                            <div class="new-table-actions highlight-margin">
+                                <div class="search-box">
+                                    <input type="text" class="search-input" placeholder="搜索影像名称...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <select class="form-select">
+                                    <option>所有类型</option>
+                                    <option>Landsat-8</option>
+                                    <option>Sentinel-2</option>
+                                    <option>MODIS</option>
+                                </select>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> 新增影像
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="annotation solution">
+                        <i class="fas fa-check"></i>
+                        <strong>解决方案：</strong>添加 <code>margin-right: 20px</code>，操作栏与边界保持适当距离，视觉更舒适。
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <h2 class="comparison-title">📱 其他页面的操作栏效果</h2>
+            
+            <div class="comparison-grid">
+                <!-- 作物基础信息 -->
+                <div class="example-card new-example">
+                    <div class="card-header">
+                        <i class="fas fa-leaf"></i>
+                        作物基础信息
+                    </div>
+                    <div class="card-content">
+                        <div class="table-header">
+                            <h3 class="table-title">作物基础信息</h3>
+                            <div class="new-table-actions">
+                                <div class="search-box">
+                                    <input type="text" class="search-input" placeholder="搜索作物名称...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <select class="form-select">
+                                    <option>所有类别</option>
+                                    <option>粮食作物</option>
+                                    <option>经济作物</option>
+                                </select>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> 新增作物
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 种植面积管理 -->
+                <div class="example-card new-example">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area"></i>
+                        种植面积管理
+                    </div>
+                    <div class="card-content">
+                        <div class="table-header">
+                            <h3 class="table-title">种植面积管理</h3>
+                            <div class="new-table-actions">
+                                <div class="search-box">
+                                    <input type="text" class="search-input" placeholder="搜索乡镇或作物...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-download"></i> 导出数据
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 8px; margin-top: 40px;">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">
+                <i class="fas fa-code"></i> CSS 调整详情
+            </h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #dc3545;">
+                    <h4 style="color: #dc3545; margin-bottom: 12px;">❌ 优化前</h4>
+                    <pre style="background: #f8f9fa; padding: 12px; border-radius: 4px; font-size: 13px; margin: 0;"><code>.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}</code></pre>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #28a745; margin-bottom: 12px;">✅ 优化后</h4>
+                    <pre style="background: #f8f9fa; padding: 12px; border-radius: 4px; font-size: 13px; margin: 0;"><code>.table-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    <span style="color: #28a745; font-weight: bold;">margin-left: auto;
+    margin-right: 20px;</span>
+}</code></pre>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 6px; border-left: 4px solid #1976d2;">
+                <h5 style="color: #1976d2; margin-bottom: 8px;">📝 说明：</h5>
+                <ul style="margin: 0; color: #1976d2; font-size: 14px;">
+                    <li><code>margin-left: auto</code> - 保持操作栏在右侧</li>
+                    <li><code>margin-right: 20px</code> - 添加20px右边距，避免贴边</li>
+                    <li>移动端自动重置边距，保持居中对齐</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #dee2e6;">
+            <p style="color: #6c757d; margin-bottom: 20px;">
+                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                操作栏位置优化完成！现在所有操作栏都有适当的右边距，视觉效果更佳。
+            </p>
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <a href="planting-area-new.html" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+                    <i class="fas fa-chart-area"></i> 查看种植面积页面
+                </a>
+                <a href="crop-info-new.html" style="display: inline-block; padding: 10px 20px; background: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">
+                    <i class="fas fa-leaf"></i> 查看作物信息页面
+                </a>
+                <a href="image-data-new.html" style="display: inline-block; padding: 10px 20px; background: #ffc107; color: #212529; text-decoration: none; border-radius: 5px;">
+                    <i class="fas fa-satellite"></i> 查看影像数据页面
+                </a>
+                <a href="device-data-new.html" style="display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px;">
+                    <i class="fas fa-microchip"></i> 查看设备管理页面
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

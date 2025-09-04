@@ -222,29 +222,21 @@
                 <div class="area-summary">
                     <div class="summary-item large">
                         <div class="summary-value" id="growth-index-main-value">0.85</div>
-                        <div class="summary-label">综合长势指数</div>
-                        <div class="summary-subtitle" id="growth-level-info">等级：良好</div>
+                        <div class="summary-label">长势指数(NDVI)</div>
+                        <div class="summary-subtitle good" id="growth-level-info">等级：良好</div>
                     </div>
                     <div class="summary-row">
                         <div class="summary-item">
-                            <div class="summary-value-text" id="growth-score-reason">基于NDVI、LAI、温湿度</div>
-                            <div class="summary-label">得分依据</div>
+                            <div class="summary-label">得分原因</div>
+                            <div class="summary-value-text" id="growth-score-reason">植被覆盖度适中，长势正常</div>
                             <div class="summary-detail" id="growth-factors">
                                 <div class="factor-item">
-                                    <span class="factor-name">植被指数(NDVI):</span>
+                                    <span class="factor-name">当前NDVI值:</span>
                                     <span class="factor-value good">0.78</span>
                                 </div>
-                                <div class="factor-item">
-                                    <span class="factor-name">叶面积指数(LAI):</span>
-                                    <span class="factor-value good">3.2</span>
-                                </div>
-                                <div class="factor-item">
-                                    <span class="factor-name">温湿度适宜度:</span>
-                                    <span class="factor-value excellent">0.91</span>
-                                </div>
-                                <div class="factor-item">
-                                    <span class="factor-name">土壤墒情:</span>
-                                    <span class="factor-value medium">0.73</span>
+                                <div class="factor-item" id="ndvi-reference">
+                                    <span class="factor-name">参考标准:</span>
+                                    <span class="factor-reference">优秀≥0.8, 良好≥0.7</span>
                                 </div>
                             </div>
                         </div>

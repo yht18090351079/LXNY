@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 种植面积管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/planting-area.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="sidebar-title">农情遥感管理</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-item menu-parent active" data-page="data-management">
+                        <i class="fas fa-database menu-icon"></i>
+                        <span class="menu-text">数据管理</span>
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </div>
+                    <div class="menu-submenu show">
+                        <div class="menu-item menu-child active" data-page="planting-area">
+                            <i class="fas fa-chart-area menu-icon"></i>
+                            <span class="menu-text">种植面积管理</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="crop-info">
+                            <i class="fas fa-leaf menu-icon"></i>
+                            <span class="menu-text">作物基础信息</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="image-data">
+                            <i class="fas fa-satellite menu-icon"></i>
+                            <span class="menu-text">影像数据</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="device-data">
+                            <i class="fas fa-microchip menu-icon"></i>
+                            <span class="menu-text">设备数据</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item" data-page="user-management">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">用户管理</span>
+                </div>
+                <!-- 超级管理员专用菜单 -->
+                <div class="menu-item superadmin-only" data-page="disaster-threshold">
+                    <i class="fas fa-exclamation-triangle menu-icon"></i>
+                    <span class="menu-text">灾害阈值设置</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>数据管理</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>种植面积管理</span>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="user-info" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="currentUserName">管理员</div>
+                            <div class="user-role" id="currentUserRole">超级管理员</div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="handleLogout()" title="退出登录">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 种植面积管理 -->
+                <div class="content-pane active" id="planting-area">
+                    <div class="planting-area-container">
+                        <div class="planting-header">
+                            <h3 class="planting-title">种植面积管理</h3>
+                            <div class="planting-actions">
+                                <div class="search-box">
+                                    <input type="text" class="form-input search-input" placeholder="搜索乡镇或作物..." id="plantingSearchInput">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+
+                                <div class="action-group">
+                                    <button class="btn btn-outline" onclick="exportPlantingData()" title="导出种植面积数据">
+                                        <i class="fas fa-download"></i> 导出数据
+                                    </button>
+                                    <button class="btn btn-success" onclick="expandAllNodes()">
+                                        <i class="fas fa-expand-arrows-alt"></i> 展开全部
+                                    </button>
+                                    <button class="btn btn-default" onclick="collapseAllNodes()">
+                                        <i class="fas fa-compress-arrows-alt"></i> 收起全部
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 种植面积数据展示区域 -->
+                        <div class="planting-data-layout">
+                            <!-- 日期导航栏 -->
+                            <div class="date-navigation">
+                                <div class="date-nav-header">
+                                    <h4 class="date-nav-title">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        统计月份
+                                    </h4>
+                                </div>
+                                <div class="date-nav-list" id="dateNavList">
+                                    <!-- 日期导航项将通过JavaScript动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 乡镇作物数据展示区域 -->
+                            <div class="township-crop-data">
+                                <div class="data-content-header">
+                                    <h4 class="current-month-title" id="currentMonthTitle">2024年1月 种植面积数据</h4>
+                                    <div class="data-summary" id="dataSummary">
+                                        <!-- 数据汇总信息 -->
+                                    </div>
+                                </div>
+                                
+                                <!-- 两级树状结构：乡镇 -> 作物 -->
+                                <div class="tree-container" id="plantingTreeContainer">
+                                    <!-- 树状数据将通过JavaScript动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 编辑种植面积模态框 -->
+    <div class="modal-overlay" id="editPlantingAreaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑种植面积</h3>
+                <button class="modal-close" onclick="closeEditPlantingAreaModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="editPlantingAreaForm">
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">统计月份</label>
+                            <input type="text" class="form-input" id="editMonth" readonly>
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">乡镇名称</label>
+                            <input type="text" class="form-input" id="editTownship" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">作物类型</label>
+                            <input type="text" class="form-input" id="editCrop" readonly>
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">种植面积 (亩) *</label>
+                            <input type="number" class="form-input" id="editArea" min="0" step="0.1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-input" id="editRemark" rows="3" placeholder="请输入备注信息（可选）"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">最后更新时间</label>
+                        <input type="text" class="form-input" id="editUpdateTime" readonly>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeEditPlantingAreaModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePlantingAreaEdit()">
+                    <i class="fas fa-save"></i> 保存修改
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/planting-area.js"></script>
+</body>
+</html>

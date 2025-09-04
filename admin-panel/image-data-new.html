@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农情遥感系统管理端 - 影像数据管理</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/image-data.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="sidebar-title">农情遥感管理</div>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-group">
+                    <div class="menu-item menu-parent active" data-page="data-management">
+                        <i class="fas fa-database menu-icon"></i>
+                        <span class="menu-text">数据管理</span>
+                        <i class="fas fa-chevron-down menu-arrow"></i>
+                    </div>
+                    <div class="menu-submenu show">
+                        <div class="menu-item menu-child" data-page="planting-area">
+                            <i class="fas fa-chart-area menu-icon"></i>
+                            <span class="menu-text">种植面积管理</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="crop-info">
+                            <i class="fas fa-leaf menu-icon"></i>
+                            <span class="menu-text">作物基础信息</span>
+                        </div>
+                        <div class="menu-item menu-child active" data-page="image-data">
+                            <i class="fas fa-satellite menu-icon"></i>
+                            <span class="menu-text">影像数据</span>
+                        </div>
+                        <div class="menu-item menu-child" data-page="device-data">
+                            <i class="fas fa-microchip menu-icon"></i>
+                            <span class="menu-text">设备数据</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-item" data-page="user-management">
+                    <i class="fas fa-users menu-icon"></i>
+                    <span class="menu-text">用户管理</span>
+                </div>
+                <!-- 超级管理员专用菜单 -->
+                <div class="menu-item superadmin-only" data-page="disaster-threshold">
+                    <i class="fas fa-exclamation-triangle menu-icon"></i>
+                    <span class="menu-text">灾害阈值设置</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+            </div>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header">
+                <div class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>数据管理</span>
+                    </div>
+                    <span class="breadcrumb-separator">/</span>
+                    <div class="breadcrumb-item">
+                        <span>影像数据管理</span>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="user-info" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="currentUserName">管理员</div>
+                            <div class="user-role" id="currentUserRole">超级管理员</div>
+                        </div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="handleLogout()" title="退出登录">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 影像数据 -->
+                <div class="content-pane active" id="image-data">
+                    <div class="data-table-container">
+                        <div class="table-header">
+                            <h3 class="table-title">影像数据管理</h3>
+                            <div class="table-actions">
+                                <div class="search-box">
+                                    <input type="text" class="form-input search-input" placeholder="搜索影像名称..." id="imageSearchInput">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <select class="form-select" id="imageTypeFilter">
+                                    <option value="">所有类型</option>
+                                    <option value="Landsat-8">Landsat-8</option>
+                                    <option value="Sentinel-2">Sentinel-2</option>
+                                    <option value="MODIS">MODIS</option>
+                                    <option value="高分2号">高分2号</option>
+                                    <option value="高分1号">高分1号</option>
+                                    <option value="WorldView">WorldView</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="showAddImageModal()"><i class="fas fa-plus"></i> 新增影像</button>
+                            </div>
+                        </div>
+                        
+                        <table class="data-table" id="imageDataTable">
+                            <thead>
+                                <tr>
+                                    <th>影像名称</th>
+                                    <th>影像类型</th>
+                                    <th>作物</th>
+                                    <th>数据产生时间</th>
+                                    <th>上传时间</th>
+                                    <th>文件大小</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="imageDataTableBody">
+                                <!-- 数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 影像数据管理模态框 -->
+    <div class="modal-overlay" id="imageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="imageModalTitle">新增影像数据</h3>
+                <button class="modal-close" onclick="closeImageModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="imageForm">
+                    <!-- 文件上传区域 -->
+                    <div class="form-group">
+                        <label class="form-label">影像文件上传 *</label>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-content" id="uploadContent">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <p class="upload-text">拖拽文件到此处或<span class="upload-link">点击选择文件</span></p>
+                                <p class="upload-hint">支持格式：TIFF, JP2, IMG, HDF, NC 等遥感影像格式，最大500MB</p>
+                            </div>
+                            <input type="file" id="imageFile" name="imageFile" accept=".tiff,.tif,.jp2,.img,.hdf,.nc,.geotiff" style="display: none;">
+                            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <div class="progress-info">
+                                    <span class="progress-text" id="progressText">上传中...</span>
+                                    <span class="progress-percent" id="progressPercent">0%</span>
+                                </div>
+                            </div>
+                            <div class="uploaded-file" id="uploadedFile" style="display: none;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-image file-icon"></i>
+                                    <div class="file-details">
+                                        <div class="file-name" id="uploadedFileName"></div>
+                                        <div class="file-size" id="uploadedFileSize"></div>
+                                    </div>
+                                    <button type="button" class="remove-file-btn" id="removeFileBtn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">影像名称 *</label>
+                            <input type="text" class="form-input" id="imageName" name="imageName" required placeholder="将根据文件名自动填充">
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">影像类型 *</label>
+                            <select class="form-select" id="imageType" name="imageType" required>
+                                <option value="">请选择影像类型</option>
+                                <option value="Landsat-8">Landsat-8</option>
+                                <option value="Sentinel-2">Sentinel-2</option>
+                                <option value="MODIS">MODIS</option>
+                                <option value="高分2号">高分2号</option>
+                                <option value="高分1号">高分1号</option>
+                                <option value="WorldView">WorldView</option>
+                                <option value="资源3号">资源3号</option>
+                                <option value="吉林一号">吉林一号</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">相关作物 *</label>
+                            <select class="form-select" id="imageCrop" name="imageCrop" required>
+                                <option value="">请选择作物</option>
+                                <option value="小麦">小麦</option>
+                                <option value="玉米">玉米</option>
+                                <option value="青稞">青稞</option>
+                                <option value="土豆">土豆</option>
+                                <option value="油菜">油菜</option>
+                                <option value="豌豆">豌豆</option>
+                                <option value="蚕豆">蚕豆</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">数据产生时间 *</label>
+                            <input type="datetime-local" class="form-input" id="imageDataTime" name="imageDataTime" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label">文件大小</label>
+                            <input type="text" class="form-input" id="imageSize" name="imageSize" placeholder="例如: 245MB">
+                        </div>
+                        <div class="form-group form-col">
+                            <label class="form-label">上传时间</label>
+                            <input type="text" class="form-input" id="imageUploadTime" name="imageUploadTime" readonly placeholder="系统自动生成">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">备注说明</label>
+                        <textarea class="form-input" id="imageRemark" name="imageRemark" rows="3" placeholder="请输入备注信息（可选）"></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeImageModal()">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="saveImage()">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/image-data.js"></script>
+</body>
+</html>

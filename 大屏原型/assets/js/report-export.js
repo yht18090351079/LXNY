@@ -83,54 +83,54 @@ function collectCountyData() {
             {
                 name: '小麦',
                 area: 2200,
-                monthlyGrowthIndex: [0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6],
+                monthlyGrowthIndex: [0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.3, 1.2, 1.0, 0.8, 0.7, 0.6], // NDVI植被指数
                 monthlyYieldEstimate: [0, 0, 150, 250, 350, 420, 465, 485, 480, 485, 485, 485], // kg/亩
-                growthChangeReason: '夏季长势最佳，冬季休眠期',
+                growthChangeReason: '夏季NDVI最高，冬季休眠期较低',
                 yieldReduction: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 reductionReason: '无明显减产'
             },
             {
                 name: '玉米',
                 area: 1800,
-                monthlyGrowthIndex: [0.5, 0.6, 0.8, 1.0, 1.2, 1.4, 1.3, 1.1, 0.9, 0.7, 0.6, 0.5],
+                monthlyGrowthIndex: [0.5, 0.6, 0.8, 1.0, 1.2, 1.4, 1.3, 1.1, 0.9, 0.7, 0.6, 0.5], // NDVI植被指数
                 monthlyYieldEstimate: [0, 0, 0, 200, 350, 480, 580, 620, 615, 620, 620, 620], // kg/亩
-                growthChangeReason: '夏季生长旺盛，秋季成熟收获',
+                growthChangeReason: '夏季NDVI最高，植被覆盖度最佳',
                 yieldReduction: [0, 0, 0, 5, 10, 15, 15, 15, 10, 5, 0, 0],
                 reductionReason: '夏季干旱影响'
             },
             {
                 name: '辣椒',
                 area: 800,
-                monthlyGrowthIndex: [0.4, 0.5, 0.7, 0.9, 1.1, 1.3, 1.2, 1.0, 0.8, 0.6, 0.5, 0.4],
+                monthlyGrowthIndex: [0.4, 0.5, 0.7, 0.9, 1.1, 1.3, 1.2, 1.0, 0.8, 0.6, 0.5, 0.4], // NDVI植被指数
                 monthlyYieldEstimate: [0, 0, 0, 300, 600, 950, 1150, 1250, 1200, 1250, 1250, 1250], // kg/亩
-                growthChangeReason: '适宜温度条件下生长良好',
+                growthChangeReason: '夏季NDVI达到峰值，植被长势良好',
                 yieldReduction: [0, 0, 0, 2, 5, 8, 8, 8, 5, 2, 0, 0],
                 reductionReason: '病虫害轻微影响'
             },
             {
                 name: '蔬菜',
                 area: 672,
-                monthlyGrowthIndex: [0.7, 0.8, 0.9, 1.0, 1.1, 1.0, 0.9, 0.8, 0.9, 1.0, 0.8, 0.7],
+                monthlyGrowthIndex: [0.7, 0.8, 0.9, 1.0, 1.1, 1.0, 0.9, 0.8, 0.9, 1.0, 0.8, 0.7], // NDVI植被指数
                 monthlyYieldEstimate: [800, 1000, 1500, 2200, 2600, 2800, 2700, 2500, 2600, 2800, 2200, 1500], // kg/亩
-                growthChangeReason: '多季种植，春秋两季长势较好',
+                growthChangeReason: '多季种植，春秋两季NDVI较高',
                 yieldReduction: [2, 3, 5, 5, 5, 5, 5, 5, 5, 5, 3, 2],
                 reductionReason: '轻微的气候波动'
             },
             {
                 name: '土豆',
                 area: 456,
-                monthlyGrowthIndex: [0.3, 0.4, 0.6, 0.8, 1.0, 1.2, 1.1, 0.9, 0.7, 0.5, 0.4, 0.3],
+                monthlyGrowthIndex: [0.3, 0.4, 0.6, 0.8, 1.0, 1.2, 1.1, 0.9, 0.7, 0.5, 0.4, 0.3], // NDVI植被指数
                 monthlyYieldEstimate: [0, 0, 0, 600, 1200, 1600, 1750, 1800, 1800, 1800, 1800, 1800], // kg/亩
-                growthChangeReason: '春季播种，夏季生长，秋季收获',
+                growthChangeReason: '春季萌发，夏季NDVI最高，秋季收获',
                 yieldReduction: [0, 0, 0, 8, 12, 12, 12, 12, 8, 5, 0, 0],
                 reductionReason: '土壤湿度不足'
             },
             {
                 name: '油菜',
                 area: 344,
-                monthlyGrowthIndex: [0.8, 0.9, 1.0, 1.1, 1.0, 0.8, 0.6, 0.5, 0.7, 0.9, 1.0, 0.8],
+                monthlyGrowthIndex: [0.8, 0.9, 1.0, 1.1, 1.0, 0.8, 0.6, 0.5, 0.7, 0.9, 1.0, 0.8], // NDVI植被指数
                 monthlyYieldEstimate: [120, 140, 160, 180, 180, 170, 150, 120, 100, 120, 150, 160], // kg/亩
-                growthChangeReason: '冬春季作物，春季开花期长势最佳',
+                growthChangeReason: '冬春季作物，春季NDVI达到峰值',
                 yieldReduction: [1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 2, 2],
                 reductionReason: '春季低温略有影响'
             }
@@ -250,7 +250,7 @@ function getTownshipMainCrops(townshipId) {
 }
 
 /**
- * 计算平均长势指数
+ * 计算平均NDVI指数
  */
 function calculateAverageGrowthIndex(growthData) {
     const total = growthData.excellent + growthData.good + growthData.medium + growthData.poor;
@@ -378,8 +378,8 @@ function generateReportPreview(data) {
                             <tr>
                                 <th rowspan="2">作物名称</th>
                                 <th rowspan="2">种植面积<br/>（亩）</th>
-                                <th colspan="12">逐月生长指数</th>
-                                <th rowspan="2">长势变动原因</th>
+                                <th colspan="12">逐月NDVI指数</th>
+                                <th rowspan="2">NDVI变动原因</th>
                             </tr>
                             <tr>
                                 <th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>5月</th><th>6月</th>
@@ -498,7 +498,7 @@ function generateReportPreview(data) {
                                 <th rowspan="2">监测面积<br/>（亩）</th>
                                 <th rowspan="2">人口数量<br/>（人）</th>
                                 <th colspan="3">主要作物种植情况</th>
-                                <th rowspan="2">平均长势指数</th>
+                                <th rowspan="2">平均NDVI指数</th>
                                 <th rowspan="2">备注</th>
                             </tr>
                             <tr>
@@ -975,12 +975,12 @@ function generatePDFContent(data) {
     
     content += `作物详细数据:\n`;
     countyData.crops.forEach(crop => {
-        content += `${crop.name}：面积 ${crop.area} 亩，长势指数 ${crop.monthlyGrowthIndex[7]}，产量预估 ${crop.yieldEstimate} kg/亩\n`;
+        content += `${crop.name}：面积 ${crop.area} 亩，NDVI指数 ${crop.monthlyGrowthIndex[7]}，产量预估 ${crop.monthlyYieldEstimate[7]} kg/亩\n`;
     });
     
     content += `\n各乡镇详细数据:\n`;
     townshipData.forEach(township => {
-        content += `${township.name}：面积 ${township.area} 亩，人口 ${township.population} 人，长势指数 ${township.averageGrowthIndex}\n`;
+        content += `${township.name}：面积 ${township.area} 亩，人口 ${township.population} 人，NDVI指数 ${township.averageGrowthIndex}\n`;
     });
     
     return content;

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灾害阈值设置演示</title>
+    
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="assets/css/common.css">
+    
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .demo-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .demo-subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .card-header.temperature {
+            background: linear-gradient(135deg, #ff6b7a 0%, #ff4757 100%);
+        }
+        
+        .card-header.humidity {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+        
+        .card-header.ndvi {
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+        }
+        
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .card-content {
+            padding: 20px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li i {
+            color: #28a745;
+            font-size: 14px;
+        }
+        
+        .crop-showcase {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .crop-item {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .crop-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #52c41a;
+        }
+        
+        .crop-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .warning-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .warning-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            border-left: 4px solid;
+        }
+        
+        .warning-item.info {
+            border-left-color: #1890ff;
+            background: #e6f7ff;
+        }
+        
+        .warning-item.warning {
+            border-left-color: #faad14;
+            background: #fffbe6;
+        }
+        
+        .warning-item.danger {
+            border-left-color: #fa8c16;
+            background: #fff2e6;
+        }
+        
+        .warning-item.critical {
+            border-left-color: #ff4d4f;
+            background: #fff2f0;
+        }
+        
+        .warning-icon {
+            font-size: 20px;
+        }
+        
+        .warning-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .warning-description {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .access-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .access-info h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+        }
+        
+        .access-info p {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+        
+        .btn-access {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-access:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+        
+        .navigation-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">
+                <i class="fas fa-exclamation-triangle" style="color: #ff4d4f;"></i>
+                灾害阈值设置系统
+            </h1>
+            <p class="demo-subtitle">超级管理员专用 | 支持温度、湿度、长势监测 | 按作物分类管理</p>
+        </div>
+        
+        <div class="access-info">
+            <h3><i class="fas fa-user-shield"></i> 权限说明</h3>
+            <p>此功能仅限超级管理员访问，用于配置农业灾害监测阈值</p>
+            <p>系统将根据设定的阈值自动监测并发出预警</p>
+            <a href="disaster-threshold.html" class="btn-access">
+                <i class="fas fa-arrow-right"></i> 进入阈值设置
+            </a>
+        </div>
+        
+        <h2 style="text-align: center; color: #2c3e50; margin: 40px 0 20px 0;">🔍 监测类型</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="card-header temperature">
+                    <div class="card-icon">
+                        <i class="fas fa-thermometer-half"></i>
+                    </div>
+                    <h3 class="card-title">温度监测</h3>
+                </div>
+                <div class="card-content">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 高温预警设置</li>
+                        <li><i class="fas fa-check"></i> 低温冻害监测</li>
+                        <li><i class="fas fa-check"></i> 持续时长配置</li>
+                        <li><i class="fas fa-check"></i> 分作物差异化阈值</li>
+                        <li><i class="fas fa-check"></i> 区域化精准设置</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-header humidity">
+                    <div class="card-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3 class="card-title">湿度监测</h3>
+                </div>
+                <div class="card-content">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 干旱风险预警</li>
+                        <li><i class="fas fa-check"></i> 高湿度病害监测</li>
+                        <li><i class="fas fa-check"></i> 百分比精确设置</li>
+                        <li><i class="fas fa-check"></i> 连续监测时长</li>
+                        <li><i class="fas fa-check"></i> 作物适应性配置</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-header ndvi">
+                    <div class="card-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="card-title">长势监测</h3>
+                </div>
+                <div class="card-content">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> 长势指数阈值</li>
+                        <li><i class="fas fa-check"></i> 植被健康状况</li>
+                        <li><i class="fas fa-check"></i> 实时长势评估</li>
+                        <li><i class="fas fa-check"></i> 异常长势预警</li>
+                        <li><i class="fas fa-check"></i> 分作物长势标准</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="crop-showcase">
+            <h2 style="text-align: center; color: #2c3e50; margin-bottom: 10px;">🌾 支持作物类型</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">系统支持为不同作物设置专门的监测阈值</p>
+            
+            <div class="crop-grid">
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-seedling"></i></div>
+                    <div class="crop-name">小麦</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-corn"></i></div>
+                    <div class="crop-name">玉米</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-spa"></i></div>
+                    <div class="crop-name">水稻</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-potato"></i></div>
+                    <div class="crop-name">马铃薯</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="crop-name">油菜</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-seedling"></i></div>
+                    <div class="crop-name">青稞</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-pea-pod"></i></div>
+                    <div class="crop-name">豆类</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-carrot"></i></div>
+                    <div class="crop-name">蔬菜</div>
+                </div>
+                <div class="crop-item">
+                    <div class="crop-icon"><i class="fas fa-apple-alt"></i></div>
+                    <div class="crop-name">果树</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="text-align: center; color: #2c3e50; margin: 40px 0 20px 0;">⚠️ 预警等级</h2>
+        
+        <div class="warning-levels">
+            <div class="warning-item info">
+                <div class="warning-icon">
+                    <i class="fas fa-info-circle" style="color: #1890ff;"></i>
+                </div>
+                <div class="warning-details">
+                    <h4>信息提醒</h4>
+                    <p class="warning-description">轻微异常，建议关注</p>
+                </div>
+            </div>
+            
+            <div class="warning-item warning">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle" style="color: #faad14;"></i>
+                </div>
+                <div class="warning-details">
+                    <h4>注意预警</h4>
+                    <p class="warning-description">需要采取预防措施</p>
+                </div>
+            </div>
+            
+            <div class="warning-item danger">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation" style="color: #fa8c16;"></i>
+                </div>
+                <div class="warning-details">
+                    <h4>警告预警</h4>
+                    <p class="warning-description">风险较高，需要应对</p>
+                </div>
+            </div>
+            
+            <div class="warning-item critical">
+                <div class="warning-icon">
+                    <i class="fas fa-radiation-alt" style="color: #ff4d4f;"></i>
+                </div>
+                <div class="warning-details">
+                    <h4>严重预警</h4>
+                    <p class="warning-description">紧急情况，立即处理</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 8px; margin: 40px 0;">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">
+                <i class="fas fa-cogs"></i> 主要功能
+            </h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #28a745; margin-bottom: 12px;"><i class="fas fa-plus-circle"></i> 阈值管理</h4>
+                    <ul style="margin: 0; color: #333; font-size: 14px; line-height: 1.6;">
+                        <li>新增、编辑、删除阈值</li>
+                        <li>启用/禁用阈值配置</li>
+                        <li>优先级设置</li>
+                        <li>批量导出配置</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #1890ff;">
+                    <h4 style="color: #1890ff; margin-bottom: 12px;"><i class="fas fa-filter"></i> 智能筛选</h4>
+                    <ul style="margin: 0; color: #333; font-size: 14px; line-height: 1.6;">
+                        <li>按监测类型筛选</li>
+                        <li>按适用作物筛选</li>
+                        <li>按状态筛选</li>
+                        <li>关键词搜索</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #722ed1;">
+                    <h4 style="color: #722ed1; margin-bottom: 12px;"><i class="fas fa-chart-bar"></i> 统计概览</h4>
+                    <ul style="margin: 0; color: #333; font-size: 14px; line-height: 1.6;">
+                        <li>各类型阈值统计</li>
+                        <li>启用状态分布</li>
+                        <li>实时数据更新</li>
+                        <li>可视化展示</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #fa541c;">
+                    <h4 style="color: #fa541c; margin-bottom: 12px;"><i class="fas fa-shield-alt"></i> 权限控制</h4>
+                    <ul style="margin: 0; color: #333; font-size: 14px; line-height: 1.6;">
+                        <li>超级管理员专用</li>
+                        <li>安全访问控制</li>
+                        <li>操作日志记录</li>
+                        <li>权限验证机制</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation-links">
+            <a href="disaster-threshold.html" class="nav-link">
+                <i class="fas fa-exclamation-triangle"></i> 阈值设置
+            </a>
+            <a href="planting-area-new.html" class="nav-link">
+                <i class="fas fa-chart-area"></i> 种植面积
+            </a>
+            <a href="crop-info-new.html" class="nav-link">
+                <i class="fas fa-leaf"></i> 作物信息
+            </a>
+            <a href="image-data-new.html" class="nav-link">
+                <i class="fas fa-satellite"></i> 影像数据
+            </a>
+            <a href="device-data-new.html" class="nav-link">
+                <i class="fas fa-microchip"></i> 设备管理
+            </a>
+            <a href="user-management.html" class="nav-link">
+                <i class="fas fa-users"></i> 用户管理
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #dee2e6;">
+            <p style="color: #6c757d;">
+                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                灾害阈值设置系统已完成！支持温度、湿度、长势三大类监测，并可按作物进行精细化配置。
+            </p>
+        </div>
+    </div>
+</body>
+</html>
