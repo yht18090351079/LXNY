@@ -169,11 +169,10 @@
                                             <th>监测类型</th>
                                             <th>预警等级</th>
                                             <th>阈值范围</th>
-                                                                        <th>适用作物</th>
-                            <th>适用区域</th>
-                            <th>状态</th>
-                            <th>创建时间</th>
-                            <th>操作</th>
+                                            <th>适用作物</th>
+                                            <th>状态</th>
+                                            <th>创建时间</th>
+                                            <th>操作</th>
                                         </tr>
                                     </thead>
                                     <tbody id="thresholdTableBody">
@@ -232,75 +231,86 @@
                                     <option value="critical">严重 (红色)</option>
                                 </select>
                             </div>
-                            <div class="form-group form-col">
-                                <label class="form-label">适用作物</label>
-                                <select class="form-select" id="applicableCrop">
-                                    <option value="all">所有作物</option>
-                                    <option value="wheat">小麦</option>
-                                    <option value="corn">玉米</option>
-                                    <option value="rice">水稻</option>
-                                    <option value="potato">马铃薯</option>
-                                    <option value="rapeseed">油菜</option>
-                                    <option value="barley">青稞</option>
-                                    <option value="beans">豆类</option>
-                                    <option value="vegetables">蔬菜</option>
-                                    <option value="fruits">果树</option>
-                                </select>
-                            </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group form-col-full">
-                                <label class="form-label">适用区域 (可多选)</label>
-                                <div class="checkbox-group-container">
-                                    <div class="checkbox-group" id="applicableAreaGroup">
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_all" value="all" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_all" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">全部区域</span>
-                                            </label>
-                                        </div>
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_linxia" value="linxia" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_linxia" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">临夏镇</span>
-                                            </label>
-                                        </div>
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_dongxiang" value="dongxiang" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_dongxiang" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">东乡镇</span>
-                                            </label>
-                                        </div>
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_jishishan" value="jishishan" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_jishishan" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">积石山镇</span>
-                                            </label>
-                                        </div>
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_kangle" value="kangle" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_kangle" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">康乐镇</span>
-                                            </label>
-                                        </div>
-                                        <div class="checkbox-item">
-                                            <input type="checkbox" id="area_hezheng" value="hezheng" name="applicableArea" onchange="handleAreaCheckboxChange(this)">
-                                            <label for="area_hezheng" class="checkbox-label">
-                                                <span class="checkbox-custom"></span>
-                                                <span class="checkbox-text">和政镇</span>
-                                            </label>
-                                        </div>
+                        <div class="form-group">
+                            <label class="form-label">适用作物 (可多选)</label>
+                            <div class="checkbox-group-container">
+                                <div class="checkbox-group" id="applicableCropGroup">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_all" value="all" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_all" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">所有作物</span>
+                                        </label>
                                     </div>
-                                    <div class="checkbox-help">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>可以选择多个区域，选择"全部区域"将应用于所有乡镇</span>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_wheat" value="wheat" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_wheat" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">小麦</span>
+                                        </label>
                                     </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_corn" value="corn" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_corn" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">玉米</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_rice" value="rice" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_rice" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">水稻</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_potato" value="potato" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_potato" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">马铃薯</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_rapeseed" value="rapeseed" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_rapeseed" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">油菜</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_barley" value="barley" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_barley" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">青稞</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_beans" value="beans" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_beans" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">豆类</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_vegetables" value="vegetables" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_vegetables" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">蔬菜</span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="crop_fruits" value="fruits" name="applicableCrop" onchange="handleCropCheckboxChange(this)">
+                                        <label for="crop_fruits" class="checkbox-label">
+                                            <span class="checkbox-custom"></span>
+                                            <span class="checkbox-text">果树</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="checkbox-help">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>可以选择多个作物，选择"所有作物"将应用于全部作物类型</span>
                                 </div>
                             </div>
                         </div>
@@ -325,22 +335,12 @@
                             <i class="fas fa-cog"></i>
                             其他设置
                         </h4>
-                        <div class="form-row">
-                            <div class="form-group form-col">
-                                <label class="form-label">状态</label>
-                                <select class="form-select" id="thresholdStatus">
-                                    <option value="active">启用</option>
-                                    <option value="inactive">禁用</option>
-                                </select>
-                            </div>
-                            <div class="form-group form-col">
-                                <label class="form-label">优先级</label>
-                                <select class="form-select" id="priority">
-                                    <option value="1">低</option>
-                                    <option value="2">中</option>
-                                    <option value="3">高</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">状态</label>
+                            <select class="form-select" id="thresholdStatus">
+                                <option value="active">启用</option>
+                                <option value="inactive">禁用</option>
+                            </select>
                         </div>
 
                         <div class="form-group">

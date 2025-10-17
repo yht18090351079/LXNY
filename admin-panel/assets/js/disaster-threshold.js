@@ -23,7 +23,7 @@ class DisasterThresholdManager {
                     duration: 3,
                     description: '连续3小时温度超过35°C时触发预警'
                 },
-                applicableCrop: 'wheat',
+                applicableCrop: ['wheat'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 2,
@@ -43,7 +43,7 @@ class DisasterThresholdManager {
                     duration: 1,
                     description: '温度超过40°C时立即触发严重预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 3,
@@ -63,7 +63,7 @@ class DisasterThresholdManager {
                     duration: 2,
                     description: '连续2小时温度低于0°C时触发冻害预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 3,
@@ -83,7 +83,7 @@ class DisasterThresholdManager {
                     duration: 6,
                     description: '连续6小时湿度低于30%时触发干旱预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 2,
@@ -103,7 +103,7 @@ class DisasterThresholdManager {
                     duration: 12,
                     description: '连续12小时湿度超过85%时触发病害风险预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 1,
@@ -123,7 +123,7 @@ class DisasterThresholdManager {
                     duration: 2,
                     description: '东乡镇夏季温度超过38°C超过2小时触发预警'
                 },
-                applicableCrop: 'potato',
+                applicableCrop: ['potato'],
                 applicableArea: 'dongxiang',
                 status: 'inactive',
                 priority: 2,
@@ -143,7 +143,7 @@ class DisasterThresholdManager {
                     duration: 6,
                     description: '连续6小时温度低于15°C时触发水稻冷害预警'
                 },
-                applicableCrop: 'rice',
+                applicableCrop: ['rice'],
                 applicableArea: 'hezheng',
                 status: 'active',
                 priority: 3,
@@ -163,7 +163,7 @@ class DisasterThresholdManager {
                     duration: 24,
                     description: '24小时降雨量超过50mm时触发暴雨预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 3,
@@ -183,7 +183,7 @@ class DisasterThresholdManager {
                     duration: 168,
                     description: '连续7天降雨量不足5mm时触发干旱预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 2,
@@ -203,7 +203,7 @@ class DisasterThresholdManager {
                     duration: 24,
                     description: '24小时降雨量超过100mm时触发严重暴雨预警'
                 },
-                applicableCrop: 'all',
+                applicableCrop: ['all'],
                 applicableArea: 'all',
                 status: 'active',
                 priority: 3,
@@ -425,9 +425,6 @@ class DisasterThresholdManager {
                     <span class="crop-badge">${this.getCropLabel(threshold.applicableCrop)}</span>
                 </td>
                 <td>
-                    <span class="area-badge">${this.getAreaLabel(threshold.applicableArea)}</span>
-                </td>
-                <td>
                     <span class="status-badge status-${threshold.status}">
                         <span class="status-dot"></span>
                         ${threshold.status === 'active' ? '启用' : '禁用'}
@@ -524,6 +521,15 @@ class DisasterThresholdManager {
             'vegetables': '蔬菜',
             'fruits': '果树'
         };
+        
+        // 如果是数组，处理多个作物
+        if (Array.isArray(crop)) {
+            if (crop.includes('all')) {
+                return '所有作物';
+            }
+            return crop.map(c => labelMap[c] || c).join('、');
+        }
+        
         return labelMap[crop] || crop;
     }
 
@@ -608,19 +614,11 @@ class DisasterThresholdManager {
                             <span class="crop-badge">${this.getCropLabel(threshold.applicableCrop)}</span>
                         </div>
                         <div class="detail-item">
-                            <label>适用区域:</label>
-                            <span class="area-badge">${this.getAreaLabel(threshold.applicableArea)}</span>
-                        </div>
-                        <div class="detail-item">
                             <label>状态:</label>
                             <span class="status-badge status-${threshold.status}">
                                 <span class="status-dot"></span>
                                 ${threshold.status === 'active' ? '启用' : '禁用'}
                             </span>
-                        </div>
-                        <div class="detail-item">
-                            <label>优先级:</label>
-                            <span>${this.getPriorityLabel(threshold.priority)}</span>
                         </div>
                     </div>
                 </div>
@@ -721,11 +719,11 @@ class DisasterThresholdManager {
             form.reset();
         }
         
-        // 重置多选区域 - 默认选择"全部区域"（包含所有具体区域）
-        const areaCheckboxes = document.querySelectorAll('input[name="applicableArea"]');
-        if (areaCheckboxes) {
-            // 选中所有区域（包括"全部区域"）
-            areaCheckboxes.forEach(checkbox => checkbox.checked = true);
+        // 重置多选作物 - 默认选择"所有作物"
+        const cropCheckboxes = document.querySelectorAll('input[name="applicableCrop"]');
+        if (cropCheckboxes) {
+            // 选中所有作物（包括"所有作物"）
+            cropCheckboxes.forEach(checkbox => checkbox.checked = true);
         }
         
         // 重置阈值配置区域
@@ -737,37 +735,34 @@ class DisasterThresholdManager {
         document.getElementById('thresholdName').value = threshold.name;
         document.getElementById('thresholdType').value = threshold.type;
         document.getElementById('warningLevel').value = threshold.warningLevel;
-        document.getElementById('applicableCrop').value = threshold.applicableCrop;
+        document.getElementById('thresholdStatus').value = threshold.status;
+        document.getElementById('thresholdDescription').value = threshold.description || '';
         
-        // 处理多选区域
-        const areaCheckboxes = document.querySelectorAll('input[name="applicableArea"]');
-        if (areaCheckboxes) {
+        // 处理多选作物
+        const cropCheckboxes = document.querySelectorAll('input[name="applicableCrop"]');
+        if (cropCheckboxes) {
             // 清除所有选择
-            areaCheckboxes.forEach(checkbox => checkbox.checked = false);
+            cropCheckboxes.forEach(checkbox => checkbox.checked = false);
             
-            // 处理区域选择
-            let areasToSelect = [];
-            if (Array.isArray(threshold.applicableArea)) {
-                areasToSelect = threshold.applicableArea;
+            // 处理作物选择
+            let cropsToSelect = [];
+            if (Array.isArray(threshold.applicableCrop)) {
+                cropsToSelect = threshold.applicableCrop;
             } else {
-                areasToSelect = [threshold.applicableArea];
+                cropsToSelect = [threshold.applicableCrop];
             }
             
-            // 如果包含"all"，选中所有区域
-            if (areasToSelect.includes('all')) {
-                areaCheckboxes.forEach(checkbox => checkbox.checked = true);
+            // 如果包含"all"，选中所有作物
+            if (cropsToSelect.includes('all')) {
+                cropCheckboxes.forEach(checkbox => checkbox.checked = true);
             } else {
-                // 否则选择指定的区域
-                areasToSelect.forEach(area => {
-                    const checkbox = document.querySelector(`input[name="applicableArea"][value="${area}"]`);
+                // 否则选择指定的作物
+                cropsToSelect.forEach(crop => {
+                    const checkbox = document.querySelector(`input[name="applicableCrop"][value="${crop}"]`);
                     if (checkbox) checkbox.checked = true;
                 });
             }
         }
-        
-        document.getElementById('thresholdStatus').value = threshold.status;
-        document.getElementById('priority').value = threshold.priority;
-        document.getElementById('thresholdDescription').value = threshold.description || '';
         
         // 更新阈值配置字段并填充数据
         this.updateThresholdFields();
@@ -866,26 +861,26 @@ class DisasterThresholdManager {
 
     // 保存阈值
     saveThreshold() {
-        // 获取多选区域的值
-        const areaCheckboxes = document.querySelectorAll('input[name="applicableArea"]:checked');
-        const selectedAreas = Array.from(areaCheckboxes).map(checkbox => checkbox.value);
+        // 获取多选作物的值
+        const cropCheckboxes = document.querySelectorAll('input[name="applicableCrop"]:checked');
+        const selectedCrops = Array.from(cropCheckboxes).map(checkbox => checkbox.value);
         
-        // 如果选择了"全部区域"，只保存 ['all']，否则保存具体区域
-        let finalAreas;
-        if (selectedAreas.includes('all')) {
-            finalAreas = ['all'];
+        // 如果选择了"所有作物"，只保存 ['all']，否则保存具体作物
+        let finalCrops;
+        if (selectedCrops.includes('all')) {
+            finalCrops = ['all'];
         } else {
-            finalAreas = selectedAreas.length > 0 ? selectedAreas : ['all'];
+            finalCrops = selectedCrops.length > 0 ? selectedCrops : ['all'];
         }
         
         const formData = {
             name: document.getElementById('thresholdName').value.trim(),
             type: document.getElementById('thresholdType').value,
             warningLevel: document.getElementById('warningLevel').value,
-            applicableCrop: document.getElementById('applicableCrop').value,
-            applicableArea: finalAreas,
+            applicableCrop: finalCrops,
+            applicableArea: 'all',
             status: document.getElementById('thresholdStatus').value,
-            priority: parseInt(document.getElementById('priority').value),
+            priority: 2,
             description: document.getElementById('thresholdDescription').value.trim()
         };
 
@@ -969,7 +964,7 @@ class DisasterThresholdManager {
     // 导出阈值数据
     exportThresholdData() {
         // 创建CSV内容
-        const headers = ['阈值名称', '监测类型', '预警等级', '阈值范围', '适用作物', '适用区域', '状态', '优先级', '创建时间', '说明'];
+        const headers = ['阈值名称', '监测类型', '预警等级', '阈值范围', '适用作物', '状态', '创建时间', '说明'];
         const csvContent = [
             headers.join(','),
             ...this.thresholdData.map(threshold => [
@@ -978,9 +973,7 @@ class DisasterThresholdManager {
                 this.getWarningLabel(threshold.warningLevel),
                 this.formatThresholdRange(threshold.config),
                 this.getCropLabel(threshold.applicableCrop),
-                this.getAreaLabel(threshold.applicableArea),
                 threshold.status === 'active' ? '启用' : '禁用',
-                this.getPriorityLabel(threshold.priority),
                 threshold.createTime,
                 threshold.description || ''
             ].join(','))
@@ -1086,85 +1079,44 @@ function exportThresholdData() {
     }
 }
 
-// 处理区域复选框逻辑
-function handleAreaCheckboxChange(checkbox) {
-    const allCheckbox = document.querySelector('input[name="applicableArea"][value="all"]');
-    const otherCheckboxes = document.querySelectorAll('input[name="applicableArea"]:not([value="all"])');
+// 处理作物复选框逻辑
+function handleCropCheckboxChange(checkbox) {
+    const allCheckbox = document.querySelector('input[name="applicableCrop"][value="all"]');
+    const otherCheckboxes = document.querySelectorAll('input[name="applicableCrop"]:not([value="all"])');
     
     if (checkbox.value === 'all') {
-        // 如果点击的是"全部区域"
+        // 如果点击的是"所有作物"
         if (checkbox.checked) {
-            // 选中"全部区域"时，选中所有其他区域
+            // 选中"所有作物"时，选中所有其他作物
             otherCheckboxes.forEach(cb => cb.checked = true);
         } else {
-            // 取消"全部区域"时，取消所有其他区域
+            // 取消"所有作物"时，取消所有其他作物
             otherCheckboxes.forEach(cb => cb.checked = false);
         }
     } else {
-        // 如果点击的是具体区域
+        // 如果点击的是具体作物
         if (checkbox.checked) {
-            // 检查是否所有具体区域都被选中
+            // 检查是否所有具体作物都被选中
             const allOthersChecked = Array.from(otherCheckboxes).every(cb => cb.checked);
             if (allOthersChecked) {
-                // 如果所有具体区域都被选中，自动选中"全部区域"
+                // 如果所有具体作物都被选中，自动选中"所有作物"
                 if (allCheckbox) allCheckbox.checked = true;
             }
         } else {
-            // 取消具体区域时，取消"全部区域"
+            // 取消具体作物时，取消"所有作物"
             if (allCheckbox) allCheckbox.checked = false;
             
-            // 检查是否还有其他区域被选中
+            // 检查是否还有其他作物被选中
             const hasOtherChecked = Array.from(otherCheckboxes).some(cb => cb.checked);
             if (!hasOtherChecked) {
-                // 如果没有任何具体区域被选中，自动选择"全部区域"
+                // 如果没有任何具体作物被选中，自动选择"所有作物"
                 if (allCheckbox) {
                     allCheckbox.checked = true;
-                    // 选中"全部区域"时，选中所有其他区域
+                    // 选中"所有作物"时，选中所有其他作物
                     otherCheckboxes.forEach(cb => cb.checked = true);
                 }
             }
         }
-    }
-    
-    // 更新选择状态的视觉反馈
-    updateAreaSelectionDisplay();
-}
-
-// 更新区域选择的显示状态
-function updateAreaSelectionDisplay() {
-    const allCheckbox = document.querySelector('input[name="applicableArea"][value="all"]');
-    const otherCheckboxes = document.querySelectorAll('input[name="applicableArea"]:not([value="all"])');
-    const checkedOthers = Array.from(otherCheckboxes).filter(cb => cb.checked);
-    
-    // 更新帮助文本
-    const helpText = document.querySelector('.checkbox-help span');
-    if (helpText) {
-        if (allCheckbox && allCheckbox.checked) {
-            helpText.textContent = '已选择全部区域';
-            helpText.style.color = '#52c41a';
-            helpText.style.fontWeight = '500';
-        } else if (checkedOthers.length > 0) {
-            const areaNames = checkedOthers.map(cb => {
-                const label = cb.closest('.checkbox-item').querySelector('.checkbox-text');
-                return label ? label.textContent.trim() : cb.value;
-            }).join('、');
-            helpText.textContent = `已选择：${areaNames}`;
-            helpText.style.color = '#1890ff';
-            helpText.style.fontWeight = '500';
-        } else {
-            helpText.textContent = '可以选择多个区域，选择"全部区域"将应用于所有乡镇';
-            helpText.style.color = '#52c41a';
-            helpText.style.fontWeight = 'normal';
-        }
-        
-        // 2秒后恢复原始样式
-        setTimeout(() => {
-            if (helpText.textContent.includes('已选择')) {
-                helpText.textContent = '可以选择多个区域，选择"全部区域"将应用于所有乡镇';
-                helpText.style.color = '#52c41a';
-                helpText.style.fontWeight = 'normal';
-            }
-        }, 3000);
     }
 }
 
