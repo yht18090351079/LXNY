@@ -1608,12 +1608,6 @@ class DataManagement {
                 </td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); editDevice(${item.id})" title="编辑">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteDevice(${item.id})" title="删除">
-                            <i class="fas fa-trash"></i>
-                        </button>
                         <button class="btn btn-sm btn-info" onclick="event.stopPropagation(); viewDeviceHistory(${item.id})" title="查看历史数据">
                             <i class="fas fa-chart-line"></i>
                         </button>
@@ -2310,6 +2304,8 @@ function viewCropDetail(id) {
 }
 
 // 设备管理相关函数
+// 已禁用新增设备功能
+/*
 function showAddDeviceModal() {
     const dataManager = window.dataManager;
     if (!dataManager) return;
@@ -2329,7 +2325,10 @@ function showAddDeviceModal() {
     // 显示模态框
     document.getElementById('deviceModal').classList.add('show');
 }
+*/
 
+// 已禁用编辑设备功能
+/*
 function editDevice(id) {
     const dataManager = window.dataManager;
     if (!dataManager) return;
@@ -2356,11 +2355,17 @@ function editDevice(id) {
     // 显示模态框
     document.getElementById('deviceModal').classList.add('show');
 }
+*/
 
+// 已禁用设备模态框相关功能
+/*
 function closeDeviceModal() {
     document.getElementById('deviceModal').classList.remove('show');
 }
+*/
 
+// 已禁用删除设备功能
+/*
 function deleteDevice(id) {
     const dataManager = window.dataManager;
     if (!dataManager) return;
@@ -2405,6 +2410,7 @@ function confirmDeleteDevice() {
         Utils.showMessage('设备删除成功', 'success');
     }
 }
+*/
 
 function viewDeviceHistory(id) {
     Utils.showMessage('设备历史数据功能待实现', 'info');

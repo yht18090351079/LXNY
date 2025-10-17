@@ -35,10 +35,6 @@
                             <i class="fas fa-chart-area menu-icon"></i>
                             <span class="menu-text">种植面积管理</span>
                         </div>
-                        <div class="menu-item menu-child" data-tab="crop-info">
-                            <i class="fas fa-leaf menu-icon"></i>
-                            <span class="menu-text">作物基础信息</span>
-                        </div>
                         <div class="menu-item menu-child" data-tab="image-data">
                             <i class="fas fa-satellite menu-icon"></i>
                             <span class="menu-text">影像数据</span>
@@ -159,40 +155,6 @@
                             </div>
                         </div>
                         
-                        <!-- 作物基础信息 -->
-                        <div class="content-pane" id="crop-info">
-                            <div class="data-table-container">
-                                <div class="table-header">
-                                    <h3 class="table-title">作物基础信息</h3>
-                                    <div class="table-actions">
-                                        <div class="search-box">
-                                            <input type="text" class="form-input search-input" placeholder="搜索作物名称..." id="cropSearchInput">
-                                            <i class="fas fa-search search-icon"></i>
-                                        </div>
-                                        <button class="btn btn-primary" onclick="showAddCropModal()">
-                                            <i class="fas fa-plus"></i> 新增作物
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <table class="data-table" id="cropInfoTable">
-                                    <thead>
-                                        <tr>
-                                            <th>作物名称</th>
-                                            <th>作物类别</th>
-                                            <th>生长周期(天)</th>
-                                            <th>适宜种植季节</th>
-                                            <th>创建时间</th>
-                                            <th>操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cropInfoTableBody">
-                                        <!-- 数据将通过JavaScript动态加载 -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
                         <!-- 影像数据 -->
                         <div class="content-pane" id="image-data">
                             <div class="data-table-container">
@@ -278,10 +240,6 @@
                                             <button class="btn btn-primary" onclick="refreshDeviceMap()" title="刷新地图和数据">
                                                 <i class="fas fa-sync-alt"></i>
                                                 刷新地图
-                                            </button>
-                                            <button class="btn btn-success" onclick="showAddDeviceModal()" title="新增设备">
-                                                <i class="fas fa-plus"></i>
-                                                新增设备
                                             </button>
                                         </div>
                                     </div>
@@ -377,114 +335,6 @@
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- 新增/编辑作物信息模态框 -->
-    <div class="modal-overlay" id="cropModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="cropModalTitle">新增作物信息</h3>
-                <button class="modal-close" onclick="closeCropModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <form id="cropForm">
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">作物名称 *</label>
-                            <input type="text" class="form-input" id="cropName" name="cropName" required placeholder="请输入作物名称">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">作物类别 *</label>
-                            <select class="form-select" id="cropCategory" name="cropCategory" required>
-                                <option value="">请选择作物类别</option>
-                                <option value="粮食作物">粮食作物</option>
-                                <option value="经济作物">经济作物</option>
-                                <option value="薯类作物">薯类作物</option>
-                                <option value="蔬菜作物">蔬菜作物</option>
-                                <option value="果树作物">果树作物</option>
-                                <option value="饲料作物">饲料作物</option>
-                                <option value="其他作物">其他作物</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">生长周期 (天) *</label>
-                            <input type="number" class="form-input" id="cropGrowthPeriod" name="cropGrowthPeriod" required 
-                                   min="1" max="365" placeholder="请输入生长周期">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">适宜种植季节 *</label>
-                            <select class="form-select" id="cropSeason" name="cropSeason" required>
-                                <option value="">请选择种植季节</option>
-                                <option value="春季">春季</option>
-                                <option value="夏季">夏季</option>
-                                <option value="秋季">秋季</option>
-                                <option value="冬季">冬季</option>
-                                <option value="春夏">春夏</option>
-                                <option value="秋冬">秋冬</option>
-                                <option value="全年">全年</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">作物描述</label>
-                        <textarea class="form-input" id="cropDescription" name="cropDescription" rows="3" 
-                                  placeholder="请输入作物描述信息（可选）"></textarea>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">种植技术要点</label>
-                            <input type="text" class="form-input" id="cropTechPoints" name="cropTechPoints" 
-                                   placeholder="请输入种植技术要点（可选）">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">预期产量 (kg/亩)</label>
-                            <input type="number" class="form-input" id="cropExpectedYield" name="cropExpectedYield" 
-                                   min="0" step="0.1" placeholder="请输入预期产量">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="closeCropModal()">取消</button>
-                <button type="button" class="btn btn-primary" onclick="saveCrop()">
-                    <i class="fas fa-save"></i> 保存
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 作物详情查看模态框 -->
-    <div class="modal-overlay" id="cropDetailModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">作物详细信息</h3>
-                <button class="modal-close" onclick="closeCropDetailModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="crop-detail-container" id="cropDetailContainer">
-                    <!-- 作物详情内容将通过JavaScript动态生成 -->
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="closeCropDetailModal()">关闭</button>
-                <button type="button" class="btn btn-primary" onclick="editCurrentCrop()">
-                    <i class="fas fa-edit"></i> 编辑
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- 设备历史数据模态框 -->
@@ -639,99 +489,6 @@
                 <button type="button" class="btn btn-primary" onclick="savePlantingAreaEdit()">
                     <i class="fas fa-save"></i> 保存修改
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 新增/编辑设备信息模态框 -->
-    <div class="modal-overlay" id="deviceModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="deviceModalTitle">新增设备信息</h3>
-                <button class="modal-close" onclick="closeDeviceModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <form id="deviceForm">
-                    <input type="hidden" id="deviceId" name="deviceId">
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">设备名称 *</label>
-                            <input type="text" class="form-input" id="deviceName" name="deviceName" required placeholder="请输入设备名称">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">设备类型 *</label>
-                            <select class="form-select" id="deviceType" name="deviceType" required>
-                                <option value="">请选择设备类型</option>
-                                <option value="气象监测">气象监测</option>
-                                <option value="土壤监测">土壤监测</option>
-                                <option value="视频监控">视频监控</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">位置 *</label>
-                            <input type="text" class="form-input" id="deviceLocation" name="deviceLocation" required placeholder="请输入设备位置">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">状态 *</label>
-                            <select class="form-select" id="deviceStatus" name="deviceStatus" required>
-                                <option value="">请选择设备状态</option>
-                                <option value="online">在线</option>
-                                <option value="offline">离线</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group form-col">
-                            <label class="form-label">经度 *</label>
-                            <input type="number" class="form-input" id="deviceLongitude" name="deviceLongitude" required step="0.0001" placeholder="请输入经度">
-                        </div>
-                        <div class="form-group form-col">
-                            <label class="form-label">纬度 *</label>
-                            <input type="number" class="form-input" id="deviceLatitude" name="deviceLatitude" required step="0.0001" placeholder="请输入纬度">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">最后上报时间 *</label>
-                        <input type="datetime-local" class="form-input" id="deviceLastReport" name="deviceLastReport" required>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline" onclick="closeDeviceModal()">取消</button>
-                        <button type="submit" class="btn btn-primary">保存</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- 删除确认模态框 -->
-    <div class="modal-overlay" id="deleteDeviceModal">
-        <div class="modal-content confirm-modal">
-            <div class="modal-header">
-                <h3 class="modal-title">确认删除</h3>
-                <button class="modal-close" onclick="closeDeleteDeviceModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="confirm-content">
-                    <i class="fas fa-exclamation-triangle confirm-icon"></i>
-                    <p>确定要删除设备 <strong id="deleteDeviceName"></strong> 吗？此操作不可恢复。</p>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline" onclick="closeDeleteDeviceModal()">取消</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteDeviceBtn">删除</button>
-                </div>
             </div>
         </div>
     </div>

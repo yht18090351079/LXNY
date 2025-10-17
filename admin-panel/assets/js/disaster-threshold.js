@@ -112,46 +112,6 @@ class DisasterThresholdManager {
                 updateTime: '2024-01-15 12:00:00'
             },
             {
-                id: 6,
-                name: '小麦长势异常预警',
-                type: 'ndvi',
-                warningLevel: 'warning',
-                config: {
-                    minValue: null,
-                    maxValue: 0.3,
-                    unit: '',
-                    duration: null,
-                    description: '长势指数低于0.3时触发小麦健康状况预警'
-                },
-                applicableCrop: 'wheat',
-                applicableArea: 'all',
-                status: 'active',
-                priority: 2,
-                description: '监测小麦长势异常，及时发现病虫害或营养不良',
-                createTime: '2024-01-15 12:30:00',
-                updateTime: '2024-01-15 12:30:00'
-            },
-            {
-                id: 7,
-                name: '玉米长势严重不良',
-                type: 'ndvi',
-                warningLevel: 'critical',
-                config: {
-                    minValue: null,
-                    maxValue: 0.1,
-                    unit: '',
-                    duration: null,
-                    description: '长势指数低于0.1时触发严重植被损失预警'
-                },
-                applicableCrop: 'corn',
-                applicableArea: 'linxia',
-                status: 'active',
-                priority: 3,
-                description: '玉米长势严重不足，可能存在严重病害或干旱',
-                createTime: '2024-01-15 13:00:00',
-                updateTime: '2024-01-15 13:00:00'
-            },
-            {
                 id: 8,
                 name: '夏季高温阈值（东乡镇）',
                 type: 'temperature',
@@ -192,24 +152,64 @@ class DisasterThresholdManager {
                 updateTime: '2024-01-15 14:00:00'
             },
             {
-                id: 10,
-                name: '果树长势监测阈值',
-                type: 'ndvi',
-                warningLevel: 'info',
+                id: 11,
+                name: '暴雨预警（24小时降雨）',
+                type: 'rainfall',
+                warningLevel: 'danger',
                 config: {
-                    minValue: null,
-                    maxValue: 0.4,
-                    unit: '',
-                    duration: null,
-                    description: '果树长势指数低于0.4时提醒关注'
+                    minValue: 50,
+                    maxValue: null,
+                    unit: 'mm',
+                    duration: 24,
+                    description: '24小时降雨量超过50mm时触发暴雨预警'
                 },
-                applicableCrop: 'fruits',
+                applicableCrop: 'all',
                 applicableArea: 'all',
                 status: 'active',
-                priority: 1,
-                description: '果树生长期长势监测，便于及时采取措施',
-                createTime: '2024-01-15 14:30:00',
-                updateTime: '2024-01-15 14:30:00'
+                priority: 3,
+                description: '持续强降雨可能导致洪涝灾害，影响农作物生长',
+                createTime: '2024-01-15 15:00:00',
+                updateTime: '2024-01-15 15:00:00'
+            },
+            {
+                id: 12,
+                name: '干旱预警（无有效降雨）',
+                type: 'rainfall',
+                warningLevel: 'warning',
+                config: {
+                    minValue: null,
+                    maxValue: 5,
+                    unit: 'mm',
+                    duration: 168,
+                    description: '连续7天降雨量不足5mm时触发干旱预警'
+                },
+                applicableCrop: 'all',
+                applicableArea: 'all',
+                status: 'active',
+                priority: 2,
+                description: '长期缺水会严重影响作物生长发育',
+                createTime: '2024-01-15 15:30:00',
+                updateTime: '2024-01-15 15:30:00'
+            },
+            {
+                id: 13,
+                name: '强降雨灾害预警',
+                type: 'rainfall',
+                warningLevel: 'critical',
+                config: {
+                    minValue: 100,
+                    maxValue: null,
+                    unit: 'mm',
+                    duration: 24,
+                    description: '24小时降雨量超过100mm时触发严重暴雨预警'
+                },
+                applicableCrop: 'all',
+                applicableArea: 'all',
+                status: 'active',
+                priority: 3,
+                description: '极端强降雨可能造成严重洪涝灾害，需紧急应对',
+                createTime: '2024-01-15 16:00:00',
+                updateTime: '2024-01-15 16:00:00'
             }
         ];
         
@@ -317,7 +317,7 @@ class DisasterThresholdManager {
 
         const temperatureCount = this.thresholdData.filter(t => t.type === 'temperature' && t.status === 'active').length;
         const humidityCount = this.thresholdData.filter(t => t.type === 'humidity' && t.status === 'active').length;
-        const ndviCount = this.thresholdData.filter(t => t.type === 'ndvi' && t.status === 'active').length;
+        const rainfallCount = this.thresholdData.filter(t => t.type === 'rainfall' && t.status === 'active').length;
         const totalCount = this.thresholdData.filter(t => t.status === 'active').length;
 
         statsContainer.innerHTML = `
@@ -337,13 +337,13 @@ class DisasterThresholdManager {
                 <p class="stat-value">${humidityCount}</p>
                 <p class="stat-description">已启用的湿度监测阈值</p>
             </div>
-            <div class="stat-card ndvi">
+            <div class="stat-card rainfall">
                 <div class="stat-header">
-                    <h4 class="stat-title">长势阈值</h4>
-                    <i class="fas fa-leaf stat-icon"></i>
+                    <h4 class="stat-title">降雨阈值</h4>
+                    <i class="fas fa-cloud-rain stat-icon"></i>
                 </div>
-                <p class="stat-value">${ndviCount}</p>
-                <p class="stat-description">已启用的长势监测阈值</p>
+                <p class="stat-value">${rainfallCount}</p>
+                <p class="stat-description">已启用的降雨监测阈值</p>
             </div>
             <div class="stat-card total">
                 <div class="stat-header">
@@ -351,7 +351,7 @@ class DisasterThresholdManager {
                     <i class="fas fa-chart-pie stat-icon"></i>
                 </div>
                 <p class="stat-value">${totalCount}</p>
-                <p class="stat-description">所有已启用的阈值数量</p>
+                <p class="stat-description">所有已启用的气象阈值数量</p>
             </div>
         `;
     }
@@ -458,7 +458,7 @@ class DisasterThresholdManager {
         const iconMap = {
             'temperature': 'thermometer-half',
             'humidity': 'tint',
-            'ndvi': 'leaf'
+            'rainfall': 'cloud-rain'
         };
         return iconMap[type] || 'question-circle';
     }
@@ -468,7 +468,7 @@ class DisasterThresholdManager {
         const labelMap = {
             'temperature': '温度',
             'humidity': '湿度',
-            'ndvi': '长势'
+            'rainfall': '降雨'
         };
         return labelMap[type] || type;
     }
@@ -824,34 +824,20 @@ class DisasterThresholdManager {
                         <p class="config-description">当数值小于等于此值时触发预警</p>
                     </div>
                 </div>
-                ${thresholdType !== 'ndvi' ? `
-                    <div class="config-row">
-                        <div class="config-group">
-                            <label class="config-label">持续时长 (小时)</label>
-                            <input type="number" class="config-input" id="configDuration" 
-                                   min="1" max="72" placeholder="1">
-                            <p class="config-description">满足条件持续多长时间后触发预警</p>
-                        </div>
-                        <div class="config-group">
-                            <label class="config-label">配置说明</label>
-                            <input type="text" class="config-input" id="configDescription" 
-                                   placeholder="简要描述此阈值配置">
-                            <p class="config-description">用于系统内部识别和日志记录</p>
-                        </div>
+                <div class="config-row">
+                    <div class="config-group">
+                        <label class="config-label">持续时长 (小时)</label>
+                        <input type="number" class="config-input" id="configDuration" 
+                               min="1" max="72" placeholder="1">
+                        <p class="config-description">满足条件持续多长时间后触发预警</p>
                     </div>
-                ` : `
-                    <div class="config-row">
-                        <div class="config-group">
-                            <label class="config-label">配置说明</label>
-                            <input type="text" class="config-input" id="configDescription" 
-                                   placeholder="简要描述此阈值配置">
-                            <p class="config-description">NDVI指数不需要持续时长，立即生效</p>
-                        </div>
-                        <div class="config-group">
-                            <!-- 占位 -->
-                        </div>
+                    <div class="config-group">
+                        <label class="config-label">配置说明</label>
+                        <input type="text" class="config-input" id="configDescription" 
+                               placeholder="简要描述此阈值配置">
+                        <p class="config-description">用于系统内部识别和日志记录</p>
                     </div>
-                `}
+                </div>
             </div>
         `;
     }
@@ -869,10 +855,10 @@ class DisasterThresholdManager {
                 step: '1',
                 range: '0 ~ 100'
             },
-            'ndvi': {
-                unit: '',
-                step: '0.01',
-                range: '-1 ~ 1'
+            'rainfall': {
+                unit: '(mm)',
+                step: '0.1',
+                range: '0 ~ 1000'
             }
         };
         return configMap[type] || { unit: '', step: '1', range: '' };
@@ -975,7 +961,7 @@ class DisasterThresholdManager {
             minValue: minValue ? parseFloat(minValue) : null,
             maxValue: maxValue ? parseFloat(maxValue) : null,
             unit: typeInfo.unit.replace(/[()]/g, ''),
-            duration: type !== 'ndvi' ? (duration ? parseInt(duration) : 1) : null,
+            duration: duration ? parseInt(duration) : 1,
             description: description || ''
         };
     }
